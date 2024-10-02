@@ -1,0 +1,329 @@
+Start testing: Aug 12 15:26 AWST
+----------------------------------------------------------
+1/5 Testing: bin_test_X-n101-k25
+1/5 Test: bin_test_X-n101-k25
+Command: "/usr/bin/cmake" "-DINSTANCE=X-n101-k25" "-DCOST=27591" "-DROUND=1" "-P" "/home/vboxuser/Desktop/Curtin/IRPLR/HGS-CVRP-main/Test/TestExecutable.cmake"
+Directory: /home/vboxuser/Desktop/Curtin/IRPLR/HGS-CVRP-main/build
+"bin_test_X-n101-k25" start time: Aug 12 15:26 AWST
+Output:
+----------------------------------------------------------
+=========== Algorithm Parameters =================
+---- nbGranular              is set to 20
+---- mu                      is set to 25
+---- lambda                  is set to 40
+---- nbElite                 is set to 4
+---- nbClose                 is set to 5
+---- nbIterPenaltyManagement is set to 100
+---- targetFeasible          is set to 0.2
+---- penaltyDecrease         is set to 0.85
+---- penaltyIncrease         is set to 1.2
+---- seed                    is set to 1
+---- nbIter                  is set to 20000
+---- nbIterTraces            is set to 500
+---- timeLimit               is set to 0
+---- useSwapStar             is set to 1
+==================================================
+----- READING INSTANCE: ../Instances/CVRP/X-n101-k25.vrp
+----- FLEET SIZE WAS NOT SPECIFIED: DEFAULT INITIALIZATION TO 36 VEHICLES
+----- INSTANCE SUCCESSFULLY LOADED WITH 100 CLIENTS AND 36 VEHICLES
+----- BUILDING INITIAL POPULATION
+----- STARTING GENETIC ALGORITHM
+It      0      2 | T(s) 0.10 | Feas 33 27958.00 28427.12 | Inf 58 27783.72 28112.37 | Div 0.57 0.50 | Feas 0.02 1.00 | Pen 15.18 0.85
+It    500    237 | T(s) 0.43 | Feas 55 27610.00 27727.60 | Inf 59 27551.77 27635.45 | Div 0.30 0.31 | Feas 0.00 1.00 | Pen 37.77 0.38
+It   1000    737 | T(s) 0.73 | Feas 64 27610.00 27648.08 | Inf 64 27594.99 27644.11 | Div 0.18 0.19 | Feas 0.15 1.00 | Pen 93.99 0.17
+It   1500     68 | T(s) 1.01 | Feas 62 27595.00 27624.68 | Inf 55 27596.79 27638.03 | Div 0.18 0.20 | Feas 0.93 1.00 | Pen 97.79 0.10
+It   2000    568 | T(s) 1.29 | Feas 38 27595.00 27639.20 | Inf 56 27585.48 27622.44 | Div 0.25 0.21 | Feas 0.80 1.00 | Pen 86.48 0.10
+It   2500    343 | T(s) 1.57 | Feas 49 27591.00 27629.16 | Inf 41 27602.97 27637.21 | Div 0.22 0.20 | Feas 0.08 1.00 | Pen 107.97 0.10
+It   3000    843 | T(s) 1.83 | Feas 56 27591.00 27614.88 | Inf 30 27590.48 27655.28 | Div 0.17 0.29 | Feas 0.96 1.00 | Pen 95.48 0.10
+It   3500   1343 | T(s) 2.10 | Feas 25 27591.00 27780.92 | Inf 27 27579.44 27661.51 | Div 0.39 0.32 | Feas 0.79 1.00 | Pen 84.44 0.10
+It   4000   1843 | T(s) 2.38 | Feas 41 27591.00 27625.52 | Inf 33 27600.42 27646.87 | Div 0.22 0.24 | Feas 0.06 1.00 | Pen 105.42 0.10
+It   4500   2343 | T(s) 2.64 | Feas 54 27591.00 27610.20 | Inf 60 27588.22 27612.54 | Div 0.16 0.18 | Feas 0.80 1.00 | Pen 93.22 0.10
+It   5000   2843 | T(s) 2.90 | Feas 49 27591.00 27609.64 | Inf 31 27577.44 27627.80 | Div 0.16 0.26 | Feas 0.82 1.00 | Pen 82.44 0.10
+It   5500   3343 | T(s) 3.18 | Feas 37 27591.00 27616.36 | Inf 56 27597.93 27617.29 | Div 0.19 0.14 | Feas 0.05 1.00 | Pen 102.93 0.10
+It   6000   3843 | T(s) 3.43 | Feas 54 27591.00 27611.08 | Inf 25 27586.02 27673.62 | Div 0.16 0.27 | Feas 0.91 1.00 | Pen 91.02 0.10
+It   6500   4343 | T(s) 3.70 | Feas 37 27591.00 27616.48 | Inf 36 27589.70 27611.70 | Div 0.19 0.18 | Feas 0.20 1.00 | Pen 94.70 0.10
+It   7000   4843 | T(s) 3.96 | Feas 61 27591.00 27604.72 | Inf 50 27593.52 27618.48 | Div 0.12 0.16 | Feas 0.08 1.00 | Pen 98.52 0.10
+It   7500   5343 | T(s) 4.23 | Feas 45 27591.00 27615.56 | Inf 58 27580.42 27597.38 | Div 0.18 0.14 | Feas 0.17 1.00 | Pen 85.42 0.10
+It   8000   5843 | T(s) 4.50 | Feas 58 27591.00 27613.16 | Inf 40 27601.65 27633.85 | Div 0.16 0.20 | Feas 0.05 1.00 | Pen 106.65 0.10
+It   8500   6343 | T(s) 4.77 | Feas 29 27591.00 27621.52 | Inf 30 27589.31 27676.24 | Div 0.22 0.28 | Feas 0.82 1.00 | Pen 94.31 0.10
+It   9000   6843 | T(s) 5.04 | Feas 41 27591.00 27615.88 | Inf 56 27578.40 27599.96 | Div 0.19 0.17 | Feas 0.80 1.00 | Pen 83.40 0.10
+It   9500   7343 | T(s) 5.33 | Feas 61 27591.00 27610.64 | Inf 44 27599.13 27624.33 | Div 0.15 0.18 | Feas 0.09 1.00 | Pen 104.13 0.10
+It  10000   7843 | T(s) 5.60 | Feas 62 27591.00 27606.40 | Inf 37 27587.08 27643.49 | Div 0.14 0.27 | Feas 0.79 1.00 | Pen 92.08 0.10
+It  10500   8343 | T(s) 5.88 | Feas 52 27591.00 27613.04 | Inf 42 27590.80 27649.88 | Div 0.17 0.26 | Feas 0.84 1.00 | Pen 95.80 0.10
+It  11000   8843 | T(s) 6.16 | Feas 64 27591.00 27619.32 | Inf 32 27579.72 27650.96 | Div 0.17 0.28 | Feas 0.77 1.00 | Pen 84.72 0.10
+It  11500   9343 | T(s) 6.43 | Feas 46 27591.00 27608.76 | Inf 58 27600.78 27615.46 | Div 0.14 0.12 | Feas 0.04 1.00 | Pen 105.78 0.10
+It  12000   9843 | T(s) 6.69 | Feas 42 27591.00 27616.44 | Inf 62 27588.54 27624.22 | Div 0.19 0.21 | Feas 0.73 1.00 | Pen 93.54 0.10
+It  12500  10343 | T(s) 6.94 | Feas 61 27591.00 27610.56 | Inf 43 27577.72 27634.56 | Div 0.15 0.26 | Feas 0.80 1.00 | Pen 82.72 0.10
+It  13000  10843 | T(s) 7.22 | Feas 47 27591.00 27620.04 | Inf 35 27598.28 27640.48 | Div 0.20 0.24 | Feas 0.04 1.00 | Pen 103.28 0.10
+It  13500  11343 | T(s) 7.48 | Feas 53 27591.00 27607.20 | Inf 27 27586.33 27661.93 | Div 0.14 0.29 | Feas 0.89 1.00 | Pen 91.33 0.10
+It  14000  11843 | T(s) 7.77 | Feas 58 27591.00 27608.16 | Inf 54 27590.02 27600.14 | Div 0.15 0.11 | Feas 0.19 1.00 | Pen 95.02 0.10
+It  14500  12343 | T(s) 8.03 | Feas 28 27591.00 27627.56 | Inf 37 27579.03 27630.27 | Div 0.24 0.25 | Feas 0.78 1.00 | Pen 84.03 0.10
+It  15000  12843 | T(s) 8.32 | Feas 27 27591.00 27638.44 | Inf 25 27599.91 27652.79 | Div 0.26 0.26 | Feas 0.05 1.00 | Pen 104.91 0.10
+It  15500  13343 | T(s) 8.59 | Feas 39 27591.00 27626.92 | Inf 60 27587.78 27621.34 | Div 0.22 0.20 | Feas 0.76 1.00 | Pen 92.78 0.10
+It  16000  13843 | T(s) 8.86 | Feas 50 27591.00 27612.40 | Inf 44 27577.05 27633.61 | Div 0.17 0.26 | Feas 0.70 1.00 | Pen 82.05 0.10
+It  16500  14343 | T(s) 9.15 | Feas 40 27591.00 27607.56 | Inf 38 27597.43 27616.51 | Div 0.14 0.16 | Feas 0.09 1.00 | Pen 102.43 0.10
+It  17000  14843 | T(s) 9.40 | Feas 46 27591.00 27614.88 | Inf 53 27585.59 27617.03 | Div 0.18 0.20 | Feas 0.84 1.00 | Pen 90.59 0.10
+It  17500  15343 | T(s) 9.67 | Feas 35 27591.00 27614.60 | Inf 49 27608.10 27621.42 | Div 0.19 0.12 | Feas 0.09 1.00 | Pen 113.10 0.10
+It  18000  15843 | T(s) 9.92 | Feas 46 27591.00 27620.32 | Inf 41 27595.02 27629.86 | Div 0.19 0.21 | Feas 0.07 1.00 | Pen 100.02 0.10
+It  18500  16343 | T(s) 10.19 | Feas 43 27591.00 27622.48 | Inf 63 27583.45 27609.69 | Div 0.21 0.17 | Feas 0.78 1.00 | Pen 88.45 0.10
+It  19000  16843 | T(s) 10.46 | Feas 56 27591.00 27612.24 | Inf 46 27605.43 27629.75 | Div 0.16 0.18 | Feas 0.14 1.00 | Pen 110.43 0.10
+It  19500  17343 | T(s) 10.74 | Feas 42 27591.00 27617.88 | Inf 51 27592.65 27617.73 | Div 0.19 0.18 | Feas 0.96 1.00 | Pen 97.65 0.10
+It  20000  17843 | T(s) 11.01 | Feas 35 27591.00 27622.08 | Inf 25 27581.36 27636.12 | Div 0.22 0.26 | Feas 0.76 1.00 | Pen 86.36 0.10
+It  20500  18343 | T(s) 11.28 | Feas 32 27591.00 27628.12 | Inf 33 27602.82 27633.22 | Div 0.24 0.21 | Feas 0.11 1.00 | Pen 107.82 0.10
+It  21000  18843 | T(s) 11.55 | Feas 31 27591.00 27627.32 | Inf 42 27590.35 27630.23 | Div 0.24 0.22 | Feas 0.95 1.00 | Pen 95.35 0.10
+It  21500  19343 | T(s) 11.80 | Feas 44 27591.00 27612.84 | Inf 49 27579.32 27610.72 | Div 0.17 0.20 | Feas 0.82 1.00 | Pen 84.32 0.10
+It  22000  19843 | T(s) 12.07 | Feas 49 27591.00 27617.16 | Inf 29 27600.27 27648.35 | Div 0.18 0.26 | Feas 0.06 1.00 | Pen 105.27 0.10
+----- GENETIC ALGORITHM FINISHED AFTER 22159 ITERATIONS. TIME SPENT: 12.1652
+----- WRITING BEST SOLUTION IN : mySolution.sol
+0
+<end of output>
+Test time =  12.22 sec
+----------------------------------------------------------
+Test Passed.
+"bin_test_X-n101-k25" end time: Aug 12 15:26 AWST
+"bin_test_X-n101-k25" time elapsed: 00:00:12
+----------------------------------------------------------
+
+2/5 Testing: bin_test_X-n106-k14
+2/5 Test: bin_test_X-n106-k14
+Command: "/usr/bin/cmake" "-DINSTANCE=X-n110-k13" "-DCOST=14971" "-DROUND=1" "-P" "/home/vboxuser/Desktop/Curtin/IRPLR/HGS-CVRP-main/Test/TestExecutable.cmake"
+Directory: /home/vboxuser/Desktop/Curtin/IRPLR/HGS-CVRP-main/build
+"bin_test_X-n106-k14" start time: Aug 12 15:26 AWST
+Output:
+----------------------------------------------------------
+=========== Algorithm Parameters =================
+---- nbGranular              is set to 20
+---- mu                      is set to 25
+---- lambda                  is set to 40
+---- nbElite                 is set to 4
+---- nbClose                 is set to 5
+---- nbIterPenaltyManagement is set to 100
+---- targetFeasible          is set to 0.2
+---- penaltyDecrease         is set to 0.85
+---- penaltyIncrease         is set to 1.2
+---- seed                    is set to 1
+---- nbIter                  is set to 20000
+---- nbIterTraces            is set to 500
+---- timeLimit               is set to 0
+---- useSwapStar             is set to 1
+==================================================
+----- READING INSTANCE: ../Instances/CVRP/X-n110-k13.vrp
+----- FLEET SIZE WAS NOT SPECIFIED: DEFAULT INITIALIZATION TO 20 VEHICLES
+----- INSTANCE SUCCESSFULLY LOADED WITH 109 CLIENTS AND 20 VEHICLES
+----- BUILDING INITIAL POPULATION
+----- STARTING GENETIC ALGORITHM
+It      0      2 | T(s) 0.07 | Feas 59 15109.00 15416.08 | Inf 1 16363.63 16363.63 | Div 0.43 -nan | Feas 0.99 1.00 | Pen 108.63 0.85
+It    500    142 | T(s) 0.32 | Feas 26 15011.00 15172.60 | Inf 40 15051.20 15147.50 | Div 0.41 0.35 | Feas 0.54 1.00 | Pen 48.20 0.38
+It   1000    447 | T(s) 0.57 | Feas 52 14971.00 15005.40 | Inf 60 14957.80 14982.86 | Div 0.15 0.19 | Feas 0.25 1.00 | Pen 29.60 0.17
+It   1500    947 | T(s) 0.84 | Feas 25 14971.00 15003.76 | Inf 30 14932.32 14988.29 | Div 0.24 0.27 | Feas 0.14 1.00 | Pen 25.66 0.10
+It   2000   1447 | T(s) 1.12 | Feas 34 14971.00 14996.56 | Inf 45 14898.50 14932.37 | Div 0.18 0.17 | Feas 0.26 1.00 | Pen 22.25 0.10
+It   2500   1947 | T(s) 1.39 | Feas 53 14971.00 14979.28 | Inf 45 14937.20 14958.88 | Div 0.10 0.20 | Feas 0.25 1.00 | Pen 26.70 0.10
+It   3000   2447 | T(s) 1.65 | Feas 46 14971.00 14995.20 | Inf 59 14940.17 14962.29 | Div 0.16 0.19 | Feas 0.22 1.00 | Pen 27.23 0.10
+It   3500   2947 | T(s) 1.94 | Feas 37 14971.00 14985.00 | Inf 33 14872.77 14952.85 | Div 0.13 0.29 | Feas 0.27 1.00 | Pen 19.68 0.10
+It   4000   3447 | T(s) 2.21 | Feas 49 14971.00 14986.24 | Inf 26 14912.12 14945.33 | Div 0.13 0.26 | Feas 0.24 1.00 | Pen 23.61 0.10
+It   4500   3947 | T(s) 2.47 | Feas 42 14971.00 14980.64 | Inf 50 14916.85 14931.04 | Div 0.11 0.13 | Feas 0.30 1.00 | Pen 24.08 0.10
+It   5000   4447 | T(s) 2.74 | Feas 35 14971.00 14999.32 | Inf 33 14921.66 14961.55 | Div 0.19 0.25 | Feas 0.23 1.00 | Pen 24.57 0.10
+It   5500   4947 | T(s) 3.01 | Feas 42 14971.00 14982.12 | Inf 64 14926.58 14949.73 | Div 0.11 0.17 | Feas 0.18 1.00 | Pen 25.06 0.10
+It   6000   5447 | T(s) 3.30 | Feas 63 14971.00 14980.08 | Inf 56 14933.42 14953.37 | Div 0.10 0.20 | Feas 0.18 1.00 | Pen 26.07 0.10
+It   6500   5947 | T(s) 3.57 | Feas 36 14971.00 14993.60 | Inf 45 14936.55 14963.41 | Div 0.17 0.20 | Feas 0.16 1.00 | Pen 26.59 0.10
+It   7000   6447 | T(s) 3.84 | Feas 52 14971.00 14976.40 | Inf 61 14939.62 14959.81 | Div 0.09 0.18 | Feas 0.22 1.00 | Pen 27.12 0.10
+It   7500   6947 | T(s) 4.10 | Feas 50 14971.00 14974.48 | Inf 39 14906.55 14946.00 | Div 0.07 0.22 | Feas 0.23 1.00 | Pen 23.05 0.10
+It   8000   7447 | T(s) 4.36 | Feas 47 14971.00 14976.08 | Inf 64 14879.88 14917.07 | Div 0.09 0.16 | Feas 0.26 1.00 | Pen 20.39 0.10
+It   8500   7947 | T(s) 4.63 | Feas 30 14971.00 14991.96 | Inf 56 14883.96 14908.12 | Div 0.16 0.16 | Feas 0.26 1.00 | Pen 20.80 0.10
+It   9000   8447 | T(s) 4.90 | Feas 65 14971.00 14981.44 | Inf 35 14929.73 14956.71 | Div 0.11 0.23 | Feas 0.17 1.00 | Pen 25.45 0.10
+It   9500   8947 | T(s) 5.17 | Feas 33 14971.00 14995.08 | Inf 50 14892.36 14918.99 | Div 0.18 0.20 | Feas 0.22 1.00 | Pen 21.64 0.10
+It  10000   9447 | T(s) 5.45 | Feas 34 14971.00 14984.60 | Inf 48 14892.36 14909.65 | Div 0.13 0.17 | Feas 0.19 1.00 | Pen 21.64 0.10
+It  10500   9947 | T(s) 5.71 | Feas 53 14971.00 14975.08 | Inf 45 14901.10 14927.57 | Div 0.08 0.19 | Feas 0.19 1.00 | Pen 22.51 0.10
+It  11000  10447 | T(s) 5.98 | Feas 32 14971.00 14982.48 | Inf 33 14901.10 14922.04 | Div 0.13 0.20 | Feas 0.18 1.00 | Pen 22.51 0.10
+It  11500  10947 | T(s) 6.26 | Feas 29 14971.00 14989.72 | Inf 35 14939.06 14953.46 | Div 0.18 0.19 | Feas 0.15 1.00 | Pen 27.01 0.10
+It  12000  11447 | T(s) 6.54 | Feas 62 14971.00 14978.96 | Inf 59 14905.60 14925.76 | Div 0.09 0.17 | Feas 0.22 1.00 | Pen 22.96 0.10
+It  12500  11947 | T(s) 6.80 | Feas 30 14971.00 14986.80 | Inf 48 14905.60 14927.84 | Div 0.15 0.19 | Feas 0.16 1.00 | Pen 22.96 0.10
+It  13000  12447 | T(s) 7.07 | Feas 37 14971.00 14991.56 | Inf 46 14914.88 14937.99 | Div 0.15 0.18 | Feas 0.29 1.00 | Pen 23.89 0.10
+It  13500  12947 | T(s) 7.32 | Feas 26 14971.00 14991.52 | Inf 28 14919.66 14956.63 | Div 0.17 0.24 | Feas 0.26 1.00 | Pen 24.37 0.10
+It  14000  13447 | T(s) 7.59 | Feas 50 14971.00 14978.16 | Inf 25 14887.25 14961.87 | Div 0.09 0.28 | Feas 0.27 1.00 | Pen 21.13 0.10
+It  14500  13947 | T(s) 7.84 | Feas 56 14971.00 14974.96 | Inf 48 14891.48 14921.33 | Div 0.08 0.18 | Feas 0.25 1.00 | Pen 21.55 0.10
+It  15000  14447 | T(s) 8.11 | Feas 44 14971.00 14978.92 | Inf 35 14856.79 14889.95 | Div 0.10 0.21 | Feas 0.26 1.00 | Pen 18.32 0.10
+It  15500  14947 | T(s) 8.38 | Feas 61 14971.00 14974.48 | Inf 30 14935.25 14959.11 | Div 0.08 0.22 | Feas 0.18 1.00 | Pen 26.37 0.10
+It  16000  15447 | T(s) 8.65 | Feas 60 14971.00 14975.80 | Inf 28 14938.41 14970.82 | Div 0.08 0.24 | Feas 0.26 1.00 | Pen 26.90 0.10
+It  16500  15947 | T(s) 8.91 | Feas 65 14971.00 14974.64 | Inf 59 14943.94 14965.16 | Div 0.08 0.18 | Feas 0.15 1.00 | Pen 27.99 0.10
+It  17000  16447 | T(s) 9.18 | Feas 61 14971.00 14987.84 | Inf 42 14918.66 14952.59 | Div 0.13 0.23 | Feas 0.07 1.00 | Pen 24.27 0.10
+It  17500  16947 | T(s) 9.44 | Feas 38 14971.00 14988.24 | Inf 36 14923.51 14933.37 | Div 0.15 0.18 | Feas 0.07 1.00 | Pen 24.75 0.10
+It  18000  17447 | T(s) 9.70 | Feas 55 14971.00 14975.68 | Inf 64 14890.60 14916.24 | Div 0.08 0.18 | Feas 0.29 1.00 | Pen 21.46 0.10
+It  18500  17947 | T(s) 9.96 | Feas 38 14971.00 14987.04 | Inf 52 14931.51 14946.64 | Div 0.15 0.18 | Feas 0.15 1.00 | Pen 25.75 0.10
+It  19000  18447 | T(s) 10.23 | Feas 42 14971.00 14977.60 | Inf 46 14899.27 14921.95 | Div 0.10 0.19 | Feas 0.20 1.00 | Pen 22.33 0.10
+It  19500  18947 | T(s) 10.51 | Feas 29 14971.00 15010.24 | Inf 43 14937.75 14959.95 | Div 0.23 0.21 | Feas 0.23 1.00 | Pen 26.79 0.10
+It  20000  19447 | T(s) 10.78 | Feas 61 14971.00 14984.28 | Inf 25 14937.75 15002.26 | Div 0.12 0.30 | Feas 0.22 1.00 | Pen 26.79 0.10
+It  20500  19947 | T(s) 11.05 | Feas 60 14971.00 14976.28 | Inf 32 14903.73 14935.69 | Div 0.09 0.24 | Feas 0.22 1.00 | Pen 22.77 0.10
+----- GENETIC ALGORITHM FINISHED AFTER 20555 ITERATIONS. TIME SPENT: 11.0741
+----- WRITING BEST SOLUTION IN : mySolution.sol
+0
+<end of output>
+Test time =  11.16 sec
+----------------------------------------------------------
+Test Passed.
+"bin_test_X-n106-k14" end time: Aug 12 15:26 AWST
+"bin_test_X-n106-k14" time elapsed: 00:00:11
+----------------------------------------------------------
+
+3/5 Testing: bin_test_CMT6
+3/5 Test: bin_test_CMT6
+Command: "/usr/bin/cmake" "-DINSTANCE=CMT6" "-DCOST=555.43" "-DROUND=0" "-P" "/home/vboxuser/Desktop/Curtin/IRPLR/HGS-CVRP-main/Test/TestExecutable.cmake"
+Directory: /home/vboxuser/Desktop/Curtin/IRPLR/HGS-CVRP-main/build
+"bin_test_CMT6" start time: Aug 12 15:26 AWST
+Output:
+----------------------------------------------------------
+=========== Algorithm Parameters =================
+---- nbGranular              is set to 20
+---- mu                      is set to 25
+---- lambda                  is set to 40
+---- nbElite                 is set to 4
+---- nbClose                 is set to 5
+---- nbIterPenaltyManagement is set to 100
+---- targetFeasible          is set to 0.2
+---- penaltyDecrease         is set to 0.85
+---- penaltyIncrease         is set to 1.2
+---- seed                    is set to 1
+---- nbIter                  is set to 20000
+---- nbIterTraces            is set to 500
+---- timeLimit               is set to 0
+---- useSwapStar             is set to 1
+==================================================
+----- READING INSTANCE: ../Instances/CVRP/CMT6.vrp
+----- FLEET SIZE WAS NOT SPECIFIED: DEFAULT INITIALIZATION TO 10 VEHICLES
+----- INSTANCE SUCCESSFULLY LOADED WITH 50 CLIENTS AND 10 VEHICLES
+----- BUILDING INITIAL POPULATION
+----- STARTING GENETIC ALGORITHM
+It      0      2 | T(s) 0.04 | Feas 37 558.99 564.46 | Inf 51 555.70 560.02 | Div 0.31 0.21 | Feas 0.83 0.66 | Pen 1.78 0.85
+It    500    490 | T(s) 0.18 | Feas 45 555.43 560.87 | Inf 48 541.37 546.11 | Div 0.27 0.21 | Feas 0.82 0.24 | Pen 0.79 0.44
+It   1000    990 | T(s) 0.35 | Feas 65 555.43 559.37 | Inf 40 544.13 549.45 | Div 0.20 0.27 | Feas 0.65 0.22 | Pen 0.35 0.53
+It   1500   1490 | T(s) 0.51 | Feas 40 555.43 561.32 | Inf 57 543.99 545.51 | Div 0.28 0.20 | Feas 0.48 0.22 | Pen 0.16 0.54
+It   2000   1990 | T(s) 0.67 | Feas 36 555.43 560.99 | Inf 32 546.42 552.13 | Div 0.29 0.31 | Feas 0.45 0.15 | Pen 0.10 0.65
+It   2500   2490 | T(s) 0.83 | Feas 37 555.43 560.89 | Inf 46 543.65 547.50 | Div 0.28 0.26 | Feas 0.43 0.15 | Pen 0.10 0.57
+It   3000   2990 | T(s) 0.99 | Feas 44 555.43 559.89 | Inf 62 540.93 543.34 | Div 0.24 0.20 | Feas 0.35 0.22 | Pen 0.10 0.48
+It   3500   3490 | T(s) 1.17 | Feas 32 555.43 561.96 | Inf 46 540.93 543.79 | Div 0.32 0.24 | Feas 0.35 0.21 | Pen 0.10 0.48
+It   4000   3990 | T(s) 1.34 | Feas 36 555.43 560.33 | Inf 32 540.93 548.28 | Div 0.28 0.34 | Feas 0.41 0.19 | Pen 0.10 0.48
+It   4500   4490 | T(s) 1.51 | Feas 33 555.43 561.25 | Inf 54 541.24 543.55 | Div 0.31 0.22 | Feas 0.49 0.21 | Pen 0.10 0.49
+It   5000   4990 | T(s) 1.69 | Feas 39 555.43 560.61 | Inf 35 541.87 546.41 | Div 0.28 0.28 | Feas 0.46 0.26 | Pen 0.10 0.51
+It   5500   5490 | T(s) 1.85 | Feas 58 555.43 559.61 | Inf 47 542.20 545.56 | Div 0.20 0.25 | Feas 0.40 0.17 | Pen 0.10 0.52
+It   6000   5990 | T(s) 2.02 | Feas 58 555.43 560.20 | Inf 62 545.53 548.71 | Div 0.25 0.21 | Feas 0.58 0.23 | Pen 0.10 0.62
+It   6500   6490 | T(s) 2.19 | Feas 61 555.43 558.38 | Inf 29 542.87 549.21 | Div 0.19 0.33 | Feas 0.43 0.18 | Pen 0.10 0.54
+It   7000   6990 | T(s) 2.36 | Feas 63 555.43 558.32 | Inf 44 546.33 549.44 | Div 0.18 0.25 | Feas 0.54 0.22 | Pen 0.10 0.65
+It   7500   7490 | T(s) 2.52 | Feas 61 555.43 558.84 | Inf 63 547.17 549.46 | Div 0.22 0.20 | Feas 0.48 0.24 | Pen 0.10 0.68
+It   8000   7990 | T(s) 2.68 | Feas 58 555.43 559.41 | Inf 31 547.61 553.43 | Div 0.22 0.32 | Feas 0.51 0.22 | Pen 0.10 0.69
+It   8500   8490 | T(s) 2.84 | Feas 29 555.43 562.72 | Inf 27 544.30 552.73 | Div 0.35 0.36 | Feas 0.47 0.23 | Pen 0.10 0.59
+It   9000   8990 | T(s) 3.01 | Feas 47 555.43 560.05 | Inf 33 544.67 551.04 | Div 0.26 0.33 | Feas 0.44 0.25 | Pen 0.10 0.60
+It   9500   9490 | T(s) 3.17 | Feas 30 555.43 562.88 | Inf 57 541.81 544.55 | Div 0.36 0.22 | Feas 0.53 0.19 | Pen 0.10 0.51
+It  10000   9990 | T(s) 3.33 | Feas 35 555.43 560.80 | Inf 40 545.45 550.11 | Div 0.30 0.28 | Feas 0.38 0.14 | Pen 0.10 0.62
+It  10500  10490 | T(s) 3.49 | Feas 43 555.43 560.32 | Inf 49 545.84 549.20 | Div 0.26 0.24 | Feas 0.50 0.20 | Pen 0.10 0.63
+It  11000  10990 | T(s) 3.65 | Feas 35 555.43 562.82 | Inf 56 542.80 545.92 | Div 0.34 0.24 | Feas 0.45 0.19 | Pen 0.10 0.54
+It  11500  11490 | T(s) 3.81 | Feas 40 555.43 560.81 | Inf 32 546.25 553.06 | Div 0.28 0.33 | Feas 0.56 0.24 | Pen 0.10 0.65
+It  12000  11990 | T(s) 3.97 | Feas 47 555.43 559.67 | Inf 49 546.66 549.11 | Div 0.24 0.24 | Feas 0.51 0.21 | Pen 0.10 0.66
+It  12500  12490 | T(s) 4.14 | Feas 63 555.43 558.84 | Inf 53 547.08 550.47 | Div 0.21 0.24 | Feas 0.51 0.13 | Pen 0.10 0.67
+It  13000  12990 | T(s) 4.30 | Feas 65 555.43 558.76 | Inf 35 547.52 551.70 | Div 0.18 0.29 | Feas 0.45 0.15 | Pen 0.10 0.69
+It  13500  13490 | T(s) 4.46 | Feas 47 555.43 559.80 | Inf 39 544.60 550.28 | Div 0.26 0.29 | Feas 0.61 0.26 | Pen 0.10 0.59
+It  14000  13990 | T(s) 4.63 | Feas 30 555.43 561.77 | Inf 43 544.98 548.41 | Div 0.34 0.25 | Feas 0.64 0.29 | Pen 0.10 0.61
+It  14500  14490 | T(s) 4.78 | Feas 47 555.43 560.05 | Inf 53 544.98 547.05 | Div 0.26 0.20 | Feas 0.49 0.20 | Pen 0.10 0.61
+It  15000  14990 | T(s) 4.94 | Feas 63 555.43 559.03 | Inf 49 542.73 545.49 | Div 0.20 0.23 | Feas 0.61 0.30 | Pen 0.10 0.54
+It  15500  15490 | T(s) 5.10 | Feas 30 555.43 562.94 | Inf 58 543.07 545.02 | Div 0.35 0.18 | Feas 0.47 0.16 | Pen 0.10 0.55
+It  16000  15990 | T(s) 5.26 | Feas 58 555.43 558.59 | Inf 46 546.58 549.25 | Div 0.19 0.23 | Feas 0.45 0.25 | Pen 0.10 0.66
+It  16500  16490 | T(s) 5.42 | Feas 49 555.43 559.00 | Inf 59 543.78 546.29 | Div 0.23 0.21 | Feas 0.59 0.27 | Pen 0.10 0.57
+It  17000  16990 | T(s) 5.58 | Feas 50 555.43 560.26 | Inf 27 544.15 551.44 | Div 0.24 0.35 | Feas 0.53 0.20 | Pen 0.10 0.58
+It  17500  17490 | T(s) 5.74 | Feas 37 555.43 559.54 | Inf 33 544.90 549.92 | Div 0.26 0.30 | Feas 0.41 0.08 | Pen 0.10 0.60
+It  18000  17990 | T(s) 5.90 | Feas 39 555.43 561.75 | Inf 41 542.00 546.20 | Div 0.29 0.26 | Feas 0.44 0.26 | Pen 0.10 0.51
+It  18500  18490 | T(s) 6.07 | Feas 38 555.43 561.37 | Inf 64 542.00 543.82 | Div 0.30 0.20 | Feas 0.49 0.17 | Pen 0.10 0.51
+It  19000  18990 | T(s) 6.24 | Feas 32 555.43 561.66 | Inf 51 545.28 547.63 | Div 0.32 0.21 | Feas 0.53 0.21 | Pen 0.10 0.62
+It  19500  19490 | T(s) 6.41 | Feas 40 555.43 560.30 | Inf 61 545.68 548.06 | Div 0.26 0.19 | Feas 0.45 0.15 | Pen 0.10 0.63
+It  20000  19990 | T(s) 6.57 | Feas 34 555.43 561.99 | Inf 30 542.66 547.67 | Div 0.33 0.31 | Feas 0.43 0.22 | Pen 0.10 0.53
+----- GENETIC ALGORITHM FINISHED AFTER 20012 ITERATIONS. TIME SPENT: 6.57335
+----- WRITING BEST SOLUTION IN : mySolution.sol
+0
+<end of output>
+Test time =   6.60 sec
+----------------------------------------------------------
+Test Passed.
+"bin_test_CMT6" end time: Aug 12 15:27 AWST
+"bin_test_CMT6" time elapsed: 00:00:06
+----------------------------------------------------------
+
+4/5 Testing: bin_test_CMT7
+4/5 Test: bin_test_CMT7
+Command: "/usr/bin/cmake" "-DINSTANCE=CMT7" "-DCOST=909.675" "-DROUND=0" "-P" "/home/vboxuser/Desktop/Curtin/IRPLR/HGS-CVRP-main/Test/TestExecutable.cmake"
+Directory: /home/vboxuser/Desktop/Curtin/IRPLR/HGS-CVRP-main/build
+"bin_test_CMT7" start time: Aug 12 15:27 AWST
+Output:
+----------------------------------------------------------
+=========== Algorithm Parameters =================
+---- nbGranular              is set to 20
+---- mu                      is set to 25
+---- lambda                  is set to 40
+---- nbElite                 is set to 4
+---- nbClose                 is set to 5
+---- nbIterPenaltyManagement is set to 100
+---- targetFeasible          is set to 0.2
+---- penaltyDecrease         is set to 0.85
+---- penaltyIncrease         is set to 1.2
+---- seed                    is set to 1
+---- nbIter                  is set to 20000
+---- nbIterTraces            is set to 500
+---- timeLimit               is set to 0
+---- useSwapStar             is set to 1
+==================================================
+----- READING INSTANCE: ../Instances/CVRP/CMT7.vrp
+----- FLEET SIZE WAS NOT SPECIFIED: DEFAULT INITIALIZATION TO 16 VEHICLES
+----- INSTANCE SUCCESSFULLY LOADED WITH 75 CLIENTS AND 16 VEHICLES
+----- BUILDING INITIAL POPULATION
+----- STARTING GENETIC ALGORITHM
+It      0      2 | T(s) 0.07 | Feas 30 915.35 943.10 | Inf 52 902.87 916.83 | Div 0.45 0.42 | Feas 0.89 0.09 | Pen 1.96 1.20
+It    500     15 | T(s) 0.34 | Feas 29 912.89 924.39 | Inf 55 906.69 908.99 | Div 0.47 0.26 | Feas 0.74 0.26 | Pen 0.87 1.76
+It   1000    214 | T(s) 0.59 | Feas 63 909.68 915.34 | Inf 53 899.88 906.26 | Div 0.29 0.26 | Feas 0.31 0.13 | Pen 0.39 1.83
+It   1500    714 | T(s) 0.86 | Feas 34 909.68 918.82 | Inf 32 900.08 906.68 | Div 0.42 0.31 | Feas 0.20 0.14 | Pen 0.39 1.91
+It   2000   1214 | T(s) 1.11 | Feas 39 909.68 915.19 | Inf 53 899.27 904.31 | Div 0.35 0.21 | Feas 0.17 0.13 | Pen 0.33 1.95
+It   2500   1714 | T(s) 1.37 | Feas 59 909.68 914.77 | Inf 30 899.90 905.24 | Div 0.31 0.29 | Feas 0.15 0.23 | Pen 0.41 1.69
+It   3000   2214 | T(s) 1.62 | Feas 57 909.68 915.19 | Inf 49 900.05 904.78 | Div 0.33 0.23 | Feas 0.29 0.19 | Pen 0.42 1.69
+It   3500   2714 | T(s) 1.87 | Feas 33 909.68 917.38 | Inf 31 897.96 904.85 | Div 0.43 0.32 | Feas 0.27 0.21 | Pen 0.30 1.69
+It   4000   3214 | T(s) 2.13 | Feas 61 909.68 913.13 | Inf 58 899.73 903.21 | Div 0.29 0.23 | Feas 0.18 0.27 | Pen 0.43 1.46
+It   4500   3714 | T(s) 2.37 | Feas 41 909.68 914.70 | Inf 40 900.54 904.88 | Div 0.34 0.24 | Feas 0.18 0.21 | Pen 0.43 1.76
+It   5000   4214 | T(s) 2.62 | Feas 59 909.68 913.08 | Inf 54 898.72 904.19 | Div 0.28 0.26 | Feas 0.25 0.25 | Pen 0.37 1.52
+It   5500   4714 | T(s) 2.88 | Feas 56 909.68 914.22 | Inf 42 900.22 904.59 | Div 0.30 0.25 | Feas 0.18 0.17 | Pen 0.44 1.58
+It   6000   5214 | T(s) 3.13 | Feas 41 909.68 915.82 | Inf 27 901.99 907.64 | Div 0.36 0.36 | Feas 0.13 0.18 | Pen 0.53 1.65
+It   6500   5714 | T(s) 3.39 | Feas 41 909.68 914.10 | Inf 40 901.57 907.13 | Div 0.32 0.29 | Feas 0.24 0.14 | Pen 0.45 2.02
+It   7000   6214 | T(s) 3.65 | Feas 35 909.68 916.65 | Inf 56 898.89 903.76 | Div 0.41 0.25 | Feas 0.25 0.16 | Pen 0.38 1.49
+It   7500   6714 | T(s) 3.91 | Feas 25 909.68 917.14 | Inf 35 898.98 905.48 | Div 0.45 0.32 | Feas 0.19 0.20 | Pen 0.38 1.52
+It   8000   7214 | T(s) 4.16 | Feas 56 909.68 913.20 | Inf 48 899.20 905.03 | Div 0.29 0.27 | Feas 0.13 0.22 | Pen 0.39 1.55
+It   8500   7714 | T(s) 4.41 | Feas 42 909.68 914.02 | Inf 62 901.56 905.41 | Div 0.33 0.22 | Feas 0.24 0.14 | Pen 0.47 1.89
+It   9000   8214 | T(s) 4.65 | Feas 50 909.68 913.24 | Inf 38 898.85 904.76 | Div 0.30 0.32 | Feas 0.21 0.28 | Pen 0.40 1.37
+It   9500   8714 | T(s) 4.90 | Feas 56 909.68 913.09 | Inf 54 899.74 904.34 | Div 0.29 0.25 | Feas 0.22 0.24 | Pen 0.41 1.64
+It  10000   9214 | T(s) 5.16 | Feas 51 909.68 912.84 | Inf 44 899.98 905.71 | Div 0.28 0.29 | Feas 0.12 0.22 | Pen 0.42 1.67
+It  10500   9714 | T(s) 5.42 | Feas 39 909.68 913.75 | Inf 32 899.08 905.17 | Div 0.33 0.30 | Feas 0.16 0.24 | Pen 0.36 1.71
+It  11000  10214 | T(s) 5.68 | Feas 50 909.68 913.87 | Inf 56 900.53 904.61 | Div 0.30 0.23 | Feas 0.13 0.20 | Pen 0.44 1.71
+It  11500  10714 | T(s) 5.94 | Feas 65 909.68 913.49 | Inf 37 899.47 905.35 | Div 0.28 0.30 | Feas 0.26 0.19 | Pen 0.38 1.71
+It  12000  11214 | T(s) 6.19 | Feas 62 909.68 912.84 | Inf 60 897.74 902.80 | Div 0.29 0.24 | Feas 0.16 0.30 | Pen 0.33 1.45
+It  12500  11714 | T(s) 6.45 | Feas 37 909.68 914.94 | Inf 50 899.85 905.02 | Div 0.37 0.24 | Feas 0.18 0.23 | Pen 0.40 1.74
+It  13000  12214 | T(s) 6.70 | Feas 40 909.68 913.88 | Inf 32 899.99 905.38 | Div 0.33 0.30 | Feas 0.27 0.24 | Pen 0.41 1.74
+It  13500  12714 | T(s) 6.94 | Feas 31 909.68 914.72 | Inf 48 899.50 904.38 | Div 0.39 0.26 | Feas 0.12 0.24 | Pen 0.41 1.51
+It  14000  13214 | T(s) 7.22 | Feas 39 909.68 914.75 | Inf 33 899.65 904.80 | Div 0.37 0.30 | Feas 0.32 0.18 | Pen 0.42 1.51
+It  14500  13714 | T(s) 7.49 | Feas 40 909.68 913.85 | Inf 57 900.63 905.19 | Div 0.37 0.25 | Feas 0.25 0.21 | Pen 0.43 1.81
+It  15000  14214 | T(s) 7.75 | Feas 51 909.68 914.19 | Inf 45 899.97 904.74 | Div 0.32 0.27 | Feas 0.17 0.17 | Pen 0.43 1.57
+It  15500  14714 | T(s) 8.02 | Feas 53 909.68 914.18 | Inf 38 901.09 906.55 | Div 0.30 0.28 | Feas 0.16 0.14 | Pen 0.44 1.92
+It  16000  15214 | T(s) 8.27 | Feas 51 909.68 913.27 | Inf 53 898.65 903.87 | Div 0.31 0.27 | Feas 0.22 0.27 | Pen 0.38 1.42
+It  16500  15714 | T(s) 8.52 | Feas 41 909.68 913.33 | Inf 35 899.66 905.97 | Div 0.34 0.31 | Feas 0.25 0.25 | Pen 0.39 1.73
+It  17000  16214 | T(s) 8.78 | Feas 25 909.68 919.66 | Inf 63 899.16 903.20 | Div 0.48 0.24 | Feas 0.14 0.22 | Pen 0.40 1.50
+It  17500  16714 | T(s) 9.03 | Feas 46 909.68 913.65 | Inf 47 900.67 905.00 | Div 0.30 0.25 | Feas 0.13 0.13 | Pen 0.48 1.53
+It  18000  17214 | T(s) 9.29 | Feas 63 909.68 913.48 | Inf 28 898.38 906.09 | Div 0.30 0.38 | Feas 0.20 0.20 | Pen 0.34 1.56
+It  18500  17714 | T(s) 9.54 | Feas 25 909.68 918.16 | Inf 54 899.70 904.74 | Div 0.47 0.27 | Feas 0.15 0.21 | Pen 0.41 1.60
+It  19000  18214 | T(s) 9.78 | Feas 34 909.68 915.43 | Inf 38 899.85 904.48 | Div 0.36 0.27 | Feas 0.13 0.21 | Pen 0.42 1.60
+It  19500  18714 | T(s) 10.02 | Feas 35 909.68 915.20 | Inf 65 900.00 904.22 | Div 0.38 0.22 | Feas 0.20 0.17 | Pen 0.43 1.60
+It  20000  19214 | T(s) 10.26 | Feas 49 909.68 914.29 | Inf 43 898.93 905.62 | Div 0.33 0.30 | Feas 0.20 0.22 | Pen 0.36 1.63
+It  20500  19714 | T(s) 10.53 | Feas 61 909.68 913.24 | Inf 60 899.57 903.67 | Div 0.27 0.24 | Feas 0.23 0.19 | Pen 0.44 1.38
+----- GENETIC ALGORITHM FINISHED AFTER 20788 ITERATIONS. TIME SPENT: 10.67
+----- WRITING BEST SOLUTION IN : mySolution.sol
+0
+<end of output>
+Test time =  10.95 sec
+----------------------------------------------------------
+Test Passed.
+"bin_test_CMT7" end time: Aug 12 15:27 AWST
+"bin_test_CMT7" time elapsed: 00:00:10
+----------------------------------------------------------
+
+End testing: Aug 12 15:27 AWST
