@@ -230,6 +230,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                 &&IRPLR.Retailers[GroupOfRetailers[i][j]].yCoord>=SortedBlockCoord[k][2]&&IRPLR.Retailers[GroupOfRetailers[i][j]].yCoord<=SortedBlockCoord[k][3])
                 {
                     TempCompleteGroupOfRetailers[k].push_back(GroupOfRetailers[i][j]);
+                    break;
                 }
             }
         }

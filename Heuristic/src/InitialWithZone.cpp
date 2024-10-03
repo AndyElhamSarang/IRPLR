@@ -31,7 +31,7 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
     //                Routing                    //
     //                                           //
     ///////////////////////////////////////////////
-
+/*
     for (int i = 0; i < IRPSolution.Route.size(); i++)
     {
         int NumberOfCustomerOfDay = 0;
@@ -56,5 +56,5 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
     if (OutputResults == 1)
     {
         Table << IRPSolution.TotalTransportationCost << "," << IRPSolution.TotalDelivery << "," << IRPSolution.LogisticRatio << ",";
-    }
+    }*/
 }

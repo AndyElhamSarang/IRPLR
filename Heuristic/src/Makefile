@@ -18,6 +18,7 @@ andy:
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp  \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
+	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-o irplr.out -O3
 andy_lenovo:
@@ -30,6 +31,7 @@ andy_lenovo:
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
+	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	-I $(andy_lenovo) -I $(andy_lenovo_boost) \
 	-o irplr.out -O3
 andy_desktop:
@@ -42,8 +44,9 @@ andy_desktop:
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
+	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
-	-o irplr.out -O3
+	-o test.out -O3
 andy_testpc:
 	$(CC) main.cpp file:Read_andy_testpc.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
@@ -54,6 +57,7 @@ andy_testpc:
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
+	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-o irplr.out -O3
 clean:

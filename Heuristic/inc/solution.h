@@ -2,10 +2,9 @@ class solution
 {
 private:
 public:
-
-double TotalTransportationCost;
-    double LogisticRatio ;
-    double TotalDelivery ;
+  double TotalTransportationCost;
+  double LogisticRatio;
+  double TotalDelivery;
   vector<vector<vector<int>>> Route;
   vector<vector<double>> DeliveryQuantity;
   vector<vector<double>> InventoryLevel;

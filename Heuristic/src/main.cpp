@@ -25,7 +25,7 @@ int main()
 
 	if (OutputResults == 1)
 	{
-		Table.open("Inital.csv");
+		Table.open("InitalBlockZone.csv");
 		Table << ",#TimePeriods,#Customer,#Vehicle,Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution\n";
 	}
 
@@ -61,6 +61,9 @@ int main()
 				initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing);				
 				time(&end_time);
 				IRPSolution.print_solution(IRPLR);
+
+				solution_improvement Metaheuristic;
+				Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing);
 				double total_time = difftime(end_time, start_time);
 				if (OutputResults == 1)
 				{

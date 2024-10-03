@@ -1,5 +1,3 @@
-Route #1: 1
-Route #2: 2
-Route #3: 3
-Route #4: 4
-Cost 1519.29
+Route #1: 10 15 1 6 11 12 13 3 4
+Route #2: 16 9 7 8 5 2 14
+Cost 2234.73
