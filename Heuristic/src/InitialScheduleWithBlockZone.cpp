@@ -224,10 +224,9 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
 
         for (int j = 0; j < GroupOfRetailers[i].size(); j++)
         {
-            for(int k=0;k<SortedBlockCoord.size();k++)
+            for (int k = 0; k < SortedBlockCoord.size(); k++)
             {
-                if(IRPLR.Retailers[GroupOfRetailers[i][j]].xCoord >=SortedBlockCoord[k][0]&&IRPLR.Retailers[GroupOfRetailers[i][j]].xCoord<=SortedBlockCoord[k][1]
-                &&IRPLR.Retailers[GroupOfRetailers[i][j]].yCoord>=SortedBlockCoord[k][2]&&IRPLR.Retailers[GroupOfRetailers[i][j]].yCoord<=SortedBlockCoord[k][3])
+                if (IRPLR.Retailers[GroupOfRetailers[i][j]].xCoord >= SortedBlockCoord[k][0] && IRPLR.Retailers[GroupOfRetailers[i][j]].xCoord <= SortedBlockCoord[k][1] && IRPLR.Retailers[GroupOfRetailers[i][j]].yCoord >= SortedBlockCoord[k][2] && IRPLR.Retailers[GroupOfRetailers[i][j]].yCoord <= SortedBlockCoord[k][3])
                 {
                     TempCompleteGroupOfRetailers[k].push_back(GroupOfRetailers[i][j]);
                     break;
@@ -236,6 +235,33 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         }
         CompleteGroupOfRetailers.push_back(TempCompleteGroupOfRetailers);
     }
+    cout << "Sorting by demand" << endl;
+    for (int i = 0; i < CompleteGroupOfRetailers.size(); i++)
+    {
+        for (int j = 0; j < CompleteGroupOfRetailers[i].size(); j++)
+        {
+            if (CompleteGroupOfRetailers[i][j].size() != 0)
+            {
+                bool swap = true;
+                while (swap == true)
+                {
+                    swap = false;
+                    for (int k = 0; k < CompleteGroupOfRetailers[i][j].size() - 1; k++)
+                    {
+                        if (IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].Demand < IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k + 1]].Demand)
+                        {
+                            int tempRetailer = CompleteGroupOfRetailers[i][j][k];
+                            CompleteGroupOfRetailers[i][j][k] = CompleteGroupOfRetailers[i][j][k + 1];
+                            CompleteGroupOfRetailers[i][j][k + 1] = tempRetailer;
+                            swap = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    cout << "Finished Sorting by demand" << endl;
     int counterNumberOfRetailers = 0;
     for (int i = 0; i < CompleteGroupOfRetailers.size(); i++)
     {
@@ -256,7 +282,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                     double CenterYCoord = SortedBlockCoord[j][2] + ((SortedBlockCoord[j][3] - SortedBlockCoord[j][2]) / DividByTwo);
                     double DistanceCenterToDepot = sqrt(pow(CenterXCoord - IRPLR.Supplier.xCoord, power) + pow(CenterYCoord - IRPLR.Supplier.yCoord, power));
 
-                    cout << "Retailer " << CompleteGroupOfRetailers[i][j][k] << ": checkNextStockOutPeriod:" << checkNextStockOutPeriod << ", ratio_capacity_vs_demand:" << ratio_capacity_vs_demand << endl;
+                    cout << "Retailer " << CompleteGroupOfRetailers[i][j][k] << ": checkNextStockOutPeriod:" << checkNextStockOutPeriod << ", ratio_capacity_vs_demand:" << ratio_capacity_vs_demand << " ,MaxInventory:" << IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].InventoryMax << " ,Demand:" << IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].Demand << endl;
                     cout << "xCoord:" << IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].xCoord << ", yCoord:" << IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].yCoord << endl;
                     cout << "LeftXCoord:" << SortedBlockCoord[j][0] << ", RightXCoord:" << SortedBlockCoord[j][1] << ", TopYCoord:" << SortedBlockCoord[j][2] << ", BottomYCoord:" << SortedBlockCoord[j][3] << endl;
                     cout << "CenterXCoord:" << CenterXCoord << " ,CenterYCoord:" << CenterYCoord << " ,DistanceCenterToDepot:" << DistanceCenterToDepot << endl;

@@ -116,6 +116,50 @@ void input::ReadIRPInstance(string &InstanceName, string &InstanceType, string &
         }
         cout<<Distance[i][Distance[i].size()-1]<<endl;
     }*/
+    for (int i = 0; i < Retailers.size(); i++)
+    {
+        vector<int> tempSortedRetailers;
+        for (int j = 0; j < Retailers.size(); j++)
+        {
+            if (j != i)
+            {
+                tempSortedRetailers.push_back(j);
+            }
+        }
+        SortedRetailers.push_back(tempSortedRetailers);
+    }
+    for (int i = 0; i < SortedRetailers.size(); i++)
+    {
+        bool swap = true;
+        while (swap == true)
+        {
+            swap = false;
+            for (int j = 0; j < SortedRetailers[i].size() - 1; j++)
+            {
 
+                double DistanceToFirstRetailers = sqrt(pow(Retailers[i].xCoord - Retailers[SortedRetailers[i][j]].xCoord, power) + pow(Retailers[i].yCoord - Retailers[SortedRetailers[i][j]].yCoord, power));
+                double DistanceToSecondRetailers = sqrt(pow(Retailers[i].xCoord - Retailers[SortedRetailers[i][j + 1]].xCoord, power) + pow(Retailers[i].yCoord - Retailers[SortedRetailers[i][j + 1]].yCoord, power));
+                if (DistanceToFirstRetailers > DistanceToSecondRetailers)
+                {
+                    int tempRetailer = SortedRetailers[i][j];
+                    SortedRetailers[i][j] = SortedRetailers[i][j + 1];
+                    SortedRetailers[i][j + 1] = tempRetailer;
+                    swap = true;
+                }
+            }
+        }
+    }
+    if (printout_inputdata == 1)
+    {
+        cout << "SortedRetailers:" << endl;
+        for (int i = 0; i < SortedRetailers.size(); i++)
+        {
+            for (int j = 0; j < SortedRetailers[i].size(); j++)
+            {
+                cout << SortedRetailers[i][j] << ",";
+            }
+            cout << endl;
+        }
+    }
     VehiclesTotalCapacity = Vehicle.capacity * NumberOfVehicles;
 }

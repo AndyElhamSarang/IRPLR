@@ -38,6 +38,7 @@ public:
 
   transportation Vehicle;
   vector<vector<double>> Distance;
+  vector<vector<int> > SortedRetailers;
 
   void ReadIRPInstance(string &InstanceName, string &InstanceType, string &InstanceDirectories);
   void PrintData();
