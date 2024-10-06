@@ -40,6 +40,8 @@ public:
   vector<vector<double>> Distance;
   vector<vector<int> > SortedRetailers;
 
+  vector<vector<vector<int>>> AllPossibleSchedule; 
+
   void ReadIRPInstance(string &InstanceName, string &InstanceType, string &InstanceDirectories);
   void PrintData();
 };

@@ -161,5 +161,27 @@ void input::ReadIRPInstance(string &InstanceName, string &InstanceType, string &
             cout << endl;
         }
     }
+
+    for(int i=0;i<Retailers.size();i++)
+    {
+        vector<int> DayVisitOrNot;
+        for(int j=0;j<TimeHorizon;j++)
+        {
+            DayVisitOrNot.push_back(0);
+        }
+
+        /*for(int x=0;x<DayVisitOrNot.size();x++)
+        {
+            for
+        }*/
+    }
+
+    /*for (int i = 0; i < Retailers.size(); i++)
+    {
+        int TotalSchedules = 0;
+        TotalSchedules = pow(2, TimeHorizon);
+        cout << TotalSchedules << endl;
+        assert(AllPossibleSchedule[i].size() == TotalSchedules);
+    }*/
     VehiclesTotalCapacity = Vehicle.capacity * NumberOfVehicles;
 }
