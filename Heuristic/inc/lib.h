@@ -28,6 +28,7 @@ typedef boost::mt19937 base_generator_type;
 #include "parameter.h"
 #include "file.h"
 #include "input.h"
+#include "preprocessing.h"
 #include "random.h"
 #include "hgs.h"
 #include "solution.h"

@@ -48,7 +48,9 @@ int main()
 			{
 				Table << read_file.instances[i][j] << ","<<IRPLR.TimeHorizon<<","<<IRPLR.NumberOfRetailers<<","<<IRPLR.NumberOfVehicles<<","; // Print instance feastures in the table
 			}
-
+			preprocessing memory;
+			memory.PopulateGlobalDataStructure(IRPLR);
+			memory.PrintGlobalDataStructure();
 			for (int j = 0; j < NumberOfInitialSolutions; j++)
 			{
 				cout << "Attempt:" << j << endl;
