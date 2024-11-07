@@ -19,3 +19,7 @@ void preprocessing::PrintGlobalDataStructure()
         cout<<endl;
     }
 }
+
+void preprocessing::PrintLocalDataStructure()
+{
+}

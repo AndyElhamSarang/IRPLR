@@ -1,22 +1,24 @@
-//class for proprecessing
+// class for proprecessing
 class preprocessing
 {
- private:
-
- 
-  public:
-   vector<double> SingleNode;
-   vector<vector<double>> TwoNodes;
-
+private:
+public:
+   vector<double> SingleNode;       // Subpathes with single node, this is a global structure, no need to update
+   vector<vector<double>> TwoNodes; ////Subpathese with two nodes, this is a global structure, no need to update
+   vector<vector<double>> Prefix;   // Subpathes begin with head, this is a local structure, keep it updated all time
+   vector<vector<double>> Suffix;   // Subpathes begin with tail, this is a local structure, keep it updated all time
+   vector< vector< vector<double> > > StructureForSingleRoute;//This is a local structure design for single route optimisation, keep it updated locally
    void PopulateGlobalDataStructure(input &IRPLR);
-
+   void PopulateLocalPrefixAndSuffix(input &IRPLR, solution &IRPSolution);
+   void PopulateLocalDataStructure(input &IRPLR, solution &IRPSolution);
    void PrintGlobalDataStructure();
+   void PrintLocalDataStructure();
    /*vector<info> structure1;//Subpathese with single node, this is a global structure, keep it updated all time
    vector< vector< info > > structure2;//Subpathese with 2 nodes, this is a global structure, keep it updated all time
    vector< vector<info> > structure3_prefix;//Subpathese begin with head, this is a global structure, keep it updated all time
    vector< vector<info> > structure3_suffix;//Subpathese begin with tail, this is a global structure, keep it updated all time
    vector< vector< vector<info> > > structure4;//This is a local structure design for single route optimisation, keep it updated locally
-   
+
    vector<int> Keep_track_on_the_solution;//record modified routes and update in the stage2 proprocessing
    void initialize_tracking(int &a);
    void clear_tracking();

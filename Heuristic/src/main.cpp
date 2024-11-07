@@ -65,7 +65,7 @@ int main()
 				IRPSolution.print_solution(IRPLR);
 
 				solution_improvement Metaheuristic;
-				Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing);
+				Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory);
 				double total_time = difftime(end_time, start_time);
 				if (OutputResults == 1)
 				{

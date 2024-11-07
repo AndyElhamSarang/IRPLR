@@ -1,5 +1,5 @@
 #include "lib.h"
-void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPSolution, HGS &Routing)
+void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPSolution, HGS &Routing,preprocessing &memory)
 {
 
     vector<vector<double>> OriginalInventoryLevel;
