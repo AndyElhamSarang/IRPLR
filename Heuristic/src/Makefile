@@ -17,6 +17,7 @@ andy:
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	solution:GetLogisticRatio.cpp solution:print.cpp \
 	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
+	solution:GetTransCostSingleRoute.cpp \
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp  \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
@@ -33,6 +34,7 @@ andy_lenovo:
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	solution:GetLogisticRatio.cpp solution:print.cpp \
 	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
+	solution:GetTransCostSingleRoute.cpp \
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
@@ -49,6 +51,7 @@ andy_desktop:
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	solution:GetLogisticRatio.cpp solution:print.cpp \
 	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
+	solution:GetTransCostSingleRoute.cpp \
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
@@ -65,6 +68,7 @@ andy_testpc:
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	solution:GetLogisticRatio.cpp solution:print.cpp \
 	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
+	solution:GetTransCostSingleRoute.cpp \
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
