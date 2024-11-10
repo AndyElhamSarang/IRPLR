@@ -1,6 +1,7 @@
 #include "lib.h"
 void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPSolution, HGS &Routing,preprocessing &memory)
 {
+    memory.PopulateLocalPrefixAndSuffix(IRPLR, IRPSolution);
 
     vector<vector<double>> OriginalInventoryLevel;
     for (int i = 0; i < IRPLR.Retailers.size(); i++)
@@ -64,8 +65,10 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
         cout<<NumberOfVisits[i]<<",";
     }
     cout<<endl;
-
-    int OperatorSwapCounter = 0;
+    
+double violation = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut);
+       
+    /*int OperatorSwapCounter = 0;
     double PenaltyForStockOut = 1;
     while (OperatorSwapCounter <= 10)
     {
@@ -82,7 +85,7 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
         }
 
         OperatorSwapCounter++;
-    }
+    }*/
     // LNS_Destory(IRPLR, IRPSolution,Routing);
     // LNS_Repair(IRPLR, IRPSolution,Routing);
 }

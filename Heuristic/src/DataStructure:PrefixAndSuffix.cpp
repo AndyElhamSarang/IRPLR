@@ -1,39 +1,69 @@
 #include "lib.h"
 void preprocessing::PopulateLocalPrefixAndSuffix(input &IRPLR, solution &IRPSolution)
 {
-
+    cout << "PopulateLocalPrefixAndSuffix" << endl;
     Prefix.clear();
     Suffix.clear();
 
-    /*for (int i = 0; i < solution_in.size(); i++)
+    for (int i = 0; i < IRPSolution.Route.size(); i++)
     {
-        vector<info> list_prefix_temp;
-        info prefix_temp(structure1[0]);
-        int start = 0;
-
-        for (int j = 0; j < solution_in[i].size(); j++)
+        vector<vector<double>> PrefixEachPeriod;
+        vector<vector<double>> SuffixEachPeriod;
+        for (int j = 0; j < IRPSolution.Route[i].size(); j++)
         {
-            // Calcualte cumulated_distance for concatentation
-            prefix_temp.cumulated_distance = prefix_temp.cumulated_distance + structure1[solution_in[i][j]].cumulated_distance + wsrp.distance[start][solution_in[i][j]];
-            // cout<<"Cumulated_distance:"<<prefix_temp.cumulated_distance<<endl;
-
-            start = solution_in[i][j];
-            list_prefix_temp.push_back(prefix_temp);
-        }
-        Prefix.push_back(list_prefix_temp);
-
-        vector<info> list_suffix_temp;
-        info suffix_temp(structure1[0]);
-        int end = 0;
-        for (int j = solution_in[i].size() - 1; j >= 0; j--)
-        {
-               // Calcualte cumulated_distance for concatentation
-            suffix_temp.cumulated_distance = suffix_temp.cumulated_distance + structure1[solution_in[i][j]].cumulated_distance + wsrp.distance[solution_in[i][j]][end];
-
-            end = solution_in[i][j];
-            list_suffix_temp.push_back(suffix_temp);
+            vector<double>PrefixEachRoute;
+            vector<double>SuffixEachRoute;
+            
+            PrefixEachPeriod.push_back(PrefixEachRoute);
+            SuffixEachPeriod.push_back(SuffixEachRoute);
         }
 
-        Suffix.push_back(list_suffix_temp);
-    }*/
+        Prefix.push_back(PrefixEachPeriod);
+        Suffix.push_back(SuffixEachPeriod);
+    }
+
+    for (int i = 0; i < IRPSolution.Route.size(); i++)
+    {
+        for (int j = 0; j < IRPSolution.Route[i].size(); j++)
+        {
+            double TempCumulatedDistance = 0;
+            int start = 0;
+            for (int k = 0; k < IRPSolution.Route[i][j].size(); k++)
+            {
+                // Calcualte cumulated_distance for concatentation
+                TempCumulatedDistance = TempCumulatedDistance + IRPLR.Distance[start][IRPSolution.Route[i][j][k] + 1];
+                cout << "Prefix:";
+                for (int x = 0; x <= k; x++)
+                {
+                    cout << IRPSolution.Route[i][j][x] << ",";
+                }
+                cout << endl;
+                cout << "Cumulated_distance:" << TempCumulatedDistance << endl;
+
+                start = IRPSolution.Route[i][j][k] + 1;
+                Prefix[i][j].push_back(TempCumulatedDistance);
+            }
+        }
+
+        for (int j = 0; j < IRPSolution.Route[i].size(); j++)
+        {
+
+            double TempCumulatedDistance = 0;
+            int end = 0;
+            for (int k = IRPSolution.Route[i][j].size() - 1; k >= 0; k--)
+            {
+                // Calcualte cumulated_distance for concatentation
+                TempCumulatedDistance = TempCumulatedDistance + IRPLR.Distance[IRPSolution.Route[i][j][k] + 1][end];
+                cout << "Suffix:";
+                for (int x = k; x < IRPSolution.Route[i][j].size(); x++)
+                {
+                    cout << IRPSolution.Route[i][j][x] << ",";
+                }
+                cout << endl;
+                cout << "Cumulated_distance:" << TempCumulatedDistance << endl;
+                end = IRPSolution.Route[i][j][k] + 1;
+                Suffix[i][j].push_back(TempCumulatedDistance);
+            }
+        }
+    }
 }

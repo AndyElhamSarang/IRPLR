@@ -20,6 +20,6 @@ void preprocessing::PrintGlobalDataStructure()
     }
 }
 
-void preprocessing::PrintLocalDataStructure()
+void preprocessing::PrintPrefixAndSuffix(solution &IRPSolution)
 {
 }

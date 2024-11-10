@@ -1,4 +1,4 @@
-
+#include "lib.h"
 double solution::GetTransCostSingleRoute(/*int route, int head, int tail, int insert_length, vector<int> &Input_route, data &wsrp, proprecessing &memory*/)
 {
    double value=0;

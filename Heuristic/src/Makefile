@@ -22,7 +22,7 @@ andy:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp  \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	Operator:SingleRoute.cpp Operator:Swap.cpp \
+	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:Repair.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-o irplr.out -O3
 andy_lenovo:
@@ -39,7 +39,7 @@ andy_lenovo:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	Operator:SingleRoute.cpp Operator:Swap.cpp \
+	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:Repair.cpp \
 	-I $(andy_lenovo) -I $(andy_lenovo_boost) \
 	-o irplr.out -O3
 andy_desktop:
@@ -56,7 +56,7 @@ andy_desktop:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	Operator:SingleRoute.cpp Operator:Swap.cpp \
+	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:Repair.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
 	-o test.out -O3
 andy_testpc:
@@ -73,7 +73,7 @@ andy_testpc:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	Operator:SingleRoute.cpp Operator:Swap.cpp \
+	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:Repair.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-o irplr.out -O3
 clean:

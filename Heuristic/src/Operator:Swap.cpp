@@ -84,7 +84,7 @@ double solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, H
                             tempIRP_sol.InventoryLevel[tempIRP_sol.Route[i][j][k]][y] = tempInventory;
                         }
                     }
-
+double test = OperatorCheapestInsertion();
                     /*for (int i = 0; i < tempIRP_sol.Route.size(); i++)
                     {
                         int NumberOfCustomerOfDay = 0;
