@@ -30,7 +30,7 @@ void solution::print_solution(input &IRPLR)
             {
                 for (int k = 0; k < Route[i][j].size() - 1; k++)
                 {
-                    cout << Route[i][j][k] <<"("<< DeliveryQuantity[Route[i][j][k] ][i]<<"),";
+                    cout << Route[i][j][k] <<"("<< DeliveryQuantity[Route[i][j][k]][i]<<"),";
                 }
                 cout << Route[i][j][Route[i][j].size() - 1]<<"("<< DeliveryQuantity[Route[i][j][Route[i][j].size() - 1]][i]<<")";
             }

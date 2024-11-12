@@ -50,7 +50,7 @@ int main()
 			}
 			preprocessing memory;
 			memory.PopulateGlobalDataStructure(IRPLR);
-			memory.PrintGlobalDataStructure();
+			//memory.PrintGlobalDataStructure();
 			for (int j = 0; j < NumberOfInitialSolutions; j++)
 			{
 				cout << "Attempt:" << j << endl;

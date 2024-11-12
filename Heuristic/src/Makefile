@@ -13,6 +13,8 @@ andy:
 	Input:Read.cpp \
 	PrintData.cpp random.cpp \
 	DataStructure:Global.cpp DataStructure:PrefixAndSuffix.cpp DataStructure:Local.cpp \
+	DataStructure:Subpath.cpp \
+	DataStructure:Concatenation.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	solution:GetLogisticRatio.cpp solution:print.cpp \
@@ -30,6 +32,8 @@ andy_lenovo:
 	Input:Read.cpp \
 	PrintData.cpp random.cpp \
 	DataStructure:Global.cpp DataStructure:PrefixAndSuffix.cpp DataStructure:Local.cpp \
+	DataStructure:Subpath.cpp \
+	DataStructure:Concatenation.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	solution:GetLogisticRatio.cpp solution:print.cpp \
@@ -47,6 +51,8 @@ andy_desktop:
 	Input:Read.cpp \
 	PrintData.cpp random.cpp \
 	DataStructure:Global.cpp DataStructure:PrefixAndSuffix.cpp DataStructure:Local.cpp \
+	DataStructure:Subpath.cpp \
+	DataStructure:Concatenation.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	solution:GetLogisticRatio.cpp solution:print.cpp \
@@ -64,6 +70,8 @@ andy_testpc:
 	Input:Read.cpp \
 	PrintData.cpp random.cpp \
 	DataStructure:Global.cpp DataStructure:PrefixAndSuffix.cpp DataStructure:Local.cpp \
+	DataStructure:Subpath.cpp \
+	DataStructure:Concatenation.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	solution:GetLogisticRatio.cpp solution:print.cpp \

@@ -1,7 +1,7 @@
 #include "lib.h"
-void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPSolution, HGS &Routing,preprocessing &memory)
+void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory)
 {
-    memory.PopulateLocalPrefixAndSuffix(IRPLR, IRPSolution);
+    // memory.PopulateLocalPrefixAndSuffix(IRPLR, IRPSolution);
 
     vector<vector<double>> OriginalInventoryLevel;
     for (int i = 0; i < IRPLR.Retailers.size(); i++)
@@ -34,58 +34,97 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     cout << endl;
 
     IRPSolution.print_solution(IRPLR);
-    vector<vector<double>> PossibleDeliveryQuantityDeduction; 
+    vector<vector<double>> PossibleDeliveryQuantityDeduction;
     vector<int> NumberOfVisits;
-    for(int i=0;i<IRPLR.Retailers.size();i++)
+    for (int i = 0; i < IRPLR.Retailers.size(); i++)
     {
         NumberOfVisits.push_back(0);
     }
-   
-    for(int i=0;i<IRPSolution.Route.size();i++)
+
+    for (int i = 0; i < IRPSolution.Route.size(); i++)
     {
-        for(int j=0;j<IRPSolution.Route[i].size();j++)
+        for (int j = 0; j < IRPSolution.Route[i].size(); j++)
         {
-            for(int k=0;k<IRPSolution.Route[i][j].size();k++)
+            for (int k = 0; k < IRPSolution.Route[i][j].size(); k++)
             {
-                for (int x=0;x<IRPLR.Retailers.size();x++)
+                for (int x = 0; x < IRPLR.Retailers.size(); x++)
                 {
-                    if(IRPSolution.Route[i][j][k] == x)
+                    if (IRPSolution.Route[i][j][k] == x)
                     {
                         NumberOfVisits[x]++;
                     }
                 }
             }
         }
-
     }
 
-    cout<<"NumberOfVisits"<<endl;
-    for(int i=0;i<NumberOfVisits.size();i++)
+    cout << "NumberOfVisits" << endl;
+    for (int i = 0; i < NumberOfVisits.size(); i++)
     {
-        cout<<NumberOfVisits[i]<<",";
+        cout << NumberOfVisits[i] << ",";
     }
-    cout<<endl;
-    
-double violation = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut);
-       
-    /*int OperatorSwapCounter = 0;
+    cout << endl;
+
+    time_t start_time;
+    time_t end_time;
+    time(&start_time);
+    solution BestIRP_Solution(IRPSolution);
+    BestIRP_Solution.GetLogisticRatio(IRPLR);
+    cout << "Best logistic ratio:" << BestIRP_Solution.LogisticRatio << endl;
+    int OperatorSwapCounter = 0;
     double PenaltyForStockOut = 1;
-    while (OperatorSwapCounter <= 10)
+    int ToAdjustPenalty = 10;
+    int ItForCurrentPenalty = 0;
+    int NumberOfInfeasibleSolution = 0;
+    int NumberOfFeasibleSolution = 0;
+    int FeasibleSolutionCounter=0;
+    int BetterFeasibleSolutionCounter=0;
+    while (OperatorSwapCounter < 1000)
     {
-        double violation = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut);
+
+        double violation = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
         IRPSolution.GetLogisticRatio(IRPLR);
-        cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << endl;
-        if (violation != 0)
+        cout << "Solution after iteration " << OperatorSwapCounter << endl;
+        cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
+        cout << "ViolationStockOut" << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << endl;
+        IRPSolution.print_solution(IRPLR);
+        ItForCurrentPenalty++;
+        if (violation - 0 > 0.001)
         {
-            PenaltyForStockOut = PenaltyForStockOut * 2;
+            NumberOfInfeasibleSolution++;
+            if (NumberOfInfeasibleSolution >= ToAdjustPenalty)
+            {
+                PenaltyForStockOut = PenaltyForStockOut * 2;
+                ItForCurrentPenalty = 0;
+                NumberOfInfeasibleSolution = 0;
+            }
         }
         else
         {
-            PenaltyForStockOut = PenaltyForStockOut / 2;
+            NumberOfFeasibleSolution++;
+            FeasibleSolutionCounter ++;
+            cout << "Feasible solution obtained" << endl;
+            if (BestIRP_Solution.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
+            {
+                BetterFeasibleSolutionCounter ++;
+                cout << "Best solution is updated" << endl;
+                BestIRP_Solution = IRPSolution;
+            }
+            if (NumberOfFeasibleSolution >= ToAdjustPenalty)
+            {
+                PenaltyForStockOut = PenaltyForStockOut / 2;
+                ItForCurrentPenalty = 0;
+                NumberOfFeasibleSolution = 0;
+            }
         }
-
         OperatorSwapCounter++;
-    }*/
+    }
+    time(&end_time);
+    double total_time = difftime(end_time, start_time);
+    cout<<"!FeasibleSolutionCounter: "<<FeasibleSolutionCounter<<endl;
+    cout<<"!BetterFeasibleSolutionCounter: "<<BetterFeasibleSolutionCounter<<endl;
+    cout<<"!Best Logistic Ratio: "<<BestIRP_Solution.LogisticRatio<<endl;
+    cout << "!Time: " << total_time << endl;
     // LNS_Destory(IRPLR, IRPSolution,Routing);
     // LNS_Repair(IRPLR, IRPSolution,Routing);
 }
