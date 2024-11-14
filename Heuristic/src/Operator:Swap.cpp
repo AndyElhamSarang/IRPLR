@@ -24,13 +24,25 @@ double solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, H
                     tempIRP_sol.UnallocatedCustomers[i][x] = tempCustomer;
                     tempIRP_sol.VehicleLoad[i][j] = tempIRP_sol.VehicleLoad[i][j] - tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][i]; // Customer gets unallocated, the vehicle load is reduced correspondingly
                     tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][i] = 0;                                                             // Customer who become unallocated, the delivery quantity become 0;
-                   
+
                     if (i == 0)
                     {
                         int tempInventory = IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryBegin;
                         for (int y = 0; y < tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]].size(); y++)
                         {
                             tempInventory = tempInventory - IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].Demand + tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][y];
+
+                            if (tempInventory > IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax)
+                            {
+                                tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][y] = tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][y] - (tempInventory - IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax);
+                                tempInventory = IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax;
+                            }
+                            else
+                            {
+                                double tempDeliveryQuantity = min(IRPLR.Vehicle.capacity - tempIRP_sol.VehicleLoad[][y], tempIRP_sol.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax - tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]][y]);
+                            }
+
+
                             tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]][y] = tempInventory;
                         }
                     }
@@ -41,12 +53,19 @@ double solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, H
                         for (int y = i; y < tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]].size(); y++)
                         {
                             tempInventory = tempInventory - IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].Demand + tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][y];
+
+                         if (tempInventory > IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax)
+                           {
+                               tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][y] = tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][y] - (tempInventory - IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax);
+                               tempInventory = IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax;
+                           }
+
                             tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]][y] = tempInventory;
                         }
                     }
 
                     tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][i] = min(IRPLR.Vehicle.capacity - tempIRP_sol.VehicleLoad[i][j], IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].InventoryMax - tempIRP_sol.InventoryLevel[tempIRP_sol.Route[i][j][k]][i]);
-                    //cout<<"!"<<IRPLR.Vehicle.capacity <<","<< tempIRP_sol.VehicleLoad[i][j]<<","<< IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].InventoryMax<<","<<tempIRP_sol.InventoryLevel[tempIRP_sol.Route[i][j][k]][i]<<","<<tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][i]<<endl;
+                    // cout<<"!"<<IRPLR.Vehicle.capacity <<","<< tempIRP_sol.VehicleLoad[i][j]<<","<< IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].InventoryMax<<","<<tempIRP_sol.InventoryLevel[tempIRP_sol.Route[i][j][k]][i]<<","<<tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][i]<<endl;
                     tempIRP_sol.VehicleLoad[i][j] = tempIRP_sol.VehicleLoad[i][j] + tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][i];
 
                     if (i == 0)
@@ -78,7 +97,7 @@ double solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, H
                             tempIRP_sol.InventoryLevel[tempIRP_sol.Route[i][j][k]][y] = tempInventory;
                         }
                     }
-                     cout << "Starting route:" << endl;
+                    cout << "Starting route:" << endl;
                     for (int y = 0; y < tempIRP_sol.Route[i][j].size(); y++)
                     {
                         cout << tempIRP_sol.Route[i][j][y] << ",";
