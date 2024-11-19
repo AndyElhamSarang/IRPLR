@@ -17,7 +17,7 @@ andy:
 	DataStructure:Concatenation.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
-	solution:GetLogisticRatio.cpp solution:print.cpp \
+	solution.cpp solution:initialize.cpp solution:GetLogisticRatio.cpp solution:print.cpp \
 	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
 	solution:GetTransCostSingleRoute.cpp \
 	CheckStockOut.cpp \
@@ -37,7 +37,7 @@ andy_lenovo:
 	DataStructure:Concatenation.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
-	solution:GetLogisticRatio.cpp solution:print.cpp \
+	solution.cpp solution:initialize.cpp solution:GetLogisticRatio.cpp solution:print.cpp \
 	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
 	solution:GetTransCostSingleRoute.cpp \
 	CheckStockOut.cpp \
@@ -57,7 +57,7 @@ andy_desktop:
 	DataStructure:Concatenation.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
-	solution:GetLogisticRatio.cpp solution:print.cpp \
+	solution.cpp solution:initialize.cpp solution:GetLogisticRatio.cpp solution:print.cpp \
 	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
 	solution:GetTransCostSingleRoute.cpp \
 	CheckStockOut.cpp \
@@ -77,7 +77,7 @@ andy_testpc:
 	DataStructure:Concatenation.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
-	solution:GetLogisticRatio.cpp solution:print.cpp \
+	solution.cpp solution:initialize.cpp solution:GetLogisticRatio.cpp solution:print.cpp \
 	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
 	solution:GetTransCostSingleRoute.cpp \
 	CheckStockOut.cpp \

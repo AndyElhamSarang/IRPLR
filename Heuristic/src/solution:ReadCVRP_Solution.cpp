@@ -137,4 +137,6 @@ void solution::ReadCVRP_Solution(input &IRPLR, int &day, vector<vector<int>> &Ro
         }
         VehicleLoad[day][i] = NewLoad;
     }
+
+    
 }

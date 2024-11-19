@@ -39,7 +39,7 @@ double solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, H
                             }
                             else
                             {
-                                double tempDeliveryQuantity = min(IRPLR.Vehicle.capacity - tempIRP_sol.VehicleLoad[][y], tempIRP_sol.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax - tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]][y]);
+                                //double tempDeliveryQuantity = min(IRPLR.Vehicle.capacity - tempIRP_sol.VehicleLoad[][y], tempIRP_sol.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax - tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]][y]);
                             }
 
 

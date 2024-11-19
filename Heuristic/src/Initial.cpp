@@ -78,4 +78,6 @@ void solution_construction::INITIAL(input &IRPLR, solution &IRPSolution, HGS &Ro
         }
         IRPSolution.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
     }
+
+    
 }
