@@ -1,5 +1,5 @@
 #include "lib.h"
-void solution::print_solution(input &IRPLR)
+void solution_improvement::PrintTempSolution(input &IRPLR, vector<vector<vector<int>>> &Route,vector<vector<int>> &UnallocatedCustomers,vector<vector<double>> &VehicleLoad,vector<vector<double>> &DeliveryQuantity,vector<vector<double>> &InventoryLevel,vector<vector<int>> &VehicleAllocation)
 {
     cout << "InventoryLevel(Delivery Quantity, Vehicle, Order):" << endl;
     cout << "                    \tBegin\t";
@@ -17,11 +17,11 @@ void solution::print_solution(input &IRPLR)
             if (DeliveryQuantity[i][j] == 0)
             {
                 //cout << "(" << DeliveryQuantity[i][j] << ",-,-)\t";
-                cout << "(" << DeliveryQuantity[i][j] << "," << VehicleAllocation[i][j] <<  ")\t";
+                cout << "(" << DeliveryQuantity[i][j] << "," << VehicleAllocation[i][j] << ")\t";
             }
             else
             {
-                cout << "(" << DeliveryQuantity[i][j] << "," << VehicleAllocation[i][j] << ")\t";
+                cout << "(" << DeliveryQuantity[i][j] << "," << VehicleAllocation[i][j] <<  ")\t";
 
                 assert(VehicleAllocation[i][j] < IRPLR.NumberOfVehicles + 1);
             }

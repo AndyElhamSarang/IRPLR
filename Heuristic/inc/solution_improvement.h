@@ -16,6 +16,7 @@ double OperatorBalancing(input &IRPLR, solution &IRPSolution, HGS &Routing, doub
 int OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &CustomerToReinsert, double &PenaltyForStockOut, double &CurrentTransportationCost,preprocessing &memory);
 double OperatorRepair(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut);
 
+void PrintTempSolution(input &IRPLR, vector<vector<vector<int>>> &Route,vector<vector<int>> &UnallocatedCustomers,vector<vector<double>> &VehicleLoad,vector<vector<double>> &DeliveryQuantity,vector<vector<double>> &InventoryLevel,vector<vector<int>> &VehicleAllocation);
 int opt1();
 
 int opt2();

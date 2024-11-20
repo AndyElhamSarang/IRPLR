@@ -1,24 +1,18 @@
 class solution
 {
-  friend class solution_construction;
 private:
 public:
-struct assignment
-  {
-    double DeliveryQuantity;
-    double InventoryLevel;
-    int VehicleAllocation;
-    int Position;
-  };
   double TotalTransportationCost;
   double LogisticRatio;
   double TotalDelivery;
   double ViolationStockOut;
-  
+
   vector<vector<vector<int>>> Route;
   vector<vector<int>> UnallocatedCustomers;
   vector<vector<double>> VehicleLoad;
-  vector<vector<assignment>> Schedule;
+  vector<vector<double>> DeliveryQuantity;
+  vector<vector<double>> InventoryLevel;
+  vector<vector<int>> VehicleAllocation;
 
   solution();
   ~solution();
@@ -29,5 +23,4 @@ struct assignment
   void print_solution(input &IRPLR);
   void GetLogisticRatio(input &IRPLR);
   double GetTransCostSingleRoute(/*int route, int head, int tail, int insert_length, vector<int> &Input_route, data &wsrp, proprecessing &memory*/);
-
 };

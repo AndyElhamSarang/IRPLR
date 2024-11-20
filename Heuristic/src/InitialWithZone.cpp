@@ -58,10 +58,10 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
         Table << IRPSolution.TotalTransportationCost << "," << IRPSolution.TotalDelivery << "," << IRPSolution.LogisticRatio << ",";
     }*/
 
-
+    IRPSolution.UnallocatedCustomers.clear();
     for (int i = 0; i < IRPSolution.Route.size(); i++) // For this time period
     {
-        vector<int> TempUnallocatedCustomer; //Look for unallcated customers at this time period
+        vector<int> TempUnallocatedCustomer;             // Look for unallcated customers at this time period
         for (int x = 0; x < IRPLR.Retailers.size(); x++) // Check each retailers
         {
             int UnallocatedYesOrNo = 0;
@@ -76,7 +76,7 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
                     }
                 }
             }
-            if (UnallocatedYesOrNo  == 0) //This customer is not visited
+            if (UnallocatedYesOrNo == 0) // This customer is not visited
             {
                 TempUnallocatedCustomer.push_back(x);
             }

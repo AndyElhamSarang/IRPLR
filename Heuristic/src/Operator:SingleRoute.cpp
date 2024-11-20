@@ -1,5 +1,5 @@
 #include "lib.h"
-int solution_improvement::OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &CustomerToReinsert, double &PenaltyForStockOut, double &CurrentTransportationCost, preprocessing &memory)
+int solution_improvement::OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &CustomerToReinsert,  double &PenaltyForStockOut, double &CurrentTransportationCost, preprocessing &memory)
 {
 	cout << "Finding cheapest insertion" << endl;
 	

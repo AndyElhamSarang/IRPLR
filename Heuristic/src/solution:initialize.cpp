@@ -1,56 +1,45 @@
 #include "lib.h"
 void solution::Initialization(input &IRPLR)
 {
-
-
     Route.clear();
     UnallocatedCustomers.clear();
     VehicleLoad.clear();
-    Schedule.clear();
+    DeliveryQuantity.clear();
+    InventoryLevel.clear();
+    VehicleAllocation.clear();
+
+    int DummyVehicleAllocation = IRPLR.NumberOfVehicles + 1;
 
     for (int i = 0; i < IRPLR.Retailers.size(); i++)
     {
         vector<double> TempDeliveryQuantity;
-        for (int j = 0; j < IRPLR.TimeHorizon; j++)
-        {
-            assignment Temp;
-            
-            TempDeliveryQuantity.push_back(0);
-        }
-        IRPSolution.DeliveryQuantity.push_back(TempDeliveryQuantity);
-    }
-
-    for (int i = 0; i < IRPLR.Retailers.size(); i++)
-    {
         vector<double> tempInventoryLevel;
-        int tempInventory = IRPLR.Retailers[i].InventoryBegin;
+        double tempInventory = IRPLR.Retailers[i].InventoryBegin;
+        vector<int> TempVehicleAllocation;
         for (int j = 0; j < IRPLR.TimeHorizon; j++)
-        {
-            tempInventory = tempInventory - IRPLR.Retailers[i].Demand + IRPSolution.DeliveryQuantity[i][j];
+        {            
+            TempDeliveryQuantity.push_back(0);
+            tempInventory = tempInventory - IRPLR.Retailers[i].Demand; //Delivery quantity in the initilisation phase is zero
             tempInventoryLevel.push_back(tempInventory);
+            TempVehicleAllocation.push_back(DummyVehicleAllocation);
         }
-        IRPSolution.InventoryLevel.push_back(tempInventoryLevel);
+        DeliveryQuantity.push_back(TempDeliveryQuantity);
+        InventoryLevel.push_back(tempInventoryLevel);
+        VehicleAllocation.push_back(TempVehicleAllocation);
     }
-
-
-    for (int i = 0; i < IRPLR.TimeHorizon; i++)
-    {
-        vector<double> temp_VehicleLoad;
-        for (int j = 0; j < IRPLR.NumberOfVehicles; j++)
-        {
-            temp_VehicleLoad.push_back(0);
-        }
-        IRPSolution.VehicleLoad.push_back(temp_VehicleLoad);
-    }
-
     for (int i = 0; i < IRPLR.TimeHorizon; i++)
     {
         vector<vector<int>> temp_Route;
+        vector<double> temp_VehicleLoad;
+        vector<int> TempUnallocatedCustomers;
         for (int j = 0; j < IRPLR.NumberOfVehicles; j++)
         {
-            vector<int> temp_temp_route;
+            temp_VehicleLoad.push_back(0); //Vehicle load in the initilisation phase is zero
+            vector<int> temp_temp_route; //Route is empty
             temp_Route.push_back(temp_temp_route);
         }
-        IRPSolution.Route.push_back(temp_Route);
+        VehicleLoad.push_back(temp_VehicleLoad);
+        Route.push_back(temp_Route);
+        UnallocatedCustomers.push_back(TempUnallocatedCustomers);
     }
 }

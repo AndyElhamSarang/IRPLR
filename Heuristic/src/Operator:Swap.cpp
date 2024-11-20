@@ -7,6 +7,8 @@ double solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, H
     // cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << endl;
     // LR_objv = IRPSolution.LogisticRatio + PenaltyForStockOut * IRPSolution.ViolationStockOut;
     cout << "LR objv:" << LR_objv << endl;
+ 
+
     solution Imp_Sol;
     int solutionCounter = 0;
     for (int i = 0; i < IRPSolution.Route.size(); i++)
@@ -18,122 +20,169 @@ double solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, H
                 for (int x = 0; x < IRPSolution.UnallocatedCustomers[i].size(); x++)
                 {
 
-                    solution tempIRP_sol(IRPSolution);
-                    int tempCustomer = tempIRP_sol.Route[i][j][k];
-                    tempIRP_sol.Route[i][j][k] = tempIRP_sol.UnallocatedCustomers[i][x];
-                    tempIRP_sol.UnallocatedCustomers[i][x] = tempCustomer;
-                    tempIRP_sol.VehicleLoad[i][j] = tempIRP_sol.VehicleLoad[i][j] - tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][i]; // Customer gets unallocated, the vehicle load is reduced correspondingly
-                    tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][i] = 0;                                                             // Customer who become unallocated, the delivery quantity become 0;
-
-                    if (i == 0)
-                    {
-                        int tempInventory = IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryBegin;
-                        for (int y = 0; y < tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]].size(); y++)
-                        {
-                            tempInventory = tempInventory - IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].Demand + tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][y];
-
-                            if (tempInventory > IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax)
-                            {
-                                tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][y] = tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][y] - (tempInventory - IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax);
-                                tempInventory = IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax;
-                            }
-                            else
-                            {
-                                //double tempDeliveryQuantity = min(IRPLR.Vehicle.capacity - tempIRP_sol.VehicleLoad[][y], tempIRP_sol.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax - tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]][y]);
-                            }
-
-
-                            tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]][y] = tempInventory;
-                        }
-                    }
-                    else
-                    {
-
-                        int tempInventory = tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]][i - 1];
-                        for (int y = i; y < tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]].size(); y++)
-                        {
-                            tempInventory = tempInventory - IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].Demand + tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][y];
-
-                         if (tempInventory > IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax)
-                           {
-                               tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][y] = tempIRP_sol.DeliveryQuantity[tempIRP_sol.UnallocatedCustomers[i][x]][y] - (tempInventory - IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax);
-                               tempInventory = IRPLR.Retailers[tempIRP_sol.UnallocatedCustomers[i][x]].InventoryMax;
-                           }
-
-                            tempIRP_sol.InventoryLevel[tempIRP_sol.UnallocatedCustomers[i][x]][y] = tempInventory;
-                        }
-                    }
-
-                    tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][i] = min(IRPLR.Vehicle.capacity - tempIRP_sol.VehicleLoad[i][j], IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].InventoryMax - tempIRP_sol.InventoryLevel[tempIRP_sol.Route[i][j][k]][i]);
-                    // cout<<"!"<<IRPLR.Vehicle.capacity <<","<< tempIRP_sol.VehicleLoad[i][j]<<","<< IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].InventoryMax<<","<<tempIRP_sol.InventoryLevel[tempIRP_sol.Route[i][j][k]][i]<<","<<tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][i]<<endl;
-                    tempIRP_sol.VehicleLoad[i][j] = tempIRP_sol.VehicleLoad[i][j] + tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][i];
-
-                    if (i == 0)
-                    {
-                        double tempInventory = IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].InventoryBegin;
-                        for (int y = 0; y < tempIRP_sol.InventoryLevel[tempIRP_sol.Route[i][j][k]].size(); y++)
-                        {
-                            tempInventory = tempInventory - IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].Demand + tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][y];
-                            if (tempInventory > IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].InventoryMax)
-                            {
-                                tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][y] = tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][y] - (tempInventory - IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].InventoryMax);
-                                tempInventory = IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].InventoryMax;
-                            }
-                            tempIRP_sol.InventoryLevel[tempIRP_sol.Route[i][j][k]][y] = tempInventory;
-                        }
-                    }
-                    else
-                    {
-
-                        double tempInventory = tempIRP_sol.InventoryLevel[tempIRP_sol.Route[i][j][k]][i - 1];
-                        for (int y = i; y < tempIRP_sol.InventoryLevel[tempIRP_sol.Route[i][j][k]].size(); y++)
-                        {
-                            tempInventory = tempInventory - IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].Demand + tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][y];
-                            if (tempInventory > IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].InventoryMax)
-                            {
-                                tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][y] = tempIRP_sol.DeliveryQuantity[tempIRP_sol.Route[i][j][k]][y] - (tempInventory - IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].InventoryMax);
-                                tempInventory = IRPLR.Retailers[tempIRP_sol.Route[i][j][k]].InventoryMax;
-                            }
-                            tempIRP_sol.InventoryLevel[tempIRP_sol.Route[i][j][k]][y] = tempInventory;
-                        }
-                    }
-                    cout << "Starting route:" << endl;
-                    for (int y = 0; y < tempIRP_sol.Route[i][j].size(); y++)
-                    {
-                        cout << tempIRP_sol.Route[i][j][y] << ",";
-                    }
-                    cout << endl;
-                    double CurrentTransportationCost = memory.PopulateSingleRoutePrefixAndSuffix(IRPLR, tempIRP_sol.Route[i][j]); // Preprocessing travel distance of the route
-                    memory.PopulateSingleRouteSubpath(IRPLR, tempIRP_sol.Route[i][j]);
-                    int FindingCheapestInsertion = OperatorCheapestInsertion(IRPLR, tempIRP_sol.Route[i][j], k, PenaltyForStockOut, CurrentTransportationCost, memory); // Finding cheapest insertion
-                    cout << "Route resulting in cheapest insertion:" << endl;
-                    for (int y = 0; y < tempIRP_sol.Route[i][j].size(); y++)
-                    {
-                        cout << tempIRP_sol.Route[i][j][y] << ",";
-                    }
-                    cout << endl;
-                    /*for (int i = 0; i < tempIRP_sol.Route.size(); i++)
-                    {
-                        int NumberOfCustomerOfDay = 0;
-                        for (int j = 0; j < tempIRP_sol.Route[i].size(); j++)
-                        {
-                            NumberOfCustomerOfDay += tempIRP_sol.Route[i][j].size();
-                        }
-                        if (NumberOfCustomerOfDay > 1)
-                        {
-                            tempIRP_sol.OutputCVRP(IRPLR, i, tempIRP_sol.Route[i]);
-                            Routing.CallHGS(IRPLR);
-                            tempIRP_sol.ReadCVRP_Solution(IRPLR, i, tempIRP_sol.Route[i]);
-                        }
-                    }*/
-                    tempIRP_sol.GetLogisticRatio(IRPLR);
-                    double temp_LR_obvj = tempIRP_sol.LogisticRatio + PenaltyForStockOut * tempIRP_sol.ViolationStockOut;
-
                     cout << "solution: " << solutionCounter << endl;
-                    cout << "TotalTransportationCost:" << tempIRP_sol.TotalTransportationCost << "\t TotalDelivery:" << tempIRP_sol.TotalDelivery << "\t LogistcRatio:" << tempIRP_sol.LogisticRatio << endl;
-                    cout << "ViolationStockOut" << tempIRP_sol.ViolationStockOut << "\t PenaltyForStockOut" << PenaltyForStockOut << "\t temp_LR_obvj:" << temp_LR_obvj << endl;
-                    tempIRP_sol.print_solution(IRPLR);
-                    if (temp_LR_obvj < LR_objv)
+                    vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
+                    vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
+                    vector<vector<double>> TempVehicleLoad(IRPSolution.VehicleLoad);
+                    vector<vector<double>> TempDeliveryQuantity(IRPSolution.DeliveryQuantity);
+                    vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
+                    vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
+
+                    int tempCustomer = TempRoute[i][j][k];
+                    TempRoute[i][j][k] = TempUnallocatedCustomers[i][x];
+                    TempUnallocatedCustomers[i][x] = tempCustomer;
+
+                    TempVehicleAllocation[TempRoute[i][j][k]][i] = TempVehicleAllocation[tempCustomer][i];
+                    TempVehicleAllocation[tempCustomer][i] = IRPLR.NumberOfVehicles + 1;
+
+                    TempVehicleLoad[i][j] = TempVehicleLoad[i][j] - TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][i]; // Customer gets unallocated, the vehicle load is reduced correspondingly
+                    TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][i] = 0;
+                    cout << "Remove a customer" << endl;
+                    PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+
+                    if (i == 0)
+                    {
+                        int tempInventory = IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryBegin;
+                        for (int y = 0; y < TempInventoryLevel[TempUnallocatedCustomers[i][x]].size(); y++)
+                        {
+                            if(TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y]!=0)
+                            {
+                                //cout<<IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempUnallocatedCustomers[i][x]][y]]<<","<< IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax - TempInventoryLevel[TempUnallocatedCustomers[i][x]][y]<<endl;
+                               double DeltaQ= min(IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempUnallocatedCustomers[i][x]][y]], IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax - TempInventoryLevel[TempUnallocatedCustomers[i][x]][y]); //Compute how much you can delivery more
+                               //cout<<"DeltaQ:"<<DeltaQ<<endl;
+                               if(DeltaQ > 0)
+                               {
+                                TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y] =  TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y]+DeltaQ;
+                               }
+
+                            }
+                            tempInventory = tempInventory - IRPLR.Retailers[TempUnallocatedCustomers[i][x]].Demand + TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y];
+
+                            if (tempInventory > IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax)
+                            {
+                                TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y] = TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y] - (tempInventory - IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax);
+                                tempInventory = IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax;
+                            }
+
+                            TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] = tempInventory;
+                        }
+                    }
+                    else
+                    {
+
+                        int tempInventory = TempInventoryLevel[TempUnallocatedCustomers[i][x]][i - 1];
+                        for (int y = i; y < TempInventoryLevel[TempUnallocatedCustomers[i][x]].size(); y++)
+                        {
+                            if(TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y]!=0)
+                            {
+                                //cout<<IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempUnallocatedCustomers[i][x]][y]]<<","<< IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax - TempInventoryLevel[TempUnallocatedCustomers[i][x]][y]<<endl;
+                               double DeltaQ= min(IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempUnallocatedCustomers[i][x]][y]], IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax - TempInventoryLevel[TempUnallocatedCustomers[i][x]][y]); //Compute how much you can delivery more
+                               //cout<<"DeltaQ:"<<DeltaQ<<endl;
+                               if(DeltaQ > 0)
+                               {
+                                TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y] =  TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y]+DeltaQ;
+                               }
+
+                            }
+                            tempInventory = tempInventory - IRPLR.Retailers[TempUnallocatedCustomers[i][x]].Demand + TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y];
+
+                            if (tempInventory > IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax)
+                            {
+                                TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y] = TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y] - (tempInventory - IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax);
+                                tempInventory = IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax;
+                            }
+
+                            TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] = tempInventory;
+                        }
+                    }
+                    cout << "Adjusted the inventory level of the removed customer" << endl;
+                    PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+
+                    TempDeliveryQuantity[TempRoute[i][j][k]][i] = min(IRPLR.Vehicle.capacity - TempVehicleLoad[i][j], IRPLR.Retailers[TempRoute[i][j][k]].InventoryMax - TempInventoryLevel[TempRoute[i][j][k]][i]);
+                    // cout<<"!"<<IRPLR.Vehicle.capacity <<","<< TempVehicleLoad[i][j]<<","<< IRPLR.Retailers[TempRoute[i][j][k]].InventoryMax<<","<<TempInventoryLevel[TempRoute[i][j][k]][i]<<","<<TempDeliveryQuantity[TempRoute[i][j][k]][i]<<endl;
+                    TempVehicleLoad[i][j] = TempVehicleLoad[i][j] + TempDeliveryQuantity[TempRoute[i][j][k]][i];
+                    cout << "Added delivery quantity to the inserted customer" << endl;
+                    PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+
+                    if (i == 0)
+                    {
+                        double tempInventory = IRPLR.Retailers[TempRoute[i][j][k]].InventoryBegin;
+                        for (int y = 0; y < TempInventoryLevel[TempRoute[i][j][k]].size(); y++)
+                        {
+                            if(TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y]!=0)
+                            {
+                                //cout<<IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempUnallocatedCustomers[i][x]][y]]<<","<< IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax - TempInventoryLevel[TempUnallocatedCustomers[i][x]][y]<<endl;
+                               double DeltaQ= min(IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempUnallocatedCustomers[i][x]][y]], IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax - TempInventoryLevel[TempUnallocatedCustomers[i][x]][y]); //Compute how much you can delivery more
+                               //cout<<"DeltaQ:"<<DeltaQ<<endl;
+                               if(DeltaQ > 0)
+                               {
+                                TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y] =  TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y]+DeltaQ;
+                               }
+
+                            }
+                            tempInventory = tempInventory - IRPLR.Retailers[TempRoute[i][j][k]].Demand + TempDeliveryQuantity[TempRoute[i][j][k]][y];
+                            if (tempInventory > IRPLR.Retailers[TempRoute[i][j][k]].InventoryMax)
+                            {
+                                TempDeliveryQuantity[TempRoute[i][j][k]][y] = TempDeliveryQuantity[TempRoute[i][j][k]][y] - (tempInventory - IRPLR.Retailers[TempRoute[i][j][k]].InventoryMax);
+                                tempInventory = IRPLR.Retailers[TempRoute[i][j][k]].InventoryMax;
+                            }
+                            TempInventoryLevel[TempRoute[i][j][k]][y] = tempInventory;
+                        }
+                    }
+                    else
+                    {
+
+                        double tempInventory = TempInventoryLevel[TempRoute[i][j][k]][i - 1];
+                        for (int y = i; y < TempInventoryLevel[TempRoute[i][j][k]].size(); y++)
+                        {
+                            if(TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y]!=0)
+                            {
+                                //cout<<IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempUnallocatedCustomers[i][x]][y]]<<","<< IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax - TempInventoryLevel[TempUnallocatedCustomers[i][x]][y]<<endl;
+                               double DeltaQ= min(IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempUnallocatedCustomers[i][x]][y]], IRPLR.Retailers[TempUnallocatedCustomers[i][x]].InventoryMax - TempInventoryLevel[TempUnallocatedCustomers[i][x]][y]); //Compute how much you can delivery more
+                               //cout<<"DeltaQ:"<<DeltaQ<<endl;
+                               if(DeltaQ > 0)
+                               {
+                                TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y] =  TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][y]+DeltaQ;
+                               }
+
+                            }
+                            tempInventory = tempInventory - IRPLR.Retailers[TempRoute[i][j][k]].Demand + TempDeliveryQuantity[TempRoute[i][j][k]][y];
+                            if (tempInventory > IRPLR.Retailers[TempRoute[i][j][k]].InventoryMax)
+                            {
+                                TempDeliveryQuantity[TempRoute[i][j][k]][y] = TempDeliveryQuantity[TempRoute[i][j][k]][y] - (tempInventory - IRPLR.Retailers[TempRoute[i][j][k]].InventoryMax);
+                                tempInventory = IRPLR.Retailers[TempRoute[i][j][k]].InventoryMax;
+                            }
+                            TempInventoryLevel[TempRoute[i][j][k]][y] = tempInventory;
+                        }
+                    }
+                    cout << "Adjusted inventory level to the inserted customer" << endl;
+                    PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+
+                    cout << "Starting route:" << endl;
+                    for (int y = 0; y < TempRoute[i][j].size(); y++)
+                    {
+                        cout << TempRoute[i][j][y] << ",";
+                    }
+                    cout << endl;
+                    double CurrentTransportationCost = memory.PopulateSingleRoutePrefixAndSuffix(IRPLR, TempRoute[i][j]); // Preprocessing travel distance of the route
+                    memory.PopulateSingleRouteSubpath(IRPLR, TempRoute[i][j]);
+                    
+                    int FindingCheapestInsertion = OperatorCheapestInsertion(IRPLR, TempRoute[i][j], k,  PenaltyForStockOut, CurrentTransportationCost, memory); // Finding cheapest insertion
+                    cout << "Route resulting in cheapest insertion:" << endl;
+                    for (int y = 0; y < TempRoute[i][j].size(); y++)
+                    {
+                        cout << TempRoute[i][j][y] << ",";
+                    }
+                    cout << endl;
+
+                   
+                    // tempIRP_sol.GetLogisticRatio(IRPLR);
+                    // double temp_LR_obvj = tempIRP_sol.LogisticRatio + PenaltyForStockOut * tempIRP_sol.ViolationStockOut;
+
+                    // cout << "TotalTransportationCost:" << tempIRP_sol.TotalTransportationCost << "\t TotalDelivery:" << tempIRP_sol.TotalDelivery << "\t LogistcRatio:" << tempIRP_sol.LogisticRatio << endl;
+                    // cout << "ViolationStockOut" << tempIRP_sol.ViolationStockOut << "\t PenaltyForStockOut" << PenaltyForStockOut << "\t temp_LR_obvj:" << temp_LR_obvj << endl;
+                    PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+                    /*if (temp_LR_obvj < LR_objv)
                     {
                         Imp_Sol = tempIRP_sol;
                         if (tempIRP_sol.ViolationStockOut > 0)
@@ -146,7 +195,7 @@ double solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, H
                         }
 
                         cout << "Improving solution found" << endl;
-                    }
+                    }*/
 
                     solutionCounter++;
                 }
