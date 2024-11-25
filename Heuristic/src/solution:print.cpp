@@ -17,11 +17,11 @@ void solution::print_solution(input &IRPLR)
             if (DeliveryQuantity[i][j] == 0)
             {
                 //cout << "(" << DeliveryQuantity[i][j] << ",-,-)\t";
-                cout << "(" << DeliveryQuantity[i][j] << "," << VehicleAllocation[i][j] <<  ")\t";
+                cout << "(" << DeliveryQuantity[i][j] << "," << VehicleAllocation[i][j] <<  ")    "<<'\t';
             }
             else
             {
-                cout << "(" << DeliveryQuantity[i][j] << "," << VehicleAllocation[i][j] << ")\t";
+                cout << "(" << DeliveryQuantity[i][j] << "," << VehicleAllocation[i][j] << ")    "<<'\t';
 
                 assert(VehicleAllocation[i][j] < IRPLR.NumberOfVehicles + 1);
             }

@@ -17,6 +17,14 @@ int OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &CustomerToR
 double OperatorRepair(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut);
 
 void PrintTempSolution(input &IRPLR, vector<vector<vector<int>>> &Route,vector<vector<int>> &UnallocatedCustomers,vector<vector<double>> &VehicleLoad,vector<vector<double>> &DeliveryQuantity,vector<vector<double>> &InventoryLevel,vector<vector<int>> &VehicleAllocation);
+
+void GetTempLogisticRatio(input &IRPLR, vector<vector<vector<int>>> &Route,
+                            vector<vector<double>> &DeliveryQuantity,
+                            vector<vector<double>> &InventoryLevel,
+                            double &TotalTransportationCost,
+                            double &TotalDelivery,
+                            double &LogisticRatio,
+                            double &ViolationStockOut);
 int opt1();
 
 int opt2();

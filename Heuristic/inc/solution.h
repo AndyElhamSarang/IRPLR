@@ -13,6 +13,7 @@ public:
   vector<vector<double>> DeliveryQuantity;
   vector<vector<double>> InventoryLevel;
   vector<vector<int>> VehicleAllocation;
+  vector<double> StockOutPerCustomer;
 
   solution();
   ~solution();

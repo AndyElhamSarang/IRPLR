@@ -1,7 +1,13 @@
 #include "lib.h"
-void solution::GetLogisticRatio(input &IRPLR)
+void solution_improvement::GetTempLogisticRatio(input &IRPLR, vector<vector<vector<int>>> &Route,
+                                                vector<vector<double>> &DeliveryQuantity,
+                                                vector<vector<double>> &InventoryLevel,
+                                                double &TotalTransportationCost,
+                                                double &TotalDelivery,
+                                                double &LogisticRatio,
+                                                double &ViolationStockOut)
 {
-    StockOutPerCustomer.clear();
+
     TotalTransportationCost = 0;
     TotalDelivery = 0;
     LogisticRatio = 0;
@@ -35,17 +41,15 @@ void solution::GetLogisticRatio(input &IRPLR)
     }
     LogisticRatio = TotalTransportationCost / TotalDelivery;
 
-    for(int i=0;i<InventoryLevel.size();i++)
+    for (int i = 0; i < InventoryLevel.size(); i++)
     {
-        double StockOutOfThisCustomer=0;
-        for(int j=0;j<InventoryLevel[i].size();j++)
+        for (int j = 0; j < InventoryLevel[i].size(); j++)
         {
-            if(InventoryLevel[i][j]<0)
+            if (InventoryLevel[i][j] < 0)
             {
-                ViolationStockOut-=InventoryLevel[i][j];
-                StockOutOfThisCustomer-=InventoryLevel[i][j];
+                ViolationStockOut -= InventoryLevel[i][j];
             }
         }
-        StockOutPerCustomer.push_back(StockOutOfThisCustomer);
     }
+    
 }
