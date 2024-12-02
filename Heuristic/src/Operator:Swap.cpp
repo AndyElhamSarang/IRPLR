@@ -38,97 +38,97 @@ double solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, H
                     vector<vector<double>> TempDeliveryQuantity(IRPSolution.DeliveryQuantity);
                     vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
                     vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
-                    double testEndTransportationCost = 0;
-                    double testStartTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
-                    testStartTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
-                    for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
-                    {
-                        testStartTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
-                    }
+                    //double testEndTransportationCost = 0;
+                    //double testStartTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
+                    //testStartTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
+                    //for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
+                    //{
+                    //    testStartTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
+                    //}
 
                     int tempCustomer = TempRoute[i][j][k];
                     TempRoute[i][j][k] = TempUnallocatedCustomers[i][x];
                     TempUnallocatedCustomers[i][x] = tempCustomer;
                     if (k == 0)
                     {
-                        cout << "From depot" << endl;
+                        //cout << "From depot" << endl;
                         if (TempRoute[i][j].size() <= 1)
                         {
-                            cout << "Route with single customer" << endl;
+                            //cout << "Route with single customer" << endl;
                             ChangeInTransportationCost = IRPLR.Distance[0][TempRoute[i][j][k] + 1] + IRPLR.Distance[TempRoute[i][j][k] + 1][0] - IRPLR.Distance[0][tempCustomer + 1] - IRPLR.Distance[tempCustomer + 1][0];
-                            cout << "ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
+                            //cout << "ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
 
-                            testEndTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
-                            testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
-                            for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
-                            {
-                                testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
-                            }
-                            cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
-                            assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
+                            //testEndTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
+                            //testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
+                            //for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
+                            //{
+                            //    testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
+                            //}
+                            //cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
+                            //assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
                         }
                         else
                         {
                             ChangeInTransportationCost = IRPLR.Distance[0][TempRoute[i][j][k] + 1] + IRPLR.Distance[TempRoute[i][j][k] + 1][TempRoute[i][j][k + 1] + 1] - IRPLR.Distance[0][tempCustomer + 1] - IRPLR.Distance[tempCustomer + 1][TempRoute[i][j][k + 1] + 1];
-                            cout << "ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
+                            //cout << "ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
 
-                            testEndTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
-                            testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
-                            for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
-                            {
-                                testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
-                            }
-                            cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
-                            assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
+                            //testEndTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
+                            //testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
+                            //for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
+                            //{
+                            //    testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
+                            //}
+                            //cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
+                            //assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
                         }
                     }
                     else if (k == IRPSolution.Route[i][j].size() - 1)
                     {
-                        cout << "Back to depot" << endl;
+                        //cout << "Back to depot" << endl;
                         if (TempRoute[i][j].size() <= 1)
                         {
-                            cout << "Route with single customer" << endl;
+                            //cout << "Route with single customer" << endl;
                             ChangeInTransportationCost = IRPLR.Distance[0][TempRoute[i][j][k] + 1] + IRPLR.Distance[TempRoute[i][j][k] + 1][0] - IRPLR.Distance[0][tempCustomer + 1] - IRPLR.Distance[tempCustomer + 1][0];
-                            cout << "ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
+                            //cout << "ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
 
-                            testEndTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
-                            testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
-                            for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
-                            {
-                                testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
-                            }
-                            cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
-                            assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
+                            //testEndTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
+                            //testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
+                            //for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
+                            //{
+                             //   testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
+                            //}
+                            //cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
+                            //assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
                         }
                         else
                         {
                             ChangeInTransportationCost = IRPLR.Distance[TempRoute[i][j][k - 1] + 1][TempRoute[i][j][k] + 1] + IRPLR.Distance[TempRoute[i][j][k] + 1][0] - IRPLR.Distance[TempRoute[i][j][k - 1] + 1][tempCustomer + 1] - IRPLR.Distance[tempCustomer + 1][0];
-                            cout << "ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
+                            //cout << "ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
 
-                            testEndTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
-                            testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
-                            for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
-                            {
-                                testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
-                            }
-                            cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
-                            assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
+                            //testEndTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
+                            //testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
+                            //for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
+                            //{
+                            //    testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
+                            //}
+                            //cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
+                            //assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
                         }
                     }
                     else
                     {
-                        cout << "In the middle of the route" << endl;
+                        //cout << "In the middle of the route" << endl;
                         ChangeInTransportationCost = IRPLR.Distance[TempRoute[i][j][k - 1] + 1][TempRoute[i][j][k] + 1] + IRPLR.Distance[TempRoute[i][j][k] + 1][TempRoute[i][j][k + 1] + 1] - IRPLR.Distance[TempRoute[i][j][k - 1] + 1][tempCustomer + 1] - IRPLR.Distance[tempCustomer + 1][TempRoute[i][j][k + 1] + 1];
-                        cout << "ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
+                        //cout << "ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
 
-                        testEndTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
-                        testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
-                        for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
-                        {
-                            testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
-                        }
-                        cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
-                        assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
+                        //testEndTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
+                        //testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
+                        //for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
+                        //{
+                         //   testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
+                        //}
+                        //cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
+                        //assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
                     }
 
                     TempVehicleAllocation[TempRoute[i][j][k]][i] = TempVehicleAllocation[tempCustomer][i];
@@ -137,8 +137,8 @@ double solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, H
                     TempVehicleLoad[i][j] = TempVehicleLoad[i][j] - TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][i]; // Customer gets unallocated, the vehicle load is reduced correspondingly
                     ChangeInTotalQuantity = 0 - TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][i];
                     TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][i] = 0;
-                    cout << "Remove a customer" << endl;
-                    PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+                    //cout << "Remove a customer" << endl;
+                    //PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
 
                     if (i == 0)
                     {
@@ -209,16 +209,16 @@ double solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, H
                             }
                         }
                     }
-                    cout << "Adjusted the inventory level of the removed customer" << endl;
-                    PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+                    //cout << "Adjusted the inventory level of the removed customer" << endl;
+                    //PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
                     double CopyOfQ = TempDeliveryQuantity[TempRoute[i][j][k]][i];
                     TempDeliveryQuantity[TempRoute[i][j][k]][i] = min(IRPLR.Vehicle.capacity - TempVehicleLoad[i][j], IRPLR.Retailers[TempRoute[i][j][k]].InventoryMax - TempInventoryLevel[TempRoute[i][j][k]][i]);
                     ChangeInTotalQuantity += TempDeliveryQuantity[TempRoute[i][j][k]][i] - CopyOfQ;
 
                     // cout<<"!"<<IRPLR.Vehicle.capacity <<","<< TempVehicleLoad[i][j]<<","<< IRPLR.Retailers[TempRoute[i][j][k]].InventoryMax<<","<<TempInventoryLevel[TempRoute[i][j][k]][i]<<","<<TempDeliveryQuantity[TempRoute[i][j][k]][i]<<endl;
                     TempVehicleLoad[i][j] = TempVehicleLoad[i][j] + TempDeliveryQuantity[TempRoute[i][j][k]][i];
-                    cout << "Added delivery quantity to the inserted customer" << endl;
-                    PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+                    //cout << "Added delivery quantity to the inserted customer" << endl;
+                    //PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
 
                     if (i == 0)
                     {
@@ -285,60 +285,60 @@ double solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, H
                             }
                         }
                     }
-                    cout << "Adjusted inventory level to the inserted customer" << endl;
-                    PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+                    //cout << "Adjusted inventory level to the inserted customer" << endl;
+                    //PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
 
-                    cout << "Starting route:" << endl;
+                    /*cout << "Starting route:" << endl;
                     for (int y = 0; y < TempRoute[i][j].size(); y++)
                     {
                         cout << TempRoute[i][j][y] << ",";
                     }
-                    cout << endl;
+                    cout << endl;*/
 
                     double CurrentTransportationCost = memory.PopulateSingleRoutePrefixAndSuffix(IRPLR, TempRoute[i][j]); // Preprocessing travel distance of the route
-                    cout << testEndTransportationCost << "," << CurrentTransportationCost << endl;
-                    assert(fabs(testEndTransportationCost - CurrentTransportationCost) < 0.001);
+                    //cout << testEndTransportationCost << "," << CurrentTransportationCost << endl;
+                    //assert(fabs(testEndTransportationCost - CurrentTransportationCost) < 0.001);
                     memory.PopulateSingleRouteSubpath(IRPLR, TempRoute[i][j]);
                     double ImprovedTransportationCost = CurrentTransportationCost;
                     int FindingCheapestInsertion = OperatorCheapestInsertion(IRPLR, TempRoute[i][j], k, PenaltyForStockOut, ImprovedTransportationCost, memory); // Finding cheapest insertion
-                    cout << CurrentTransportationCost << "," << ImprovedTransportationCost << "," << CurrentTransportationCost - ImprovedTransportationCost << endl;
+                    //cout << CurrentTransportationCost << "," << ImprovedTransportationCost << "," << CurrentTransportationCost - ImprovedTransportationCost << endl;
                     ChangeInTransportationCost += ImprovedTransportationCost - CurrentTransportationCost;
-                    cout << ChangeInTransportationCost << endl;
+                    //cout << ChangeInTransportationCost << endl;
                     double NewTransportationCost = IRPSolution.TotalTransportationCost + ChangeInTransportationCost;
                     double NewTotalDelivery = IRPSolution.TotalDelivery + ChangeInTotalQuantity;
 
-                    cout << "Route resulting in cheapest insertion:" << endl;
+                    /*cout << "Route resulting in cheapest insertion:" << endl;
                     for (int y = 0; y < TempRoute[i][j].size(); y++)
                     {
                         cout << TempRoute[i][j][y] << ",";
                     }
-                    cout << endl;
+                    cout << endl;*/
 
                     double NewLogisticRatio = NewTransportationCost / NewTotalDelivery;
                     double NewStockOut = IRPSolution.ViolationStockOut - IRPSolution.StockOutPerCustomer[TempRoute[i][j][k]] - IRPSolution.StockOutPerCustomer[TempUnallocatedCustomers[i][x]] + ChangeInStockOut;
                     double temp_LR_obvj = NewLogisticRatio + PenaltyForStockOut * NewStockOut;
 
-                    double TempTransportationCost = 0;
-                    double TempTotalDelivery = 0;
-                    double TempLogisticRatio = 0;
-                    double TempViolationStockOut = 0;
-                    GetTempLogisticRatio(IRPLR, TempRoute, TempDeliveryQuantity, TempInventoryLevel, TempTransportationCost, TempTotalDelivery, TempLogisticRatio, TempViolationStockOut);
-                    cout << "Check Transportation Cost" << endl;
-                    cout << TempTransportationCost << "," << NewTransportationCost << endl;
-                    assert(fabs(TempTransportationCost - NewTransportationCost) < 0.001);
-                    cout << "Check Delivery Quantity" << endl;
-                    cout << TempTotalDelivery << "," << NewTotalDelivery << endl;
-                    assert(fabs(TempTotalDelivery - NewTotalDelivery) < 0.001);
-                    cout << "Check Logistic ratio" << endl;
-                    cout << TempLogisticRatio << "," << NewLogisticRatio << endl;
-                    assert(fabs(TempLogisticRatio - NewLogisticRatio) < 0.001);
-                    cout << "Check ViolationStockout" << endl;
-                    cout << TempViolationStockOut << "," << NewStockOut << endl;
-                    assert(fabs(TempViolationStockOut - NewStockOut) < 0.001);
+                    //double TempTransportationCost = 0;
+                    //double TempTotalDelivery = 0;
+                    //double TempLogisticRatio = 0;
+                    //double TempViolationStockOut = 0;
+                    //GetTempLogisticRatio(IRPLR, TempRoute, TempDeliveryQuantity, TempInventoryLevel, TempTransportationCost, TempTotalDelivery, TempLogisticRatio, TempViolationStockOut);
+                    //cout << "Check Transportation Cost" << endl;
+                    //cout << TempTransportationCost << "," << NewTransportationCost << endl;
+                    //assert(fabs(TempTransportationCost - NewTransportationCost) < 0.001);
+                    //cout << "Check Delivery Quantity" << endl;
+                    //cout << TempTotalDelivery << "," << NewTotalDelivery << endl;
+                    //assert(fabs(TempTotalDelivery - NewTotalDelivery) < 0.001);
+                    //cout << "Check Logistic ratio" << endl;
+                    //cout << TempLogisticRatio << "," << NewLogisticRatio << endl;
+                    //assert(fabs(TempLogisticRatio - NewLogisticRatio) < 0.001);
+                    //cout << "Check ViolationStockout" << endl;
+                    //cout << TempViolationStockOut << "," << NewStockOut << endl;
+                    //assert(fabs(TempViolationStockOut - NewStockOut) < 0.001);
                     // cout << "TotalTransportationCost:" << tempIRP_sol.TotalTransportationCost << "\t TotalDelivery:" << tempIRP_sol.TotalDelivery << "\t LogistcRatio:" << tempIRP_sol.LogisticRatio << endl;
                     // cout << "ViolationStockOut" << tempIRP_sol.ViolationStockOut << "\t PenaltyForStockOut" << PenaltyForStockOut << "\t temp_LR_obvj:" << temp_LR_obvj << endl;
-                    cout << "Final solution" << endl;
-                    PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+                   // cout << "Final solution" << endl;
+                    //PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
                     cout << temp_LR_obvj << "," << LR_objv << endl;
                     if (temp_LR_obvj < LR_objv)
                     {
