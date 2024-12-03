@@ -10,7 +10,7 @@ void solution::print_solution(input &IRPLR)
     cout << endl;
     for (int i = 0; i < InventoryLevel.size(); i++)
     {
-        cout << "Retailer " << i << "(" << IRPLR.Retailers[i].InventoryMax << ")" << ":    \t" << IRPLR.Retailers[i].InventoryBegin << '\t';
+        cout << "Retailer " << i << "(" << IRPLR.Retailers[i].InventoryMax <<","<<StockOutPerCustomer[i]<< ")" << ":    \t" << IRPLR.Retailers[i].InventoryBegin << '\t';
         for (int j = 0; j < InventoryLevel[i].size() - 1; j++)
         {
             cout << InventoryLevel[i][j];

@@ -81,9 +81,7 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     int BetterFeasibleSolutionCounter = 0;
     while (OperatorSwapCounter < 1000)
     {
-        double violation = 0;
-
-        violation = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
+        int whether_improved = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
         // violation = OperatorInsert(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
         // violation = OperatorRemove(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
 
@@ -126,7 +124,7 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     time(&end_time);
     double total_time = difftime(end_time, start_time);
     double check_LogisticRatio = BestIRP_Solution.LogisticRatio;
-    cout<<"Best known results"<<endl;
+    cout << "Best known results" << endl;
     BestIRP_Solution.print_solution(IRPLR);
     BestIRP_Solution.GetLogisticRatio(IRPLR);
     assert(fabs(check_LogisticRatio - BestIRP_Solution.LogisticRatio) < 0.001);
