@@ -1,7 +1,7 @@
 #include "lib.h"
 int solution_improvement::OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &CustomerToReinsert,  double &PenaltyForStockOut, double &CurrentTransportationCost, preprocessing &memory)
 {
-	cout << "Finding cheapest insertion" << endl;
+	//cout << "Finding cheapest insertion" << endl;
 	
 	int whether_improve_move_been_found = 0;
 
@@ -19,10 +19,10 @@ int solution_improvement::OperatorCheapestInsertion(input &IRPLR, vector<int> &r
 			double TempTransportationCost = memory.ConcatenateSingleRoute(j, CustomerToReinsert, 1, route, IRPLR, memory);
 			//  cout<<routeobj<<endl;
 
-				cout << "CurrentTransportationCost:" << CurrentTransportationCost << ", TempTransportationCost:" << TempTransportationCost << endl;
+				//cout << "CurrentTransportationCost:" << CurrentTransportationCost << ", TempTransportationCost:" << TempTransportationCost << endl;
 			if (CurrentTransportationCost - TempTransportationCost > 0.001)
 			{
-				cout << "Improved Transportation Cost"<<endl;
+				//cout << "Improved Transportation Cost"<<endl;
 				whether_improve_move_been_found = 1;
 				CurrentTransportationCost = TempTransportationCost;
 				move[0] = j;

@@ -70,7 +70,7 @@ andy_desktop:
 	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:Repair.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
-	-o test.out -O3
+	-o test.out
 andy_testpc:
 	$(CC) main.cpp file:Read_andy_testpc.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \

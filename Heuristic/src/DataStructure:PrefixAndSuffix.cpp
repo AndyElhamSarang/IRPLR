@@ -81,13 +81,13 @@ double preprocessing::PopulateSingleRoutePrefixAndSuffix(input &IRPLR, vector<in
     {
         // Calcualte cumulated_distance for concatentation
         TempCumulatedDistance = TempCumulatedDistance + IRPLR.Distance[start][route[k] + 1];
-        /*cout << "Prefix:";
-        for (int x = 0; x <= k; x++)
-        {
-            cout << route[x] << ",";
-        }
-        cout << endl;
-        cout << "Cumulated_distance:" << TempCumulatedDistance << endl;*/
+        //cout << "Prefix:";
+        //for (int x = 0; x <= k; x++)
+        //{
+         //   cout << route[x] << ",";
+        //}
+        //cout << endl;
+        //cout << "Cumulated_distance:" << TempCumulatedDistance << endl;
 
         start = route[k] + 1;
         SingleRoutePrefix.push_back(TempCumulatedDistance);
@@ -100,18 +100,18 @@ double preprocessing::PopulateSingleRoutePrefixAndSuffix(input &IRPLR, vector<in
     {
         // Calcualte cumulated_distance for concatentation
         TempCumulatedDistance = TempCumulatedDistance + IRPLR.Distance[route[k] + 1][end];
-        /*cout << "Suffix:";
-        for (int x = k; x < route.size(); x++)
-        {
-            cout << route[x] << ",";
-        }
-        cout << endl;
-        cout << "Cumulated_distance:" << TempCumulatedDistance << endl;*/
+        //cout << "Suffix:";
+        //for (int x = k; x < route.size(); x++)
+        //{
+        //    cout << route[x] << ",";
+        //}
+        //cout << endl;
+        //cout << "Cumulated_distance:" << TempCumulatedDistance << endl;
         end = route[k] + 1;
         SingleRouteSuffix.push_back(TempCumulatedDistance);
     }
     TransportationCost = TransportationCost + IRPLR.Distance[route[route.size()-1]+1][0];
-    cout<<"TransportationCost:"<<TransportationCost<<endl;
+    //cout<<"TransportationCost:"<<TransportationCost<<endl;
     /*double TransportationCostForTheDay = 0;
     if (route.size() != 0)
     {
