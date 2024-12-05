@@ -32,7 +32,7 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
     //                                           //
     ///////////////////////////////////////////////
 
-    for (int i = 0; i < IRPSolution.Route.size(); i++)
+   /*for (int i = 0; i < IRPSolution.Route.size(); i++)
     {
         int NumberOfCustomerOfDay = 0;
         for (int j = 0; j < IRPSolution.Route[i].size(); j++)
@@ -56,7 +56,7 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
     if (OutputResults == 1)
     {
         Table << IRPSolution.TotalTransportationCost << "," << IRPSolution.TotalDelivery << "," << IRPSolution.LogisticRatio << ",";
-    }
+    }*/
 
     IRPSolution.UnallocatedCustomers.clear();
     for (int i = 0; i < IRPSolution.Route.size(); i++) // For this time period
