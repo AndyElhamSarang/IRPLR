@@ -79,7 +79,7 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     int NumberOfFeasibleSolution = 0;
     int FeasibleSolutionCounter = 0;
     int BetterFeasibleSolutionCounter = 0;
-    while (OperatorSwapCounter < 1)
+    while (OperatorSwapCounter < 1000)
     {
         int whether_improved_swap = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
         
