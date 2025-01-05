@@ -9,9 +9,16 @@ void LNS_Repair(input &IRPLR, solution &IRPSolution, HGS &Routing);
 void LNS_Destory(input &IRPLR, solution &IRPSolution, HGS &Routing);
 
 int OperatorSwap(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut,preprocessing &memory);
+int OperatorSwap_backup(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut,preprocessing &memory);
 int OperatorInsert(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory);
 int OperatorRemove(input &IRPLR, solution &IRPSolution,  double &PenaltyForStockOut, preprocessing &memory);
-int OperatorBalancing(input &IRPLR, solution &IRPSolution, vector<vector<int>> &slack, double &PenaltyForStockOut, preprocessing &memory);
+double OperatorBalancing(input &IRPLR, 
+vector<vector<vector<int>>> &Route, 
+vector<vector<int>> &UnallocatedCustomers,
+vector<vector<double>> &VehicleLoad,
+vector<vector<double>> &DeliveryQuantity,
+vector<vector<double>> &InventoryLevel,
+vector<vector<int>> &VehicleAllocation);
 
 int OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &CustomerToReinsert, double &PenaltyForStockOut, double &CurrentTransportationCost,preprocessing &memory);
 int OperatorRepair(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut);

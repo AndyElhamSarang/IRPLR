@@ -79,24 +79,23 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     int NumberOfFeasibleSolution = 0;
     int FeasibleSolutionCounter = 0;
     int BetterFeasibleSolutionCounter = 0;
-    while (OperatorSwapCounter < 1000)
+    while (OperatorSwapCounter < 1)
     {
-        int whether_improved_swap = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
-        
+        int whether_improved_swap = OperatorSwap_backup(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
 
         IRPSolution.GetLogisticRatio(IRPLR);
         cout << "Solution after iteration " << OperatorSwapCounter << endl;
         cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
         cout << "ViolationStockOut" << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << endl;
-  IRPSolution.print_solution(IRPLR);
-       
-if(IRPSolution.ViolationStockOut!=0)
-{
-        int whether_improved_insert = OperatorInsert(IRPLR, IRPSolution,  PenaltyForStockOut, memory);
-}
+        IRPSolution.print_solution(IRPLR);
+
+        if (IRPSolution.ViolationStockOut != 0)
+        {
+            int whether_improved_insert = OperatorInsert(IRPLR, IRPSolution, PenaltyForStockOut, memory);
+        }
         // violation = OperatorRemove(IRPLR, IRPSolution,  PenaltyForStockOut, memory);
-        
-       ItForCurrentPenalty++;
+
+        ItForCurrentPenalty++;
         if (IRPSolution.ViolationStockOut - 0 > 0.001)
         {
             NumberOfInfeasibleSolution++;

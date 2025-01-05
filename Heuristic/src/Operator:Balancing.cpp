@@ -1,12 +1,36 @@
 #include "lib.h"
-int solution_improvement::OperatorBalancing(input &IRPLR, solution &IRPSolution, vector<vector<int>> &slack, double &PenaltyForStockOut, preprocessing &memory)
+double solution_improvement::OperatorBalancing(input &IRPLR,
+                                               vector<vector<vector<int>>> &TempRoute,
+                                               vector<vector<int>> &TempUnallocatedCustomers,
+                                               vector<vector<double>> &TempVehicleLoad,
+                                               vector<vector<double>> &TempDeliveryQuantity,
+                                               vector<vector<double>> &TempInventoryLevel,
+                                               vector<vector<int>> &TempVehicleAllocation)
 {
-    cout<<"Balancing quantity operator"<<endl;
-    int test=0;
-
-    for(int i=0;i<slack.size();i++)
+    cout << "Balancing quantity operator" << endl;
+    double objv = 0;
+    for (int i = 0; i < TempVehicleLoad.size(); i++)
     {
-        cout<<"Slack exists in time period "<<slack[i][0]<<" at vehicle "<<slack[i][1]<<endl;
+        for (int j = 0; j < TempVehicleLoad[i].size(); j++)
+        {
+            TempVehicleLoad[i][j] = 0;
+        }
     }
-    return test;
+    for (int i = 0; i < TempDeliveryQuantity.size(); i++)
+    {
+        for (int j = 0; j < TempDeliveryQuantity[i].size(); j++)
+        {
+            TempDeliveryQuantity[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < TempInventoryLevel.size(); i++)
+    {
+        for (int j = 0; j < TempInventoryLevel[i].size(); j++)
+        {
+            TempInventoryLevel[i][j] = 0;
+        }
+    }
+    PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+
+    return objv;
 }
