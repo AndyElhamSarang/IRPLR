@@ -81,7 +81,9 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     int BetterFeasibleSolutionCounter = 0;
     while (OperatorSwapCounter < 1)
     {
-        int whether_improved_swap = OperatorSwap_backup(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
+
+        //int whether_improved_swap = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
+        int whether_improved_swap = OperatorSwapWithBalancing(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
 
         IRPSolution.GetLogisticRatio(IRPLR);
         cout << "Solution after iteration " << OperatorSwapCounter << endl;

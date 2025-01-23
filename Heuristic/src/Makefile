@@ -25,7 +25,7 @@ andy:
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
-	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:Swap_backup.cpp \
+	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:SwapWithBalancing.cpp \
 	Operator:Repair.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
 	-I $(andy) -I $(andy_boost) \
@@ -47,7 +47,7 @@ andy_lenovo:
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
-	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:Swap_backup.cpp \
+	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:SwapWithBalancing.cpp \
 	Operator:Repair.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
 	-I $(andy_lenovo) -I $(andy_lenovo_boost) \
@@ -69,7 +69,7 @@ andy_desktop:
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
-	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:Swap_backup.cpp \
+	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:SwapWithBalancing.cpp \
 	Operator:Repair.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
@@ -91,7 +91,7 @@ andy_testpc:
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
-	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:Swap_backup.cpp \
+	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:SwapWithBalancing.cpp \
 	Operator:Repair.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
