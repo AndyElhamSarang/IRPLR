@@ -1,11 +1,12 @@
 #include "lib.h"
 double solution_improvement::OperatorBalancing(input &IRPLR,
-                                               vector<vector<vector<int>>> &Route,
-                                               vector<vector<int>> &UnallocatedCustomers,
+                                               vector<vector<vector<int>>> &Route,//Stay fixed
+                                               vector<vector<int>> &UnallocatedCustomers, //Stay fixed
                                                vector<vector<double>> &VehicleLoad,
                                                vector<vector<double>> &DeliveryQuantity,
                                                vector<vector<double>> &InventoryLevel,
-                                               vector<vector<int>> &VehicleAllocation)
+                                               vector<vector<int>> &VehicleAllocation//Stay fixed
+                                               )
 {
     cout << "Balancing quantity operator" << endl;
     double objv = 0;
@@ -19,14 +20,19 @@ double solution_improvement::OperatorBalancing(input &IRPLR,
     }
     for (int i = 0; i < DeliveryQuantity.size(); i++)
     {
+
+         double tempInventory = IRPLR.Retailers[i].InventoryBegin;
         for (int j = 0; j < DeliveryQuantity[i].size(); j++)
         {
             DeliveryQuantity[i][j] = 0;
-            InventoryLevel[i][j] = 0;
+            InventoryLevel[i][j] = tempInventory - IRPLR.Retailers[i].Demand;;
+            tempInventory = tempInventory - IRPLR.Retailers[i].Demand;
         }
         AllCustomers.push_back(i);
     }
     
+   
+
     PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation);
     boost_random_mechanism RandomnessInBalance;
     assert(AllCustomers.size() != 0);
@@ -42,6 +48,29 @@ double solution_improvement::OperatorBalancing(input &IRPLR,
                 DeliveryQuantity[PotentialCustomers[RandomCustomer]][i] =
                     min(IRPLR.Vehicle.capacity - VehicleLoad[i][VehicleAllocation[PotentialCustomers[RandomCustomer]][i]],
                         IRPLR.Retailers[PotentialCustomers[RandomCustomer]].InventoryMax - InventoryLevel[PotentialCustomers[RandomCustomer]][i]);
+                VehicleLoad[i][VehicleAllocation[PotentialCustomers[RandomCustomer]][i]] += DeliveryQuantity[PotentialCustomers[RandomCustomer]][i];
+
+                if (i == 0)
+                {
+                    double tempInventory = IRPLR.Retailers[PotentialCustomers[RandomCustomer]].InventoryBegin;
+                    for (int y = 0; y < InventoryLevel[PotentialCustomers[RandomCustomer]].size(); y++)
+                    {
+                        
+                        tempInventory = tempInventory - IRPLR.Retailers[PotentialCustomers[RandomCustomer]].Demand + DeliveryQuantity[PotentialCustomers[RandomCustomer]][y];
+                        InventoryLevel[PotentialCustomers[RandomCustomer]][y] = tempInventory;
+                    }
+                }
+                else
+                {
+
+                    double tempInventory = InventoryLevel[PotentialCustomers[RandomCustomer]][i - 1];
+                    for (int y = i; y < InventoryLevel[PotentialCustomers[RandomCustomer]].size(); y++)
+                    {                        
+                        tempInventory = tempInventory - IRPLR.Retailers[PotentialCustomers[RandomCustomer]].Demand + DeliveryQuantity[PotentialCustomers[RandomCustomer]][y];
+                        InventoryLevel[PotentialCustomers[RandomCustomer]][y] = tempInventory;
+                    }
+                }
+
                 PotentialCustomers.erase(PotentialCustomers.begin() + RandomCustomer, PotentialCustomers.begin() + RandomCustomer + 1);
             }
             else
@@ -49,11 +78,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR,
                 PotentialCustomers.erase(PotentialCustomers.begin() + RandomCustomer, PotentialCustomers.begin() + RandomCustomer + 1);
             }
         }
-        //         if (IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] < Load)
-        //         {
-        //             IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = Load;
-        //             vehicle_index = i;
-        //         }
+        
     }
     cout << "End balancing" << endl;
     PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation);
