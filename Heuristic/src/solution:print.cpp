@@ -10,31 +10,67 @@ void solution::print_solution(input &IRPLR)
     cout << endl;
     for (int i = 0; i < InventoryLevel.size(); i++)
     {
-        cout << "Retailer " << i << "(" << IRPLR.Retailers[i].InventoryMax <<","<<StockOutPerCustomer[i]<< ")" << ":    \t" << IRPLR.Retailers[i].InventoryBegin << '\t';
+        cout << "Retailer " << i << "(" << IRPLR.Retailers[i].InventoryMax << "," << StockOutPerCustomer[i] << ")" << ":    \t" << IRPLR.Retailers[i].InventoryBegin << '\t';
         for (int j = 0; j < InventoryLevel[i].size() - 1; j++)
         {
             cout << InventoryLevel[i][j];
             if (DeliveryQuantity[i][j] == 0)
             {
-                //cout << "(" << DeliveryQuantity[i][j] << ",-,-)\t";
-                cout << "(" << DeliveryQuantity[i][j] << "," << VehicleAllocation[i][j] <<  ")    "<<'\t';
+                // cout << "(" << DeliveryQuantity[i][j] << ",-,-)\t";
+                cout << "(" ;
+                if (VehicleAllocation[i][j] < IRPLR.NumberOfVehicles)
+                {
+                    cout << DeliveryQuantity[i][j] << ","<< VehicleAllocation[i][j];
+                }
+                else
+                {
+                    cout << "-,-";
+                }
+                cout << ")    " << '\t';
             }
             else
             {
-                cout << "(" << DeliveryQuantity[i][j] << "," << VehicleAllocation[i][j] << ")    "<<'\t';
-
+                cout << "(" ;
+                if (VehicleAllocation[i][j] < IRPLR.NumberOfVehicles)
+                {
+                    cout << DeliveryQuantity[i][j] << ","<< VehicleAllocation[i][j];
+                }
+                else
+                {
+                    cout <<"-,-";
+                }
+                cout << ")    " << '\t';
                 assert(VehicleAllocation[i][j] < IRPLR.NumberOfVehicles + 1);
             }
         }
         cout << InventoryLevel[i][InventoryLevel[i].size() - 1];
         if (DeliveryQuantity[i][InventoryLevel[i].size() - 1] == 0)
         {
-            //cout << "(" << DeliveryQuantity[i][InventoryLevel[i].size() - 1] << ",-,-)" << endl;
-            cout << "(" << DeliveryQuantity[i][InventoryLevel[i].size() - 1] << "," << VehicleAllocation[i][InventoryLevel[i].size() - 1] << ")" << endl;
+            // cout << "(" << DeliveryQuantity[i][InventoryLevel[i].size() - 1] << ",-,-)" << endl;
+
+            cout << "(" ;
+            if (VehicleAllocation[i][InventoryLevel[i].size() - 1] < IRPLR.NumberOfVehicles)
+            {
+                cout << DeliveryQuantity[i][InventoryLevel[i].size() - 1] << "," << VehicleAllocation[i][InventoryLevel[i].size() - 1];
+            }
+            else
+            {
+                cout <<"-,-";
+            }
+            cout << ")    " << endl;
         }
         else
         {
-            cout << "(" << DeliveryQuantity[i][InventoryLevel[i].size() - 1] << "," << VehicleAllocation[i][InventoryLevel[i].size() - 1] << ")" << endl;
+            cout << "(" ;
+            if (VehicleAllocation[i][InventoryLevel[i].size() - 1] < IRPLR.NumberOfVehicles)
+            {
+                cout << DeliveryQuantity[i][InventoryLevel[i].size() - 1] << ","<< VehicleAllocation[i][InventoryLevel[i].size() - 1];
+            }
+            else
+            {
+                cout << "-,-";
+            }
+            cout << ")    " << endl;
             assert(VehicleAllocation[i][InventoryLevel[i].size() - 1] < IRPLR.NumberOfVehicles + 1);
         }
     }
