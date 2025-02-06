@@ -1,5 +1,5 @@
 #include "lib.h"
-double solution_improvement::OperatorBalancing(input &IRPLR,
+double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memory,
                                                vector<vector<vector<int>>> &Route,//Stay fixed
                                                vector<vector<int>> &UnallocatedCustomers, //Stay fixed
                                                vector<vector<double>> &VehicleLoad,
@@ -9,6 +9,8 @@ double solution_improvement::OperatorBalancing(input &IRPLR,
                                                )
 {
     cout << "Balancing quantity operator" << endl;
+    //Reset the solution
+    vector<vector<double>> WeightedProbability(memory.CustomerPriority);
     double objv = 0;
     vector<int> AllCustomers;
     for (int i = 0; i < VehicleLoad.size(); i++)
@@ -30,7 +32,18 @@ double solution_improvement::OperatorBalancing(input &IRPLR,
         }
         AllCustomers.push_back(i);
     }
-    
+
+    for(int i=0;i<UnallocatedCustomers.size();i++)
+    {
+        for(int j=0;j<UnallocatedCustomers[i].size();j++)
+        {
+            cout<<UnallocatedCustomers[i][j]<<",";
+            
+            WeightedProbability[UnallocatedCustomers[i][j]][i] = 0;
+        }
+    }
+    cout<<endl;
+    int aborter=0;
    
 
     PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation);
@@ -39,6 +52,39 @@ double solution_improvement::OperatorBalancing(input &IRPLR,
 
     for (int i = 0; i < IRPLR.TimeHorizon; i++)
     {
+        cout<<"Weighted probability"<<endl;
+        cout << '\t'<<'\t';
+        for (int z = 0; z < IRPLR.TimeHorizon; z++)
+        {
+            cout << "t" << z << "\t";
+        }
+        cout<<endl;
+        for (int x = 0; x < WeightedProbability.size(); x++)
+        {
+            cout << "Retailer " << x <<": "<<'\t' ;
+       
+            for (int y = 0; y < WeightedProbability[x].size()-1; y++)
+            {
+                if(fabs(WeightedProbability[x][y]-0)>0.001)
+                {
+                cout << WeightedProbability[x][y]<<'\t';
+                }
+                else
+                {
+                    cout << "-"<<'\t';
+                }
+            }
+             if(fabs(WeightedProbability[x][WeightedProbability[x].size() - 1]-0)>0.001)
+                {
+                cout << WeightedProbability[x][WeightedProbability[x].size() - 1]<<endl;
+                }
+                else
+                {
+                    cout << "-"<<endl;
+                }
+           
+        }
+        cout<<endl;
         vector<int> PotentialCustomers(AllCustomers);
         while (PotentialCustomers.size() != 0)
         {
@@ -82,7 +128,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR,
     }
     cout << "End balancing" << endl;
     PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation);
-    
+    assert(aborter==1);
     // if (LookBackwardPeriod > 0)
     // {
     //     double Load = 0;

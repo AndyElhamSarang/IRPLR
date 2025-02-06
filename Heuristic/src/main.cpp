@@ -50,6 +50,9 @@ int main()
 			}
 			preprocessing memory;
 			memory.PopulateGlobalDataStructure(IRPLR);
+
+			memory.CustomerInfo(IRPLR);
+			
 			//memory.PrintGlobalDataStructure();
 			for (int j = 0; j < NumberOfInitialSolutions; j++)
 			{

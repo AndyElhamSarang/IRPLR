@@ -12,7 +12,7 @@ int OperatorSwap(input &IRPLR, solution &IRPSolution, HGS &Routing, double &Pena
 int OperatorSwapWithBalancing(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut,preprocessing &memory);
 int OperatorInsert(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory);
 int OperatorRemove(input &IRPLR, solution &IRPSolution,  double &PenaltyForStockOut, preprocessing &memory);
-double OperatorBalancing(input &IRPLR, 
+double OperatorBalancing(input &IRPLR, preprocessing &memory,
 vector<vector<vector<int>>> &Route, 
 vector<vector<int>> &TempUnallocatedCustomers,
 vector<vector<double>> &VehicleLoad,

@@ -12,7 +12,7 @@ andy:
 	$(CC) main.cpp file:Read_andy.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
 	PrintData.cpp random.cpp \
-	DataStructure:Global.cpp DataStructure:PrefixAndSuffix.cpp DataStructure:Local.cpp \
+	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp DataStructure:PrefixAndSuffix.cpp DataStructure:Local.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:Print.cpp \
@@ -34,7 +34,7 @@ andy_lenovo:
 	$(CC) main.cpp file:Read_andy_lenovo.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
 	PrintData.cpp random.cpp \
-	DataStructure:Global.cpp DataStructure:PrefixAndSuffix.cpp DataStructure:Local.cpp \
+	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp DataStructure:PrefixAndSuffix.cpp DataStructure:Local.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:Print.cpp \
@@ -56,7 +56,7 @@ andy_desktop:
 	$(CC) main.cpp file:Read_andy_desktop.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
 	PrintData.cpp random.cpp \
-	DataStructure:Global.cpp DataStructure:PrefixAndSuffix.cpp DataStructure:Local.cpp \
+	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp DataStructure:PrefixAndSuffix.cpp DataStructure:Local.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:Print.cpp \
@@ -78,7 +78,7 @@ andy_testpc:
 	$(CC) main.cpp file:Read_andy_testpc.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
 	PrintData.cpp random.cpp \
-	DataStructure:Global.cpp DataStructure:PrefixAndSuffix.cpp DataStructure:Local.cpp \
+	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp DataStructure:PrefixAndSuffix.cpp DataStructure:Local.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:Print.cpp \

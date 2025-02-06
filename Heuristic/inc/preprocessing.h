@@ -3,6 +3,14 @@ class preprocessing
 {
 private:
 public:
+
+
+  vector<vector<double>> InitialStatusDeliveryQuantity;
+  vector<vector<double>> InitialStatusInventoryLevel;
+  
+  vector<vector<double>> CustomerPriority;
+
+
    vector<double> SingleNode;             // Subpathes with single node, this is a global structure, no need to update
    vector<vector<double>> TwoNodes;       ////Subpathese with two nodes, this is a global structure, no need to update
    vector<vector<vector<double>>> Prefix; // Subpathes begin with head, this is a local structure, keep it updated all time
@@ -15,6 +23,7 @@ public:
 
    vector<vector<vector<double>>> StructureForSingleRoute; // This is a local structure design for single route optimisation, keep it updated locally
    void PopulateGlobalDataStructure(input &IRPLR);
+   void CustomerInfo(input &IRPLR);
    void PopulatePrefixAndSuffix(input &IRPLR, solution &IRPSolution);
    double PopulateSingleRoutePrefixAndSuffix(input &IRPLR, vector<int> &route);
 

@@ -79,7 +79,7 @@ int solution_improvement::OperatorSwapWithBalancing(input &IRPLR, solution &IRPS
                     while (BalancingCounter < 10)
                     {
                         cout<<"Balancing attempt:"<<BalancingCounter<<endl;
-                        double temp_LR_obvj = OperatorBalancing(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+                        double temp_LR_obvj = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
                         BalancingCounter++;
                     }
 
