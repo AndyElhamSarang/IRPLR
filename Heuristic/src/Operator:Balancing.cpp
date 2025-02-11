@@ -9,6 +9,8 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                                                )
 {
     cout << "Balancing quantity operator" << endl;
+
+    vector<int>NumberOfVisits;
     //Reset the solution
     vector<vector<double>> WeightedProbability(memory.CustomerPriority);
     double objv = 0;
@@ -44,7 +46,152 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
     }
     cout<<endl;
     int aborter=0;
-   
+    cout << "Weighted probability" << endl;
+    cout << '\t' << '\t';
+    for (int z = 0; z < IRPLR.TimeHorizon; z++)
+    {
+        cout << "t" << z << "\t";
+    }
+    cout << endl;
+    for (int x = 0; x < WeightedProbability.size(); x++)
+    {
+        cout << "Retailer " << x << ": " << '\t';
+
+        for (int y = 0; y < WeightedProbability[x].size() - 1; y++)
+        {
+            if (fabs(WeightedProbability[x][y] - 0) > 0.001)
+            {
+                cout << WeightedProbability[x][y] << '\t';
+            }
+            else
+            {
+                cout << "-" << '\t';
+            }
+        }
+        if (fabs(WeightedProbability[x][WeightedProbability[x].size() - 1] - 0) > 0.001)
+        {
+            cout << WeightedProbability[x][WeightedProbability[x].size() - 1] << endl;
+        }
+        else
+        {
+            cout << "-" << endl;
+        }
+    }
+    cout << endl;
+for (int x = 0; x < WeightedProbability.size(); x++)
+    {
+        int TempNumberOfVisit=0;
+        for (int y = 0; y < WeightedProbability[x].size(); y++)
+        {
+               if(fabs(WeightedProbability[x][y]-0)>0.001)
+            {
+                TempNumberOfVisit++;
+            }
+        }
+        NumberOfVisits.push_back(TempNumberOfVisit);
+    }
+    cout << "Updating weight based on next visits except for last day"<<endl;
+     for (int x = 0; x < WeightedProbability.size(); x++)
+    {
+        for (int y = 0; y < WeightedProbability[x].size()-1; y++)
+        {
+            int visited_next_day = 1;
+            for (int i = 0; i < UnallocatedCustomers[y+1].size(); i++)
+            {
+                if (UnallocatedCustomers[y+1][i] == x)
+                {
+                    visited_next_day = 0;
+                }
+            }
+
+            if (visited_next_day == 1)
+            {
+                WeightedProbability[x][y] = WeightedProbability[x][y] / 2;
+            }
+
+           
+        }
+    } 
+    cout << "Weighted probability" << endl;
+    cout << '\t' << '\t';
+    for (int z = 0; z < IRPLR.TimeHorizon; z++)
+    {
+        cout << "t" << z << "\t";
+    }
+    cout << endl;
+    for (int x = 0; x < WeightedProbability.size(); x++)
+    {
+        cout << "Retailer " << x << ": " << '\t';
+
+        for (int y = 0; y < WeightedProbability[x].size() - 1; y++)
+        {
+            if (fabs(WeightedProbability[x][y] - 0) > 0.001)
+            {
+                cout << WeightedProbability[x][y] << '\t';
+            }
+            else
+            {
+                cout << "-" << '\t';
+            }
+        }
+        if (fabs(WeightedProbability[x][WeightedProbability[x].size() - 1] - 0) > 0.001)
+        {
+            cout << WeightedProbability[x][WeightedProbability[x].size() - 1] << endl;
+        }
+        else
+        {
+            cout << "-" << endl;
+        }
+    }
+    cout << endl;
+    cout << "Updating weight based on number of visits" << endl;
+    cout<<"Number of visits"<<endl;
+    for(int i=0;i<NumberOfVisits.size();i++)
+    {
+        cout<<NumberOfVisits[i]<<",";
+    }
+    cout<<endl;
+    for (int x = 0; x < WeightedProbability.size(); x++)
+    {
+        for (int y = 0; y < WeightedProbability[x].size(); y++)
+        {
+            cout<<(1 - NumberOfVisits[x] / (IRPLR.TimeHorizon+1))<<",";
+            WeightedProbability[x][y] = WeightedProbability[x][y] * (1 - (NumberOfVisits[x] / (IRPLR.TimeHorizon+1)));
+        }
+    }
+    cout<<endl;
+    cout << "Weighted probability" << endl;
+    cout << '\t' << '\t';
+    for (int z = 0; z < IRPLR.TimeHorizon; z++)
+    {
+        cout << "t" << z << "\t";
+    }
+    cout << endl;
+    for (int x = 0; x < WeightedProbability.size(); x++)
+    {
+        cout << "Retailer " << x << ": " << '\t';
+
+        for (int y = 0; y < WeightedProbability[x].size() - 1; y++)
+        {
+            if (fabs(WeightedProbability[x][y] - 0) > 0.001)
+            {
+                cout << WeightedProbability[x][y] << '\t';
+            }
+            else
+            {
+                cout << "-" << '\t';
+            }
+        }
+        if (fabs(WeightedProbability[x][WeightedProbability[x].size() - 1] - 0) > 0.001)
+        {
+            cout << WeightedProbability[x][WeightedProbability[x].size() - 1] << endl;
+        }
+        else
+        {
+            cout << "-" << endl;
+        }
+    }
+    cout << endl;
 
     PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation);
     boost_random_mechanism RandomnessInBalance;
@@ -81,10 +228,11 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                 else
                 {
                     cout << "-"<<endl;
-                }
-           
+                }           
         }
         cout<<endl;
+
+
         vector<int> PotentialCustomers(AllCustomers);
         while (PotentialCustomers.size() != 0)
         {
