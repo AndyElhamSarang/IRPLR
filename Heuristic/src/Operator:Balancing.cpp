@@ -166,137 +166,121 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
         //                                                          //
         //////////////////////////////////////////////////////////////
 
-        vector<double> CustomerWeight;
-
+        vector<vector<int>> CustomerWeight; // index 0 customer id // index 1 Weight
         cout << "CustomerWeight" << endl;
         for (int customer = 0; customer < DeliveryQuantity.size(); customer++)
         {
-            double TempCusomterWeight = 0;
-            if (time == 0)
+            if (VehicleAllocation[customer][time] < IRPLR.NumberOfVehicles)
             {
-                TempCusomterWeight = IRPLR.Retailers[customer].InventoryBegin / (IRPLR.Retailers[customer].Demand * (NextVisitTime[customer][time] - time) * MaxNumberOfConseuctiveDaysACustomerNotVisited[customer]);
-                
-                // cout << "customer " << customer << ": " << TempCusomterWeight  
-                // <<" ; "<<1/TempCusomterWeight<<" ; "<<IRPLR.Retailers[customer].InventoryBegin
-                // <<" ; "<<(IRPLR.Retailers[customer].Demand * (NextVisitTime[customer][time] - time) * MaxNumberOfConseuctiveDaysACustomerNotVisited[customer])
-                // <<" ; "<<IRPLR.Retailers[customer].Demand<<" ; "<<NextVisitTime[customer][time] - time<<" ; "<<MaxNumberOfConseuctiveDaysACustomerNotVisited[customer]<< endl;
-            }
-            else
-            {
-                TempCusomterWeight = InventoryLevel[customer][time - 1] / (IRPLR.Retailers[customer].Demand * (NextVisitTime[customer][time] - time) * MaxNumberOfConseuctiveDaysACustomerNotVisited[customer]);
-                
-                // cout << "customer " << customer << ": " << TempCusomterWeight  
-                // <<" ; "<<1/TempCusomterWeight<<" ; "<<InventoryLevel[customer][time - 1]
-                // <<" ; "<<(IRPLR.Retailers[customer].Demand * (NextVisitTime[customer][time] - time) * MaxNumberOfConseuctiveDaysACustomerNotVisited[customer])
-                // <<" ; "<<IRPLR.Retailers[customer].Demand<<" ; "<<NextVisitTime[customer][time] - time<<" ; "<<MaxNumberOfConseuctiveDaysACustomerNotVisited[customer]<< endl;
-            }
+                vector<int> TempCustomerWeight;
+                TempCustomerWeight.push_back(customer);
+                double TempCusomterWeight = 0;
+                if (time == 0)
+                {
+                    TempCusomterWeight = IRPLR.Retailers[customer].InventoryBegin / (IRPLR.Retailers[customer].Demand * (NextVisitTime[customer][time] - time) * MaxNumberOfConseuctiveDaysACustomerNotVisited[customer]);
 
-              CustomerWeight.push_back(1/TempCusomterWeight);
-        } 
-        
+                    cout << "customer " << customer << ": " << TempCusomterWeight
+                         << " ; " << 1 / TempCusomterWeight << " ; " << IRPLR.Retailers[customer].InventoryBegin
+                         << " ; " << (IRPLR.Retailers[customer].Demand * (NextVisitTime[customer][time] - time) * MaxNumberOfConseuctiveDaysACustomerNotVisited[customer])
+                         << " ; " << IRPLR.Retailers[customer].Demand << " ; " << NextVisitTime[customer][time] - time << " ; " << MaxNumberOfConseuctiveDaysACustomerNotVisited[customer] << endl;
+                }
+                else
+                {
+                    TempCusomterWeight = InventoryLevel[customer][time - 1] / (IRPLR.Retailers[customer].Demand * (NextVisitTime[customer][time] - time) * MaxNumberOfConseuctiveDaysACustomerNotVisited[customer]);
+
+                    cout << "customer " << customer << ": " << TempCusomterWeight
+                         << " ; " << 1 / TempCusomterWeight << " ; " << InventoryLevel[customer][time - 1]
+                         << " ; " << (IRPLR.Retailers[customer].Demand * (NextVisitTime[customer][time] - time) * MaxNumberOfConseuctiveDaysACustomerNotVisited[customer])
+                         << " ; " << IRPLR.Retailers[customer].Demand << " ; " << NextVisitTime[customer][time] - time << " ; " << MaxNumberOfConseuctiveDaysACustomerNotVisited[customer] << endl;
+                }
+
+                TempCustomerWeight.push_back((1 / TempCusomterWeight) * 100);
+                CustomerWeight.push_back(TempCustomerWeight);
+            }
+        }
+
         // Need remove customers who are not visited
         for(int i=0;i<CustomerWeight.size();i++)
         {
-            cout << "customer " << i << ": " << CustomerWeight[i] << endl;
+            cout << "customer " << CustomerWeight[i][0] << ": " << CustomerWeight[i][1] << endl;
         }
         double CumulativeWeight = 0;
-        for (int i = 0; i < CustomerWeight.size(); i++)
+        while (CustomerWeight.size() != 0)
         {
-            CumulativeWeight += CustomerWeight[i];
-            CustomerWeight[i] = CumulativeWeight;
+            vector<vector<int>> CumulativeCustomerWeight(CustomerWeight);
+
+            CumulativeWeight = 0;
+            for (int i = 0; i < CumulativeCustomerWeight.size(); i++)
+            {
+                CumulativeWeight += CumulativeCustomerWeight[i][1];
+                CumulativeCustomerWeight[i][1] = CumulativeWeight;
+            }
+            cout << "Cumulative weight:" <<CumulativeWeight<< endl;
+            for (int i = 0; i < CumulativeCustomerWeight.size(); i++)
+            {
+                cout << "customer " << CumulativeCustomerWeight[i][0] << ": " << CumulativeCustomerWeight[i][1] << endl;
+            }
+
+             int SelectedWeight= RandomnessInBalance.random_number_generator(0, CumulativeWeight, generator);
+
+             int RandomCustomer = CumulativeCustomerWeight.size()+1;
+
+             if ( SelectedWeight  < CumulativeCustomerWeight[0][1] )
+             {
+                RandomCustomer = 0;
+             }
+             else
+             {
+                 for (int i = 0; i < CumulativeCustomerWeight.size() - 1; i++)
+                 {
+                     if (CumulativeCustomerWeight[i][1] < SelectedWeight && SelectedWeight < CumulativeCustomerWeight[i + 1][1])
+                     {
+                         RandomCustomer = i + 1;
+                     }
+                 }
+             }
+
+            assert(RandomCustomer < CumulativeCustomerWeight.size());
+            cout << "Customer " << CumulativeCustomerWeight[RandomCustomer][0] << " with row "<< RandomCustomer<<" is selected" << endl;
+
+            DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][time] +=
+                min(IRPLR.Vehicle.capacity - VehicleLoad[time][VehicleAllocation[CumulativeCustomerWeight[RandomCustomer][0]][time]],
+                    IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].InventoryMax - InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][time]);
+            VehicleLoad[time][VehicleAllocation[CumulativeCustomerWeight[RandomCustomer][0]][time]] += DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][time];
+
+            if (time == 0)
+            {
+                double tempInventory = IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].InventoryBegin;
+                for (int y = 0; y < InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]].size(); y++)
+                {
+
+                    tempInventory = tempInventory - IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].Demand + DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][y];
+                    InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][y] = tempInventory;
+                }
+                }
+                else
+                {
+
+                    double tempInventory = InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][time - 1];
+                    for (int y = time; y < InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]].size(); y++)
+                    {
+                        tempInventory = tempInventory - IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].Demand + DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][y];
+                        InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][y] = tempInventory;
+                    }
+                }
+
+                CustomerWeight.erase(CustomerWeight.begin() + RandomCustomer, CustomerWeight.begin() + RandomCustomer + 1);
+                CumulativeCustomerWeight.erase(CumulativeCustomerWeight.begin() + RandomCustomer, CumulativeCustomerWeight.begin() + RandomCustomer + 1);
         }
-        cout << "Cumulative weight" << endl;
-        for (int i = 0; i < CustomerWeight.size(); i++)
-        {
-            cout << "customer " << i << ": " << CustomerWeight[i] << endl;
-        }
 
-        // vector<int> PotentialCustomers(AllCustomers);
-        // while (PotentialCustomers.size() != 0)
-        // {
-        //     int RandomCustomer = RandomnessInBalance.random_number_generator(0, PotentialCustomers.size() - 1, generator);
-        //     if (VehicleAllocation[PotentialCustomers[RandomCustomer]][i] != IRPLR.NumberOfVehicles + 1) // if this customer is visited on this day
-        //     {
-        //         DeliveryQuantity[PotentialCustomers[RandomCustomer]][i] =
-        //             min(IRPLR.Vehicle.capacity - VehicleLoad[i][VehicleAllocation[PotentialCustomers[RandomCustomer]][i]],
-        //                 IRPLR.Retailers[PotentialCustomers[RandomCustomer]].InventoryMax - InventoryLevel[PotentialCustomers[RandomCustomer]][i]);
-        //         VehicleLoad[i][VehicleAllocation[PotentialCustomers[RandomCustomer]][i]] += DeliveryQuantity[PotentialCustomers[RandomCustomer]][i];
-
-        //         if (i == 0)
-        //         {
-        //             double tempInventory = IRPLR.Retailers[PotentialCustomers[RandomCustomer]].InventoryBegin;
-        //             for (int y = 0; y < InventoryLevel[PotentialCustomers[RandomCustomer]].size(); y++)
-        //             {
-
-        //                 tempInventory = tempInventory - IRPLR.Retailers[PotentialCustomers[RandomCustomer]].Demand + DeliveryQuantity[PotentialCustomers[RandomCustomer]][y];
-        //                 InventoryLevel[PotentialCustomers[RandomCustomer]][y] = tempInventory;
-        //             }
-        //         }
-        //         else
-        //         {
-
-        //             double tempInventory = InventoryLevel[PotentialCustomers[RandomCustomer]][i - 1];
-        //             for (int y = i; y < InventoryLevel[PotentialCustomers[RandomCustomer]].size(); y++)
-        //             {
-        //                 tempInventory = tempInventory - IRPLR.Retailers[PotentialCustomers[RandomCustomer]].Demand + DeliveryQuantity[PotentialCustomers[RandomCustomer]][y];
-        //                 InventoryLevel[PotentialCustomers[RandomCustomer]][y] = tempInventory;
-        //             }
-        //         }
-
-        //         PotentialCustomers.erase(PotentialCustomers.begin() + RandomCustomer, PotentialCustomers.begin() + RandomCustomer + 1);
-        //     }
-        //     else
-        //     {
-        //         PotentialCustomers.erase(PotentialCustomers.begin() + RandomCustomer, PotentialCustomers.begin() + RandomCustomer + 1);
-        //     }
-        // }
-
-        assert(aborter == 1);
+        //assert(aborter == 1);
     }
 
     cout << "End balancing" << endl;
     PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation);
     assert(aborter == 1);
-    // if (LookBackwardPeriod > 0)
-    // {
-    //     double Load = 0;
-    //     int vehicle_index = IRPLR.NumberOfVehicles;
-    //     for (int i = 0; i < IRPLR.NumberOfVehicles; i++)
-    //     {
-    //         Load = min(IRPLR.Vehicle.capacity - IRPSolution.VehicleLoad[LookBackwardPeriod][i], IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax - IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod - 1]);
-    //         if (IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] < Load)
-    //         {
-    //             IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = Load;
-    //             vehicle_index = i;
-    //         }
-    //     }
-    //     IRPSolution.Route[LookBackwardPeriod][vehicle_index].push_back(CandidateRetailers[RandomPickARetailer]);
-    //     IRPSolution.VehicleLoad[LookBackwardPeriod][vehicle_index] += IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod];
-    //     IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = vehicle_index;
-    // }
-    // else
-    // {
-    //     double Load = 0;
-    //     int vehicle_index = IRPLR.NumberOfVehicles;
-    //     for (int i = 0; i < IRPLR.NumberOfVehicles; i++)
-    //     {
-    //         Load = min(IRPLR.Vehicle.capacity - IRPSolution.VehicleLoad[LookBackwardPeriod][i], IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax - IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin);
-    //         if (IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] < Load)
-    //         {
-    //             IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = Load;
-    //             vehicle_index = i;
-    //         }
-    //     }
-    //     IRPSolution.Route[LookBackwardPeriod][vehicle_index].push_back(CandidateRetailers[RandomPickARetailer]);
-    //     IRPSolution.VehicleLoad[LookBackwardPeriod][vehicle_index] += IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod];
-    //     IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = vehicle_index;
-    // }
-    // int tempInventory = IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin;
-    // for (int i = 0; i < IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]].size(); i++)
-    // {
-    //     tempInventory = tempInventory - IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].Demand + IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][i];
-    //     IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][i] = tempInventory;
-    // }
+   
     cout << "Exit balancing" << endl;
+    assert(aborter == 1);
     return objv;
 }
