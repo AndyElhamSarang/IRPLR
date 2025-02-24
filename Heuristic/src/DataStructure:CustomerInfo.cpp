@@ -4,7 +4,6 @@ void preprocessing::CustomerInfo(input &IRPLR)
 
     InitialStatusDeliveryQuantity.clear();
     InitialStatusInventoryLevel.clear();
-
     for (int i = 0; i < IRPLR.Retailers.size(); i++)
     {
         vector<double> TempDeliveryQuantity;
@@ -33,23 +32,23 @@ void preprocessing::CustomerInfo(input &IRPLR)
     }
 
 
-    cout << "Initial status:" << endl;
-    cout << "InventoryLevel:" << endl;
-    cout << "                    \tBegin\t";
-    for (int i = 0; i < IRPLR.TimeHorizon; i++)
-    {
-        cout << "t" << i << "\t";
-    }
-    cout << endl;
-    for (int i = 0; i < InitialStatusInventoryLevel.size(); i++)
-    {
-        cout << "Retailer " << i << "(" << IRPLR.Retailers[i].InventoryMax<<",D:"<<IRPLR.Retailers[i].Demand << ")" << ": "<<'\t' << IRPLR.Retailers[i].InventoryBegin << '\t';
-        for (int j = 0; j < InitialStatusInventoryLevel[i].size() - 1; j++)
-        {
-            cout << InitialStatusInventoryLevel[i][j]<<"("<<CustomerPriority[i][j]<<")" << '\t';
-        }
-        cout << InitialStatusInventoryLevel[i][InitialStatusInventoryLevel[i].size() - 1]<<"("<<CustomerPriority[i][CustomerPriority[i].size() - 1]<<")" <<endl;
-    }
-    cout << endl;
+    // cout << "Initial status:" << endl;
+    // cout << "InventoryLevel:" << endl;
+    // cout << "                    \tBegin\t";
+    // for (int i = 0; i < IRPLR.TimeHorizon; i++)
+    // {
+    //     cout << "t" << i << "\t";
+    // }
+    // cout << endl;
+    // for (int i = 0; i < InitialStatusInventoryLevel.size(); i++)
+    // {
+    //     cout << "Retailer " << i << "(" << IRPLR.Retailers[i].InventoryMax<<",D:"<<IRPLR.Retailers[i].Demand << ")" << ": "<<'\t' << IRPLR.Retailers[i].InventoryBegin << '\t';
+    //     for (int j = 0; j < InitialStatusInventoryLevel[i].size() - 1; j++)
+    //     {
+    //         cout << InitialStatusInventoryLevel[i][j]<<"("<<CustomerPriority[i][j]<<")" << '\t';
+    //     }
+    //     cout << InitialStatusInventoryLevel[i][InitialStatusInventoryLevel[i].size() - 1]<<"("<<CustomerPriority[i][CustomerPriority[i].size() - 1]<<")" <<endl;
+    // }
+    // cout << endl;
 
 }
