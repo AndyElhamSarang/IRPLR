@@ -3,6 +3,7 @@ int solution_improvement::OperatorSwapWithBalancing(input &IRPLR, solution &IRPS
 {
     cout << "Swap starting solution" << endl;
     int whether_improved_or_not = 0;
+    int CountingInfeasibleCase = 0;
     double LR_objv = numeric_limits<double>::max();
     IRPSolution.GetLogisticRatio(IRPLR);
     IRPSolution.print_solution(IRPLR);
@@ -76,10 +77,10 @@ int solution_improvement::OperatorSwapWithBalancing(input &IRPLR, solution &IRPS
                     TempVehicleAllocation[tempCustomer][i] = IRPLR.NumberOfVehicles + 1;
 
                     int BalancingCounter = 0;
-                    while (BalancingCounter < 10)
+                    while (BalancingCounter < 1)
                     {
-                        cout<<"Balancing attempt:"<<BalancingCounter<<endl;
-                        double temp_LR_obvj = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
+                        cout << "Balancing attempt:" << BalancingCounter << endl;
+                        double temp_LR_obvj = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, CountingInfeasibleCase);
                         BalancingCounter++;
                     }
 
@@ -154,7 +155,8 @@ int solution_improvement::OperatorSwapWithBalancing(input &IRPLR, solution &IRPS
             }
         }
     }
-    cout << "Total solution explored:" << solutionCounter << endl;
+    cout << "Total # of solutions explored:" << solutionCounter << endl;
+    cout << "Total # of solutions which are infeasible by balancing:" << CountingInfeasibleCase << endl;
     cout << "whether_improved_or_not:" << whether_improved_or_not << endl;
     if (whether_improved_or_not == 1)
     {

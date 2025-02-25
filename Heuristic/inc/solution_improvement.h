@@ -18,7 +18,8 @@ vector<vector<int>> &TempUnallocatedCustomers,
 vector<vector<double>> &VehicleLoad,
 vector<vector<double>> &DeliveryQuantity,
 vector<vector<double>> &InventoryLevel,
-vector<vector<int>> &VehicleAllocation);
+vector<vector<int>> &VehicleAllocation,
+int &CountingInfeasibleCase);
 
 int OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &CustomerToReinsert, double &PenaltyForStockOut, double &CurrentTransportationCost,preprocessing &memory);
 int OperatorRepair(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut);
