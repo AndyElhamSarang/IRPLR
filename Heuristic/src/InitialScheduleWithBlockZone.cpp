@@ -358,7 +358,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                     IRPSolution.Route[RandomPickANonStockOutPeriod][vehicle_index].push_back(CandidateRetailers[RandomPickARetailer]);
                                     IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][vehicle_index] += IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod];
                                     IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod] = vehicle_index;
-                                    
+                                    IRPSolution.VisitOrder[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod] = IRPSolution.Route[RandomPickANonStockOutPeriod][vehicle_index].size()-1;
                                 }
                                 else
                                 {
@@ -376,6 +376,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                     IRPSolution.Route[RandomPickANonStockOutPeriod][vehicle_index].push_back(CandidateRetailers[RandomPickARetailer]);
                                     IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][vehicle_index] += IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod];
                                     IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod] = vehicle_index;
+                                    IRPSolution.VisitOrder[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod] = IRPSolution.Route[RandomPickANonStockOutPeriod][vehicle_index].size()-1;
                                 }
                                 int tempInventory = IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin;
                                 for (int i = 0; i < IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]].size(); i++)
@@ -449,6 +450,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 IRPSolution.Route[LookBackwardPeriod][vehicle_index].push_back(CandidateRetailers[RandomPickARetailer]);
                                 IRPSolution.VehicleLoad[LookBackwardPeriod][vehicle_index] += IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod];
                                 IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = vehicle_index;
+                                IRPSolution.VisitOrder[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = IRPSolution.Route[LookBackwardPeriod][vehicle_index].size()-1;
                             }
                             else
                             {
@@ -466,6 +468,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 IRPSolution.Route[LookBackwardPeriod][vehicle_index].push_back(CandidateRetailers[RandomPickARetailer]);
                                 IRPSolution.VehicleLoad[LookBackwardPeriod][vehicle_index] += IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod];
                                 IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = vehicle_index;
+                                IRPSolution.VisitOrder[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = IRPSolution.Route[LookBackwardPeriod][vehicle_index].size()-1;
                             }
                             int tempInventory = IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin;
                             for (int i = 0; i < IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]].size(); i++)

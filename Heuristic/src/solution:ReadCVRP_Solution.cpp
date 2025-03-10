@@ -104,6 +104,7 @@ void solution::ReadCVRP_Solution(input &IRPLR, int &day, vector<vector<int>> &Ro
     for (int i = 0; i < OptimizedRoute.size(); i++)
     {
         Route[day].push_back(OptimizedRoute[i]);
+        
     }
     while (Route[day].size() < IRPLR.NumberOfVehicles)
     {

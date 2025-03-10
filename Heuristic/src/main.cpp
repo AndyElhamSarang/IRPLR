@@ -9,11 +9,6 @@ int printout_initial = 0;
 int NumberOfBalacingOperatorCalled=0;
 int NumberOfVehicleAtMinimumDelivery =0;
 
-
-
-
-
-
 double power = 2.0;
 ofstream Table;
 base_generator_type generator(static_cast<unsigned int>(time(0)));

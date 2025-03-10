@@ -15,7 +15,7 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
         }
         OriginalInventoryLevel.push_back(tempInventoryLevel);
     }
-    cout << "OriginalInventoryLevel:" << endl;
+    cout << "Inventory Level without any delivery:" << endl;
     cout << "          \tBegin\t";
     for (int i = 0; i < IRPLR.TimeHorizon; i++)
     {
