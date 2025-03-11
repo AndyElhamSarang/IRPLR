@@ -11,7 +11,7 @@ int NumberOfVehicleAtMinimumDelivery =0;
 
 double power = 2.0;
 ofstream Table;
-base_generator_type generator(static_cast<unsigned int>(time(0)));
+base_generator_type generator(static_cast<unsigned int>(1/*time(0)*/));
 string MachineDirectory;
 int OutputResults;
 int NumberOfInitialSolutions;
@@ -29,8 +29,8 @@ int main()
 
 	if (OutputResults == 1)
 	{
-		Table.open("InitalBlockZone.csv");
-		Table << ",#TimePeriods,#Customer,#Vehicle,Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution\n";
+		Table.open("Swap.csv");
+		Table << ",#TimePeriods,#Customer,#Vehicle,Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,BestCost,BestQuantity,BestLogisticRatio,T_Total\n";
 	}
 
 	for (int i = 0; i < read_file.instances.size(); i++)
@@ -69,15 +69,17 @@ int main()
 				//initial_solution.INITIAL(IRPLR, IRPSolution, Routing);
 				initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing);				
 				time(&end_time);
-				IRPSolution.print_solution(IRPLR);
-
-				solution_improvement Metaheuristic;
-				Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory);
 				double total_time = difftime(end_time, start_time);
 				if (OutputResults == 1)
 				{
 					Table << total_time << ",";
 				}
+				cout<<"Initial solution"<<endl;
+				IRPSolution.print_solution(IRPLR);
+
+				solution_improvement Metaheuristic;
+				Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory);
+				
 			}
 			if (OutputResults == 1)
 			{

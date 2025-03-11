@@ -53,21 +53,25 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
     //     IRPSolution.print_solution(IRPLR);
     //     cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
     // }
-    // if (OutputResults == 1)
-    // {
-    //     Table << IRPSolution.TotalTransportationCost << "," << IRPSolution.TotalDelivery << "," << IRPSolution.LogisticRatio << ",";
-    // }
-    // cout<<"IRPLR.NumberOfRetailers:"<<IRPLR.NumberOfRetailers<<", "<<"IRPLR.Retailers.size():"<<IRPLR.Retailers.size()<<endl;
-    // for(int i=0;i<IRPSolution.VisitOrder.size();i++)
-    // {
-    //     for(int j=0;j<IRPSolution.VisitOrder[i].size();j++)
-    //     {
-    //         IRPSolution.VehicleAllocation[i][j] = IRPLR.NumberOfVehicles+1;
-    //         IRPSolution.VisitOrder[i][j] = IRPLR.Retailers.size() +1;
-    //     }
-    // }
+   
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    if (OutputResults == 1)
+    {
+        Table << IRPSolution.TotalTransportationCost << "," << IRPSolution.TotalDelivery << "," << IRPSolution.LogisticRatio << ",";
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    cout << "IRPLR.NumberOfRetailers:" << IRPLR.NumberOfRetailers << ", " << "IRPLR.Retailers.size():" << IRPLR.Retailers.size() << endl;
+    for (int i = 0; i < IRPSolution.VisitOrder.size(); i++)
+    {
+        for (int j = 0; j < IRPSolution.VisitOrder[i].size(); j++)
+        {
+            IRPSolution.VehicleAllocation[i][j] = IRPLR.NumberOfVehicles + 1;
+            IRPSolution.VisitOrder[i][j] = IRPLR.Retailers.size() + 1;
+        }
+    }
     IRPSolution.UnallocatedCustomers.clear();
     for (int i = 0; i < IRPSolution.Route.size(); i++) // For this time period
     {

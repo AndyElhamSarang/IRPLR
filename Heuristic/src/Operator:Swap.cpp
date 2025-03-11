@@ -16,6 +16,7 @@ int solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, HGS 
     vector<vector<double>> ImpDeliveryQuantity(IRPSolution.DeliveryQuantity);
     vector<vector<double>> ImpInventoryLevel(IRPSolution.InventoryLevel);
     vector<vector<int>> ImpVehicleAllocation(IRPSolution.VehicleAllocation);
+    vector<vector<int>> ImpVisitOrder(IRPSolution.VisitOrder);
     double ImpStockOut = 0;
     int solutionCounter = 0;
     for (int i = 0; i < IRPSolution.Route.size(); i++)
@@ -36,6 +37,7 @@ int solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, HGS 
                     vector<vector<double>> TempDeliveryQuantity(IRPSolution.DeliveryQuantity);
                     vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
                     vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
+                    vector<vector<int>> TempVisitOrder(IRPSolution.VisitOrder);
                     // double testEndTransportationCost = 0;
                     // double testStartTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
                     // testStartTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
@@ -130,7 +132,10 @@ int solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, HGS 
                     }
 
                     TempVehicleAllocation[TempRoute[i][j][k]][i] = TempVehicleAllocation[tempCustomer][i];
+                    TempVisitOrder[TempRoute[i][j][k]][i] = TempVisitOrder[tempCustomer][i];
                     TempVehicleAllocation[tempCustomer][i] = IRPLR.NumberOfVehicles + 1;
+                    TempVisitOrder[tempCustomer][i] = IRPLR.Retailers.size() + 1;
+
 
                     TempVehicleLoad[i][j] = TempVehicleLoad[i][j] - TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][i]; // Customer gets unallocated, the vehicle load is reduced correspondingly
                     ChangeInTotalQuantity = 0 - TempDeliveryQuantity[TempUnallocatedCustomers[i][x]][i];
@@ -428,6 +433,7 @@ int solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, HGS 
                         ImpUnallocatedCustomers = TempUnallocatedCustomers;
                         ImpVehicleAllocation = TempVehicleAllocation;
                         ImpVehicleLoad = TempVehicleLoad;
+                        ImpVisitOrder = TempVisitOrder;
                         if (NewStockOut > 0)
                         {
                             ImpStockOut = NewStockOut;
@@ -456,10 +462,49 @@ int solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, HGS 
         IRPSolution.UnallocatedCustomers = ImpUnallocatedCustomers;
         IRPSolution.VehicleAllocation = ImpVehicleAllocation;
         IRPSolution.VehicleLoad = ImpVehicleLoad;
+        IRPSolution.VisitOrder = ImpVisitOrder;
         IRPSolution.ViolationStockOut = ImpStockOut;
 
         IRPSolution.GetLogisticRatio(IRPLR);
         assert(fabs(IRPSolution.ViolationStockOut - ImpStockOut) < 0.001);
+
+        //Update the visit order
+        for (int i = 0; i < IRPSolution.VisitOrder.size(); i++)
+        {
+            for (int j = 0; j < IRPSolution.VisitOrder[i].size(); j++)
+            {
+                IRPSolution.VehicleAllocation[i][j] = IRPLR.NumberOfVehicles + 1;
+                IRPSolution.VisitOrder[i][j] = IRPLR.Retailers.size() + 1;
+            }
+        }
+
+        IRPSolution.UnallocatedCustomers.clear();
+        for (int i = 0; i < IRPSolution.Route.size(); i++) // For this time period
+        {
+            vector<int> TempUnallocatedCustomer;             // Look for unallcated customers at this time period
+            for (int x = 0; x < IRPLR.Retailers.size(); x++) // Check each retailers
+            {
+                int UnallocatedYesOrNo = 0;
+                for (int j = 0; j < IRPSolution.Route[i].size(); j++) // index j for vehicle
+                {
+                    for (int k = 0; k < IRPSolution.Route[i][j].size(); k++) // index k for position
+                    {
+
+                        if (IRPSolution.Route[i][j][k] == x)
+                        {
+                            UnallocatedYesOrNo = 1;
+                            IRPSolution.VehicleAllocation[x][i] = j;
+                            IRPSolution.VisitOrder[x][i] = k;
+                        }
+                    }
+                }
+                if (UnallocatedYesOrNo == 0) // This customer is not visited
+                {
+                    TempUnallocatedCustomer.push_back(x);
+                }
+            }
+            IRPSolution.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
+        }
 
         cout<<"Solution before rebalancing"<<endl;
         IRPSolution.print_solution(IRPLR);

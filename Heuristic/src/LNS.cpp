@@ -79,22 +79,31 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     int NumberOfFeasibleSolution = 0;
     int FeasibleSolutionCounter = 0;
     int BetterFeasibleSolutionCounter = 0;
+    int UseSwap=0;
+    int UseSwapRebalance=1;
+    assert(UseSwap!=UseSwapRebalance);
     while (OperatorSwapCounter < 1)
     {
-
-        //int whether_improved_swap = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
-        int whether_improved_swap = OperatorSwapWithBalancing(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
-
+        int whether_improved_swap = 0;
+        int whether_improved_swap_rebalance = 0;
+        if (UseSwap == 1)
+        {
+            whether_improved_swap = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
+        }
+        else if (UseSwapRebalance == 1)
+        {
+            whether_improved_swap_rebalance = OperatorSwapWithBalancing(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
+        }
         IRPSolution.GetLogisticRatio(IRPLR);
         cout << "Solution after iteration " << OperatorSwapCounter << endl;
         cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
         cout << "ViolationStockOut" << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << endl;
         IRPSolution.print_solution(IRPLR);
 
-        if (IRPSolution.ViolationStockOut != 0)
-        {
-            int whether_improved_insert = OperatorInsert(IRPLR, IRPSolution, PenaltyForStockOut, memory);
-        }
+        // if (IRPSolution.ViolationStockOut != 0)
+        // {
+        //     int whether_improved_insert = OperatorInsert(IRPLR, IRPSolution, PenaltyForStockOut, memory);
+        // }
         // violation = OperatorRemove(IRPLR, IRPSolution,  PenaltyForStockOut, memory);
 
         ItForCurrentPenalty++;
@@ -127,7 +136,80 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
             }
         }
         OperatorSwapCounter++;
+        if (UseSwapRebalance == 1)
+        {
+            if (whether_improved_swap_rebalance == 0)
+            {
+                cout << "Stop due to no improvement" << endl;
+                break;
+            }
+        }
     }
+
+    ///////////////////////////////////////////////
+    //                                           //
+    //                Routing                    //
+    //                                           //
+    ///////////////////////////////////////////////
+
+    // for (int i = 0; i < BestIRP_Solution.Route.size(); i++)
+    // {
+    //     int NumberOfCustomerOfDay = 0;
+    //     for (int j = 0; j < BestIRP_Solution.Route[i].size(); j++)
+    //     {
+    //         NumberOfCustomerOfDay += BestIRP_Solution.Route[i][j].size();
+    //     }
+    //     if (NumberOfCustomerOfDay > 1)
+    //     {
+    //         BestIRP_Solution.OutputCVRP(IRPLR, i, BestIRP_Solution.Route[i]);
+    //         Routing.CallHGS(IRPLR);
+    //         BestIRP_Solution.ReadCVRP_Solution(IRPLR, i, BestIRP_Solution.Route[i]);
+    //     }
+    // }
+    // cout<<"IRPLR.NumberOfRetailers:"<<IRPLR.NumberOfRetailers<<", "<<"IRPLR.Retailers.size():"<<IRPLR.Retailers.size()<<endl;
+    // for(int i=0;i<BestIRP_Solution.VisitOrder.size();i++)
+    // {
+    //     for(int j=0;j<BestIRP_Solution.VisitOrder[i].size();j++)
+    //     {
+    //         BestIRP_Solution.VehicleAllocation[i][j] = IRPLR.NumberOfVehicles+1;
+    //         BestIRP_Solution.VisitOrder[i][j] = IRPLR.Retailers.size() +1;
+    //     }
+    // }
+
+    // BestIRP_Solution.UnallocatedCustomers.clear();
+    // for (int i = 0; i < BestIRP_Solution.Route.size(); i++) // For this time period
+    // {
+    //     vector<int> TempUnallocatedCustomer;             // Look for unallcated customers at this time period
+    //     for (int x = 0; x < IRPLR.Retailers.size(); x++) // Check each retailers
+    //     {
+    //         int UnallocatedYesOrNo = 0;
+    //         for (int j = 0; j < BestIRP_Solution.Route[i].size(); j++)// index j for vehicle
+    //         {
+    //             for (int k = 0; k < BestIRP_Solution.Route[i][j].size(); k++) //index k for position
+    //             {
+
+    //                 if (BestIRP_Solution.Route[i][j][k] == x)
+    //                 {
+    //                     UnallocatedYesOrNo = 1;
+    //                     BestIRP_Solution.VehicleAllocation[x][i] = j;
+    //                     BestIRP_Solution.VisitOrder [x][i] = k;
+    //                 }
+    //             }
+    //         }
+    //         if (UnallocatedYesOrNo == 0) // This customer is not visited
+    //         {
+    //             TempUnallocatedCustomer.push_back(x);
+    //         }
+    //     }
+    //     BestIRP_Solution.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
+    // }
+    // BestIRP_Solution.GetLogisticRatio(IRPLR);
+
+    // cout << "Solution after Optimizing the routes on the best found" << endl;
+    // BestIRP_Solution.print_solution(IRPLR);
+    // cout << "TotalTransportationCost:" << BestIRP_Solution.TotalTransportationCost << "\t TotalDelivery:" << BestIRP_Solution.TotalDelivery << "\t LogistcRatio:" << BestIRP_Solution.LogisticRatio << endl;
+    
+
     time(&end_time);
     double total_time = difftime(end_time, start_time);
     double check_LogisticRatio = BestIRP_Solution.LogisticRatio;
@@ -139,6 +221,10 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     cout << "!BetterFeasibleSolutionCounter: " << BetterFeasibleSolutionCounter << endl;
     cout << "!Best Logistic Ratio: " << BestIRP_Solution.LogisticRatio << endl;
     cout << "!Time: " << total_time << endl;
+    if (OutputResults == 1)
+    {
+        Table << BestIRP_Solution.TotalTransportationCost << "," << BestIRP_Solution.TotalDelivery << "," << BestIRP_Solution.LogisticRatio << ","<<total_time;
+    }
     // LNS_Destory(IRPLR, IRPSolution,Routing);
     // LNS_Repair(IRPLR, IRPSolution,Routing);
 }
