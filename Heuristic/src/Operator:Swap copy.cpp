@@ -1,7 +1,5 @@
 #include "lib.h"
-int solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, preprocessing &memory,
-                                       int &min_remove_length, int &max_remove_length,
-                                       int &min_insert_length, int &max_insert_length)
+int solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, preprocessing &memory)
 {
     cout << "Swap starting solution" << endl;
     int whether_improved_or_not = 0;

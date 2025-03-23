@@ -1,13 +1,12 @@
 #include "lib.h"
-int solution_improvement::OperatorSwapWithBalancing(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, preprocessing &memory)
+int solution_improvement::OperatorSwapWithBalancing(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, preprocessing &memory,
+                                                    int &min_remove_length, int &max_remove_length,
+                                                    int &min_insert_length, int &max_insert_length)
 {
     // This operator permits feasible solutions only
 
     cout << "Swap starting solution" << endl;
-    int min_sequence_length_1 = 0;
-    int max_sequence_length_1 = 1;
-    int min_sequence_length_2 = 0;
-    int max_sequence_length_2 = 1;
+   
 
     int whether_improved_or_not = 0;
     int CountingInfeasibleCase = 0;
@@ -27,111 +26,108 @@ int solution_improvement::OperatorSwapWithBalancing(input &IRPLR, solution &IRPS
     vector<vector<int>> ImpVisitOrder(IRPSolution.VisitOrder);
     double ImpStockOut = 0;
     int solutionCounter = 0;
-    for (int i = 0; i < IRPSolution.Route.size(); i++) // For a day
+    for (int pick_day = 0; pick_day < IRPSolution.Route.size(); pick_day++) // For a day
     {
-        for (int j = 0; j < IRPSolution.Route[i].size(); j++) // For a vehicle
+        for (int pick_vehicle = 0; pick_vehicle < IRPSolution.Route[pick_day].size(); pick_vehicle++) // For a vehicle
         {
-            for (int k = 0; k <= IRPSolution.Route[i][j].size(); k++) // A position in this vehicle
+            for (int pick_allocated_customer = 0; pick_allocated_customer <= IRPSolution.Route[pick_day][pick_vehicle].size(); pick_allocated_customer++) // A position in this vehicle
             {
-                for (int x = 0; x <= IRPSolution.UnallocatedCustomers[i].size(); x++) // A position in the unallocated customer
+                assert(IRPSolution.UnallocatedCustomers[pick_day].size() != 0);
+                for (int pick_unallocated_customer = 0; pick_unallocated_customer <= IRPSolution.UnallocatedCustomers[pick_day].size(); pick_unallocated_customer++) // A position in the unallocated customer
                 {
-                    for (int sequence_length_1 = min_sequence_length_1; sequence_length_1 <= max_sequence_length_1; sequence_length_1++)
+                    for (int remove_length = min_remove_length; remove_length <= max_remove_length; remove_length++)
                     {
-                        for (int sequence_length_2 = min_sequence_length_2; sequence_length_2 <= max_sequence_length_2; sequence_length_2++)
+                        for (int insert_length = min_insert_length; insert_length <= max_insert_length; insert_length++)
                         {
-                            if (sequence_length_1 != 0 || sequence_length_2 != 0)
+                            if (remove_length != 0 || insert_length != 0)
                             {
-                                if (x + sequence_length_2 <= IRPSolution.UnallocatedCustomers[i].size() && k + sequence_length_1 <= IRPSolution.Route[i][j].size())
+                                if (remove_length != 0 && insert_length == 0 && pick_unallocated_customer > 0)
                                 {
-                                    cout << "solution: " << solutionCounter << endl;
-                                    vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
-                                    vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
-                                    vector<vector<double>> TempVehicleLoad(IRPSolution.VehicleLoad);
-                                    vector<vector<double>> TempDeliveryQuantity(IRPSolution.DeliveryQuantity);
-                                    vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
-                                    vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
-                                    vector<vector<int>> TempVisitOrder(IRPSolution.VisitOrder);
+                                    // Do nothing if it is just a remove when pick_unallocated_customer > 0
+                                }
+                                else
+                                {
+                                    if (pick_unallocated_customer + insert_length <= IRPSolution.UnallocatedCustomers[pick_day].size() && pick_allocated_customer + remove_length <= IRPSolution.Route[pick_day][pick_vehicle].size()) // Make sure the operator does not go outside the range
+                                    {
+                                        cout << "solution: " << solutionCounter << endl;
+                                        vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
+                                        vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
+                                        vector<vector<double>> TempVehicleLoad(IRPSolution.VehicleLoad);
+                                        vector<vector<double>> TempDeliveryQuantity(IRPSolution.DeliveryQuantity);
+                                        vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
+                                        vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
+                                        vector<vector<int>> TempVisitOrder(IRPSolution.VisitOrder);
 
-                                    TempRoute[i][j].insert(TempRoute[i][j].begin() + k,
-                                                           TempUnallocatedCustomers[i].begin() + x,
-                                                           TempUnallocatedCustomers[i].begin() + x + sequence_length_2);
-                                    TempUnallocatedCustomers[i].erase(TempUnallocatedCustomers[i].begin() + x,
-                                                                      TempUnallocatedCustomers[i].begin() + x + sequence_length_2);
-                                    TempUnallocatedCustomers[i].insert(TempUnallocatedCustomers[i].begin() + x,
-                                                                       TempRoute[i][j].begin() + k + sequence_length_2,
-                                                                       TempRoute[i][j].begin() + k + sequence_length_2 + sequence_length_1);
-                                    TempRoute[i][j].erase(TempRoute[i][j].begin() + k + sequence_length_2,
-                                                          TempRoute[i][j].begin() + k + sequence_length_2 + sequence_length_1);
-                                    cout << "After altertion" << endl;
-                                    for (int print_vehicle = 0; TempRoute[i].size(); print_vehicle++)
-                                    {
-                                        for (int print_customer = 0; print_customer < TempRoute[i].size(); print_customer++)
-                                        {
-                                            cout << TempRoute[i][print_vehicle][print_customer] << ",";
-                                        }
-                                        cout << endl;
-                                    }
-                                    cout << "Unallocated customer:" << endl;
-                                    for (int print_unallocate_customer = 0; print_unallocate_customer < TempUnallocatedCustomers[i].size(); print_unallocate_customer++)
-                                    {
-                                        cout << TempUnallocatedCustomers[i][print_unallocate_customer] << ",";
-                                    }
-                                    cout << endl;
+                                        TempRoute[pick_day][pick_vehicle].insert(TempRoute[pick_day][pick_vehicle].begin() + pick_allocated_customer,
+                                                                                 TempUnallocatedCustomers[pick_day].begin() + pick_unallocated_customer,
+                                                                                 TempUnallocatedCustomers[pick_day].begin() + pick_unallocated_customer + insert_length);
+                                        TempUnallocatedCustomers[pick_day].erase(TempUnallocatedCustomers[pick_day].begin() + pick_unallocated_customer,
+                                                                                 TempUnallocatedCustomers[pick_day].begin() + pick_unallocated_customer + insert_length);
+                                        TempUnallocatedCustomers[pick_day].insert(TempUnallocatedCustomers[pick_day].begin() + pick_unallocated_customer,
+                                                                                  TempRoute[pick_day][pick_vehicle].begin() + pick_allocated_customer + insert_length,
+                                                                                  TempRoute[pick_day][pick_vehicle].begin() + pick_allocated_customer + insert_length + remove_length);
+                                        TempRoute[pick_day][pick_vehicle].erase(TempRoute[pick_day][pick_vehicle].begin() + pick_allocated_customer + insert_length,
+                                                                                TempRoute[pick_day][pick_vehicle].begin() + pick_allocated_customer + insert_length + remove_length);
 
-                                    // Update the visit order
-                                    for (int a = 0; a < TempVisitOrder.size(); a++)
-                                    {
-                                        for (int b = 0; b < TempVisitOrder[a].size(); b++)
-                                        {
-                                            TempVehicleAllocation[a][b] = IRPLR.NumberOfVehicles + 1;
-                                            TempVisitOrder[a][b] = IRPLR.Retailers.size() + 1;
-                                        }
-                                    }
+                                        PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder);
 
-                                    for (int period = 0; period < TempRoute.size(); period++) // For this time period
-                                    {
-                                        for (int retailer = 0; retailer < IRPLR.Retailers.size(); retailer++) // Check each retailers
+                                        // Reset the visit order
+
+                                        for (int a = 0; a < TempVisitOrder.size(); a++)
                                         {
-                                            for (int vehicle = 0; vehicle < TempRoute[period].size(); vehicle++) // index j for vehicle
+                                            for (int b = 0; b < TempVisitOrder[a].size(); b++)
                                             {
-                                                for (int position = 0; position < TempRoute[period][vehicle].size(); position++) // index k for position
+                                                TempVehicleAllocation[a][b] = IRPLR.NumberOfVehicles + 1;
+                                                TempVisitOrder[a][b] = IRPLR.Retailers.size() + 1;
+                                            }
+                                        }
+
+                                        // Update the visit order
+
+                                        for (int period = 0; period < TempRoute.size(); period++) // For this time period
+                                        {
+                                            for (int retailer = 0; retailer < IRPLR.Retailers.size(); retailer++) // Check each retailers
+                                            {
+                                                for (int vehicle = 0; vehicle < TempRoute[period].size(); vehicle++) // index pick_vehicle for vehicle
                                                 {
-                                                    if (TempRoute[period][vehicle][position] == retailer)
+                                                    for (int position = 0; position < TempRoute[period][vehicle].size(); position++) // index k for position
                                                     {
-                                                        TempVehicleAllocation[retailer][period] = vehicle;
-                                                        TempVisitOrder[retailer][period] = position;
+                                                        if (TempRoute[period][vehicle][position] == retailer)
+                                                        {
+                                                            TempVehicleAllocation[retailer][period] = vehicle;
+                                                            TempVisitOrder[retailer][period] = position;
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
-                                    }
 
-                                    //PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder);
-                                    int BalancingCounter = 0;
-                                    int FeasibleRebalanceOrNot = 0;
-                                    double NewLogisticRatio = 0;
-                                    while (BalancingCounter < 1)
-                                    {
-                                        cout << "Balancing attempt:" << BalancingCounter << endl;
-                                        NewLogisticRatio = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder, CountingInfeasibleCase, FeasibleRebalanceOrNot);
-                                        BalancingCounter++;
-                                    }
-                                    if (FeasibleRebalanceOrNot == 1)
-                                    {
-                                        cout << "NewLogisticRatio: " << NewLogisticRatio << ", CurrentLogisticRatio: " << CurrentLogisticRatio << endl;
-                                        if (NewLogisticRatio < CurrentLogisticRatio)
+                                        int BalancingCounter = 0;
+                                        int FeasibleRebalanceOrNot = 0;
+                                        double NewLogisticRatio = 0;
+                                        while (BalancingCounter < 1)
                                         {
-                                            whether_improved_or_not = 1;
-                                            ImpRoute = TempRoute;
-                                            ImpUnallocatedCustomers = TempUnallocatedCustomers;
-                                            ImpVehicleLoad = TempVehicleLoad;
-                                            ImpDeliveryQuantity = TempDeliveryQuantity;
-                                            ImpInventoryLevel = TempInventoryLevel;
-                                            ImpVehicleAllocation = TempVehicleAllocation;
-                                            ImpVisitOrder = TempVisitOrder;
+                                            cout << "Balancing attempt:" << BalancingCounter << endl;
+                                            NewLogisticRatio = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder, CountingInfeasibleCase, FeasibleRebalanceOrNot);
+                                            BalancingCounter++;
                                         }
+                                        if (FeasibleRebalanceOrNot == 1)
+                                        {
+                                            cout << "NewLogisticRatio: " << NewLogisticRatio << ", CurrentLogisticRatio: " << CurrentLogisticRatio << endl;
+                                            if (NewLogisticRatio < CurrentLogisticRatio)
+                                            {
+                                                whether_improved_or_not = 1;
+                                                ImpRoute = TempRoute;
+                                                ImpUnallocatedCustomers = TempUnallocatedCustomers;
+                                                ImpVehicleLoad = TempVehicleLoad;
+                                                ImpDeliveryQuantity = TempDeliveryQuantity;
+                                                ImpInventoryLevel = TempInventoryLevel;
+                                                ImpVehicleAllocation = TempVehicleAllocation;
+                                                ImpVisitOrder = TempVisitOrder;
+                                            }
+                                        }
+                                        solutionCounter++;
                                     }
-                                    solutionCounter++;
                                 }
                             }
                         }

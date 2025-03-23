@@ -84,15 +84,19 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     assert(UseSwap!=UseSwapRebalance);
     while (OperatorSwapCounter < 1)
     {
+        int min_remove_length = 0;
+        int max_remove_length = 1;
+        int min_insert_length = 0;
+        int max_insert_length = 1;
         int whether_improved_swap = 0;
         int whether_improved_swap_rebalance = 0;
         if (UseSwap == 1)
         {
-            whether_improved_swap = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
+            whether_improved_swap = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
         }
         else if (UseSwapRebalance == 1)
         {
-            whether_improved_swap_rebalance = OperatorSwapWithBalancing(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
+            whether_improved_swap_rebalance = OperatorSwapWithBalancing(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
         }
         IRPSolution.GetLogisticRatio(IRPLR);
         cout << "Solution after iteration " << OperatorSwapCounter << endl;
@@ -136,14 +140,7 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
             }
         }
         OperatorSwapCounter++;
-        if (UseSwapRebalance == 1)
-        {
-            if (whether_improved_swap_rebalance == 0)
-            {
-                cout << "Stop due to no improvement" << endl;
-                break;
-            }
-        }
+        
     }
 
     ///////////////////////////////////////////////

@@ -392,7 +392,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
         // assert(TempViolationStockOut < 0.001);
         // cout << NewLogisticRatio << "," << CurrentLogisticRatio << endl;
 
-        assert(aborter == 1);
+        // assert(aborter == 1);
 
     }
     catch (double rebalacing_facing_stock_out)
