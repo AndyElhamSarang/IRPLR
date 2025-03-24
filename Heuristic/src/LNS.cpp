@@ -79,11 +79,12 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     int NumberOfFeasibleSolution = 0;
     int FeasibleSolutionCounter = 0;
     int BetterFeasibleSolutionCounter = 0;
-    int UseSwap=0;
-    int UseSwapRebalance=1;
+    int UseSwap=1;
+    int UseSwapRebalance=0;
     assert(UseSwap!=UseSwapRebalance);
     while (OperatorSwapCounter < 1)
     {
+        assert(UseSwap!=UseSwapRebalance);
         int min_remove_length = 0;
         int max_remove_length = 1;
         int min_insert_length = 0;

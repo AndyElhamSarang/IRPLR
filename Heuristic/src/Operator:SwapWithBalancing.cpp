@@ -5,7 +5,7 @@ int solution_improvement::OperatorSwapWithBalancing(input &IRPLR, solution &IRPS
 {
     // This operator permits feasible solutions only
 
-    cout << "Swap starting solution" << endl;
+    cout << "Swap with rebalance starting solution" << endl;
    
 
     int whether_improved_or_not = 0;

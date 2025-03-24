@@ -38,7 +38,7 @@ int solution_improvement::OperatorSwap(input &IRPLR, solution &IRPSolution, HGS 
                     vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
                     vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
                     vector<vector<int>> TempVisitOrder(IRPSolution.VisitOrder);
-                    // double testEndTransportationCost = 0;
+                    // double testEndTransportationCost = 0; 
                     // double testStartTransportationCost = IRPLR.Distance[0][TempRoute[i][j][0] + 1];
                     // testStartTransportationCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
                     // for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
