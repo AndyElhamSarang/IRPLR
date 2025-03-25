@@ -25,11 +25,12 @@ andy:
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
-	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:SwapWithBalancing.cpp \
+	Operator:SingleRoute.cpp Operator:PureSwap.cpp \
+	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
 	-I $(andy) -I $(andy_boost) \
-	-o irplr.out -O3
+	-o SwapHGS.out -O3
 andy_lenovo:
 	$(CC) main.cpp file:Read_andy_lenovo.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
@@ -47,7 +48,8 @@ andy_lenovo:
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
-	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:SwapWithBalancing.cpp \
+	Operator:SingleRoute.cpp Operator:PureSwap.cpp \
+	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
 	-I $(andy_lenovo) -I $(andy_lenovo_boost) \
@@ -69,7 +71,8 @@ andy_desktop:
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
-	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:SwapWithBalancing.cpp \
+	Operator:SingleRoute.cpp Operator:PureSwap.cpp \
+	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
@@ -91,7 +94,8 @@ andy_testpc:
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
-	Operator:SingleRoute.cpp Operator:Swap.cpp Operator:SwapWithBalancing.cpp \
+	Operator:SingleRoute.cpp Operator:PureSwap.cpp \
+	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \

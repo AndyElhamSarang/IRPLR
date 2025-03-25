@@ -29,7 +29,7 @@ int main()
 
 	if (OutputResults == 1)
 	{
-		Table.open("Swap.csv");
+		Table.open("SwapHGS.csv");
 		Table << ",#TimePeriods,#Customer,#Vehicle,Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,BestCost,BestQuantity,BestLogisticRatio,T_Total\n";
 	}
 
@@ -77,6 +77,7 @@ int main()
 				cout<<"Initial solution"<<endl;
 				IRPSolution.print_solution(IRPLR);
 
+				base_generator_type generator(static_cast<unsigned int>(time(0)));
 				solution_improvement Metaheuristic;
 				Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory);
 				

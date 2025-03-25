@@ -1,5 +1,5 @@
 #include "lib.h"
-int solution_improvement::OperatorSwapWithBalancing(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, preprocessing &memory,
+int solution_improvement::OperatorSwapRemoveInsertWithBalancing(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, preprocessing &memory,
                                                     int &min_remove_length, int &max_remove_length,
                                                     int &min_insert_length, int &max_insert_length)
 {

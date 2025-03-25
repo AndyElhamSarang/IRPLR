@@ -79,26 +79,33 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     int NumberOfFeasibleSolution = 0;
     int FeasibleSolutionCounter = 0;
     int BetterFeasibleSolutionCounter = 0;
-    int UseSwap=1;
-    int UseSwapRebalance=0;
-    assert(UseSwap!=UseSwapRebalance);
-    while (OperatorSwapCounter < 1)
+    int UseSwapRemoveInsert=1;
+    int UseSwapRemoveInsertRebalance=0;
+    int UsePureSwap =0;
+    // assert(UseSwapRemoveInsert!=UseSwapRemoveInsertRebalance);
+    while (OperatorSwapCounter < 1000)
     {
-        assert(UseSwap!=UseSwapRebalance);
+        // assert(UseSwapRemoveInsert!=UseSwapRemoveInsertRebalance);
         int min_remove_length = 0;
         int max_remove_length = 1;
         int min_insert_length = 0;
         int max_insert_length = 1;
         int whether_improved_swap = 0;
         int whether_improved_swap_rebalance = 0;
-        if (UseSwap == 1)
+        if (UseSwapRemoveInsert == 1)
         {
-            whether_improved_swap = OperatorSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
+            whether_improved_swap = OperatorSwapRemoveInsert(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
         }
-        else if (UseSwapRebalance == 1)
+        else if (UseSwapRemoveInsertRebalance == 1)
         {
-            whether_improved_swap_rebalance = OperatorSwapWithBalancing(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
+            whether_improved_swap_rebalance = OperatorSwapRemoveInsertWithBalancing(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
         }
+        else if (UsePureSwap == 1)
+        { 
+            whether_improved_swap_rebalance = OperatorPureSwap(IRPLR, IRPSolution, Routing, PenaltyForStockOut, memory);
+        
+        }
+        
         IRPSolution.GetLogisticRatio(IRPLR);
         cout << "Solution after iteration " << OperatorSwapCounter << endl;
         cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
@@ -150,64 +157,64 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     //                                           //
     ///////////////////////////////////////////////
 
-    // for (int i = 0; i < BestIRP_Solution.Route.size(); i++)
-    // {
-    //     int NumberOfCustomerOfDay = 0;
-    //     for (int j = 0; j < BestIRP_Solution.Route[i].size(); j++)
-    //     {
-    //         NumberOfCustomerOfDay += BestIRP_Solution.Route[i][j].size();
-    //     }
-    //     if (NumberOfCustomerOfDay > 1)
-    //     {
-    //         BestIRP_Solution.OutputCVRP(IRPLR, i, BestIRP_Solution.Route[i]);
-    //         Routing.CallHGS(IRPLR);
-    //         BestIRP_Solution.ReadCVRP_Solution(IRPLR, i, BestIRP_Solution.Route[i]);
-    //     }
-    // }
-    // cout<<"IRPLR.NumberOfRetailers:"<<IRPLR.NumberOfRetailers<<", "<<"IRPLR.Retailers.size():"<<IRPLR.Retailers.size()<<endl;
-    // for(int i=0;i<BestIRP_Solution.VisitOrder.size();i++)
-    // {
-    //     for(int j=0;j<BestIRP_Solution.VisitOrder[i].size();j++)
-    //     {
-    //         BestIRP_Solution.VehicleAllocation[i][j] = IRPLR.NumberOfVehicles+1;
-    //         BestIRP_Solution.VisitOrder[i][j] = IRPLR.Retailers.size() +1;
-    //     }
-    // }
+    for (int i = 0; i < BestIRP_Solution.Route.size(); i++)
+    {
+        int NumberOfCustomerOfDay = 0;
+        for (int j = 0; j < BestIRP_Solution.Route[i].size(); j++)
+        {
+            NumberOfCustomerOfDay += BestIRP_Solution.Route[i][j].size();
+        }
+        if (NumberOfCustomerOfDay > 1)
+        {
+            BestIRP_Solution.OutputCVRP(IRPLR, i, BestIRP_Solution.Route[i]);
+            Routing.CallHGS(IRPLR);
+            BestIRP_Solution.ReadCVRP_Solution(IRPLR, i, BestIRP_Solution.Route[i]);
+        }
+    }
+    cout<<"IRPLR.NumberOfRetailers:"<<IRPLR.NumberOfRetailers<<", "<<"IRPLR.Retailers.size():"<<IRPLR.Retailers.size()<<endl;
+    for(int i=0;i<BestIRP_Solution.VisitOrder.size();i++)
+    {
+        for(int j=0;j<BestIRP_Solution.VisitOrder[i].size();j++)
+        {
+            BestIRP_Solution.VehicleAllocation[i][j] = IRPLR.NumberOfVehicles+1;
+            BestIRP_Solution.VisitOrder[i][j] = IRPLR.Retailers.size() +1;
+        }
+    }
 
-    // BestIRP_Solution.UnallocatedCustomers.clear();
-    // for (int i = 0; i < BestIRP_Solution.Route.size(); i++) // For this time period
-    // {
-    //     vector<int> TempUnallocatedCustomer;             // Look for unallcated customers at this time period
-    //     for (int x = 0; x < IRPLR.Retailers.size(); x++) // Check each retailers
-    //     {
-    //         int UnallocatedYesOrNo = 0;
-    //         for (int j = 0; j < BestIRP_Solution.Route[i].size(); j++)// index j for vehicle
-    //         {
-    //             for (int k = 0; k < BestIRP_Solution.Route[i][j].size(); k++) //index k for position
-    //             {
+    BestIRP_Solution.UnallocatedCustomers.clear();
+    for (int i = 0; i < BestIRP_Solution.Route.size(); i++) // For this time period
+    {
+        vector<int> TempUnallocatedCustomer;             // Look for unallcated customers at this time period
+        for (int x = 0; x < IRPLR.Retailers.size(); x++) // Check each retailers
+        {
+            int UnallocatedYesOrNo = 0;
+            for (int j = 0; j < BestIRP_Solution.Route[i].size(); j++)// index j for vehicle
+            {
+                for (int k = 0; k < BestIRP_Solution.Route[i][j].size(); k++) //index k for position
+                {
 
-    //                 if (BestIRP_Solution.Route[i][j][k] == x)
-    //                 {
-    //                     UnallocatedYesOrNo = 1;
-    //                     BestIRP_Solution.VehicleAllocation[x][i] = j;
-    //                     BestIRP_Solution.VisitOrder [x][i] = k;
-    //                 }
-    //             }
-    //         }
-    //         if (UnallocatedYesOrNo == 0) // This customer is not visited
-    //         {
-    //             TempUnallocatedCustomer.push_back(x);
-    //         }
-    //     }
-    //     BestIRP_Solution.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
-    // }
-    // BestIRP_Solution.GetLogisticRatio(IRPLR);
+                    if (BestIRP_Solution.Route[i][j][k] == x)
+                    {
+                        UnallocatedYesOrNo = 1;
+                        BestIRP_Solution.VehicleAllocation[x][i] = j;
+                        BestIRP_Solution.VisitOrder [x][i] = k;
+                    }
+                }
+            }
+            if (UnallocatedYesOrNo == 0) // This customer is not visited
+            {
+                TempUnallocatedCustomer.push_back(x);
+            }
+        }
+        BestIRP_Solution.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
+    }
+    BestIRP_Solution.GetLogisticRatio(IRPLR);
 
-    // cout << "Solution after Optimizing the routes on the best found" << endl;
-    // BestIRP_Solution.print_solution(IRPLR);
-    // cout << "TotalTransportationCost:" << BestIRP_Solution.TotalTransportationCost << "\t TotalDelivery:" << BestIRP_Solution.TotalDelivery << "\t LogistcRatio:" << BestIRP_Solution.LogisticRatio << endl;
+    cout << "Solution after Optimizing the routes on the best found" << endl;
+    BestIRP_Solution.print_solution(IRPLR);
+    cout << "TotalTransportationCost:" << BestIRP_Solution.TotalTransportationCost << "\t TotalDelivery:" << BestIRP_Solution.TotalDelivery << "\t LogistcRatio:" << BestIRP_Solution.LogisticRatio << endl;
     
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     time(&end_time);
     double total_time = difftime(end_time, start_time);
     double check_LogisticRatio = BestIRP_Solution.LogisticRatio;

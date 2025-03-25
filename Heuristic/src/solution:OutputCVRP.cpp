@@ -40,9 +40,12 @@ void solution::OutputCVRP(input &IRPLR, int &day, vector<vector<int>> &RouteForD
             {
                 if (RouteForDay[j][k] == z)
                 {
-                    assert(DeliveryQuantity[z][day]);
+
+                    cout<< CustomerIndex << "\t" << DeliveryQuantity[z][day] << endl;
                     CVRP_Instance << CustomerIndex << "\t" << DeliveryQuantity[z][day] << "\n";
                     CustomerIndex++;
+
+                    assert(DeliveryQuantity[z][day]);
                 }
             }
         }
