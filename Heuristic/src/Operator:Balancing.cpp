@@ -308,8 +308,8 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
 
         // If solution made to this stage, it is feasible
         FeasibleRebalanceOrNot = 1;
-        //Search for an existing visit that delivers nothing, find the the visit in the route and delete it
-        //Otherwise if an existingi vist delivers, increment the delivery quantity.
+        //Search for an existing visit that delivers nothing, find the visit in the route and delete it
+        //Otherwise if an existing visit delivers, computes the total delivery quantity by incrementing the delivery quantity of each visit.
         double temp_total_delivery_quantity=0;
         for (int i = 0; i < DeliveryQuantity.size(); i++) // Index i for retailer
         {

@@ -157,6 +157,9 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     //                                           //
     ///////////////////////////////////////////////
 
+    cout<<"Best solution before HGS"<<endl;
+    BestIRP_Solution.print_solution(IRPLR);
+
     for (int i = 0; i < BestIRP_Solution.Route.size(); i++)
     {
         int NumberOfCustomerOfDay = 0;

@@ -232,206 +232,216 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                         //    cout << "Adjusted the inventory level of the removed customer" << endl;
                                         //    PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder);
                                         }
-
+                                        int Whether_insert_fail = 0; //if insert does lead to an increase on delivery quantity, this move fails, therefore skip the evalution
                                         if (insert_length != 0)
                                         {
                                             double CopyOfQ = TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day]; // Should always be zero at this line
                                             TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day] = min(IRPLR.Vehicle.capacity - TempVehicleLoad[pick_day][pick_vehicle], IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax - TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day]);
-                                            ChangeInTotalQuantity += TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day] - CopyOfQ;
-
-                                            // cout<<"!"<<IRPLR.Vehicle.capacity <<","<< TempVehicleLoad[pick_day][pick_vehicle]<<","<< IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax<<","<<TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day]<<","<<TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day]<<endl;
-                                            TempVehicleLoad[pick_day][pick_vehicle] = TempVehicleLoad[pick_day][pick_vehicle] + TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day];
-                                            // cout << "Added delivery quantity to the inserted customer" << endl;
-                                            // PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder);
-
-                                            if (pick_day == 0)
+                                            
+                                            if(TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day]==0)
                                             {
-                                                double AdjustInventoryInsert = IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryBegin;
-                                                for (int y = 0; y < TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].size(); y++)
+                                                Whether_insert_fail = 1;
+                                            }
+                                            if (Whether_insert_fail == 0)
+                                            {
+                                                ChangeInTotalQuantity += TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day] - CopyOfQ;
+                                                // cout<<"!"<<IRPLR.Vehicle.capacity <<","<< TempVehicleLoad[pick_day][pick_vehicle]<<","<< IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax<<","<<TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day]<<","<<TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day]<<endl;
+                                                TempVehicleLoad[pick_day][pick_vehicle] = TempVehicleLoad[pick_day][pick_vehicle] + TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day];
+                                                // cout << "Added delivery quantity to the inserted customer" << endl;
+                                                // PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder);
+                                                assert(TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day] != 0);
+
+                                                if (pick_day == 0)
                                                 {
-                                                    if (TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] != 0)
+                                                    double AdjustInventoryInsert = IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryBegin;
+                                                    for (int y = 0; y < TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].size(); y++)
                                                     {
-                                                        // cout<<IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempUnallocatedCustomers[pick_day][pick_unallocated_customer]][y]]<<","<< IRPLR.Retailers[TempUnallocatedCustomers[pick_day][pick_unallocated_customer]].InventoryMax - TempInventoryLevel[TempUnallocatedCustomers[pick_day][pick_unallocated_customer]][y]<<endl;
-                                                        double DeltaQ_Insert = min(IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]], IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax - TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]); // Compute how much you can delivery more
-                                                        // cout<<"DeltaQ_Insert:"<<DeltaQ_Insert<<endl;
-                                                        if (DeltaQ_Insert > 0)
+                                                        if (TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] != 0)
                                                         {
-                                                            TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] = TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] + DeltaQ_Insert;
-                                                            ChangeInTotalQuantity += DeltaQ_Insert;
-                                                            TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] = TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] + DeltaQ_Insert;
-                                                        }
-                                                    }
-                                                    AdjustInventoryInsert = AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].Demand + TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y];
-                                                    if (AdjustInventoryInsert > IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax)
-                                                    {
-                                                        TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] = TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - (AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax);
-                                                        ChangeInTotalQuantity = ChangeInTotalQuantity - (AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax);
-                                                        TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] = TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] - (AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax);
-                                                        AdjustInventoryInsert = IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax;
-                                                    }
-
-                                                    if (fabs(TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - AdjustInventoryInsert) > 0.001)
-                                                    {
-                                                        if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] >= 0.0 && AdjustInventoryInsert < -0.001)
-                                                        {
-                                                            NewStockOut += -AdjustInventoryInsert;
-                                                        }
-                                                        else if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] < -0.001 && AdjustInventoryInsert >= 0.0)
-                                                        {
-                                                            NewStockOut -= -TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y];
-                                                        }
-                                                        else if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] < -0.001 && AdjustInventoryInsert < -0.001)
-                                                        {
-                                                            if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] < AdjustInventoryInsert)
+                                                            // cout<<IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempUnallocatedCustomers[pick_day][pick_unallocated_customer]][y]]<<","<< IRPLR.Retailers[TempUnallocatedCustomers[pick_day][pick_unallocated_customer]].InventoryMax - TempInventoryLevel[TempUnallocatedCustomers[pick_day][pick_unallocated_customer]][y]<<endl;
+                                                            double DeltaQ_Insert = min(IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]], IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax - TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]); // Compute how much you can delivery more
+                                                            // cout<<"DeltaQ_Insert:"<<DeltaQ_Insert<<endl;
+                                                            if (DeltaQ_Insert > 0)
                                                             {
-                                                                NewStockOut -= fabs(TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - AdjustInventoryInsert);
-                                                            }
-                                                            else if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] > AdjustInventoryInsert)
-                                                            {
-                                                                NewStockOut += fabs(TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - AdjustInventoryInsert);
+                                                                TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] = TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] + DeltaQ_Insert;
+                                                                ChangeInTotalQuantity += DeltaQ_Insert;
+                                                                TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] = TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] + DeltaQ_Insert;
                                                             }
                                                         }
-                                                    }
+                                                        AdjustInventoryInsert = AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].Demand + TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y];
+                                                        if (AdjustInventoryInsert > IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax)
+                                                        {
+                                                            TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] = TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - (AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax);
+                                                            ChangeInTotalQuantity = ChangeInTotalQuantity - (AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax);
+                                                            TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] = TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] - (AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax);
+                                                            AdjustInventoryInsert = IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax;
+                                                        }
 
-                                                    TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] = AdjustInventoryInsert;
+                                                        if (fabs(TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - AdjustInventoryInsert) > 0.001)
+                                                        {
+                                                            if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] >= 0.0 && AdjustInventoryInsert < -0.001)
+                                                            {
+                                                                NewStockOut += -AdjustInventoryInsert;
+                                                            }
+                                                            else if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] < -0.001 && AdjustInventoryInsert >= 0.0)
+                                                            {
+                                                                NewStockOut -= -TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y];
+                                                            }
+                                                            else if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] < -0.001 && AdjustInventoryInsert < -0.001)
+                                                            {
+                                                                if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] < AdjustInventoryInsert)
+                                                                {
+                                                                    NewStockOut -= fabs(TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - AdjustInventoryInsert);
+                                                                }
+                                                                else if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] > AdjustInventoryInsert)
+                                                                {
+                                                                    NewStockOut += fabs(TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - AdjustInventoryInsert);
+                                                                }
+                                                            }
+                                                        }
+
+                                                        TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] = AdjustInventoryInsert;
+                                                    }
+                                                }
+                                                else
+                                                {
+
+                                                    double AdjustInventoryInsert = TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day - 1];
+                                                    for (int y = pick_day; y < TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].size(); y++)
+                                                    {
+                                                        if (TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] != 0)
+                                                        {
+                                                            // cout<<IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempUnallocatedCustomers[pick_day][pick_unallocated_customer]][y]]<<","<< IRPLR.Retailers[TempUnallocatedCustomers[pick_day][pick_unallocated_customer]].InventoryMax - TempInventoryLevel[TempUnallocatedCustomers[pick_day][pick_unallocated_customer]][y]<<endl;
+                                                            double DeltaQ_Insert = min(IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]], IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax - TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]); // Compute how much you can delivery more
+                                                            // cout<<"DeltaQ_Insert:"<<DeltaQ_Insert<<endl;
+                                                            if (DeltaQ_Insert > 0)
+                                                            {
+                                                                TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] = TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] + DeltaQ_Insert;
+                                                                ChangeInTotalQuantity += DeltaQ_Insert;
+                                                                TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] = TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] + DeltaQ_Insert;
+                                                            }
+                                                        }
+                                                        AdjustInventoryInsert = AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].Demand + TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y];
+                                                        if (AdjustInventoryInsert > IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax)
+                                                        {
+                                                            TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] = TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - (AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax);
+                                                            ChangeInTotalQuantity = ChangeInTotalQuantity - (AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax);
+                                                            TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] = TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] - (AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax);
+                                                            AdjustInventoryInsert = IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax;
+                                                        }
+
+                                                        if (fabs(TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - AdjustInventoryInsert) > 0.001)
+                                                        {
+                                                            if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] >= 0.0 && AdjustInventoryInsert < -0.001)
+                                                            {
+                                                                NewStockOut += -AdjustInventoryInsert;
+                                                            }
+                                                            else if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] < -0.001 && AdjustInventoryInsert >= 0.0)
+                                                            {
+                                                                NewStockOut -= -TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y];
+                                                            }
+                                                            else if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] < -0.001 && AdjustInventoryInsert < -0.001)
+                                                            {
+                                                                if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] < AdjustInventoryInsert)
+                                                                {
+                                                                    NewStockOut -= fabs(TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - AdjustInventoryInsert);
+                                                                }
+                                                                else if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] > AdjustInventoryInsert)
+                                                                {
+                                                                    NewStockOut += fabs(TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - AdjustInventoryInsert);
+                                                                }
+                                                            }
+                                                        }
+                                                        TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] = AdjustInventoryInsert;
+                                                    }
+                                                }
+                                                // cout << "Adjusted inventory level to the inserted customer" << endl;
+                                                // PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder);
+                                            }
+                                        }
+                                        if (Whether_insert_fail == 0)
+                                        {
+                                            if (insert_length != 0)
+                                            {
+                                                double CurrentTransportationCost = memory.PopulateSingleRoutePrefixAndSuffix(IRPLR, TempRoute[pick_day][pick_vehicle]); // Preprocessing travel distance of the route
+                                                // assert(fabs(testEndTransportationCost - CurrentTransportationCost) < 0.001);
+                                                memory.PopulateSingleRouteSubpath(IRPLR, TempRoute[pick_day][pick_vehicle]);
+                                                double ImprovedTransportationCost = CurrentTransportationCost;
+                                                int FindingCheapestInsertion = OperatorCheapestInsertion(IRPLR, TempRoute[pick_day][pick_vehicle], pick_allocated_customer, PenaltyForStockOut, ImprovedTransportationCost, memory); // Finding cheapest insertion
+                                            }
+                                            // Calcualte new route cost
+                                            double NewRouteCost = 0;
+                                            if (TempRoute[pick_day][pick_vehicle].size() != 0)
+                                            {
+                                                NewRouteCost = IRPLR.Distance[0][TempRoute[pick_day][pick_vehicle][0] + 1];
+                                                NewRouteCost += IRPLR.Distance[TempRoute[pick_day][pick_vehicle][TempRoute[pick_day][pick_vehicle].size() - 1] + 1][0];
+                                                for (int test = 0; test < TempRoute[pick_day][pick_vehicle].size() - 1; test++)
+                                                {
+                                                    NewRouteCost += IRPLR.Distance[TempRoute[pick_day][pick_vehicle][test] + 1][TempRoute[pick_day][pick_vehicle][test + 1] + 1];
                                                 }
                                             }
-                                            else
-                                            {
 
-                                                double AdjustInventoryInsert = TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day - 1];
-                                                for (int y = pick_day; y < TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].size(); y++)
-                                                {
-                                                    if (TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] != 0)
-                                                    {
-                                                        // cout<<IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempUnallocatedCustomers[pick_day][pick_unallocated_customer]][y]]<<","<< IRPLR.Retailers[TempUnallocatedCustomers[pick_day][pick_unallocated_customer]].InventoryMax - TempInventoryLevel[TempUnallocatedCustomers[pick_day][pick_unallocated_customer]][y]<<endl;
-                                                        double DeltaQ_Insert = min(IRPLR.Vehicle.capacity - TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]], IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax - TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]); // Compute how much you can delivery more
-                                                        // cout<<"DeltaQ_Insert:"<<DeltaQ_Insert<<endl;
-                                                        if (DeltaQ_Insert > 0)
-                                                        {
-                                                            TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] = TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] + DeltaQ_Insert;
-                                                            ChangeInTotalQuantity += DeltaQ_Insert;
-                                                            TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] = TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] + DeltaQ_Insert;
-                                                        }
-                                                    }
-                                                    AdjustInventoryInsert = AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].Demand + TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y];
-                                                    if (AdjustInventoryInsert > IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax)
-                                                    {
-                                                        TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] = TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - (AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax);
-                                                        ChangeInTotalQuantity = ChangeInTotalQuantity - (AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax);
-                                                        TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] = TempVehicleLoad[y][TempVehicleAllocation[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y]] - (AdjustInventoryInsert - IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax);
-                                                        AdjustInventoryInsert = IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax;
-                                                    }
+                                            double ChangeInTransportationCost = NewRouteCost - OldRouteCost;
 
-                                                    if (fabs(TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - AdjustInventoryInsert) > 0.001)
-                                                    {
-                                                        if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] >= 0.0 && AdjustInventoryInsert < -0.001)
-                                                        {
-                                                            NewStockOut += -AdjustInventoryInsert;
-                                                        }
-                                                        else if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] < -0.001 && AdjustInventoryInsert >= 0.0)
-                                                        {
-                                                            NewStockOut -= -TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y];
-                                                        }
-                                                        else if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] < -0.001 && AdjustInventoryInsert < -0.001)
-                                                        {
-                                                            if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] < AdjustInventoryInsert)
-                                                            {
-                                                                NewStockOut -= fabs(TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - AdjustInventoryInsert);
-                                                            }
-                                                            else if (TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] > AdjustInventoryInsert)
-                                                            {
-                                                                NewStockOut += fabs(TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] - AdjustInventoryInsert);
-                                                            }
-                                                        }
-                                                    }
-                                                    TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][y] = AdjustInventoryInsert;
-                                                }
-                                            }
-                                            // cout << "Adjusted inventory level to the inserted customer" << endl;
+                                            double NewTransportationCost = IRPSolution.TotalTransportationCost + ChangeInTransportationCost;
+                                            double NewTotalDelivery = IRPSolution.TotalDelivery + ChangeInTotalQuantity;
+
+                                            // cout << "Route resulting in cheapest insertion:" << endl;
+                                            // for (int y = 0; y < TempRoute[pick_day][pick_vehicle].size(); y++)
+                                            //{
+                                            //     cout << TempRoute[pick_day][pick_vehicle][y] << ",";
+                                            // }
+                                            // cout << endl;
+
+                                            double NewLogisticRatio = NewTransportationCost / NewTotalDelivery;
+
+                                            double temp_LR_obvj = NewLogisticRatio + PenaltyForStockOut * NewStockOut;
+
+                                            // double TempTransportationCost = 0;
+                                            // double TempTotalDelivery = 0;
+                                            // double TempLogisticRatio = 0;
+                                            // double TempViolationStockOut = 0;
+                                            // GetTempLogisticRatio(IRPLR, TempRoute, TempDeliveryQuantity, TempInventoryLevel, TempTransportationCost, TempTotalDelivery, TempLogisticRatio, TempViolationStockOut);
+                                            // cout << "Final solution" << endl;
                                             // PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder);
-                                        }
-                                        
-                                        if (insert_length != 0)
-                                        {
-                                            double CurrentTransportationCost = memory.PopulateSingleRoutePrefixAndSuffix(IRPLR, TempRoute[pick_day][pick_vehicle]); // Preprocessing travel distance of the route
-                                            // assert(fabs(testEndTransportationCost - CurrentTransportationCost) < 0.001);
-                                            memory.PopulateSingleRouteSubpath(IRPLR, TempRoute[pick_day][pick_vehicle]);
-                                            double ImprovedTransportationCost = CurrentTransportationCost;
-                                            int FindingCheapestInsertion = OperatorCheapestInsertion(IRPLR, TempRoute[pick_day][pick_vehicle], pick_allocated_customer, PenaltyForStockOut, ImprovedTransportationCost, memory); // Finding cheapest insertion
-                                        }
-                                        // Calcualte new route cost
-                                        double NewRouteCost = 0;
-                                        if (TempRoute[pick_day][pick_vehicle].size()!=0)
-                                        {
-                                            NewRouteCost = IRPLR.Distance[0][TempRoute[pick_day][pick_vehicle][0] + 1];
-                                            NewRouteCost += IRPLR.Distance[TempRoute[pick_day][pick_vehicle][TempRoute[pick_day][pick_vehicle].size() - 1] + 1][0];
-                                            for (int test = 0; test < TempRoute[pick_day][pick_vehicle].size() - 1; test++)
+                                            // cout << "Check Transportation Cost" << endl;
+                                            // cout << TempTransportationCost << "," << NewTransportationCost << endl;
+                                            // assert(fabs(TempTransportationCost - NewTransportationCost) < 0.001);
+                                            // cout << "Check Delivery Quantity" << endl;
+                                            // cout << TempTotalDelivery << "," << NewTotalDelivery << endl;
+                                            // assert(fabs(TempTotalDelivery - NewTotalDelivery) < 0.001);
+                                            // cout << "Check Logistic ratio" << endl;
+                                            // cout << TempLogisticRatio << "," << NewLogisticRatio << endl;
+                                            // assert(fabs(TempLogisticRatio - NewLogisticRatio) < 0.001);
+                                            // cout << "Check ViolationStockout" << endl;
+                                            // cout << TempViolationStockOut << "," << NewStockOut << endl;
+                                            // assert(fabs(TempViolationStockOut - NewStockOut) < 0.001);
+                                            //  cout << temp_LR_obvj << "," << LR_objv << endl;
+                                            if (temp_LR_obvj < LR_objv)
                                             {
-                                                NewRouteCost += IRPLR.Distance[TempRoute[pick_day][pick_vehicle][test] + 1][TempRoute[pick_day][pick_vehicle][test + 1] + 1];
-                                            }
-                                        }
+                                                whether_improved_or_not = 1;
+                                                ImpRoute = TempRoute;
+                                                ImpInventoryLevel = TempInventoryLevel;
+                                                ImpDeliveryQuantity = TempDeliveryQuantity;
+                                                ImpUnallocatedCustomers = TempUnallocatedCustomers;
+                                                ImpVehicleAllocation = TempVehicleAllocation;
+                                                ImpVehicleLoad = TempVehicleLoad;
+                                                ImpVisitOrder = TempVisitOrder;
+                                                if (NewStockOut > 0)
+                                                {
+                                                    ImpStockOut = NewStockOut;
+                                                }
+                                                else
+                                                {
+                                                    ImpStockOut = 0;
+                                                    // cout << "!Improving feasible solution found" << endl;
+                                                }
 
-                                        double ChangeInTransportationCost = NewRouteCost - OldRouteCost;
-
-                                        double NewTransportationCost = IRPSolution.TotalTransportationCost + ChangeInTransportationCost;
-                                        double NewTotalDelivery = IRPSolution.TotalDelivery + ChangeInTotalQuantity;
-
-                                        // cout << "Route resulting in cheapest insertion:" << endl;
-                                        // for (int y = 0; y < TempRoute[pick_day][pick_vehicle].size(); y++)
-                                        //{
-                                        //     cout << TempRoute[pick_day][pick_vehicle][y] << ",";
-                                        // }
-                                        // cout << endl;
-
-                                        double NewLogisticRatio = NewTransportationCost / NewTotalDelivery;
-
-                                        double temp_LR_obvj = NewLogisticRatio + PenaltyForStockOut * NewStockOut;
-
-                                        // double TempTransportationCost = 0;
-                                        // double TempTotalDelivery = 0;
-                                        // double TempLogisticRatio = 0;
-                                        // double TempViolationStockOut = 0;
-                                        // GetTempLogisticRatio(IRPLR, TempRoute, TempDeliveryQuantity, TempInventoryLevel, TempTransportationCost, TempTotalDelivery, TempLogisticRatio, TempViolationStockOut);
-                                        // cout << "Final solution" << endl;
-                                        // PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder);
-                                        // cout << "Check Transportation Cost" << endl;
-                                        // cout << TempTransportationCost << "," << NewTransportationCost << endl;
-                                        // assert(fabs(TempTransportationCost - NewTransportationCost) < 0.001);
-                                        // cout << "Check Delivery Quantity" << endl;
-                                        // cout << TempTotalDelivery << "," << NewTotalDelivery << endl;
-                                        // assert(fabs(TempTotalDelivery - NewTotalDelivery) < 0.001);
-                                        // cout << "Check Logistic ratio" << endl;
-                                        // cout << TempLogisticRatio << "," << NewLogisticRatio << endl;
-                                        // assert(fabs(TempLogisticRatio - NewLogisticRatio) < 0.001);
-                                        // cout << "Check ViolationStockout" << endl;
-                                        // cout << TempViolationStockOut << "," << NewStockOut << endl;
-                                        // assert(fabs(TempViolationStockOut - NewStockOut) < 0.001);
-                                        //  cout << temp_LR_obvj << "," << LR_objv << endl;
-                                        if (temp_LR_obvj < LR_objv)
-                                        {
-                                            whether_improved_or_not = 1;
-                                            ImpRoute = TempRoute;
-                                            ImpInventoryLevel = TempInventoryLevel;
-                                            ImpDeliveryQuantity = TempDeliveryQuantity;
-                                            ImpUnallocatedCustomers = TempUnallocatedCustomers;
-                                            ImpVehicleAllocation = TempVehicleAllocation;
-                                            ImpVehicleLoad = TempVehicleLoad;
-                                            ImpVisitOrder = TempVisitOrder;
-                                            if (NewStockOut > 0)
-                                            {
-                                                ImpStockOut = NewStockOut;
-                                            }
-                                            else
-                                            {
-                                                ImpStockOut = 0;
-                                                // cout << "!Improving feasible solution found" << endl;
+                                                // cout << "!Improving solution found" << endl;
                                             }
 
-                                            // cout << "!Improving solution found" << endl;
+                                            solutionCounter++;
                                         }
-
-                                        solutionCounter++;
                                     }
                                 }
                             }
@@ -494,13 +504,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
             }
             IRPSolution.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
         }
-
-        cout << "Solution before rebalancing" << endl;
-        IRPSolution.print_solution(IRPLR);
-
-        // IRPSolution.GetLogisticRatio(IRPLR);
-        // cout << IRPSolution.ViolationStockOut << "," << violation << endl;
-        // assert(fabs(IRPSolution.ViolationStockOut - violation) < 0.001);
+ 
     }
 
     return whether_improved_or_not;
