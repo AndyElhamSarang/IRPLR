@@ -11,7 +11,7 @@ int NumberOfVehicleAtMinimumDelivery =0;
 
 double power = 2.0;
 ofstream Table;
-base_generator_type generator(static_cast<unsigned int>(1/*time(0)*/));
+base_generator_type generator(static_cast<unsigned int>(time(0)));
 string MachineDirectory;
 int OutputResults;
 int NumberOfInitialSolutions;
@@ -29,8 +29,8 @@ int main()
 
 	if (OutputResults == 1)
 	{
-		Table.open("test.csv");
-		Table << ",#TimePeriods,#Customer,#Vehicle,Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,BestCost,BestQuantity,BestLogisticRatio,T_Total\n";
+		Table.open("SwapRemoveInsert.csv");
+		Table << ",#TimePeriods,#Customer,#Vehicle,Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,T_Total\n";
 	}
 
 	for (int i = 0; i < read_file.instances.size(); i++)

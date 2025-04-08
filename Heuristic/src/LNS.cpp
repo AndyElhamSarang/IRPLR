@@ -82,8 +82,11 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     int UseSwapRemoveInsert=1;
     int UseSwapRemoveInsertRebalance=0;
     int UsePureSwap =0;
+    int NumberOfRebalance = 0;
+    int NumberOfRebalanceImproved=0;
+    double AccumulatedPrecentageRebalanceImprovement=0;
     // assert(UseSwapRemoveInsert!=UseSwapRemoveInsertRebalance);
-    while (OperatorSwapCounter < 1000)
+    while (OperatorSwapCounter < 50)
     {
         // assert(UseSwapRemoveInsert!=UseSwapRemoveInsertRebalance);
         int min_remove_length = 0;
@@ -133,12 +136,62 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
         {
             NumberOfFeasibleSolution++;
             FeasibleSolutionCounter++;
-            cout << "Feasible solution obtained" << endl;
+            cout << "!Feasible solution obtained" << endl;
+            int is_Rebalace_infeasible = 0;
+            int counting_infeasible_case=0;
+            bool Activate_rebalance = true;
+            if(Activate_rebalance == true)
+            {
+                cout<<"!Run rebalance"<<endl;
+            }
+            else if(Activate_rebalance == false)
+            {
+                cout << "!Does not run rebalance" << endl;
+            }
+            if (Activate_rebalance == true)
+            {
+                double LogisticRatioBeforeRebalance = IRPSolution.LogisticRatio;
+                cout<<"!LogisticRatio before rebalance:"<<IRPSolution.LogisticRatio <<endl;
+
+
+                vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
+                vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
+                vector<vector<double>> TempVehicleLoad(IRPSolution.VehicleLoad);
+                vector<vector<double>> TempDeliveryQuantity(IRPSolution.DeliveryQuantity);
+                vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
+                vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
+                vector<vector<int>> TempVisitOrder(IRPSolution.VisitOrder);
+
+                double LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
+                                                                       TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel,
+                                                                       TempVehicleAllocation, TempVisitOrder,
+                                                                       counting_infeasible_case, is_Rebalace_infeasible);
+                NumberOfRebalance++;
+                if (counting_infeasible_case == 0)
+                {
+                    IRPSolution.Route = TempRoute;
+                    IRPSolution.UnallocatedCustomers = TempUnallocatedCustomers;
+                    IRPSolution.VehicleLoad = TempVehicleLoad;
+                    IRPSolution.DeliveryQuantity = TempDeliveryQuantity;
+                    IRPSolution.InventoryLevel = TempInventoryLevel;
+                    IRPSolution.VehicleAllocation = TempVehicleAllocation;
+                    IRPSolution.VisitOrder = TempVisitOrder;
+                    IRPSolution.GetLogisticRatio(IRPLR);
+                    if (LogisticRatioBeforeRebalance - LogisctiRatioAfterRebalance > 0.001)
+                    {
+                        AccumulatedPrecentageRebalanceImprovement += ((LogisticRatioBeforeRebalance - LogisctiRatioAfterRebalance)/LogisticRatioBeforeRebalance)*100;
+                        NumberOfRebalanceImproved++;
+                        cout << "!Rebalance obtained better feasible solution with objv:" << IRPSolution.LogisticRatio << "," << LogisctiRatioAfterRebalance << endl;
+                    }
+                    assert(fabs(IRPSolution.LogisticRatio - LogisctiRatioAfterRebalance) < 0.001);
+                }
+            }
             if (BestIRP_Solution.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
             {
                 BetterFeasibleSolutionCounter++;
-                cout << "Best solution is updated" << endl;
+                cout << "!Best solution is updated" << endl;
                 BestIRP_Solution = IRPSolution;
+                BestIRP_Solution.LogisticRatio = IRPSolution.LogisticRatio;
             }
             if (NumberOfFeasibleSolution >= ToAdjustPenalty)
             {
@@ -224,14 +277,18 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     cout << "Best known results" << endl;
     BestIRP_Solution.print_solution(IRPLR);
     BestIRP_Solution.GetLogisticRatio(IRPLR);
+    cout << check_LogisticRatio << "," << BestIRP_Solution.LogisticRatio << endl;
     assert(fabs(check_LogisticRatio - BestIRP_Solution.LogisticRatio) < 0.001);
+    cout<<"!NumberOfRebalance: "<<NumberOfRebalance<<", NumberOfRebalanceImproved: "<<NumberOfRebalanceImproved<<endl;
     cout << "!FeasibleSolutionCounter: " << FeasibleSolutionCounter << endl;
     cout << "!BetterFeasibleSolutionCounter: " << BetterFeasibleSolutionCounter << endl;
     cout << "!Best Logistic Ratio: " << BestIRP_Solution.LogisticRatio << endl;
     cout << "!Time: " << total_time << endl;
     if (OutputResults == 1)
     {
-        Table << BestIRP_Solution.TotalTransportationCost << "," << BestIRP_Solution.TotalDelivery << "," << BestIRP_Solution.LogisticRatio << ","<<total_time;
+
+        Table << NumberOfRebalance << "," << NumberOfRebalanceImproved << "," << AccumulatedPrecentageRebalanceImprovement / NumberOfRebalance << ",";
+        Table << BestIRP_Solution.TotalTransportationCost << "," << BestIRP_Solution.TotalDelivery << "," << BestIRP_Solution.LogisticRatio << ","<<total_time<<",";
     }
     // LNS_Destory(IRPLR, IRPSolution,Routing);
     // LNS_Repair(IRPLR, IRPSolution,Routing);

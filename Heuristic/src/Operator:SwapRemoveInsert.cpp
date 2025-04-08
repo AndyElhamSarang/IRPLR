@@ -8,7 +8,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
     assert(max_remove_length <=1);
     assert(max_insert_length <= 1);
 
-    cout << "Swap starting solution" << endl;
+    cout << "SwapRemoveInsert starting solution" << endl;
     int whether_improved_or_not = 0;
     double LR_objv = numeric_limits<double>::max();
     IRPSolution.GetLogisticRatio(IRPLR);
