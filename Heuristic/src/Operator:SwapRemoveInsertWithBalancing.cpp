@@ -5,17 +5,17 @@ int solution_improvement::OperatorSwapRemoveInsertWithBalancing(input &IRPLR, so
 {
     // This operator permits feasible solutions only
 
-    cout << "Swap with rebalance starting solution" << endl;
+    // cout << "Swap with rebalance starting solution" << endl;
    
 
     int whether_improved_or_not = 0;
     int CountingInfeasibleCase = 0;
     double CurrentLogisticRatio = numeric_limits<double>::max();
     IRPSolution.GetLogisticRatio(IRPLR);
-    IRPSolution.print_solution(IRPLR);
-    cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << endl;
+    // IRPSolution.print_solution(IRPLR);
+    // cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << endl;
     CurrentLogisticRatio = IRPSolution.LogisticRatio + PenaltyForStockOut * IRPSolution.ViolationStockOut;
-    cout << "CurrentLogisticRatio :" << CurrentLogisticRatio << endl;
+    // cout << "CurrentLogisticRatio :" << CurrentLogisticRatio << endl;
 
     vector<vector<vector<int>>> ImpRoute(IRPSolution.Route);
     vector<vector<int>> ImpUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
@@ -32,24 +32,25 @@ int solution_improvement::OperatorSwapRemoveInsertWithBalancing(input &IRPLR, so
         {
             for (int pick_allocated_customer = 0; pick_allocated_customer <= IRPSolution.Route[pick_day][pick_vehicle].size(); pick_allocated_customer++) // A position in this vehicle
             {
-                assert(IRPSolution.UnallocatedCustomers[pick_day].size() != 0);
                 for (int pick_unallocated_customer = 0; pick_unallocated_customer <= IRPSolution.UnallocatedCustomers[pick_day].size(); pick_unallocated_customer++) // A position in the unallocated customer
                 {
                     for (int remove_length = min_remove_length; remove_length <= max_remove_length; remove_length++)
                     {
                         for (int insert_length = min_insert_length; insert_length <= max_insert_length; insert_length++)
                         {
-                            if (remove_length != 0 || insert_length != 0)
+                            if (remove_length != 0 || insert_length != 0) // It is either a remove or insert
                             {
                                 if (remove_length != 0 && insert_length == 0 && pick_unallocated_customer > 0)
                                 {
-                                    // Do nothing if it is just a remove when pick_unallocated_customer > 0
+                                    // Do nothing if it is just a remove do nothing for a poitision > 0 in the unallocated customer 
                                 }
                                 else
                                 {
                                     if (pick_unallocated_customer + insert_length <= IRPSolution.UnallocatedCustomers[pick_day].size() && pick_allocated_customer + remove_length <= IRPSolution.Route[pick_day][pick_vehicle].size()) // Make sure the operator does not go outside the range
                                     {
-                                        cout << "solution: " << solutionCounter << endl;
+                                    
+
+                                        // cout << "solution: " << solutionCounter << endl;
                                         vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
                                         vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
                                         vector<vector<double>> TempVehicleLoad(IRPSolution.VehicleLoad);
@@ -69,7 +70,7 @@ int solution_improvement::OperatorSwapRemoveInsertWithBalancing(input &IRPLR, so
                                         TempRoute[pick_day][pick_vehicle].erase(TempRoute[pick_day][pick_vehicle].begin() + pick_allocated_customer + insert_length,
                                                                                 TempRoute[pick_day][pick_vehicle].begin() + pick_allocated_customer + insert_length + remove_length);
 
-                                        PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder);
+                                        // PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder);
 
                                         // Reset the visit order
 
@@ -107,13 +108,13 @@ int solution_improvement::OperatorSwapRemoveInsertWithBalancing(input &IRPLR, so
                                         double NewLogisticRatio = 0;
                                         while (BalancingCounter < 1)
                                         {
-                                            cout << "Balancing attempt:" << BalancingCounter << endl;
+                                            // cout << "Balancing attempt:" << BalancingCounter << endl;
                                             NewLogisticRatio = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder, CountingInfeasibleCase, FeasibleRebalanceOrNot);
                                             BalancingCounter++;
                                         }
                                         if (FeasibleRebalanceOrNot == 1)
                                         {
-                                            cout << "NewLogisticRatio: " << NewLogisticRatio << ", CurrentLogisticRatio: " << CurrentLogisticRatio << endl;
+                                            // cout << "NewLogisticRatio: " << NewLogisticRatio << ", CurrentLogisticRatio: " << CurrentLogisticRatio << endl;
                                             if (NewLogisticRatio < CurrentLogisticRatio)
                                             {
                                                 whether_improved_or_not = 1;
@@ -136,9 +137,9 @@ int solution_improvement::OperatorSwapRemoveInsertWithBalancing(input &IRPLR, so
             }
         }
     }
-    cout << "Total # of solutions explored:" << solutionCounter << endl;
-    cout << "Total # of solutions which are infeasible by balancing:" << CountingInfeasibleCase << endl;
-    cout << "whether_improved_or_not:" << whether_improved_or_not << endl;
+    // cout << "Total # of solutions explored:" << solutionCounter << endl;
+    // cout << "Total # of solutions which are infeasible by balancing:" << CountingInfeasibleCase << endl;
+    // cout << "whether_improved_or_not:" << whether_improved_or_not << endl;
     if (whether_improved_or_not == 1)
     {
         IRPSolution.Route = ImpRoute;

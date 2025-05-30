@@ -12,7 +12,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
 )
 {
     FeasibleRebalanceOrNot = 0;
-    cout << "Balancing quantity operator" << endl;
+    // cout << "Balancing quantity operator" << endl;
     vector<int> MaxNumberOfConseuctiveDaysACustomerNotVisited;
     vector<vector<int>> NextVisitTime;
     vector<int> NumberOfVisits;
@@ -368,8 +368,8 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
         }
 
         LogisticRatio = temp_total_transportation_cost / temp_total_delivery_quantity;
-        cout << "Rebalance found feasible solution" << endl;
-        cout<<"Logistic ratio:"<<LogisticRatio<<", Total transportation cost:"<< temp_total_transportation_cost<< ", Total delivery quantity:"<<temp_total_delivery_quantity<<endl;
+        // cout << "Rebalance found feasible solution" << endl;
+        // cout<<"Logistic ratio:"<<LogisticRatio<<", Total transportation cost:"<< temp_total_transportation_cost<< ", Total delivery quantity:"<<temp_total_delivery_quantity<<endl;
         // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation,VisitOrder);
 
         // double TempTransportationCost = 0;
@@ -398,7 +398,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
     catch (double rebalacing_facing_stock_out)
     {
         CountingInfeasibleCase++;
-        cout<<"rebalacing_facing_stock_out, break"<<endl;
+        // cout<<"rebalacing_facing_stock_out, break"<<endl;
     }
     // cout << "End balancing" << endl;
     // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation,VisitOrder);

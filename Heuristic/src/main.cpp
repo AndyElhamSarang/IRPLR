@@ -6,8 +6,8 @@ int printout_initialRouting = 0;
 int printout_initialReadCVRP = 0;
 int printout_initial = 0;
 
-int NumberOfBalacingOperatorCalled=0;
-int NumberOfVehicleAtMinimumDelivery =0;
+int NumberOfBalacingOperatorCalled = 0;
+int NumberOfVehicleAtMinimumDelivery = 0;
 
 double power = 2.0;
 ofstream Table;
@@ -29,7 +29,7 @@ int main()
 
 	if (OutputResults == 1)
 	{
-		Table.open("SwapRemoveInsert.csv");
+		Table.open("MS.csv");
 		Table << ",#TimePeriods,#Customer,#Vehicle,Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,T_Total\n";
 	}
 
@@ -40,7 +40,6 @@ int main()
 			cout << "---------------------------------------------" << endl;
 			cout << read_file.instances[i][j] << endl;
 			cout << "---------------------------------------------" << endl;
-			
 
 			input IRPLR;
 			IRPLR.ReadIRPInstance(read_file.instances[i][j], read_file.InstanceType, read_file.InstanceDirectories[i]);
@@ -50,14 +49,14 @@ int main()
 			}
 			if (OutputResults == 1)
 			{
-				Table << read_file.instances[i][j] << ","<<IRPLR.TimeHorizon<<","<<IRPLR.NumberOfRetailers<<","<<IRPLR.NumberOfVehicles<<","; // Print instance feastures in the table
+				Table << read_file.instances[i][j] << "," << IRPLR.TimeHorizon << "," << IRPLR.NumberOfRetailers << "," << IRPLR.NumberOfVehicles << ","; // Print instance feastures in the table
 			}
 			preprocessing memory;
 			memory.PopulateGlobalDataStructure(IRPLR);
 
 			memory.CustomerInfo(IRPLR);
-			
-			//memory.PrintGlobalDataStructure();
+
+			// memory.PrintGlobalDataStructure();
 			for (int j = 0; j < NumberOfInitialSolutions; j++)
 			{
 				cout << "Attempt:" << j << endl;
@@ -66,21 +65,20 @@ int main()
 				solution IRPSolution;
 
 				time(&start_time);
-				//initial_solution.INITIAL(IRPLR, IRPSolution, Routing);
-				initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing);				
+				// initial_solution.INITIAL(IRPLR, IRPSolution, Routing);
+				initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing);
 				time(&end_time);
 				double total_time = difftime(end_time, start_time);
 				if (OutputResults == 1)
 				{
 					Table << total_time << ",";
 				}
-				cout<<"Initial solution"<<endl;
+				cout << "Initial solution" << endl;
 				IRPSolution.print_solution(IRPLR);
 
 				base_generator_type generator(static_cast<unsigned int>(time(0)));
 				solution_improvement Metaheuristic;
 				Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory);
-				
 			}
 			if (OutputResults == 1)
 			{
