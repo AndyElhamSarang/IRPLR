@@ -1,7 +1,7 @@
 Max Nonimprove Iteration, Defaults to 20,000.
 -1
-Time limit
-3
+Time limit, then in the algorithm, this number of multipled by the number of customer each day
+0.1
 Seed, Defaults to 0.
 -1
 Distance rounding, Defaults to 1.

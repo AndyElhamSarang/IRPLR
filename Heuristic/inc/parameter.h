@@ -12,6 +12,10 @@ extern int NumberOfInitialSolutions;
 extern time_t start_time;
 extern time_t end_time;
 extern double power;
+extern double LocalSearchTimeLimit;
+
+extern time_t LS_start_time;
+extern time_t LS_end_time;
 
 extern int NumberOfBalacingOperatorCalled;
 extern int NumberOfVehicleAtMinimumDelivery;

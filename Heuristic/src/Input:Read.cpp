@@ -17,7 +17,7 @@ void input::ReadIRPInstance(string &InstanceName, string &InstanceType, string &
         int DummyInteger = 0;
         char DummyChar;
         ss_take_NumberOfVehicle >> DummyInteger >> DummyChar >> DummyInteger >> DummyChar >> NumberOfVehicles;
-        NumberOfVehicles = NumberOfVehicles + 1;
+        NumberOfVehicles = NumberOfVehicles;
     }
 
     string takeline;

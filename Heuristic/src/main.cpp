@@ -9,6 +9,8 @@ int printout_initial = 0;
 int NumberOfBalacingOperatorCalled = 0;
 int NumberOfVehicleAtMinimumDelivery = 0;
 
+double LocalSearchTimeLimit = 60.0; // Default local search time limit is 60 seconds
+
 double power = 2.0;
 ofstream Table;
 base_generator_type generator(static_cast<unsigned int>(time(0)));
@@ -17,6 +19,9 @@ int OutputResults;
 int NumberOfInitialSolutions;
 time_t start_time;
 time_t end_time;
+
+time_t LS_start_time;
+time_t LS_end_time;
 int main()
 {
 	file read_file;
@@ -24,12 +29,9 @@ int main()
 	read_file.ReadIRPInstanceName();
 	read_file.ReadGlobalParameter();
 
-	HGS Routing;
-	Routing.ReadParameter();
-
 	if (OutputResults == 1)
 	{
-		Table.open("MS.csv");
+		Table.open("MS_all_instances.csv");
 		Table << ",#TimePeriods,#Customer,#Vehicle,Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,T_Total\n";
 	}
 
@@ -37,9 +39,14 @@ int main()
 	{
 		for (int j = 0; j < read_file.instances[i].size(); j++)
 		{
+
 			cout << "---------------------------------------------" << endl;
 			cout << read_file.instances[i][j] << endl;
 			cout << "---------------------------------------------" << endl;
+
+			cout << "@ ---------------------------------------------" << endl;
+			cout << "@ " << read_file.instances[i][j] << endl;
+			cout << "@ ---------------------------------------------" << endl;
 
 			input IRPLR;
 			IRPLR.ReadIRPInstance(read_file.instances[i][j], read_file.InstanceType, read_file.InstanceDirectories[i]);
@@ -47,6 +54,12 @@ int main()
 			{
 				IRPLR.PrintData();
 			}
+
+			HGS Routing;
+			Routing.ReadParameter();
+			Routing.HGSTimelimit = Routing.HGSTimelimit * (IRPLR.NumberOfRetailers - 1); // Set the time limit to be the number of retailers times the original time limit
+			//LocalSearchTimeLimit = LocalSearchTimeLimit * (IRPLR.NumberOfRetailers - 1); 
+			cout<<"HGS timelimit: "<<Routing.HGSTimelimit<<endl;
 			if (OutputResults == 1)
 			{
 				Table << read_file.instances[i][j] << "," << IRPLR.TimeHorizon << "," << IRPLR.NumberOfRetailers << "," << IRPLR.NumberOfVehicles << ","; // Print instance feastures in the table
@@ -73,7 +86,7 @@ int main()
 				{
 					Table << total_time << ",";
 				}
-				cout << "Initial solution" << endl;
+				cout << "!Initial solution " << j + 1 << endl;
 				IRPSolution.print_solution(IRPLR);
 
 				base_generator_type generator(static_cast<unsigned int>(time(0)));
