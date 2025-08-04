@@ -31,7 +31,7 @@ int main()
 
 	if (OutputResults == 1)
 	{
-		Table.open("MS_all_instances.csv");
+		Table.open("MS_all_instances_HGSTL0.5.csv");
 		Table << ",#TimePeriods,#Customer,#Vehicle,Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,T_Total\n";
 	}
 
