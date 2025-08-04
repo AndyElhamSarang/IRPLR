@@ -30,7 +30,7 @@ andy:
 	Operator:Repair.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
 	-I $(andy) -I $(andy_boost) \
-	-o MS_all_instances.out -O3
+	-o MS.out -O3
 andy_lenovo:
 	$(CC) main.cpp file:Read_andy_lenovo.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \

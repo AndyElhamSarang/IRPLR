@@ -79,8 +79,8 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     int NumberOfFeasibleSolution = 0;
     int FeasibleSolutionCounter = 0;
     int BetterFeasibleSolutionCounter = 0;
-    int UseSwapRemoveInsert = 0;
-    int UseSwapRemoveInsertRebalance = 1;
+    int UseSwapRemoveInsert = 1;
+    int UseSwapRemoveInsertRebalance = 0;
     int UsePureSwap = 0;
     int NumberOfRebalance = 0;
     int NumberOfRebalanceImproved = 0;
@@ -228,58 +228,58 @@ void solution_improvement::LargeNeighbourhoodSearch(input &IRPLR, solution &IRPS
     // cout << "Best solution before HGS" << endl;
     // BestIRP_Solution.print_solution(IRPLR);
 
-    for (int i = 0; i < BestIRP_Solution.Route.size(); i++)
-    {
-        int NumberOfCustomerOfDay = 0;
-        for (int j = 0; j < BestIRP_Solution.Route[i].size(); j++)
-        {
-            NumberOfCustomerOfDay += BestIRP_Solution.Route[i][j].size();
-        }
-        if (NumberOfCustomerOfDay > 1)
-        {
-            BestIRP_Solution.OutputCVRP(IRPLR, i, BestIRP_Solution.Route[i]);
-            Routing.CallHGS(IRPLR);
-            BestIRP_Solution.ReadCVRP_Solution(IRPLR, i, BestIRP_Solution.Route[i]);
-        }
-    }
-    // cout << "IRPLR.NumberOfRetailers:" << IRPLR.NumberOfRetailers << ", " << "IRPLR.Retailers.size():" << IRPLR.Retailers.size() << endl;
-    for (int i = 0; i < BestIRP_Solution.VisitOrder.size(); i++)
-    {
-        for (int j = 0; j < BestIRP_Solution.VisitOrder[i].size(); j++)
-        {
-            BestIRP_Solution.VehicleAllocation[i][j] = IRPLR.NumberOfVehicles + 1;
-            BestIRP_Solution.VisitOrder[i][j] = IRPLR.Retailers.size() + 1;
-        }
-    }
+    // for (int i = 0; i < BestIRP_Solution.Route.size(); i++)
+    // {
+    //     int NumberOfCustomerOfDay = 0;
+    //     for (int j = 0; j < BestIRP_Solution.Route[i].size(); j++)
+    //     {
+    //         NumberOfCustomerOfDay += BestIRP_Solution.Route[i][j].size();
+    //     }
+    //     if (NumberOfCustomerOfDay > 1)
+    //     {
+    //         BestIRP_Solution.OutputCVRP(IRPLR, i, BestIRP_Solution.Route[i]);
+    //         Routing.CallHGS(IRPLR);
+    //         BestIRP_Solution.ReadCVRP_Solution(IRPLR, i, BestIRP_Solution.Route[i]);
+    //     }
+    // }
+    // // cout << "IRPLR.NumberOfRetailers:" << IRPLR.NumberOfRetailers << ", " << "IRPLR.Retailers.size():" << IRPLR.Retailers.size() << endl;
+    // for (int i = 0; i < BestIRP_Solution.VisitOrder.size(); i++)
+    // {
+    //     for (int j = 0; j < BestIRP_Solution.VisitOrder[i].size(); j++)
+    //     {
+    //         BestIRP_Solution.VehicleAllocation[i][j] = IRPLR.NumberOfVehicles + 1;
+    //         BestIRP_Solution.VisitOrder[i][j] = IRPLR.Retailers.size() + 1;
+    //     }
+    // }
 
-    BestIRP_Solution.UnallocatedCustomers.clear();
-    for (int i = 0; i < BestIRP_Solution.Route.size(); i++) // For this time period
-    {
-        vector<int> TempUnallocatedCustomer;             // Look for unallcated customers at this time period
-        for (int x = 0; x < IRPLR.Retailers.size(); x++) // Check each retailers
-        {
-            int UnallocatedYesOrNo = 0;
-            for (int j = 0; j < BestIRP_Solution.Route[i].size(); j++) // index j for vehicle
-            {
-                for (int k = 0; k < BestIRP_Solution.Route[i][j].size(); k++) // index k for position
-                {
+    // BestIRP_Solution.UnallocatedCustomers.clear();
+    // for (int i = 0; i < BestIRP_Solution.Route.size(); i++) // For this time period
+    // {
+    //     vector<int> TempUnallocatedCustomer;             // Look for unallcated customers at this time period
+    //     for (int x = 0; x < IRPLR.Retailers.size(); x++) // Check each retailers
+    //     {
+    //         int UnallocatedYesOrNo = 0;
+    //         for (int j = 0; j < BestIRP_Solution.Route[i].size(); j++) // index j for vehicle
+    //         {
+    //             for (int k = 0; k < BestIRP_Solution.Route[i][j].size(); k++) // index k for position
+    //             {
 
-                    if (BestIRP_Solution.Route[i][j][k] == x)
-                    {
-                        UnallocatedYesOrNo = 1;
-                        BestIRP_Solution.VehicleAllocation[x][i] = j;
-                        BestIRP_Solution.VisitOrder[x][i] = k;
-                    }
-                }
-            }
-            if (UnallocatedYesOrNo == 0) // This customer is not visited
-            {
-                TempUnallocatedCustomer.push_back(x);
-            }
-        }
-        BestIRP_Solution.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
-    }
-    BestIRP_Solution.GetLogisticRatio(IRPLR);
+    //                 if (BestIRP_Solution.Route[i][j][k] == x)
+    //                 {
+    //                     UnallocatedYesOrNo = 1;
+    //                     BestIRP_Solution.VehicleAllocation[x][i] = j;
+    //                     BestIRP_Solution.VisitOrder[x][i] = k;
+    //                 }
+    //             }
+    //         }
+    //         if (UnallocatedYesOrNo == 0) // This customer is not visited
+    //         {
+    //             TempUnallocatedCustomer.push_back(x);
+    //         }
+    //     }
+    //     BestIRP_Solution.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
+    // }
+    // BestIRP_Solution.GetLogisticRatio(IRPLR);
 
     // cout << "Solution after Optimizing the routes on the best found" << endl;
     // BestIRP_Solution.print_solution(IRPLR);

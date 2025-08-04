@@ -11,7 +11,7 @@ public:
     //[-log <bool>] sets the verbose level of the algorithm log. It can be 0 or 1. Defaults to 1.
 
     int HGSMaxNonimproveIt;
-    int HGSTimelimit;
+    double HGSTimelimit;
     int HGS_Seed;
     int DistanceRounding;
     int HGS_Printout;

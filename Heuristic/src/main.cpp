@@ -9,7 +9,7 @@ int printout_initial = 0;
 int NumberOfBalacingOperatorCalled = 0;
 int NumberOfVehicleAtMinimumDelivery = 0;
 
-double LocalSearchTimeLimit = 60.0; // Default local search time limit is 60 seconds
+double LocalSearchTimeLimit = 12.0; // Default local search time limit is 12 seconds for each initial solution
 
 double power = 2.0;
 ofstream Table;
@@ -26,12 +26,12 @@ int main()
 {
 	file read_file;
 	read_file.ReadDirectory();
-	read_file.ReadIRPInstanceName();
+	read_file.ReadIRPInstanceName();	
 	read_file.ReadGlobalParameter();
 
 	if (OutputResults == 1)
 	{
-		Table.open("MS_all_instances_HGSTL0.5.csv");
+		Table.open("MS.csv");
 		Table << ",#TimePeriods,#Customer,#Vehicle,Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,T_Total\n";
 	}
 
@@ -58,8 +58,9 @@ int main()
 			HGS Routing;
 			Routing.ReadParameter();
 			Routing.HGSTimelimit = Routing.HGSTimelimit * (IRPLR.NumberOfRetailers - 1); // Set the time limit to be the number of retailers times the original time limit
-			//LocalSearchTimeLimit = LocalSearchTimeLimit * (IRPLR.NumberOfRetailers - 1); 
+			// LocalSearchTimeLimit = LocalSearchTimeLimit * NumberOfInitialSolutions; 
 			cout<<"HGS timelimit: "<<Routing.HGSTimelimit<<endl;
+			cout<<"Local search timelimit: "<<LocalSearchTimeLimit<<endl;
 			if (OutputResults == 1)
 			{
 				Table << read_file.instances[i][j] << "," << IRPLR.TimeHorizon << "," << IRPLR.NumberOfRetailers << "," << IRPLR.NumberOfVehicles << ","; // Print instance feastures in the table
