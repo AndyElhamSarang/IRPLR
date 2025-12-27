@@ -34,3 +34,8 @@ typedef boost::mt19937 base_generator_type;
 #include "preprocessing.h"
 #include "solution_construction.h"
 #include "solution_improvement.h"
+
+
+#ifdef DISABLE_COUT
+#define cout 0 && std::cout
+#endif

@@ -5,9 +5,9 @@ void HGS::CallHGS(input &IRPLR)
     {
         cout << "Solve routing via HGS" << endl;
     }
-    string DirectoryForHGS = MachineDirectory + "Curtin/IRPLR/HGS-CVRP-main/build/hgs";
-    string InputCVRP = MachineDirectory + "Curtin/IRPLR/HGS-CVRP-main/Instances/IRP/IRP.vrp";
-    string OutputCVRP = MachineDirectory + "Curtin/IRPLR/HGS-CVRP-main/Instances/IRP/IRPSolution.sol";
+    string DirectoryForHGS = MachineDirectory + "Curtin/IRPLR/IRPLR/HGS-CVRP-main/build/hgs";
+    string InputCVRP = MachineDirectory + "Curtin/IRPLR/IRPLR/HGS-CVRP-main/Instances/IRP/IRP.vrp";
+    string OutputCVRP = MachineDirectory + "Curtin/IRPLR/IRPLR/HGS-CVRP-main/Instances/IRP/IRPSolution.sol";
     string HGS_Parameter;
     if (HGSMaxNonimproveIt >= 0)
         HGS_Parameter += " -it " + to_string(HGSMaxNonimproveIt);
@@ -22,6 +22,7 @@ void HGS::CallHGS(input &IRPLR)
 
     string SetNumberOfVehicle = " -veh " + to_string(IRPLR.NumberOfVehicles);
     DirectoryForHGS = DirectoryForHGS + " " + InputCVRP + " " + OutputCVRP + " " + SetNumberOfVehicle + " " + HGS_Parameter;
+
     if (printout_initialRouting == 1)
     {
         cout << "Call HGS with:" << endl;

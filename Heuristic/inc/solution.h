@@ -7,14 +7,15 @@ public:
   double TotalDelivery;
   double ViolationStockOut;
 
-  vector<vector<vector<int>>> Route;
+  vector<vector<vector<int>>> Route; //Main decision
   vector<vector<int>> UnallocatedCustomers;
   vector<vector<double>> VehicleLoad;
-  vector<vector<double>> DeliveryQuantity;
+  vector<vector<double>> DeliveryQuantity; //Main decision
   vector<vector<double>> InventoryLevel;
   vector<vector<int>> VehicleAllocation;
   vector<vector<int>> VisitOrder;
   vector<double> StockOutPerCustomer;
+  vector<vector<double>> TransportationCostPerRoute; // Transportation cost for each route.
 
   solution();
   ~solution();
@@ -25,4 +26,5 @@ public:
   void print_solution(input &IRPLR);
   void GetLogisticRatio(input &IRPLR);
   double GetTransCostSingleRoute(/*int route, int head, int tail, int insert_length, vector<int> &Input_route, data &wsrp, proprecessing &memory*/);
+  void Validation(input &IRPLR);
 };

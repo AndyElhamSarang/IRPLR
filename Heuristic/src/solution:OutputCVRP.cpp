@@ -7,7 +7,7 @@ void solution::OutputCVRP(input &IRPLR, int &day, vector<vector<int>> &RouteForD
 
     ofstream CVRP_Instance;
     string InstanceName = "IRP";
-    string FileName = MachineDirectory + "Curtin/IRPLR/HGS-CVRP-main/Instances/IRP/" + InstanceName + ".vrp";
+    string FileName = MachineDirectory + "Curtin/IRPLR/IRPLR/HGS-CVRP-main/Instances/IRP/" + InstanceName + ".vrp";
     CVRP_Instance.open(FileName.c_str());
     CVRP_Instance << "NAME :  " << InstanceName << "\n";
     CVRP_Instance << "COMMENT : \n";

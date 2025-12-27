@@ -1,5 +1,5 @@
 #include "lib.h"
-void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HGS &Routing)
+void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HGS &Routing,solution &GlobalBest)
 {
     if (printout_initial == 1)
     {
@@ -32,27 +32,27 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
     //                                           //
     ///////////////////////////////////////////////
 
-    // for (int i = 0; i < IRPSolution.Route.size(); i++)
-    // {
-    //     int NumberOfCustomerOfDay = 0;
-    //     for (int j = 0; j < IRPSolution.Route[i].size(); j++)
-    //     {
-    //         NumberOfCustomerOfDay += IRPSolution.Route[i][j].size();
-    //     }
-    //     if (NumberOfCustomerOfDay > 1)
-    //     {
-    //         IRPSolution.OutputCVRP(IRPLR, i, IRPSolution.Route[i]);
-    //         Routing.CallHGS(IRPLR);
-    //         IRPSolution.ReadCVRP_Solution(IRPLR, i, IRPSolution.Route[i]);
-    //     }
-    // }
-    // IRPSolution.GetLogisticRatio(IRPLR);
-    // if (printout_initial == 1)
-    // {
-    //     cout << "Solution after Optimizing the routes" << endl;
-    //     IRPSolution.print_solution(IRPLR);
-    //     cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
-    // }
+    for (int i = 0; i < IRPSolution.Route.size(); i++)
+    {
+        int NumberOfCustomerOfDay = 0;
+        for (int j = 0; j < IRPSolution.Route[i].size(); j++)
+        {
+            NumberOfCustomerOfDay += IRPSolution.Route[i][j].size();
+        }
+        if (NumberOfCustomerOfDay > 1)
+        {
+            IRPSolution.OutputCVRP(IRPLR, i, IRPSolution.Route[i]);
+            Routing.CallHGS(IRPLR);
+            IRPSolution.ReadCVRP_Solution(IRPLR, i, IRPSolution.Route[i]);
+        }
+    }
+    IRPSolution.GetLogisticRatio(IRPLR);
+    if (printout_initial == 1)
+    {
+        cout << "Solution after Optimizing the routes" << endl;
+        IRPSolution.print_solution(IRPLR);
+        cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
+    }
    
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,6 +98,10 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
             }
         }
         IRPSolution.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
+    }
+    if(GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
+    {
+        GlobalBest=IRPSolution;
     }
 
 }

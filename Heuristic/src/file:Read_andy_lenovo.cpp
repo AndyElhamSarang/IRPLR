@@ -4,7 +4,7 @@ void file::ReadDirectory()
 
     MachineDirectory = "/home/andy/Desktop/";
     cout << "Read Parameter" << endl;
-    string InputInstanceName = MachineDirectory + "Curtin/IRPLR/Heuristic/par/Instances.txt";
+    string InputInstanceName = MachineDirectory + "Curtin/IRPLR/IRPLR/Heuristic/par/Instances.txt";
     ifstream ifinstance;
     ifinstance.open(InputInstanceName.c_str());
     getline(ifinstance,InstanceType);

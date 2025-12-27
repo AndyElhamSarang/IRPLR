@@ -52,7 +52,7 @@ int solution_improvement::OperatorSwapRemoveInsertWithBalancing(input &IRPLR, so
 
                                             time(&LS_end_time);
                                             double total_ls_time = difftime(LS_end_time, LS_start_time);
-                                            if (total_ls_time - LocalSearchTimeLimit > 0.001)
+                                            if (total_ls_time - LocalSearchTimeLimit > 0.00001)
                                             {
                                                 int time_limit_reached = total_ls_time;
                                                 throw time_limit_reached;
@@ -244,7 +244,7 @@ int solution_improvement::OperatorSwapRemoveInsertWithBalancing(input &IRPLR, so
         IRPSolution.ViolationStockOut = ImpStockOut;
 
         IRPSolution.GetLogisticRatio(IRPLR);
-        assert(fabs(IRPSolution.ViolationStockOut - ImpStockOut) < 0.001);
+        assert(fabs(IRPSolution.ViolationStockOut - ImpStockOut) < 0.00001);
     }
 
     return whether_improved_or_not;

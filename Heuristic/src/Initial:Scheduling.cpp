@@ -111,7 +111,7 @@ void solution_construction::Initial_Schedule(input &IRPLR, solution &IRPSolution
                             }
                             TotalLoad += IRPSolution.VehicleLoad[i][j];
                         }
-                        if (fabs(TotalLoad - IRPLR.Vehicle.capacity * IRPLR.NumberOfVehicles) < 0.001)
+                        if (fabs(TotalLoad - IRPLR.Vehicle.capacity * IRPLR.NumberOfVehicles) < 0.00001)
                             VisitedOrNot = 1;
                         if (VisitedOrNot == 0)
                             PotentialPeriods.push_back(i);
@@ -214,7 +214,7 @@ void solution_construction::Initial_Schedule(input &IRPLR, solution &IRPSolution
                             }
                             TotalLoad += IRPSolution.VehicleLoad[i][j];
                         }
-                        if (fabs(TotalLoad - IRPLR.Vehicle.capacity * IRPLR.NumberOfVehicles) < 0.001)
+                        if (fabs(TotalLoad - IRPLR.Vehicle.capacity * IRPLR.NumberOfVehicles) < 0.00001)
                             VisitedOrNot = 1;
                         if (VisitedOrNot == 0)
                         {

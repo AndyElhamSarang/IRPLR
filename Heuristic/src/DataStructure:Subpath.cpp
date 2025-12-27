@@ -1,6 +1,7 @@
 #include "lib.h"
 void preprocessing::PopulateSingleRouteSubpath(input &IRPLR, vector<int> &route)
 {
+    // cout<<"PopulateSingleRouteSubpath"<<endl;
     SingleRouteSubpath.clear(); // delete everything in this structure and populate new data
     if (route.size() != 0)
     {
@@ -19,13 +20,13 @@ void preprocessing::PopulateSingleRouteSubpath(input &IRPLR, vector<int> &route)
                 {
                     // Calcualte cumulated_distance for concatentation
                     CumulatedDistance = CumulatedDistance + IRPLR.Distance[start][route[j + k] + 1];
-                    /*cout << "Subpath:";
-                    for (int x = j; x <= j + k; x++)
-                    {
-                        cout << route[x] << ",";
-                    }
-                    cout << endl;
-                    cout << "Cumulated_distance:" << CumulatedDistance << endl;*/
+                    // cout << "Subpath:";
+                    // for (int x = j; x <= j + k; x++)
+                    // {
+                    //     cout << route[x] << ",";
+                    // }
+                    // cout << endl;
+                    // cout << "Cumulated_distance:" << CumulatedDistance << endl;
                     start = route[j + k] + 1;
                     TempSingleRouteSubpath.push_back(CumulatedDistance);
                 }

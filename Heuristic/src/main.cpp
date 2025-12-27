@@ -9,7 +9,7 @@ int printout_initial = 0;
 int NumberOfBalacingOperatorCalled = 0;
 int NumberOfVehicleAtMinimumDelivery = 0;
 
-double LocalSearchTimeLimit = 12.0; // Default local search time limit is 12 seconds for each initial solution
+double LocalSearchTimeLimit = 36000.0; // Default local search time limit is 12 seconds for each initial solution
 
 double power = 2.0;
 ofstream Table;
@@ -26,7 +26,7 @@ int main()
 {
 	file read_file;
 	read_file.ReadDirectory();
-	read_file.ReadIRPInstanceName();	
+	read_file.ReadIRPInstanceName();
 	read_file.ReadGlobalParameter();
 
 	if (OutputResults == 1)
@@ -58,19 +58,34 @@ int main()
 			HGS Routing;
 			Routing.ReadParameter();
 			Routing.HGSTimelimit = Routing.HGSTimelimit * (IRPLR.NumberOfRetailers - 1); // Set the time limit to be the number of retailers times the original time limit
-			// LocalSearchTimeLimit = LocalSearchTimeLimit * NumberOfInitialSolutions; 
-			cout<<"HGS timelimit: "<<Routing.HGSTimelimit<<endl;
-			cout<<"Local search timelimit: "<<LocalSearchTimeLimit<<endl;
+			// LocalSearchTimeLimit = LocalSearchTimeLimit * NumberOfInitialSolutions;
+			cout << "HGS timelimit: " << Routing.HGSTimelimit << endl;
+			cout << "Local search timelimit: " << LocalSearchTimeLimit << endl;
 			if (OutputResults == 1)
 			{
 				Table << read_file.instances[i][j] << "," << IRPLR.TimeHorizon << "," << IRPLR.NumberOfRetailers << "," << IRPLR.NumberOfVehicles << ","; // Print instance feastures in the table
 			}
+			////////////////////////////////////////////////////////////////
+			//                                                            //
+			//		     Preprocessing of global data structure           //
+			//                                                            //
+			////////////////////////////////////////////////////////////////	
 			preprocessing memory;
 			memory.PopulateGlobalDataStructure(IRPLR);
-
 			memory.CustomerInfo(IRPLR);
-
 			// memory.PrintGlobalDataStructure();
+
+			////////////////////////////////////////////////////////////////
+			//                                                            //
+			//		     Generate multiple initial solutions              //
+			//		     		and start Multi-start                     //
+			//                                                            //
+			////////////////////////////////////////////////////////////////
+			solution GlobalBest;
+			GlobalBest.LogisticRatio = numeric_limits<double>::max(); // Set a large value
+			time_t total_start_time;
+			time_t total_end_time;
+			time(&total_start_time);
 			for (int j = 0; j < NumberOfInitialSolutions; j++)
 			{
 				cout << "Attempt:" << j << endl;
@@ -80,19 +95,33 @@ int main()
 
 				time(&start_time);
 				// initial_solution.INITIAL(IRPLR, IRPSolution, Routing);
-				initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing);
+
+				generator.seed(12345+j*789); // Different seed for each initial solution
+				initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing, GlobalBest);
 				time(&end_time);
 				double total_time = difftime(end_time, start_time);
 				if (OutputResults == 1)
 				{
+					//Record time consumed for initial solution construction
 					Table << total_time << ",";
 				}
 				cout << "!Initial solution " << j + 1 << endl;
 				IRPSolution.print_solution(IRPLR);
 
-				base_generator_type generator(static_cast<unsigned int>(time(0)));
+				generator.seed(static_cast<unsigned int>(time(0)));
 				solution_improvement Metaheuristic;
-				Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory);
+				// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
+				Metaheuristic.VariableObjectiveSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest);
+
+				
+			}
+			time(&total_end_time);
+			double accum_time = difftime(total_end_time, total_start_time);
+			
+			if (OutputResults == 1)
+			{
+
+				Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << accum_time << ",";
 			}
 			if (OutputResults == 1)
 			{

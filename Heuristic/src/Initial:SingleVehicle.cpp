@@ -84,7 +84,7 @@ void solution_construction::INITIAL_Single_Vehicle(input &IRPLR, solution &IRPSo
                         {
                             if (IRPSolution.SchduleOfVisit[i][j] == CandidateRetailers[RandomPickARetailer])
                                 VisitedOrNot = 1;
-                            if (fabs(IRPSolution.DailyQuantity[i] - IRPLR.Vehicle.capacity) < 0.001)
+                            if (fabs(IRPSolution.DailyQuantity[i] - IRPLR.Vehicle.capacity) < 0.00001)
                                 VisitedOrNot = 1;
                         }
                         if (VisitedOrNot == 0)
@@ -157,7 +157,7 @@ void solution_construction::INITIAL_Single_Vehicle(input &IRPLR, solution &IRPSo
 
                         if (IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][i] == 0)
                         {
-                            if (fabs(IRPSolution.DailyQuantity[i] - IRPLR.Vehicle.capacity) > 0.001)
+                            if (fabs(IRPSolution.DailyQuantity[i] - IRPLR.Vehicle.capacity) > 0.00001)
                             {
                                 RandomPickANonStockOutPeriod = i;
                                 break;

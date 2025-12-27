@@ -1,7 +1,7 @@
 #include "lib.h"
 void solution::ReadCVRP_Solution(input &IRPLR, int &day, vector<vector<int>> &RouteForDay)
 {
-    string RoutingFile = MachineDirectory + "Curtin/IRPLR/HGS-CVRP-main/Instances/IRP/IRPSolution.sol";
+    string RoutingFile = MachineDirectory + "Curtin/IRPLR/IRPLR/HGS-CVRP-main/Instances/IRP/IRPSolution.sol";
     vector<int> CustomerTracking;
     for (int j = 0; j < RouteForDay.size(); j++)
     {

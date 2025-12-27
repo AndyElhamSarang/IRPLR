@@ -3,7 +3,7 @@ void HGS::ReadParameter()
 {
 
     cout << "Read HGS Setting" << endl;
-    string HGS_Setting = MachineDirectory + "Curtin/IRPLR/Heuristic/par/HGS_Setting.txt";
+    string HGS_Setting = MachineDirectory + "Curtin/IRPLR/IRPLR/Heuristic/par/HGS_Setting.txt";
     ifstream ifHGS;
     ifHGS.open(HGS_Setting.c_str());
 

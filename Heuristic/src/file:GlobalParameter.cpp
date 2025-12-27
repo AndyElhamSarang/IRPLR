@@ -2,7 +2,7 @@
 void file::ReadGlobalParameter()
 {
     cout << "Read Global Parameter" << endl;
-    string GlbalSetting = MachineDirectory + "Curtin/IRPLR/Heuristic/par/GlobalSetting.txt";
+    string GlbalSetting = MachineDirectory + "Curtin/IRPLR/IRPLR/Heuristic/par/GlobalSetting.txt";
     ifstream ifGlobal;
     ifGlobal.open(GlbalSetting.c_str());
 

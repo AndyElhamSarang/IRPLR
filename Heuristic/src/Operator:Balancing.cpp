@@ -38,7 +38,6 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
             TempNextVisitTime.push_back(IRPLR.TimeHorizon);
             DeliveryQuantity[i][j] = 0;
             InventoryLevel[i][j] = tempInventory - IRPLR.Retailers[i].Demand;
-            ;
             tempInventory = tempInventory - IRPLR.Retailers[i].Demand;
         }
         NextVisitTime.push_back(TempNextVisitTime);
@@ -119,7 +118,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                 //////////////////////////////////////////////////////////////
                 if (VehicleAllocation[customer][time] < IRPLR.NumberOfVehicles)
                 {
-                    // assert(IRPLR.Vehicle.capacity - VehicleLoad[time][VehicleAllocation[customer][time]] > 0.001);
+                    // assert(IRPLR.Vehicle.capacity - VehicleLoad[time][VehicleAllocation[customer][time]] > 0.00001);
                     double MinimumQuantityToSurvive = 0;
                     for (int time_i = time; time_i < NextVisitTime[customer][time]; time_i++)
                     {
@@ -199,7 +198,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                         //      << " ; " << 1 / TempCusomterWeight << " ; " << InventoryLevel[customer][time - 1] + 1
                         //      << " ; " << (IRPLR.Retailers[customer].Demand * (NextVisitTime[customer][time] - time) * MaxNumberOfConseuctiveDaysACustomerNotVisited[customer])
                         //      << " ; " << IRPLR.Retailers[customer].Demand << " ; " << NextVisitTime[customer][time] - time << " ; " << MaxNumberOfConseuctiveDaysACustomerNotVisited[customer] << endl;
-                        if (0 - InventoryLevel[customer][time - 1] >0.001)
+                        if (0 - InventoryLevel[customer][time - 1] >0.00001)
                         {
                             throw InventoryLevel[customer][time - 1];
                         }
@@ -300,7 +299,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
         }
         for(int customer=0; customer < InventoryLevel.size();customer++)
         {
-            if (InventoryLevel[customer][InventoryLevel[customer].size()-1] < -0.001)
+            if (InventoryLevel[customer][InventoryLevel[customer].size()-1] < -0.00001)
             {
                 throw InventoryLevel[customer][InventoryLevel[customer].size()-1];
             }
@@ -381,15 +380,15 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
         // PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
         // cout << "Check Transportation Cost" << endl;
         // cout << TempTransportationCost << "," << NewTransportationCost << endl;
-        // assert(fabs(TempTransportationCost - NewTransportationCost) < 0.001);
+        // assert(fabs(TempTransportationCost - NewTransportationCost) < 0.00001);
         // cout << "Check Delivery Quantity" << endl;
         // cout << TempTotalDelivery << "," << NewTotalDelivery << endl;
-        // assert(fabs(TempTotalDelivery - NewTotalDelivery) < 0.001);
+        // assert(fabs(TempTotalDelivery - NewTotalDelivery) < 0.00001);
         // cout << "Check Logistic ratio" << endl;
         // cout << TempLogisticRatio << "," << NewLogisticRatio << endl;
-        // assert(fabs(TempLogisticRatio - NewLogisticRatio) < 0.001);
+        // assert(fabs(TempLogisticRatio - NewLogisticRatio) < 0.00001);
         // cout << "Check ViolationStockout" << endl;
-        // assert(TempViolationStockOut < 0.001);
+        // assert(TempViolationStockOut < 0.00001);
         // cout << NewLogisticRatio << "," << CurrentLogisticRatio << endl;
 
         // assert(aborter == 1);

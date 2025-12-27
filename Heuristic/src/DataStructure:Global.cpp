@@ -15,7 +15,7 @@ void preprocessing::PopulateGlobalDataStructure(input &IRPLR)
         vector<double> tempTwoNodes;
         for (int j = 0; j < IRPLR.Retailers.size(); j++)
         {
-            double cumulated_distance = SingleNode[i] + SingleNode[j] + IRPLR.Distance[i][j];
+            double cumulated_distance = SingleNode[i] + SingleNode[j] + IRPLR.Distance[i+1][j+1];
             tempTwoNodes.push_back(cumulated_distance);
         }
         TwoNodes.push_back(tempTwoNodes);

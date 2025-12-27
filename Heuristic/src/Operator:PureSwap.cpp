@@ -5,10 +5,10 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
     int whether_improved_or_not = 0;
     double LR_objv = numeric_limits<double>::max();
     IRPSolution.GetLogisticRatio(IRPLR);
-    IRPSolution.print_solution(IRPLR);
-    cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << endl;
+    // IRPSolution.print_solution(IRPLR);
+    // cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << endl;
     LR_objv = IRPSolution.LogisticRatio + PenaltyForStockOut * IRPSolution.ViolationStockOut;
-    cout << "LR objv:" << LR_objv << endl;
+    // cout << "LR objv:" << LR_objv << endl;
 
     vector<vector<vector<int>>> ImpRoute(IRPSolution.Route);
     vector<vector<int>> ImpUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
@@ -65,7 +65,7 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
                             //  testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
                             //}
                             // cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
-                            // assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
+                            // assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.00001);
                         }
                         else
                         {
@@ -79,7 +79,7 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
                             //   testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
                             // }
                             // cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
-                            // assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
+                            // assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.00001);
                         }
                     }
                     else if (k == IRPSolution.Route[i][j].size() - 1)
@@ -98,7 +98,7 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
                             // testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
                             //}
                             // cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
-                            // assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
+                            // assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.00001);
                         }
                         else
                         {
@@ -112,7 +112,7 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
                             //     testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
                             // }
                             // cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
-                            // assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
+                            // assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.00001);
                         }
                     }
                     else
@@ -128,7 +128,7 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
                         //    testEndTransportationCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
                         // }
                         // cout << "testEndTransportationCost:" << testEndTransportationCost << ", testStartTransportationCost:" << testStartTransportationCost << ", ChangeInTransportationCost:" << ChangeInTransportationCost << endl;
-                        // assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.001);
+                        // assert(fabs(testEndTransportationCost - testStartTransportationCost) - fabs(ChangeInTransportationCost) < 0.00001);
                     }
 
                     TempVehicleAllocation[TempRoute[i][j][k]][i] = TempVehicleAllocation[tempCustomer][i];
@@ -171,17 +171,17 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
 
                                 
                             }
-                            if (fabs(TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] - tempInventory) > 0.001)
+                            if (fabs(TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] - tempInventory) > 0.00001)
                             {
-                                if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] >= 0.0 && tempInventory < -0.001)
+                                if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] >= 0.0 && tempInventory < -0.00001)
                                 {
                                     NewStockOut += -tempInventory;
                                 }
-                                else if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] < -0.001 && tempInventory >= 0.0)
+                                else if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] < -0.00001 && tempInventory >= 0.0)
                                 {
                                     NewStockOut -= -TempInventoryLevel[TempUnallocatedCustomers[i][x]][y];
                                 }
-                                else if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] < -0.001 && tempInventory < -0.001)
+                                else if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] < -0.00001 && tempInventory < -0.00001)
                                 {
                                     if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] < tempInventory)
                                     {
@@ -226,17 +226,17 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
                                 
                             }
 
-                            if (fabs(TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] - tempInventory) > 0.001)
+                            if (fabs(TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] - tempInventory) > 0.00001)
                             {
-                                if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] >= 0.0 && tempInventory < -0.001)
+                                if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] >= 0.0 && tempInventory < -0.00001)
                                 {
                                     NewStockOut += -tempInventory;
                                 }
-                                else if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] < -0.001 && tempInventory >= 0.0)
+                                else if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] < -0.00001 && tempInventory >= 0.0)
                                 {
                                     NewStockOut -= -TempInventoryLevel[TempUnallocatedCustomers[i][x]][y];
                                 }
-                                else if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] < -0.001 && tempInventory < -0.001)
+                                else if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] < -0.00001 && tempInventory < -0.00001)
                                 {
                                     if (TempInventoryLevel[TempUnallocatedCustomers[i][x]][y] < tempInventory)
                                     {
@@ -291,17 +291,17 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
                                 
                             }
 
-                            if (fabs(TempInventoryLevel[TempRoute[i][j][k]][y] - AdjustInventoryInsert) > 0.001)
+                            if (fabs(TempInventoryLevel[TempRoute[i][j][k]][y] - AdjustInventoryInsert) > 0.00001)
                             {
-                                if (TempInventoryLevel[TempRoute[i][j][k]][y] >= 0.0 && AdjustInventoryInsert < -0.001)
+                                if (TempInventoryLevel[TempRoute[i][j][k]][y] >= 0.0 && AdjustInventoryInsert < -0.00001)
                                 {
                                     NewStockOut += -AdjustInventoryInsert;
                                 }
-                                else if (TempInventoryLevel[TempRoute[i][j][k]][y] < -0.001 && AdjustInventoryInsert >= 0.0)
+                                else if (TempInventoryLevel[TempRoute[i][j][k]][y] < -0.00001 && AdjustInventoryInsert >= 0.0)
                                 {
                                     NewStockOut -= -TempInventoryLevel[TempRoute[i][j][k]][y];
                                 }
-                                else if (TempInventoryLevel[TempRoute[i][j][k]][y] < -0.001 && AdjustInventoryInsert < -0.001)
+                                else if (TempInventoryLevel[TempRoute[i][j][k]][y] < -0.00001 && AdjustInventoryInsert < -0.00001)
                                 {
                                     if (TempInventoryLevel[TempRoute[i][j][k]][y] < AdjustInventoryInsert)
                                     {
@@ -346,17 +346,17 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
                                 
                             }
 
-                            if (fabs(TempInventoryLevel[TempRoute[i][j][k]][y] - AdjustInventoryInsert) > 0.001)
+                            if (fabs(TempInventoryLevel[TempRoute[i][j][k]][y] - AdjustInventoryInsert) > 0.00001)
                             {
-                                if (TempInventoryLevel[TempRoute[i][j][k]][y] >= 0.0 && AdjustInventoryInsert < -0.001)
+                                if (TempInventoryLevel[TempRoute[i][j][k]][y] >= 0.0 && AdjustInventoryInsert < -0.00001)
                                 {
                                     NewStockOut += -AdjustInventoryInsert;
                                 }
-                                else if (TempInventoryLevel[TempRoute[i][j][k]][y] < -0.001 && AdjustInventoryInsert >= 0.0)
+                                else if (TempInventoryLevel[TempRoute[i][j][k]][y] < -0.00001 && AdjustInventoryInsert >= 0.0)
                                 {
                                     NewStockOut -= -TempInventoryLevel[TempRoute[i][j][k]][y];
                                 }
-                                else if (TempInventoryLevel[TempRoute[i][j][k]][y] < -0.001 && AdjustInventoryInsert < -0.001)
+                                else if (TempInventoryLevel[TempRoute[i][j][k]][y] < -0.00001 && AdjustInventoryInsert < -0.00001)
                                 {
                                     if (TempInventoryLevel[TempRoute[i][j][k]][y] < AdjustInventoryInsert)
                                     {
@@ -383,10 +383,10 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
 
                     double CurrentTransportationCost = memory.PopulateSingleRoutePrefixAndSuffix(IRPLR, TempRoute[i][j]); // Preprocessing travel distance of the route
                                                                                                                           // cout << testEndTransportationCost << "," << CurrentTransportationCost << endl;
-                    // assert(fabs(testEndTransportationCost - CurrentTransportationCost) < 0.001);
+                    // assert(fabs(testEndTransportationCost - CurrentTransportationCost) < 0.00001);
                     memory.PopulateSingleRouteSubpath(IRPLR, TempRoute[i][j]);
                     double ImprovedTransportationCost = CurrentTransportationCost;
-                    int FindingCheapestInsertion = OperatorCheapestInsertion(IRPLR, TempRoute[i][j], k, PenaltyForStockOut, ImprovedTransportationCost, memory); // Finding cheapest insertion
+                    int FindingCheapestInsertion = OperatorCheapestInsertion(IRPLR, TempRoute[i][j], i, j, k, PenaltyForStockOut, ImprovedTransportationCost, memory); // Finding cheapest insertion
                                                                                                                                                                  // cout << CurrentTransportationCost << "," << ImprovedTransportationCost << "," << CurrentTransportationCost - ImprovedTransportationCost << endl;
                     ChangeInTransportationCost += ImprovedTransportationCost - CurrentTransportationCost;
                     // cout << ChangeInTransportationCost << endl;
@@ -413,16 +413,16 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
                     // PrintTempSolution(IRPLR, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation);
                     // cout << "Check Transportation Cost" << endl;
                     // cout << TempTransportationCost << "," << NewTransportationCost << endl;
-                    // assert(fabs(TempTransportationCost - NewTransportationCost) < 0.001);
+                    // assert(fabs(TempTransportationCost - NewTransportationCost) < 0.00001);
                     // cout << "Check Delivery Quantity" << endl;
                     // cout << TempTotalDelivery << "," << NewTotalDelivery << endl;
-                    // assert(fabs(TempTotalDelivery - NewTotalDelivery) < 0.001);
+                    // assert(fabs(TempTotalDelivery - NewTotalDelivery) < 0.00001);
                     // cout << "Check Logistic ratio" << endl;
                     // cout << TempLogisticRatio << "," << NewLogisticRatio << endl;
-                    // assert(fabs(TempLogisticRatio - NewLogisticRatio) < 0.001);
+                    // assert(fabs(TempLogisticRatio - NewLogisticRatio) < 0.00001);
                     // cout << "Check ViolationStockout" << endl;
                     // cout << TempViolationStockOut << "," << NewStockOut << endl;
-                    // assert(fabs(TempViolationStockOut - NewStockOut) < 0.001);
+                    // assert(fabs(TempViolationStockOut - NewStockOut) < 0.00001);
                     //  cout << temp_LR_obvj << "," << LR_objv << endl;
                     if (temp_LR_obvj < LR_objv)
                     {
@@ -466,7 +466,7 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
         IRPSolution.ViolationStockOut = ImpStockOut;
 
         IRPSolution.GetLogisticRatio(IRPLR);
-        assert(fabs(IRPSolution.ViolationStockOut - ImpStockOut) < 0.001);
+        assert(fabs(IRPSolution.ViolationStockOut - ImpStockOut) < 0.00001);
 
         //Update the visit order
         for (int i = 0; i < IRPSolution.VisitOrder.size(); i++)
@@ -506,13 +506,13 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
             IRPSolution.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
         }
 
-        cout<<"Solution before rebalancing"<<endl;
-        IRPSolution.print_solution(IRPLR);
+        // cout<<"Solution before rebalancing"<<endl;
+        // IRPSolution.print_solution(IRPLR);
 
         
         // IRPSolution.GetLogisticRatio(IRPLR);
         // cout << IRPSolution.ViolationStockOut << "," << violation << endl;
-        // assert(fabs(IRPSolution.ViolationStockOut - violation) < 0.001);
+        // assert(fabs(IRPSolution.ViolationStockOut - violation) < 0.00001);
     }
 
     return whether_improved_or_not;
