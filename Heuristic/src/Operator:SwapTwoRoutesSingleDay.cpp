@@ -21,7 +21,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
     //     }
     //     cout << endl;
     // }
-    LR_objv = IRPSolution.LogisticRatio + PenaltyForStockOut * IRPSolution.ViolationStockOut;
+    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
     double objv_begin = LR_objv;
     // cout << "IRPSolution.TotalTransportationCost:" << IRPSolution.TotalTransportationCost << ", IRPSolution.TotalDelivery:" << IRPSolution.TotalDelivery << ", LR objv:" << LR_objv << endl;
     vector<int> move;

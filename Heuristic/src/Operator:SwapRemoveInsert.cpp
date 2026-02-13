@@ -20,7 +20,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
     //     }
     //     cout << endl;
     // }
-    LR_objv = IRPSolution.LogisticRatio + PenaltyForStockOut * IRPSolution.ViolationStockOut;
+    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
     // cout << "IRPSolution.TotalTransportationCost:"<<IRPSolution.TotalTransportationCost<<", IRPSolution.TotalDelivery:"<<IRPSolution.TotalDelivery<<", LR objv:" << LR_objv << endl;
     vector<int> move;
     for (int i = 0; i < 7; i++)
@@ -318,7 +318,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                 double NewTotalTransportationCost = IRPSolution.TotalTransportationCost - IRPSolution.TransportationCostPerRoute[pick_day][pick_vehicle] + NewRouteCost;
                                                 double NewTotalDelivery = IRPSolution.TotalDelivery + ChangeInTotalQuantity;
                                                 double NewLogisticRatio = NewTotalTransportationCost / NewTotalDelivery;
-                                                double temp_LR_objv = NewLogisticRatio + PenaltyForStockOut * NewStockOut;
+                                                double temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut);
 
                                                 if (LR_objv - temp_LR_objv > 0.00001)
                                                 {

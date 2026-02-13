@@ -44,7 +44,7 @@ void solution::OutputCVRP(input &IRPLR, int &day, vector<vector<int>> &RouteForD
                     // cout<< CustomerIndex << "\t" << DeliveryQuantity[z][day] << endl;
                     CVRP_Instance << CustomerIndex << "\t" << DeliveryQuantity[z][day] << "\n";
                     CustomerIndex++;
-
+                    cout<<"Customer "<<z<<" demand for day "<<day<<": "<<DeliveryQuantity[z][day]<<endl;
                     assert(DeliveryQuantity[z][day]);
                 }
             }

@@ -94,15 +94,25 @@ void input::ReadIRPInstance(string &InstanceName, string &InstanceType, string &
     }*/
     for (int i = 0; i < AllCoord.size(); i++)
     {
-        vector<double> temp_distance;
+        vector<int> temp_distance;
         for (int j = 0; j < AllCoord.size(); j++)
         {
-            double travel = 0;
+            int travel = 0;
             if (i != j)
             {
                 double diff_X = AllCoord[i][0] - AllCoord[j][0];
                 double diff_Y = AllCoord[i][1] - AllCoord[j][1];
-                travel = sqrt(pow(diff_X, power) + pow(diff_Y, power));
+                double float_travel = sqrt(pow(diff_X, power) + pow(diff_Y, power));
+                double fractional_part = float_travel - floor(float_travel);
+                
+                if (fractional_part >= 0.5) 
+                {
+                    travel = ceil(float_travel);
+                } 
+                else 
+                {
+                    travel = floor(float_travel);
+                } 
             }
             temp_distance.push_back(travel);
         }

@@ -10,6 +10,8 @@ extern string MachineDirectory;
 extern int OutputResults;
 extern int NumberOfInitialSolutions;
 extern time_t start_time;
+extern time_t start_time_to_best;
+extern time_t end_time_to_best;
 extern time_t end_time;
 extern double power;
 extern double LocalSearchTimeLimit;

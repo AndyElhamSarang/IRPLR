@@ -3,7 +3,8 @@
 #include <sstream>
 void Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(input &IRPLR, solution &IRPSolution)
 {
-    IRPSolution.print_solution(IRPLR);
+    // IRPSolution.print_solution(IRPLR);
+    cout<<"Check Total Delivery Quantity Per Route Cannot Exceed Vehicle Capacity"<<endl;
     for (int i = 0; i < IRPSolution.Route.size(); i++)
     {
         for (int j = 0; j < IRPSolution.Route[i].size(); j++)
@@ -20,10 +21,33 @@ void Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(input &IRPLR, solu
             }
         }
     }
+    cout<<"Check passed!"<<endl;
+}
+void InventoryLevel_Cannot_Exceed_Maximum(input &IRPLR, solution &IRPSolution)
+{
+    cout<<"Check Inventory Level Cannot Exceed Maximum"<<endl;
+    for (int i = 0; i < IRPSolution.InventoryLevel.size(); i++) // For each retailer
+    {
+        for (int j = 0; j < IRPSolution.InventoryLevel[i].size(); j++)// For each time period
+        {
+            if(j == 0)
+            {
+                // cout<<"InventoryLevel for Retailer "<<i<<", period "<<j<<": "<<IRPSolution.DeliveryQuantity[i][j]<<" versus "<<IRPLR.Retailers[i].InventoryBegin<<endl;
+                assert(IRPLR.Retailers[i].InventoryBegin + IRPSolution.DeliveryQuantity[i][j] <= IRPLR.Retailers[i].InventoryMax + 0.00001);
+            }
+            else
+            {
+                // cout<<"InventoryLevel for Retailer "<<i<<", period "<<j<<": "<<IRPSolution.DeliveryQuantity[i][j]<<" versus "<<IRPLR.Retailers[i].InventoryBegin<<endl;
+                assert(IRPSolution.InventoryLevel[i][j-1] + IRPSolution.DeliveryQuantity[i][j] <= IRPLR.Retailers[i].InventoryMax + 0.00001);
+            }
+        }
+    }
+    cout<<"Check passed!"<<endl;
 }
 void solution::Validation(input &IRPLR)
 {   
     Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(IRPLR, *this);    
+    InventoryLevel_Cannot_Exceed_Maximum(IRPLR, *this);
 }
 
 void solution::print_solution(input &IRPLR)

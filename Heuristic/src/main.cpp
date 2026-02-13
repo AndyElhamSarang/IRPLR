@@ -19,7 +19,8 @@ int OutputResults;
 int NumberOfInitialSolutions;
 time_t start_time;
 time_t end_time;
-
+time_t start_time_to_best;
+time_t end_time_to_best;
 time_t LS_start_time;
 time_t LS_end_time;
 int main()
@@ -32,7 +33,13 @@ int main()
 	if (OutputResults == 1)
 	{
 		Table.open("MS.csv");
-		Table << ",#TimePeriods,#Customer,#Vehicle,Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,T_Total\n";
+		Table << ",#TimePeriods,#Customer,#Vehicle";
+		for(int i = 0; i<NumberOfInitialSolutions; i++)
+		{
+			Table<<",Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,Time";
+		}
+
+		Table << ",GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_To_best,T_Total\n";
 	}
 
 	for (int i = 0; i < read_file.instances.size(); i++)
@@ -86,6 +93,7 @@ int main()
 			time_t total_start_time;
 			time_t total_end_time;
 			time(&total_start_time);
+			time(&start_time_to_best);
 			for (int j = 0; j < NumberOfInitialSolutions; j++)
 			{
 				cout << "Attempt:" << j << endl;
@@ -107,21 +115,22 @@ int main()
 				}
 				cout << "!Initial solution " << j + 1 << endl;
 				IRPSolution.print_solution(IRPLR);
-
+				// IRPSolution.Validation(IRPLR);
 				generator.seed(static_cast<unsigned int>(time(0)));
 				solution_improvement Metaheuristic;
 				// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
-				Metaheuristic.VariableObjectiveSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest);
+				Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest);
 
 				
 			}
 			time(&total_end_time);
 			double accum_time = difftime(total_end_time, total_start_time);
-			
+			cout<<"Global best"<<endl;
+			GlobalBest.Validation(IRPLR);
 			if (OutputResults == 1)
 			{
 
-				Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << accum_time << ",";
+				Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << GlobalBest.solution_time << "," << accum_time << ",";
 			}
 			if (OutputResults == 1)
 			{

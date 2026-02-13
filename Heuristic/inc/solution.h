@@ -6,6 +6,7 @@ public:
   double LogisticRatio;
   double TotalDelivery;
   double ViolationStockOut;
+  double solution_time;
 
   vector<vector<vector<int>>> Route; //Main decision
   vector<vector<int>> UnallocatedCustomers;
@@ -16,6 +17,7 @@ public:
   vector<vector<int>> VisitOrder;
   vector<double> StockOutPerCustomer;
   vector<vector<double>> TransportationCostPerRoute; // Transportation cost for each route.
+  
 
   solution();
   ~solution();

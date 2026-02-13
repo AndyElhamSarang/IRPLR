@@ -5,17 +5,18 @@ double solution_improvement::DeliveryMax(double &VehicleCapacity, double &Vehicl
     // assert(VehicleCapacity - VehicleLoad > -0.00001);
     // assert(InventoryMax - PreviousInventoryLevel > -0.00001);
     // cout<<"VehicleCapacity: "<<VehicleCapacity<<", VehicleLoad: "<<VehicleLoad<<", InventoryMax: "<<InventoryMax<<", CustomerDemand: "<<CustomerDemand<<", PreviousInventoryLevel: "<<PreviousInventoryLevel<<endl;
-    return max(0.0, min<double>(VehicleCapacity - VehicleLoad, InventoryMax - (PreviousInventoryLevel-CustomerDemand)));
+    return max(0.0, min<double>(VehicleCapacity - VehicleLoad, InventoryMax - PreviousInventoryLevel));
 }
 double solution_improvement::Calculate_la_relax_objv(double & logistic_ratio, double &stockout_penalty, double &stockout)
 {
     double la_relax_objv = 0.0;
+    // cout<<"logistic_ratio: "<<logistic_ratio<<", stockout_penalty: "<<stockout_penalty<<", stockout: "<<stockout<<endl;
     la_relax_objv = logistic_ratio + stockout_penalty * stockout;
     return la_relax_objv;
 }
 
 void solution_improvement::AdjustQuantityAndInventoryLevel(
-    double &begining_inventory, 
+    double &previous_inventory_level, 
     int &day, 
     int &vehicle,
     vector<double> &DeliveryQuantity, 
@@ -32,13 +33,13 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
     assert(VehicleLoad.size() == IRPLR.TimeHorizon);
     assert(customer_index >= 0 && customer_index < (int)VehicleAllocation.size());
     assert(VehicleAllocation[customer_index].size() == IRPLR.TimeHorizon);
-    double CurrentInventoryLevel = begining_inventory - IRPLR.Retailers[customer_index].Demand + DeliveryQuantity[day];
+    double CurrentInventoryLevel = previous_inventory_level - IRPLR.Retailers[customer_index].Demand + DeliveryQuantity[day];
 
-    if (CurrentInventoryLevel > IRPLR.Retailers[customer_index].InventoryMax)
+    if (previous_inventory_level + DeliveryQuantity[day] > IRPLR.Retailers[customer_index].InventoryMax)
     {
-        DeliveryQuantity[day] = DeliveryQuantity[day] - (CurrentInventoryLevel - IRPLR.Retailers[customer_index].InventoryMax);
-        ChangeInTotalQuantity = ChangeInTotalQuantity - (CurrentInventoryLevel - IRPLR.Retailers[customer_index].InventoryMax);
-        VehicleLoad[day][vehicle] = VehicleLoad[day][vehicle] - (CurrentInventoryLevel - IRPLR.Retailers[customer_index].InventoryMax);
+        DeliveryQuantity[day] = DeliveryQuantity[day] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
+        ChangeInTotalQuantity = ChangeInTotalQuantity - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
+        VehicleLoad[day][vehicle] = VehicleLoad[day][vehicle] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
         CurrentInventoryLevel = IRPLR.Retailers[customer_index].InventoryMax;
     }
 
@@ -90,11 +91,12 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
                 VehicleLoad[y][allocVeh] += DeltaQ;
             }
         }
-        CurrentInventoryLevel = CurrentInventoryLevel - IRPLR.Retailers[customer_index].Demand + DeliveryQuantity[y];
+        double PreviousInventoryLevel = CurrentInventoryLevel;
+        CurrentInventoryLevel = PreviousInventoryLevel - IRPLR.Retailers[customer_index].Demand + DeliveryQuantity[y];
 
-        if (CurrentInventoryLevel > IRPLR.Retailers[customer_index].InventoryMax)
+        if (PreviousInventoryLevel + DeliveryQuantity[y] > IRPLR.Retailers[customer_index].InventoryMax)
         {
-            double delta = (CurrentInventoryLevel - IRPLR.Retailers[customer_index].InventoryMax);
+            double delta = (PreviousInventoryLevel + DeliveryQuantity[y] - IRPLR.Retailers[customer_index].InventoryMax);
             DeliveryQuantity[y] -= delta;
             ChangeInTotalQuantity -= delta;
             int allocVeh = VehicleAllocation[customer_index][y];

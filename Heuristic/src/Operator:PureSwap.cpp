@@ -7,7 +7,7 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
     IRPSolution.GetLogisticRatio(IRPLR);
     // IRPSolution.print_solution(IRPLR);
     // cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << endl;
-    LR_objv = IRPSolution.LogisticRatio + PenaltyForStockOut * IRPSolution.ViolationStockOut;
+    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
     // cout << "LR objv:" << LR_objv << endl;
 
     vector<vector<vector<int>>> ImpRoute(IRPSolution.Route);
@@ -402,7 +402,7 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
 
                     double NewLogisticRatio = NewTransportationCost / NewTotalDelivery;
 
-                    double temp_LR_obvj = NewLogisticRatio + PenaltyForStockOut * NewStockOut;
+                    double temp_LR_obvj = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut);
 
                     // double TempTransportationCost = 0;
                     // double TempTotalDelivery = 0;

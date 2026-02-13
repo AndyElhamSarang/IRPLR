@@ -37,7 +37,7 @@ public:
   vector<customer> Retailers;
 
   transportation Vehicle;
-  vector<vector<double>> Distance;
+  vector<vector<int>> Distance;
   vector<vector<int> > SortedRetailers;
 
   vector<vector<vector<int>>> AllPossibleSchedule; 

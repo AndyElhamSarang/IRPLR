@@ -13,7 +13,7 @@ int solution_improvement::OperatorSwapRemoveInsertWithBalancing(input &IRPLR, so
     IRPSolution.GetLogisticRatio(IRPLR);
     // IRPSolution.print_solution(IRPLR);
     // cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << endl;
-    CurrentLogisticRatio = IRPSolution.LogisticRatio + PenaltyForStockOut * IRPSolution.ViolationStockOut;
+    CurrentLogisticRatio = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
     // cout << "CurrentLogisticRatio :" << CurrentLogisticRatio << endl;
 
     vector<vector<vector<int>>> ImpRoute(IRPSolution.Route);
