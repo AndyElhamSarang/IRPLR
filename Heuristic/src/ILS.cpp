@@ -320,6 +320,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     //                Routing                    //
     //                                           //
     ///////////////////////////////////////////////
+    // // RunHGSAtEnd = true; //Always run HGS at the end to further improve the solution. 
     // if (RunHGSAtEnd == true)
     // {
     //     cout << "Best solution before HGS" << endl;
