@@ -104,17 +104,20 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
         {
             // cout<<"Rebalanceing time "<< time<<endl;
             // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation,VisitOrder);
+            ///////////////////////////////////////////////////////////////
+            //                                                           //
+            //                For this time horizon,                     //
+            //            The following procedure makes                  //
+            //                the minimum delivery                       //
+            //     so that no stock out happens until the next visit.    //
+            //             Stop the rebalance operator                   //
+            //    if vehicle capacity is already full at this stage.     //
+            //                                                           //
+            ///////////////////////////////////////////////////////////////
             for (int customer = 0; customer < DeliveryQuantity.size(); customer++)
             {
 
-                //////////////////////////////////////////////////////////////
-                //                                                          //
-                //     A procedure that make the minimum delivery           //
-                //   so that no stock out happens until the next visit.     //
-                //             Stop the rebalance operator                  //
-                //    if vehicle capacity is already full at this stage.    //
-                //                                                          //
-                //////////////////////////////////////////////////////////////
+                
                 if (VehicleAllocation[customer][time] < IRPLR.NumberOfVehicles)
                 {
                     // assert(IRPLR.Vehicle.capacity - VehicleLoad[time][VehicleAllocation[customer][time]] > 0.00001);
@@ -165,7 +168,49 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                     }
                 }
             }
+            ///////////////////////////////////////////////////////////////////////////
+            //                                                                       //
+            //     At this stage, the schedule of this time is already feasible      //
+            //           the following code removes unnecessary visits               //
+            //                  to avoid high travel costs.                          //
+            //                                                                       //
+            ///////////////////////////////////////////////////////////////////////////
 
+            // Search for an existing visit that delivers nothing, find the visit in the route and delete it
+            // Otherwise if an existing visit delivers, computes the total delivery quantity by incrementing the delivery quantity of each visit.
+            
+            for (int i = 0; i < DeliveryQuantity.size(); i++) // Index i for retailer
+            {
+                for (int j = 0; j < DeliveryQuantity[i].size(); j++) // Index j for time period
+                {
+                    if (DeliveryQuantity[i][j] == 0 && VehicleAllocation[i][j] < IRPLR.NumberOfVehicles)
+                    {
+                        UnallocatedCustomers[j].push_back(Route[j][VehicleAllocation[i][j]][VisitOrder[i][j]]);
+                        Route[j][VehicleAllocation[i][j]].erase(Route[j][VehicleAllocation[i][j]].begin() + VisitOrder[i][j], Route[j][VehicleAllocation[i][j]].begin() + VisitOrder[i][j] + 1);
+
+                        for (int k = 0; k < VisitOrder.size(); k++)
+                        {
+                            if (VehicleAllocation[k][j] == VehicleAllocation[i][j]) // Find visits in the same vehicle as Retailer i on day j
+                            {
+                                if (VisitOrder[k][j] > VisitOrder[i][j]) // If this visit is after the visit of Retailer i
+                                {
+                                    VisitOrder[k][j] = VisitOrder[k][j] - 1;
+                                }
+                            }
+                        }
+                        VisitOrder[i][j] = IRPLR.Retailers.size() + 1;
+                        VehicleAllocation[i][j] = IRPLR.NumberOfVehicles + 1;
+                    }
+                    else
+                    {
+                        if (VehicleAllocation[i][j] == IRPLR.NumberOfVehicles + 1)
+                        {
+                            assert(DeliveryQuantity[i][j] == 0);
+                        }
+                    }
+                }
+            }
+           
             // cout << "After deliver minimum to survive on time "  <<time<< endl;
             // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation,VisitOrder);
             //////////////////////////////////////////////////////////////
@@ -327,8 +372,6 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
             }
         }
 
-        // If solution made to this stage, it is feasible
-        FeasibleRebalanceOrNot = 1;
         // Search for an existing visit that delivers nothing, find the visit in the route and delete it
         // Otherwise if an existing visit delivers, computes the total delivery quantity by incrementing the delivery quantity of each visit.
         double temp_total_delivery_quantity = 0;
