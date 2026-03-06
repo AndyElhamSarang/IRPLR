@@ -1,6 +1,24 @@
 #include "lib.h"
+
+/*
+ This function constructs an initial delivery schedule using a block/zone partitioning
+ of the geographic area. It assigns retailers to delivery periods and vehicles
+ such that stock-outs are avoided where possible and vehicle capacity constraints
+ are respected.
+
+ High-level steps:
+  - Initialize the solution structure.
+  - Group retailers by their next stock-out period.
+  - Partition the map into rectangular blocks (zones).
+  - Sort blocks by distance of their centers to the depot.
+  - For each stock-out period and block, sort retailers by demand (descending).
+  - Iteratively assign retailers (random selection within zone) to feasible periods
+    and vehicles, updating delivery quantities, vehicle loads and retailer inventories.
+*/
+
 void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &IRPSolution)
 {
+    // Print basic info when debugging is enabled
     if (printout_initialSchedule == 1)
     {
         cout << "INITIAL for IRPLR: multi vehicle case" << endl;
@@ -8,8 +26,8 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         cout << "Vehicle capacity:" << IRPLR.Vehicle.capacity << endl;
         cout << "Vehicles total capacity:" << IRPLR.VehiclesTotalCapacity << endl;
     }
-    // Initilize solution
-    //vector<assignment> TempAssignment;
+
+    // Initialize solution arrays and structures
     IRPSolution.Initialization(IRPLR);
     
     if (printout_initialSchedule == 1)
@@ -17,16 +35,19 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         IRPSolution.print_solution(IRPLR);
     }
 
-    boost_random_mechanism RandomInitial;
+    boost_random_mechanism RandomInitial; // random helper for initial schedule
 
+    // GroupOfRetailers[t] will contain retailer indices whose next stock-out is period t
     vector<vector<int>> GroupOfRetailers;
 
+    // Initialize groups for each period in the horizon
     for (int i = 0; i < IRPLR.TimeHorizon; i++)
     {
         vector<int> TempGroupOfRetailers;
         GroupOfRetailers.push_back(TempGroupOfRetailers);
     }
 
+    // Assign each retailer to the group corresponding to its next stock-out period
     for (int i = 0; i < IRPLR.Retailers.size(); i++)
     {
         int checkNextStockOutPeriod = IRPSolution.CheckStockOut(IRPLR, i);
@@ -35,12 +56,15 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         {
             cout << "Retailer " << i << ": checkNextStockOutPeriod:" << checkNextStockOutPeriod << ", ratio_capacity_vs_demand:" << ratio_capacity_vs_demand << endl;
         }
+        // Add retailer index to its stock-out period group
         GroupOfRetailers[checkNextStockOutPeriod].push_back(i);
     }
     if (printout_initialSchedule == 1)
     {
         cout << "Sorted via stock out period" << endl;
     }
+
+    // Sanity counting of grouped retailers for debug/assertion
     int GroupOfRetailersCounter = 0;
     for (int i = 0; i < GroupOfRetailers.size(); i++)
     {
@@ -56,6 +80,8 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         }
     }
     assert(GroupOfRetailersCounter == IRPLR.Retailers.size());
+
+    // Determine bounding box of all coordinates (supplier + retailers)
     int MaxYCoord = IRPLR.Supplier.yCoord;
     int MinYCoord = IRPLR.Supplier.yCoord;
     int MaxXCoord = IRPLR.Supplier.xCoord;
@@ -86,15 +112,20 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         cout << "MaxXCoord:" << MaxXCoord << ", MinXCoord" << MinXCoord << ", MaxYCoord:" << MaxYCoord << ", MinYCoord:" << MinYCoord << endl;
     }
 
+    // Number of divisions per dimension for block partitioning (e.g., 4x4 grid)
     double NumberOfDivision = 4;
 
+    // Compute block size in x and y (ceil to ensure coverage)
     int xDivision = ceil((MaxXCoord - MinXCoord) / NumberOfDivision);
     int yDivision = ceil((MaxYCoord - MinYCoord) / NumberOfDivision);
-    vector<vector<int>> BlockCoord;
+    vector<vector<int>> BlockCoord; // Each entry: {LeftX, RightX, BottomY, TopY}
+
     if (printout_initialSchedule == 1)
     {
         cout << xDivision << "," << yDivision << endl;
     }
+
+    // Build block coordinates by iterating grid cells
     int tempLeftXCoord = MinXCoord;
     int tempRightXCoord = MinXCoord;
     for (int i = 0; i < NumberOfDivision; i++)
@@ -109,6 +140,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
             tempBottomYCoord = tempTopYCoord;
             tempTopYCoord = tempTopYCoord + yDivision;
             vector<int> tempBlockCoord;
+            // store block bounding box: left, right, bottom, top
             tempBlockCoord.push_back(tempLeftXCoord);
             tempBlockCoord.push_back(tempRightXCoord);
             tempBlockCoord.push_back(tempBottomYCoord);
@@ -116,6 +148,8 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
             BlockCoord.push_back(tempBlockCoord);
         }
     }
+
+    // Debug print of generated blocks
     if (printout_initialSchedule == 1)
     {
         for (int i = 0; i < BlockCoord.size(); i++)
@@ -123,13 +157,17 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
             cout << "LeftXCoord:" << BlockCoord[i][0] << ", RightXCoord:" << BlockCoord[i][1] << ", TopYCoord:" << BlockCoord[i][2] << ", BottomYCoord:" << BlockCoord[i][3] << endl;
         }
     }
+
+    // Make a copy for sorting by distance to depot
     vector<vector<int>> SortedBlockCoord(BlockCoord);
+
     if (printout_initialSchedule == 1)
     {
         cout << "Unsorted blocks" << endl;
         for (int i = 0; i < SortedBlockCoord.size(); i++)
         {
             double DividByTwo = 2;
+            // center coordinates of the block (midpoint)
             double CenterXCoord = SortedBlockCoord[i][0] + ((SortedBlockCoord[i][1] - SortedBlockCoord[i][0]) / DividByTwo);
             double CenterYCoord = SortedBlockCoord[i][2] + ((SortedBlockCoord[i][3] - SortedBlockCoord[i][2]) / DividByTwo);
 
@@ -137,6 +175,8 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
             cout << "CenterXCoord:" << CenterXCoord << " ,CenterYCoord:" << CenterYCoord << " ,DistanceCenterToDepot:" << DistanceCenterToDepot << endl;
         }
     }
+
+    // Bubble-sort blocks by distance to depot (descending order: farthest first)
     bool swap = true;
     while (swap == true)
     {
@@ -152,6 +192,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
 
             double DistanceCenterOneToDepot = sqrt(pow(CenterOneXCoord - IRPLR.Supplier.xCoord, power) + pow(CenterOneYCoord - IRPLR.Supplier.yCoord, power));
             double DistanceCenterTwoToDepot = sqrt(pow(CenterTwoXCoord - IRPLR.Supplier.xCoord, power) + pow(CenterTwoYCoord - IRPLR.Supplier.yCoord, power));
+            // swap if center one is closer than center two -> produce descending order
             if (DistanceCenterOneToDepot < DistanceCenterTwoToDepot)
             {
                 vector<int> tempSortedBlockCoord(SortedBlockCoord[i + 1]);
@@ -161,6 +202,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
             }
         }
     }
+
     if (printout_initialSchedule == 1)
     {
         cout << "Sorted blocks" << endl;
@@ -175,16 +217,19 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         }
     }
 
+    // CompleteGroupOfRetailers[period][block] -> list of retailers in that period assigned to that block
     vector<vector<vector<int>>> CompleteGroupOfRetailers;
-    for (int i = 0; i < GroupOfRetailers.size(); i++) // For each stock out periods
+    for (int i = 0; i < GroupOfRetailers.size(); i++) // For each stock out period
     {
         vector<vector<int>> TempCompleteGroupOfRetailers;
+        // create empty list for each block
         for (int x = 0; x < SortedBlockCoord.size(); x++)
         {
             vector<int> TempCompleteGroupOfRetailersForEachPeriod;
             TempCompleteGroupOfRetailers.push_back(TempCompleteGroupOfRetailersForEachPeriod);
         }
 
+        // assign retailers in this period to one of the blocks based on coordinates
         for (int j = 0; j < GroupOfRetailers[i].size(); j++)
         {
             for (int k = 0; k < SortedBlockCoord.size(); k++)
@@ -198,6 +243,8 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         }
         CompleteGroupOfRetailers.push_back(TempCompleteGroupOfRetailers);
     }
+
+    // Sort retailers within each block by demand (descending) to prioritize high demand retailers first
     cout << "Sorting by demand" << endl;
     for (int i = 0; i < CompleteGroupOfRetailers.size(); i++)
     {
@@ -225,6 +272,8 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
     }
 
     cout << "Finished Sorting by demand" << endl;
+
+    // Verify every retailer is present in the complete grouping
     int counterNumberOfRetailers = 0;
     for (int i = 0; i < CompleteGroupOfRetailers.size(); i++)
     {
@@ -257,18 +306,27 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
 
     cout << IRPLR.Retailers.size() << "," << counterNumberOfRetailers << endl;
     assert(IRPLR.Retailers.size() == counterNumberOfRetailers);
+
+    // Main assignment loop:
+    // For each period and block, maintain a list of candidate retailers and repeatedly pick one at random,
+    // then find a feasible period (forward/backward search) to serve it, allocate to a vehicle and update loads/inventories.
     for (int i = 0; i < CompleteGroupOfRetailers.size(); i++)
     {
         for (int j = 0; j < CompleteGroupOfRetailers[i].size(); j++)
         {
+            // Copy list of candidate retailers for this (period, block)
             vector<int> CandidateRetailers(CompleteGroupOfRetailers[i][j]);
             while (CandidateRetailers.size() != 0)
             {
+                // Randomly pick a retailer from candidates
                 int RandomPickARetailer = RandomInitial.random_number_generator(0, CandidateRetailers.size() - 1, generator);
-                // cout<<CandidateRetailers[RandomPickARetailer]<<","<<IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].ID<<","<<IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].xCoord<<","<<IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].yCoord<<endl;
+
+                // The following variables control the search for an appropriate delivery period
                 int StockOutExist = 0;
                 int CurrentPeriod = 0;
                 int NextStockOutPeriod = 0;
+
+                // Loop until we assign this retailer or determine it has no future stock-out (then remove)
                 while (NextStockOutPeriod < IRPLR.TimeHorizon + 1)
                 {
                     NextStockOutPeriod = IRPSolution.CheckStockOut(IRPLR, CandidateRetailers[RandomPickARetailer]);
@@ -279,13 +337,14 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
 
                     if (NextStockOutPeriod >= IRPLR.TimeHorizon + 1)
                     {
-                        // No further stock out
+                        // No further stock out -> retailer needs no delivery, remove from candidates
                         CandidateRetailers.erase(CandidateRetailers.begin() + RandomPickARetailer, CandidateRetailers.begin() + RandomPickARetailer + 1);
                         CurrentPeriod = IRPLR.TimeHorizon + 1;
                         break;
                     }
                     else
                     {
+                        // If current period is before or equal to the next stock-out, try to schedule forward into [CurrentPeriod..NextStockOutPeriod]
                         if (CurrentPeriod <= NextStockOutPeriod)
                         {
                             if (printout_initialSchedule == 1)
@@ -294,6 +353,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 cout << "Period for Retailer " << CandidateRetailers[RandomPickARetailer] << ", CurrentPeriod: " << CurrentPeriod << ", NextStockOutPeriod: " << NextStockOutPeriod << endl;
                             }
 
+                            // Collect potential periods where this retailer is not already visited and there is remaining vehicle capacity
                             vector<int> PotentialPeriods;
                             for (int i = CurrentPeriod; i <= NextStockOutPeriod; i++)
                             {
@@ -304,15 +364,17 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                     for (int k = 0; k < IRPSolution.Route[i][j].size(); k++)
                                     {
                                         if (IRPSolution.Route[i][j][k] == CandidateRetailers[RandomPickARetailer])
-                                            VisitedOrNot = 1;
+                                            VisitedOrNot = 1; // already assigned in that period
                                     }
-                                    TotalLoad += IRPSolution.VehicleLoad[i][j];
+                                    TotalLoad += IRPSolution.VehicleLoad[i][j]; // sum vehicle loads in period i
                                 }
+                                // If total load equals total fleet capacity consider period full
                                 if (fabs(TotalLoad - IRPLR.Vehicle.capacity * IRPLR.NumberOfVehicles) < 0.00001)
                                     VisitedOrNot = 1;
                                 if (VisitedOrNot == 0)
                                     PotentialPeriods.push_back(i);
                             }
+
                             if (printout_initialSchedule == 1)
                             {
                                 cout << "PotentialPeriods:" << endl;
@@ -320,8 +382,10 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                     cout << PotentialPeriods[i] << ",";
                                 cout << endl;
                             }
+
                             if (PotentialPeriods.size() == 0)
                             {
+                                // No feasible forward period found; advance current period beyond next stock-out and try again (search further)
                                 if (printout_initialSchedule == 1)
                                 {
                                     cout << "No Potential periods available, going backward further" << endl;
@@ -330,6 +394,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                             }
                             else
                             {
+                                // Randomly select one feasible period from potentials
                                 int RandomPotentialPeirod = RandomInitial.random_number_generator(0, PotentialPeriods.size() - 1, generator);
                                 int RandomPickANonStockOutPeriod = PotentialPeriods[RandomPotentialPeirod];
                                 if (printout_initialSchedule == 1)
@@ -337,14 +402,12 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                     cout << "Period for Retailer " << CandidateRetailers[RandomPickARetailer] << ", CurrentPeriod: " << CurrentPeriod << ", NextStockOutPeriod: " << NextStockOutPeriod << ", SelectedTimePeriod: " << RandomPickANonStockOutPeriod << endl;
                                 }
 
+                                // Determine vehicle and delivery quantity for the selected period
                                 if (RandomPickANonStockOutPeriod > 0)
                                 {
-                                    // cout << "IRPLR.Vehicle.capacity:" << IRPLR.Vehicle.capacity << endl;
-                                    // cout << "total_delivery:" << total_delivery << endl;
-                                    // cout << "IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax:" << IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax << endl;
-                                    // cout << "IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1]:" << IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1] << endl;
                                     double Load = 0;
-                                    int vehicle_index = IRPLR.NumberOfVehicles;
+                                    int vehicle_index = IRPLR.NumberOfVehicles; // sentinel; gets set to chosen vehicle index
+                                    // Try to find a vehicle with room to deliver up to retailer's capacity (InventoryMax limited by remaining inventory level)
                                     for (int i = 0; i < IRPLR.NumberOfVehicles; i++)
                                     {
                                         Load = min(IRPLR.Vehicle.capacity - IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][i], IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax - IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1]);
@@ -355,6 +418,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                         }
                                     }
                                     
+                                    // Assign retailer to the found vehicle's route for that period and update load/allocation/order
                                     IRPSolution.Route[RandomPickANonStockOutPeriod][vehicle_index].push_back(CandidateRetailers[RandomPickARetailer]);
                                     IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][vehicle_index] += IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod];
                                     IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod] = vehicle_index;
@@ -362,6 +426,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 }
                                 else
                                 {
+                                    // Special handling for period 0: inventory baseline is InventoryBegin
                                     double Load = 0;
                                     int vehicle_index = IRPLR.NumberOfVehicles;
                                     for (int i = 0; i < IRPLR.NumberOfVehicles; i++)
@@ -378,12 +443,15 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                     IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod] = vehicle_index;
                                     IRPSolution.VisitOrder[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod] = IRPSolution.Route[RandomPickANonStockOutPeriod][vehicle_index].size()-1;
                                 }
+
+                                // After assigning a delivery, update the inventory level timeline for the retailer
                                 int tempInventory = IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin;
                                 for (int i = 0; i < IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]].size(); i++)
                                 {
                                     tempInventory = tempInventory - IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].Demand + IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][i];
                                     IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][i] = tempInventory;
                                 }
+                                // Move current period forward after assignment
                                 CurrentPeriod = RandomPickANonStockOutPeriod + 1;
 
                                 if (printout_initialSchedule == 1)
@@ -394,14 +462,17 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                         }
                         else
                         {
+                            // If CurrentPeriod > NextStockOutPeriod we must search backwards to find an earlier feasible period
                             if (printout_initialSchedule == 1)
                             {
                                 cout << "Going backward" << endl;
                                 cout << "Period for Retailer " << CandidateRetailers[RandomPickARetailer] << ", CurrentPeriod: " << CurrentPeriod << ", NextStockOutPeriod: " << NextStockOutPeriod << endl;
                             }
 
+                            // LookBackwardPeriod will hold the selected earlier period where we can deliver
                             int LookBackwardPeriod = IRPLR.TimeHorizon + 1;
 
+                            // Search backwards from NextStockOutPeriod-1 down to period 0
                             for (int i = NextStockOutPeriod - 1; i >= 0; i--)
                             {
                                 if (printout_initialSchedule == 1)
@@ -423,6 +494,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                     VisitedOrNot = 1;
                                 if (VisitedOrNot == 0)
                                 {
+                                    // Found a feasible backward period
                                     LookBackwardPeriod = i;
                                     break;
                                 }
@@ -434,6 +506,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 cout << "Period for Retailer " << CandidateRetailers[RandomPickARetailer] << ", CurrentPeriod: " << CurrentPeriod << ", NextStockOutPeriod: " << NextStockOutPeriod << ", SelectedTimePeriod: " << LookBackwardPeriod << endl;
                             }
 
+                            // Assign to a vehicle similarly as in forward search, using LookBackwardPeriod
                             if (LookBackwardPeriod > 0)
                             {
                                 double Load = 0;
@@ -454,6 +527,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                             }
                             else
                             {
+                                // Special handling for period 0 using InventoryBegin baseline
                                 double Load = 0;
                                 int vehicle_index = IRPLR.NumberOfVehicles;
                                 for (int i = 0; i < IRPLR.NumberOfVehicles; i++)
@@ -470,11 +544,13 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = vehicle_index;
                                 IRPSolution.VisitOrder[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = IRPSolution.Route[LookBackwardPeriod][vehicle_index].size()-1; 
                             }
+
+                            // Update inventory timeline after assignment
                             int tempInventory = IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin;
-                            for (int i = 0; i < IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]].size(); i++)
+                            for (int i = 0; i < IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARRetailer]].size(); i++)
                             {
-                                tempInventory = tempInventory - IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].Demand + IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][i];
-                                IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][i] = tempInventory;
+                                tempInventory = tempInventory - IRPLR.Retailers[CandidateRetailers[RandomPickARRetailer]].Demand + IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARRetailer]][i];
+                                IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARRetailer]][i] = tempInventory;
                             }
                             CurrentPeriod = LookBackwardPeriod + 1;
                             if (printout_initialSchedule == 1)
@@ -487,6 +563,8 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
             }
         }
     }
+
+    // Final sanity checks on route dimensions
     assert(IRPSolution.Route.size() == IRPLR.TimeHorizon);
     for (int i = 0; i < IRPSolution.Route.size(); i++)
     {
