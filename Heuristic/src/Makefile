@@ -174,5 +174,40 @@ andy_testpc:
 	Operator:Disturb.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-o irplr.out -O3
+
+andy_testpc_DISABLE_COUT:
+	$(CC) main.cpp file:Read_andy_testpc.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
+	Input:Read.cpp \
+	PrintData.cpp random.cpp \
+	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
+	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
+	DataStructure:Local.cpp \
+	DataStructure:Subpath.cpp \
+	DataStructure:Concatenation.cpp \
+	DataStructure:ConcatenationInterSwap.cpp \
+	DataStructure:ConcatenationSwapTwoRoutesSingleDay.cpp \
+	DataStructure:ConcatenationSwapInsertRemove.cpp \
+	DataStructure:Print.cpp \
+	HGS:ReadParameter.cpp HGS:Call.cpp \
+	SolutionUtility.cpp \
+	solution.cpp solution:initialize.cpp   \
+	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
+	solution:GetTransCostSingleRoute.cpp \
+	CheckStockOut.cpp \
+	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
+	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
+	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
+	ILS.cpp LocalSearch.cpp \
+	OperatorUtility.cpp \
+	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
+	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
+	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
+	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
+	Operator:Repair.cpp Operator:Intra.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
+	Operator:Disturb.cpp \
+	-I $(andy_testpc) -I $(andy_testpc_boost) \
+	-DDISABLE_COUT \
+	-o irplr.out -O3
 clean:
 	rm -f *.txt *.csv *.o *.lp *.mps *.out

@@ -1,7 +1,6 @@
 #include "lib.h"
 int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory)
 {
-    cout << "Start Local Search" << endl;
     int whether_improved_via_local_search = 0;
     memory.PopulatePrefixAndSuffix(IRPLR, IRPSolution);
 
@@ -49,7 +48,7 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
                 SwapTwoRoutesOnSingleDayPair.insert(p);
             }
             SwapTwoRoutesOnSingleDayPairToReconsider.clear();
-            cout << "InitialSizeOfSwapTwoRoutesOnSingleDayPair: " << InitialSizeOfSwapTwoRoutesOnSingleDayPair <<", SwapTwoRoutesOnSingleDayPairToReconsider: "<< SwapTwoRoutesOnSingleDayPairToReconsider.size()<<", Size of reduced SwapTwoRoutesOnSingleDayPair: " << SwapTwoRoutesOnSingleDayPair.size() << endl;
+            // cout << "InitialSizeOfSwapTwoRoutesOnSingleDayPair: " << InitialSizeOfSwapTwoRoutesOnSingleDayPair <<", SwapTwoRoutesOnSingleDayPairToReconsider: "<< SwapTwoRoutesOnSingleDayPairToReconsider.size()<<", Size of reduced SwapTwoRoutesOnSingleDayPair: " << SwapTwoRoutesOnSingleDayPair.size() << endl;
             whether_improved= OperatorSwapTwoRoutesOnSingleDay(
                 IRPLR,
                 IRPSolution,
@@ -70,7 +69,7 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
             memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
             counter++;
         }
-        cout << "Iteration for OperatorSwapTwoRoutesOnSingleDay:" << counter << endl;
+        cout << "Iteration applied for Operator: SwapTwoRoutesOnSingleDay:" << counter << endl;
 
         int min_remove_length = 0;
         int max_remove_length = 2;
@@ -102,8 +101,9 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
             memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
             counter++;
         }
-        cout << "Iteration for OperatorSwapRemoveInsert:" << counter << endl;
+        cout << "Iteration applied for Operator: SwapRemoveInsert:" << counter << endl;
 
+        counter = 0;
         for (int day = 0; day < memory.TrackSingleRouteOptimisation.size(); day++)
         {
             for (int vehicle = 0; vehicle < memory.TrackSingleRouteOptimisation[day].size(); vehicle++)
@@ -124,11 +124,11 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
                         memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
                     }
                     memory.TrackSingleRouteOptimisation[day][vehicle] = 0;
+                    counter++;
                 }
             }
         }
-        cout << "Use OperatorIntra" << endl;
+        cout << "Iteration applied for Operator: Intra:" << counter << endl;
     }
-    cout << "End Local Search" << endl;
     return whether_improved_via_local_search;
 }
