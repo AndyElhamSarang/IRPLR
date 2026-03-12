@@ -547,10 +547,10 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
 
                             // Update inventory timeline after assignment
                             int tempInventory = IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin;
-                            for (int i = 0; i < IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARRetailer]].size(); i++)
+                            for (int i = 0; i < IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]].size(); i++)
                             {
-                                tempInventory = tempInventory - IRPLR.Retailers[CandidateRetailers[RandomPickARRetailer]].Demand + IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARRetailer]][i];
-                                IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARRetailer]][i] = tempInventory;
+                                tempInventory = tempInventory - IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].Demand + IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][i];
+                                IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][i] = tempInventory;
                             }
                             CurrentPeriod = LookBackwardPeriod + 1;
                             if (printout_initialSchedule == 1)

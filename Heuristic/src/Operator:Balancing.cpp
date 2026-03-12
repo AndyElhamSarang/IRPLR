@@ -418,7 +418,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
     catch (double rebalacing_facing_stock_out)
     {
         CountingInfeasibleCase++;
-        // cout<<"rebalacing_facing_stock_out, break"<<endl;
+        cout<<"rebalacing_facing_stock_out, break"<<endl;
     }
     // cout << "End balancing" << endl;
     // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation,VisitOrder);
