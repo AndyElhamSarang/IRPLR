@@ -25,6 +25,8 @@ public:
   void OutputCVRP(input &IRPLR, int &day, vector<vector<int>> &RouteForDay);
   void ReadCVRP_Solution(input &IRPLR, int &day, vector<vector<int>> &RouteForDay);
   int CheckStockOut(input &IRPLR, int &RetailerIndex);
+
+  void UpdateVehicleAllocationVisitOrder(input &IRPLR);
   void print_solution(input &IRPLR);
   void GetLogisticRatio(input &IRPLR);
   double GetTransCostSingleRoute(/*int route, int head, int tail, int insert_length, vector<int> &Input_route, data &wsrp, proprecessing &memory*/);

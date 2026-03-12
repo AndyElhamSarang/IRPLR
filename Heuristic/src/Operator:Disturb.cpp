@@ -2,7 +2,7 @@
 void solution_improvement::OperatorDisturb(input &IRPLR, solution &GlobalBest, solution &IRPSolution, int &DisturbanceCounter, int &MaxDisturbance)
 {
     // cout << "Start Disturb Operator" << endl;
-    GlobalBest.print_solution(IRPLR);
+    // GlobalBest.print_solution(IRPLR);
 
     IRPSolution = GlobalBest; // For demonstration, we just copy the global best solution
 

@@ -194,4 +194,18 @@ void input::ReadIRPInstance(string &InstanceName, string &InstanceType, string &
         assert(AllPossibleSchedule[i].size() == TotalSchedules);
     }*/
     VehiclesTotalCapacity = Vehicle.capacity * NumberOfVehicles;
+
+    ////////////////////////////////////////////////////////
+    //                                                    //
+    //      Compute minimum number of visits needed       //
+    //          for each retailer based on                //
+    //           demand and Max Inventory                 //
+    //                                                    //
+    ////////////////////////////////////////////////////////
+    for (int i = 0; i < Retailers.size(); i++)
+    {
+        int MinimumVisit = ceil((Retailers[i].Demand * TimeHorizon - Retailers[i].InventoryBegin) / Retailers[i].InventoryMax);
+        MinimumVisitDemand .push_back(MinimumVisit);
+        
+    }
 }

@@ -10,9 +10,9 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
     time_t accumulate_end_time;
     double LR_objv = numeric_limits<double>::max();
     IRPSolution.GetLogisticRatio(IRPLR);
-    // IRPSolution.print_solution(IRPLR);
-    cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << endl;
+    cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut: " << IRPSolution.ViolationStockOut << endl;
 
+    // IRPSolution.print_solution(IRPLR);
     // for (int i = 0; i < IRPSolution.TransportationCostPerRoute.size(); i++)
     // {
     //     for (int j = 0; j < IRPSolution.TransportationCostPerRoute[i].size(); j++)
@@ -662,7 +662,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
     accumulated_time += difftime(accumulate_end_time, accumulate_start_time);
     cout << "Accumulated time:" << accumulated_time << endl;
     cout << "Total solution explored:" << solutionCounter << endl;
-    cout << "Working solution explored:" << working_solutionCounter << endl;    
+    cout << "Valid insertion:" << working_solutionCounter << endl;    
     cout << "whether_improved_or_not:" << whether_improved_or_not << endl;
     cout << "ImpLogisticRatio:" << ImpLogisticRatio << "\t ImpStockOut:" << ImpStockOut << endl;
 
@@ -673,14 +673,14 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
     ////////////////////////////////////////////////////////////////////////////
     if (whether_improved_or_not == 1) // whether_improved_or_not==1
     {
-        IRPSolution.print_solution(IRPLR);
-        cout << "Improved solution found by SwapTwoRoutesSingleDay operator:" << endl;
-        cout << ImpLogisticRatio << "\t" << ImpStockOut << endl;
-        for(int i=0;i<move.size();i++)
-        {
-            cout<<"move["<<i<<"]:"<<move[i]<<"\t";
-        }
-        cout<<endl;
+        // IRPSolution.print_solution(IRPLR);
+        // cout << "Improved solution found by SwapTwoRoutesSingleDay operator:" << endl;
+        // cout << ImpLogisticRatio << "\t" << ImpStockOut << endl;
+        // for(int i=0;i<move.size();i++)
+        // {
+        //     cout<<"move["<<i<<"]:"<<move[i]<<"\t";
+        // }
+        // cout<<endl;
         IRPSolution.VehicleLoad = ImpVehicleLoad;
         IRPSolution.LogisticRatio = ImpLogisticRatio;
         IRPSolution.ViolationStockOut = ImpStockOut;

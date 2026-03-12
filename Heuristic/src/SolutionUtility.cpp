@@ -50,7 +50,7 @@ void solution::Validation(input &IRPLR)
     InventoryLevel_Cannot_Exceed_Maximum(IRPLR, *this);
 }
 
-void solution::print_solution(input &IRPLR)
+void solution::UpdateVehicleAllocationVisitOrder(input &IRPLR)
 {
     ///////////////////////////////////////////////////////////////////////
     //                                                                   //
@@ -83,12 +83,35 @@ void solution::print_solution(input &IRPLR)
             }
         }
     }
+}
+
+void solution::print_solution(input &IRPLR)
+{
+    
 
     const int id_width2 = 1;
-
     const int id_width = 3;
+    vector<int> ListNumberOfVisits;
+    for (int z = 0; z < IRPLR.Retailers.size(); z++)
+    {
+        int NumberOfVisits = 0;
+        for (int i = 0; i < Route.size(); i++)
+        {
+            for (int j = 0; j < Route[i].size(); j++)
+            {
+                for (int k = 0; k < Route[i][j].size(); k++)
+                {
+                    if (z == Route[i][j][k])
+                    {
+                        NumberOfVisits++;
+                    }
+                }
+            }
+        }
+        ListNumberOfVisits.push_back(NumberOfVisits);
+    }
     cout << "InventoryLevel(Delivery Quantity, Vehicle, Order):" << endl;
-    cout << "ID (Max Inv, Stockout):\t" << setw(id_width) << "\tBegin\t" << setw(id_width) << "\t";
+    cout << "ID (Max Inv, Stockout, #Visits, Min_visits):\t" << setw(id_width) << "\tBegin\t" << setw(id_width) << "\t";
     for (int i = 0; i < IRPLR.TimeHorizon; i++)
     {
         cout << "t" << i << "\t" << setw(id_width) << "\t";
@@ -96,7 +119,7 @@ void solution::print_solution(input &IRPLR)
     cout << endl;
     for (int i = 0; i < InventoryLevel.size(); i++)
     {
-        cout << "Retailer " << i << "(" << IRPLR.Retailers[i].InventoryMax << "," << StockOutPerCustomer[i] << ")" << ":\t" << setw(id_width2) << "\t" << IRPLR.Retailers[i].InventoryBegin;
+        cout << "Retailer " << i << "(" << IRPLR.Retailers[i].InventoryMax << "," << StockOutPerCustomer[i] << "," << ListNumberOfVisits[i] << "," << IRPLR.MinimumVisitDemand[i] << ")" << ":\t" << setw(id_width2) << "\t" << IRPLR.Retailers[i].InventoryBegin;
         for (int j = 0; j < InventoryLevel[i].size() - 1; j++)
         {
             cout << "\t" << setw(id_width2) << "\t" << InventoryLevel[i][j];

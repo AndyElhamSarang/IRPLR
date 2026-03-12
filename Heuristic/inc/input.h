@@ -42,6 +42,8 @@ public:
 
   vector<vector<vector<int>>> AllPossibleSchedule; 
 
+  vector<int> MinimumVisitDemand;
+
   void ReadIRPInstance(string &InstanceName, string &InstanceType, string &InstanceDirectories);
   void PrintData();
 };
