@@ -49,26 +49,27 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
             }
             SwapTwoRoutesOnSingleDayPairToReconsider.clear();
             // cout << "InitialSizeOfSwapTwoRoutesOnSingleDayPair: " << InitialSizeOfSwapTwoRoutesOnSingleDayPair <<", SwapTwoRoutesOnSingleDayPairToReconsider: "<< SwapTwoRoutesOnSingleDayPairToReconsider.size()<<", Size of reduced SwapTwoRoutesOnSingleDayPair: " << SwapTwoRoutesOnSingleDayPair.size() << endl;
-            whether_improved= OperatorSwapTwoRoutesOnSingleDay(
-                IRPLR,
-                IRPSolution,
-                PenaltyForStockOut,
-                memory,
-                SwapTwoRoutesOnSingleDayPair,
-                SwapTwoRoutesOnSingleDayPairToReconsider,
-                min_swap1,
-                max_swap1,
-                min_swap2,
-                max_swap2
-            );
+            // whether_improved= OperatorSwapTwoRoutesOnSingleDay(
+            //     IRPLR,
+            //     IRPSolution,
+            //     PenaltyForStockOut,
+            //     memory,
+            //     SwapTwoRoutesOnSingleDayPair,
+            //     SwapTwoRoutesOnSingleDayPairToReconsider,
+            //     min_swap1,
+            //     max_swap1,
+            //     min_swap2,
+            //     max_swap2
+            // );
             if (whether_improved == 1)
             {
                 true_local = 0;
             }
-
+            // IRPSolution.Validation(IRPLR);
             memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
             counter++;
         }
+
         cout << "Iteration applied for Operator: SwapTwoRoutesOnSingleDay:" << counter << endl;
 
         int min_remove_length = 0;
@@ -99,6 +100,7 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
                 true_local = 0;
             }
             memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
+            // IRPSolution.Validation(IRPLR);
             counter++;
         }
         cout << "Iteration applied for Operator: SwapRemoveInsert:" << counter << endl;

@@ -121,14 +121,13 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout<<"---------------------------------------------"<<endl;
             cout << "Start Local Search, iteration " << LocalSearchCounter <<", with Disturbance Counter: " << DisturbanceCounter << endl;
             cout<<"---------------------------------------------"<<endl;
-            LocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory);            
-            // cout<<"After local search"<<endl;
-            // IRPSolution.Validation(IRPLR);
+            LocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory);         
             time(&LocalSearch_end_time);
             double total_LocalSearch_time = difftime(LocalSearch_end_time, LocalSearch_start_time);
 
             cout << "---------------------------------------------" << endl;
             cout << "End Local Search" << endl;
+            // IRPSolution.Validation(IRPLR);
             cout << "Total LocalSearch time:" << total_LocalSearch_time << "s." << endl;
             IRPSolution.GetLogisticRatio(IRPLR);
             IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
@@ -250,10 +249,10 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     vector<vector<int>> TempVisitOrder(GlobalBest.VisitOrder);
                     time(&rebalance_start_time);
                     double LogisctiRatioAfterRebalance = numeric_limits<double>::max();
-                    LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
-                                                                           TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel,
-                                                                           TempVehicleAllocation, TempVisitOrder,
-                                                                           counting_infeasible_case, is_Rebalace_infeasible);
+                    // LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
+                    //                                                        TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel,
+                    //                                                        TempVehicleAllocation, TempVisitOrder,
+                    //                                                        counting_infeasible_case, is_Rebalace_infeasible);
                     time(&rebalance_end_time);
                     total_rebalance_time += difftime(rebalance_end_time, rebalance_start_time);
                     NumberOfRebalance++;
@@ -316,7 +315,11 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 }
             }
             cout << "DisturbanceCounter:" << DisturbanceCounter<<", PenaltyForStockOut:" << PenaltyForStockOut << endl;
-            OperatorDisturb(IRPLR, GlobalBest, IRPSolution, DisturbanceCounter, MaxDisturbance);
+            cout<<"-----------------------------------------------"<<endl;
+            cout<<"Start Disturbance Operator" << endl;
+            // OperatorDisturb(IRPLR, GlobalBest, IRPSolution, DisturbanceCounter, MaxDisturbance);
+            cout<<"End Disturbance Operator" << endl;
+            cout<<"------------------------------------------------"<<endl;
             DisturbanceCounter++;
         }
     }

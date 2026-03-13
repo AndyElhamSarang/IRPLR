@@ -37,6 +37,7 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
 
     if (previous_inventory_level + DeliveryQuantity[day] > IRPLR.Retailers[customer_index].InventoryMax)
     {
+        cout<<"& "<<previous_inventory_level<<","<<DeliveryQuantity[day]<<","<<IRPLR.Retailers[customer_index].InventoryMax<<endl;
         DeliveryQuantity[day] = DeliveryQuantity[day] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
         ChangeInTotalQuantity = ChangeInTotalQuantity - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
         VehicleLoad[day][vehicle] = VehicleLoad[day][vehicle] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
@@ -96,6 +97,7 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
 
         if (PreviousInventoryLevel + DeliveryQuantity[y] > IRPLR.Retailers[customer_index].InventoryMax)
         {
+            // cout<<"& "<<PreviousInventoryLevel<<","<<DeliveryQuantity[y]<<","<<IRPLR.Retailers[customer_index].InventoryMax<<endl;
             double delta = (PreviousInventoryLevel + DeliveryQuantity[y] - IRPLR.Retailers[customer_index].InventoryMax);
             DeliveryQuantity[y] -= delta;
             ChangeInTotalQuantity -= delta;
@@ -129,4 +131,9 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
         }
         InventoryLevel[y] = CurrentInventoryLevel;
     }
+    // for(int i=0;i<InventoryLevel.size();i++)
+    // { 
+    //     cout<<"InventoryLevel["<<i<<"]:"<<InventoryLevel[i]<<",";
+    // }
+    // cout<<endl;
 }
