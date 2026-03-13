@@ -1,6 +1,35 @@
 #include "lib.h"
 #include <iomanip>
 #include <sstream>
+void NumberOfVisitsPerCustomerCannotLessThanMin(input &IRPLR, solution &IRPSolution)
+{
+    cout<<"Check Number of Visits Per Customer Cannot Less Than Minimum Visit Demand"<<endl;
+    vector<int> ListNumberOfVisits;
+    for (int z = 0; z < IRPLR.Retailers.size(); z++)
+    {
+        int NumberOfVisits = 0;
+        for (int i = 0; i < IRPSolution.Route.size(); i++)
+        {
+            for (int j = 0; j < IRPSolution.Route[i].size(); j++)
+            {
+                for (int k = 0; k < IRPSolution.Route[i][j].size(); k++)
+                {
+                    if (z == IRPSolution.Route[i][j][k])
+                    {
+                        NumberOfVisits++;
+                    }
+                }
+            }
+        }
+        ListNumberOfVisits.push_back(NumberOfVisits);
+    }
+    for(int i = 0; i < ListNumberOfVisits.size(); i++)
+    {
+        // cout<<"Number of visits for customer "<<i<<": "<<ListNumberOfVisits[i]<<" versus "<<IRPLR.MinimumVisitDemand[i]<<endl;
+        assert(ListNumberOfVisits[i] >= IRPLR.MinimumVisitDemand[i]);
+    }
+    cout<<"Check passed!"<<endl;
+}
 void Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(input &IRPLR, solution &IRPSolution)
 {
     // IRPSolution.print_solution(IRPLR);
@@ -46,6 +75,7 @@ void InventoryLevel_Cannot_Exceed_Maximum(input &IRPLR, solution &IRPSolution)
 }
 void solution::Validation(input &IRPLR)
 {   
+    NumberOfVisitsPerCustomerCannotLessThanMin(IRPLR, *this);
     Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(IRPLR, *this);    
     InventoryLevel_Cannot_Exceed_Maximum(IRPLR, *this);
 }
