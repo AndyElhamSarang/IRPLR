@@ -249,10 +249,10 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     vector<vector<int>> TempVisitOrder(GlobalBest.VisitOrder);
                     time(&rebalance_start_time);
                     double LogisctiRatioAfterRebalance = numeric_limits<double>::max();
-                    // LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
-                    //                                                        TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel,
-                    //                                                        TempVehicleAllocation, TempVisitOrder,
-                    //                                                        counting_infeasible_case, is_Rebalace_infeasible);
+                    LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
+                                                                           TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel,
+                                                                           TempVehicleAllocation, TempVisitOrder,
+                                                                           counting_infeasible_case, is_Rebalace_infeasible);
                     time(&rebalance_end_time);
                     total_rebalance_time += difftime(rebalance_end_time, rebalance_start_time);
                     NumberOfRebalance++;
@@ -317,7 +317,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "DisturbanceCounter:" << DisturbanceCounter<<", PenaltyForStockOut:" << PenaltyForStockOut << endl;
             cout<<"-----------------------------------------------"<<endl;
             cout<<"Start Disturbance Operator" << endl;
-            // OperatorDisturb(IRPLR, GlobalBest, IRPSolution, DisturbanceCounter, MaxDisturbance);
+            OperatorDisturb(IRPLR, GlobalBest, IRPSolution, DisturbanceCounter, MaxDisturbance);
             cout<<"End Disturbance Operator" << endl;
             cout<<"------------------------------------------------"<<endl;
             DisturbanceCounter++;

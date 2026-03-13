@@ -49,18 +49,18 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
             }
             SwapTwoRoutesOnSingleDayPairToReconsider.clear();
             // cout << "InitialSizeOfSwapTwoRoutesOnSingleDayPair: " << InitialSizeOfSwapTwoRoutesOnSingleDayPair <<", SwapTwoRoutesOnSingleDayPairToReconsider: "<< SwapTwoRoutesOnSingleDayPairToReconsider.size()<<", Size of reduced SwapTwoRoutesOnSingleDayPair: " << SwapTwoRoutesOnSingleDayPair.size() << endl;
-            // whether_improved= OperatorSwapTwoRoutesOnSingleDay(
-            //     IRPLR,
-            //     IRPSolution,
-            //     PenaltyForStockOut,
-            //     memory,
-            //     SwapTwoRoutesOnSingleDayPair,
-            //     SwapTwoRoutesOnSingleDayPairToReconsider,
-            //     min_swap1,
-            //     max_swap1,
-            //     min_swap2,
-            //     max_swap2
-            // );
+            whether_improved= OperatorSwapTwoRoutesOnSingleDay(
+                IRPLR,
+                IRPSolution,
+                PenaltyForStockOut,
+                memory,
+                SwapTwoRoutesOnSingleDayPair,
+                SwapTwoRoutesOnSingleDayPairToReconsider,
+                min_swap1,
+                max_swap1,
+                min_swap2,
+                max_swap2
+            );
             if (whether_improved == 1)
             {
                 true_local = 0;
