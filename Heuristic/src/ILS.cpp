@@ -94,7 +94,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     bool RunHGSAtEnd = false;
     // assert(UseSwapRemoveInsert!=UseSwapRemoveInsertRebalance);
     int LocalSearchCounter = 0;
-    int MaxDisturbance = 1 * (IRPLR.NumberOfRetailers + 1 * IRPLR.TimeHorizon + 1 * IRPLR.NumberOfVehicles);
+    int MaxDisturbance = 2 * (IRPLR.NumberOfRetailers + 1 * IRPLR.TimeHorizon + 1 * IRPLR.NumberOfVehicles);
     time(&LS_start_time);
     try
     {
