@@ -65,10 +65,11 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
             {
                 true_local = 0;
             }
-
+            // IRPSolution.Validation(IRPLR);
             memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
             counter++;
         }
+
         cout << "Iteration applied for Operator: SwapTwoRoutesOnSingleDay:" << counter << endl;
 
         int min_remove_length = 0;
@@ -99,6 +100,7 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
                 true_local = 0;
             }
             memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
+            // IRPSolution.Validation(IRPLR);
             counter++;
         }
         cout << "Iteration applied for Operator: SwapRemoveInsert:" << counter << endl;

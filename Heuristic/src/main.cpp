@@ -117,7 +117,7 @@ int main()
 				IRPSolution.print_solution(IRPLR);
 				IRPSolution.GetLogisticRatio(IRPLR);
 				cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
-				// IRPSolution.Validation(IRPLR);
+				IRPSolution.Validation(IRPLR);
 				generator.seed(static_cast<unsigned int>(time(0)));
 				solution_improvement Metaheuristic;
 				// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.

@@ -450,7 +450,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                         //     cout << endl;
                                         // }
                                         // cout << endl;
-
+                                        // assert(pick_day ==0);
                                         if (Whether_insert_fail == 0)
                                         {
                                             working_solutionCounter++;

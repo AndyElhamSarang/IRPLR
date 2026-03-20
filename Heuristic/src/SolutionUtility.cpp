@@ -1,6 +1,228 @@
 #include "lib.h"
 #include <iomanip>
 #include <sstream>
+void InventoryLevel_is_non_negative_and_upto_date(input &IRPLR, solution &IRPSolution)
+{
+   cout<<"Checking inventory level is non-negative and up-to-date."<<endl;
+    // cout << "----------------------------------------------------------------------------------------------------" << endl;
+    // const int id_width2 = 1;
+    // const int id_width = 3;
+
+    // cout << "          \tBegin\t";
+    // for (int i = 0; i < IRPLR.TimeHorizon; i++)
+    // {
+    //     cout << "t" << i << '\t';
+    // }
+    // cout << endl;
+    // for (int i = 0; i < IRPLR.Retailers.size(); i++)
+    // {
+    //     cout << "Retailer " << i << "(" << IRPLR.Retailers[i].InventoryMax << ")" << ":\t" << setw(id_width2) << "\t" << IRPLR.Retailers[i].InventoryBegin;
+    //     for (int j = 0; j < IRPLR.TimeHorizon - 1; j++)
+    //     {
+    //         cout << "\t" << setw(id_width2) << "\t" << IRPSolution.InventoryLevel[i][j];
+    //         if (IRPSolution.DeliveryQuantity[i][j] == 0)
+    //         {
+    //             // cout << "(" << DeliveryQuantity[i][j] << ",-,-)\t";
+    //             cout << "(";
+    //             if (IRPSolution.VehicleAllocation[i][j] < IRPLR.NumberOfVehicles)
+    //             {
+    //                 cout << IRPSolution.DeliveryQuantity[i][j];
+    //             }
+    //             else
+    //             {
+    //                 cout << "-";
+    //             }
+    //             cout << ")";
+    //         }
+    //         else
+    //         {
+    //             cout << "(";
+    //             if (IRPSolution.VehicleAllocation[i][j] < IRPLR.NumberOfVehicles)
+    //             {
+    //                 cout << IRPSolution.DeliveryQuantity[i][j];
+    //             }
+    //             else
+    //             {
+    //                 cout << "-";
+    //             }
+    //             cout << ")";
+    //         }
+    //     }
+
+    //     cout << "\t" << setw(id_width2) << "\t" << IRPSolution.InventoryLevel[i][IRPLR.TimeHorizon - 1];
+    //     if (IRPSolution.DeliveryQuantity[i][IRPLR.TimeHorizon - 1] == 0)
+    //     {
+    //         // cout << "(" << DeliveryQuantity[InventoryLevel.size() - 1] << ",-,-)" << endl;
+
+    //         cout << "(";
+    //         if (IRPSolution.VehicleAllocation[i][IRPLR.TimeHorizon - 1] < IRPLR.NumberOfVehicles)
+    //         {
+    //             cout << IRPSolution.DeliveryQuantity[i][IRPLR.TimeHorizon - 1];
+    //         }
+    //         else
+    //         {
+    //             cout << "-";
+    //         }
+    //         cout << ")" << endl;
+    //     }
+    //     else
+    //     {
+    //         cout << "(";
+    //         if (IRPSolution.VehicleAllocation[i][IRPLR.TimeHorizon - 1] < IRPLR.NumberOfVehicles)
+    //         {
+    //             cout << IRPSolution.DeliveryQuantity[i][IRPLR.TimeHorizon - 1];
+    //         }
+    //         else
+    //         {
+
+    //             cout << "-";
+    //         }
+    //         cout << ")" << endl;
+    //     }
+    //     cout << endl;
+    // }
+
+    vector<vector<double>> OriginalInventoryLevel;
+    for (int i = 0; i < IRPLR.Retailers.size(); i++)
+    {
+        vector<double> TempOriginalInventoryLevel;
+        int tempInventory = IRPLR.Retailers[i].InventoryBegin;
+        for (int j = 0; j < IRPLR.TimeHorizon; j++)
+        {
+            tempInventory = tempInventory - IRPLR.Retailers[i].Demand + IRPSolution.DeliveryQuantity[i][j];
+            TempOriginalInventoryLevel.push_back(tempInventory);
+        }
+        OriginalInventoryLevel.push_back(TempOriginalInventoryLevel);
+    }
+
+    // cout << "          \tBegin\t";
+    // for (int i = 0; i < IRPLR.TimeHorizon; i++)
+    // {
+    //     cout << "t" << i << '\t';
+    // }
+    // cout << endl;
+    // for (int i = 0; i < IRPLR.Retailers.size(); i++)
+    // {
+    //     cout << "Retailer " << i << "(" << IRPLR.Retailers[i].InventoryMax << ")" << ":\t" << setw(id_width2) << "\t" << IRPLR.Retailers[i].InventoryBegin;
+    //     for (int j = 0; j < IRPLR.TimeHorizon - 1; j++)
+    //     {
+    //         cout << "\t" << setw(id_width2) << "\t" << OriginalInventoryLevel[i][j];
+    //         if (IRPSolution.DeliveryQuantity[i][j] == 0)
+    //         {
+    //             // cout << "(" << DeliveryQuantity[i][j] << ",-,-)\t";
+    //             cout << "(";
+    //             if (IRPSolution.VehicleAllocation[i][j] < IRPLR.NumberOfVehicles)
+    //             {
+    //                 cout << IRPSolution.DeliveryQuantity[i][j];
+    //             }
+    //             else
+    //             {
+    //                 cout << "-";
+    //             }
+    //             cout << ")";
+    //         }
+    //         else
+    //         {
+    //             cout << "(";
+    //             if (IRPSolution.VehicleAllocation[i][j] < IRPLR.NumberOfVehicles)
+    //             {
+    //                 cout << IRPSolution.DeliveryQuantity[i][j];
+    //             }
+    //             else
+    //             {
+    //                 cout << "-";
+    //             }
+    //             cout << ")";
+    //         }
+    //     }
+
+    //     cout << "\t" << setw(id_width2) << "\t" << OriginalInventoryLevel[i][IRPLR.TimeHorizon - 1];
+    //     if (IRPSolution.DeliveryQuantity[i][IRPLR.TimeHorizon - 1] == 0)
+    //     {
+    //         // cout << "(" << DeliveryQuantity[InventoryLevel.size() - 1] << ",-,-)" << endl;
+
+    //         cout << "(";
+    //         if (IRPSolution.VehicleAllocation[i][IRPLR.TimeHorizon - 1] < IRPLR.NumberOfVehicles)
+    //         {
+    //             cout << IRPSolution.DeliveryQuantity[i][IRPLR.TimeHorizon - 1];
+    //         }
+    //         else
+    //         {
+    //             cout << "-";
+    //         }
+    //         cout << ")" << endl;
+    //     }
+    //     else
+    //     {
+    //         cout << "(";
+    //         if (IRPSolution.VehicleAllocation[i][IRPLR.TimeHorizon - 1] < IRPLR.NumberOfVehicles)
+    //         {
+    //             cout << IRPSolution.DeliveryQuantity[i][IRPLR.TimeHorizon - 1];
+    //         }
+    //         else
+    //         {
+
+    //             cout << "-";
+    //         }
+    //         cout << ")" << endl;
+    //     }
+    //     cout << endl;
+    // }
+
+    for (int i = 0; i < IRPSolution.InventoryLevel.size(); i++)
+    {
+        for (int j = 0; j < IRPSolution.InventoryLevel[i].size(); j++)
+        {
+            assert(fabs(IRPSolution.InventoryLevel[i][j] - OriginalInventoryLevel[i][j]) < 0.00001);
+            assert(IRPSolution.InventoryLevel[i][j] >= -0.00001);
+        }
+    }
+    // cout << "--------------------------------------------------" << endl;
+    cout<<"Check passed!"<<endl;
+}
+
+void Delivery_Quantity_Cannot_Exceed_InventoryMax(input &IRPLR, solution &IRPSolution)
+{
+    cout<<"Checking delivery quantity cannot exceed inventory max."<<endl;
+    for (int i = 0; i < IRPSolution.InventoryLevel.size(); i++)
+    {
+        assert(IRPLR.Retailers[i].InventoryBegin + IRPSolution.DeliveryQuantity[i][0] <= IRPLR.Retailers[i].InventoryMax + 0.00001);
+        for (int j = 0; j < IRPSolution.InventoryLevel[i].size()-1; j++)
+        {
+            assert(IRPSolution.InventoryLevel[i][j] + IRPSolution.DeliveryQuantity[i][j+1] <= IRPLR.Retailers[i].InventoryMax + 0.00001);
+        }
+    }
+    cout<<"Check passed!"<<endl;
+}
+void NumberOfVisitsPerCustomerCannotLessThanMin(input &IRPLR, solution &IRPSolution)
+{
+    cout<<"Check Number of Visits Per Customer Cannot Less Than Minimum Visit Demand"<<endl;
+    vector<int> ListNumberOfVisits;
+    for (int z = 0; z < IRPLR.Retailers.size(); z++)
+    {
+        int NumberOfVisits = 0;
+        for (int i = 0; i < IRPSolution.Route.size(); i++)
+        {
+            for (int j = 0; j < IRPSolution.Route[i].size(); j++)
+            {
+                for (int k = 0; k < IRPSolution.Route[i][j].size(); k++)
+                {
+                    if (z == IRPSolution.Route[i][j][k])
+                    {
+                        NumberOfVisits++;
+                    }
+                }
+            }
+        }
+        ListNumberOfVisits.push_back(NumberOfVisits);
+    }
+    for(int i = 0; i < ListNumberOfVisits.size(); i++)
+    {
+        // cout<<"Number of visits for customer "<<i<<": "<<ListNumberOfVisits[i]<<" versus "<<IRPLR.MinimumVisitDemand[i]<<endl;
+        assert(ListNumberOfVisits[i] >= IRPLR.MinimumVisitDemand[i]);
+    }
+    cout<<"Check passed!"<<endl;
+}
 void Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(input &IRPLR, solution &IRPSolution)
 {
     // IRPSolution.print_solution(IRPLR);
@@ -14,6 +236,7 @@ void Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(input &IRPLR, solu
                 double TotalDeliveryQuantityRoute = 0;
                 for (int k = 0; k < IRPSolution.Route[i][j].size(); k++)
                 {
+                    assert(IRPSolution.DeliveryQuantity[IRPSolution.Route[i][j][k]][i] >= -0.00001);
                     TotalDeliveryQuantityRoute += IRPSolution.DeliveryQuantity[IRPSolution.Route[i][j][k]][i];
                 }
                 // cout<<"TotalDeliveryQuantityRoute for day "<<i<<", vehicle "<<j<<": "<<TotalDeliveryQuantityRoute<<" versus "<<IRPLR.Vehicle.capacity<<", "<<IRPSolution.VehicleLoad[i][j]<<endl;
@@ -46,7 +269,11 @@ void InventoryLevel_Cannot_Exceed_Maximum(input &IRPLR, solution &IRPSolution)
 }
 void solution::Validation(input &IRPLR)
 {   
-    Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(IRPLR, *this);    
+    
+    Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(IRPLR, *this); 
+    Delivery_Quantity_Cannot_Exceed_InventoryMax(IRPLR, *this);
+    InventoryLevel_is_non_negative_and_upto_date(IRPLR, *this);
+    NumberOfVisitsPerCustomerCannotLessThanMin(IRPLR, *this);   
     InventoryLevel_Cannot_Exceed_Maximum(IRPLR, *this);
 }
 
