@@ -30,14 +30,14 @@ andy:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp  \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	ILS.cpp LocalSearch.cpp \
+	ILS.cpp LocalSearch.cpp ImprovedLocalSearch.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
 	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
 	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-o MS.out -O3
@@ -63,14 +63,14 @@ andy_DISABLE_COUT:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp  \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	ILS.cpp LocalSearch.cpp \
+	ILS.cpp LocalSearch.cpp ImprovedLocalSearch.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
 	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
 	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-DDISABLE_COUT \
@@ -97,14 +97,14 @@ andy_lenovo:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	ILS.cpp LocalSearch.cpp \
+	ILS.cpp LocalSearch.cpp ImprovedLocalSearch.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
 	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
 	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy_lenovo) -I $(andy_lenovo_boost) \
 	-o irplr.out -O3
@@ -130,14 +130,14 @@ andy_desktop:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	ILS.cpp LocalSearch.cpp \
+	ILS.cpp LocalSearch.cpp ImprovedLocalSearch.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
 	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
 	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
 	-o test.out
@@ -163,14 +163,14 @@ andy_testpc:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	ILS.cpp LocalSearch.cpp \
+	ILS.cpp LocalSearch.cpp ImprovedLocalSearch.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
 	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
 	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-o irplr.out -O3
@@ -197,14 +197,14 @@ andy_testpc_DISABLE_COUT:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	ILS.cpp LocalSearch.cpp \
+	ILS.cpp LocalSearch.cpp ImprovedLocalSearch.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
 	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
 	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-DDISABLE_COUT \

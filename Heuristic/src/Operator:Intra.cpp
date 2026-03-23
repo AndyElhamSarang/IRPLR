@@ -38,7 +38,7 @@ int solution_improvement::OperatorIntra(input &IRPLR, vector<int> &route, int &d
 
 					if (!same_route && !overlap)
 					{
-						if (NumberOfCustomersToReinsert <= 2)
+						if (NumberOfCustomersToReinsert <= 3)
 						{
 							////////////////////////////////////////////////////////////////////////////////////////////
 							//                                                                                        //
@@ -151,7 +151,7 @@ int solution_improvement::OperatorIntra(input &IRPLR, vector<int> &route, int &d
 	if (whether_improve_move_been_found != 0)
 	{
 		memory.TrackSolutionStatus[day][vehicle] = 1;
-		if (move[2] <= 2)
+		if (move[2] <= 3)
 		{
 			// cout << "whether_improve_move_been_found:" << whether_improve_move_been_found << endl;
 			vector<int> CopyOfRoute(route);
