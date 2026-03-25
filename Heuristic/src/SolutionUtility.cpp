@@ -275,6 +275,8 @@ void solution::Validation(input &IRPLR)
     InventoryLevel_is_non_negative_and_upto_date(IRPLR, *this);
     NumberOfVisitsPerCustomerCannotLessThanMin(IRPLR, *this);   
     InventoryLevel_Cannot_Exceed_Maximum(IRPLR, *this);
+    //Not use more than vehicle available
+    //Each customer is visited once per period.
 }
 
 void solution::UpdateVehicleAllocationVisitOrder(input &IRPLR)
