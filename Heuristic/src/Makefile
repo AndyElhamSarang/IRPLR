@@ -30,7 +30,7 @@ andy:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp  \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	ILS.cpp LocalSearch.cpp ImprovedLocalSearch.cpp \
+	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
 	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
@@ -63,7 +63,7 @@ andy_DISABLE_COUT:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp  \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	ILS.cpp LocalSearch.cpp ImprovedLocalSearch.cpp \
+	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
 	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
@@ -97,7 +97,7 @@ andy_lenovo:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	ILS.cpp LocalSearch.cpp ImprovedLocalSearch.cpp \
+	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
 	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
@@ -130,7 +130,7 @@ andy_desktop:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	ILS.cpp LocalSearch.cpp ImprovedLocalSearch.cpp \
+	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
 	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
@@ -163,7 +163,7 @@ andy_testpc:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	ILS.cpp LocalSearch.cpp ImprovedLocalSearch.cpp \
+	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
 	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
@@ -197,7 +197,7 @@ andy_testpc_DISABLE_COUT:
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
 	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
-	ILS.cpp LocalSearch.cpp ImprovedLocalSearch.cpp \
+	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
 	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \

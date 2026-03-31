@@ -155,11 +155,33 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
 
         while (whether_improved == 1)
         {
-            // Re-add any pairs flagged to be reconsidered
+            vector<vector<int>> TransferDetails;
+
+            for (int i = 0; i < IRPSolution.DeliveryQuantity.size(); i++) // For customer i
+            {
+                for (int j = 0; j < IRPSolution.DeliveryQuantity[i].size(); j++) // For day j
+                {
+                    if (IRPSolution.DeliveryQuantity[i][j] > 0) // If this customer is visited at day j,
+                    {
+                        for (int k = 0; k < IRPSolution.DeliveryQuantity[i].size(); k++)
+                        {
+                            if (IRPSolution.DeliveryQuantity[i][k] < 0.001 && k!=j)
+                            {
+                                vector<int> temp_transfer_detail;
+                                temp_transfer_detail.push_back(i); // Retailer index
+                                temp_transfer_detail.push_back(j); // Day index visited
+                                temp_transfer_detail.push_back(k); // Day index unvisited
+                                TransferDetails.push_back(temp_transfer_detail);
+                            }
+                        }
+                    }
+                }
+            }
             whether_improved = OperatorTransfer(
                 IRPLR,
                 IRPSolution,
-                PenaltyForStockOut);
+                PenaltyForStockOut,
+                TransferDetails);
             if (whether_improved == 1)
             {
                 true_local = 0;

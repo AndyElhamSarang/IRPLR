@@ -277,6 +277,7 @@ void solution::Validation(input &IRPLR)
     InventoryLevel_Cannot_Exceed_Maximum(IRPLR, *this);
     //Not use more than vehicle available
     //Each customer is visited once per period.
+    //Demand is zero if not visited, and is more than zero if visited.
 }
 
 void solution::UpdateVehicleAllocationVisitOrder(input &IRPLR)
