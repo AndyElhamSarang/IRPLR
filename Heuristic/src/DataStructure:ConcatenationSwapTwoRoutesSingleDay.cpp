@@ -18,6 +18,11 @@ double preprocessing::ConcatenateSwapTwoRoutesSingleDay(int &day, int &route1, i
             {
                 TransportationCost += memory.TwoNodes[IRPSolution.Route[day][route2][InsertFrom]][IRPSolution.Route[day][route2][InsertFrom + InsertLength - 1]] + IRPLR.Distance[0][IRPSolution.Route[day][route2][InsertFrom] + 1];
             }
+            else if (InsertLength == 3)
+            {
+                TransportationCost += memory.ThreeNodes[IRPSolution.Route[day][route2][InsertFrom]][IRPSolution.Route[day][route2][InsertFrom + 1]][IRPSolution.Route[day][route2][InsertFrom + 2]] + IRPLR.Distance[0][IRPSolution.Route[day][route2][InsertFrom] + 1];
+            }
+
         }
     }
     else
@@ -33,6 +38,10 @@ double preprocessing::ConcatenateSwapTwoRoutesSingleDay(int &day, int &route1, i
             else if (InsertLength == 2)
             {
                 TransportationCost += memory.TwoNodes[IRPSolution.Route[day][route2][InsertFrom]][IRPSolution.Route[day][route2][InsertFrom + InsertLength - 1]] + IRPLR.Distance[IRPSolution.Route[day][route1][InsertTo - 1] + 1][IRPSolution.Route[day][route2][InsertFrom] + 1];
+            }
+            else if (InsertLength == 3)
+            {
+                TransportationCost += memory.ThreeNodes[IRPSolution.Route[day][route2][InsertFrom]][IRPSolution.Route[day][route2][InsertFrom + 1]][IRPSolution.Route[day][route2][InsertFrom + 2]] + IRPLR.Distance[IRPSolution.Route[day][route1][InsertTo - 1] + 1][IRPSolution.Route[day][route2][InsertFrom] + 1];
             }
         }
     }
@@ -50,6 +59,18 @@ double preprocessing::ConcatenateSwapTwoRoutesSingleDay(int &day, int &route1, i
         }
     }
     else if (InsertLength == 2)
+    {
+        if (InsertTo + RemoveLength < IRPSolution.Route[day][route1].size()) // test whether the job is the last job or not, it is the last job then it will concatenate to the depot
+        {
+            TransportationCost += IRPLR.Distance[IRPSolution.Route[day][route2][InsertFrom + InsertLength - 1] + 1][IRPSolution.Route[day][route1][InsertTo + RemoveLength] + 1];
+            TransportationCost += memory.Suffix[day][route1][memory.Suffix[day][route1].size() - 1 - InsertTo - RemoveLength];
+        }
+        else
+        {
+            TransportationCost += IRPLR.Distance[IRPSolution.Route[day][route2][InsertFrom + InsertLength - 1] + 1][0];
+        }
+    }
+    else if (InsertLength == 3)
     {
         if (InsertTo + RemoveLength < IRPSolution.Route[day][route1].size()) // test whether the job is the last job or not, it is the last job then it will concatenate to the depot
         {

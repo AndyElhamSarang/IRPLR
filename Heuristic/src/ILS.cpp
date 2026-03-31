@@ -121,7 +121,8 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout<<"---------------------------------------------"<<endl;
             cout << "Start Local Search, iteration " << LocalSearchCounter <<", with Disturbance Counter: " << DisturbanceCounter << endl;
             cout<<"---------------------------------------------"<<endl;
-            LocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory);         
+            ImprovedLocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory);    
+            // LocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory);         
             time(&LocalSearch_end_time);
             double total_LocalSearch_time = difftime(LocalSearch_end_time, LocalSearch_start_time);
 
@@ -203,8 +204,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
               
                 ///////////////////////////////////////////////////////////////////////////////
-                int is_Rebalace_infeasible = 0;
-                int counting_infeasible_case = 0;
+                
                 if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
                 {
                     GlobalBest = IRPSolution;
@@ -239,7 +239,8 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 {
                     double LogisticRatioBeforeRebalance = GlobalBest.LogisticRatio;
                     cout << "!LogisticRatio before rebalance:" << GlobalBest.LogisticRatio << endl;
-
+                    int is_Rebalace_infeasible = 0;
+                    int counting_infeasible_case = 0;
                     vector<vector<vector<int>>> TempRoute(GlobalBest.Route);
                     vector<vector<int>> TempUnallocatedCustomers(GlobalBest.UnallocatedCustomers);
                     vector<vector<double>> TempVehicleLoad(GlobalBest.VehicleLoad);

@@ -20,4 +20,22 @@ void preprocessing::PopulateGlobalDataStructure(input &IRPLR)
         }
         TwoNodes.push_back(tempTwoNodes);
     }
+
+    // Preprocessing subpathes with three nodes
+    for (int i = 0; i < IRPLR.Retailers.size(); i++)
+    {
+        vector<vector<double>> tempThreeNodes;
+        for (int j = 0; j < IRPLR.Retailers.size(); j++)
+        {
+            vector<double> tempRow;
+            for (int k = 0; k < IRPLR.Retailers.size(); k++)
+            {
+                double cumulated_distance = SingleNode[i] + SingleNode[j] + SingleNode[k] + IRPLR.Distance[i+1][j+1] + IRPLR.Distance[j+1][k+1];
+                tempRow.push_back(cumulated_distance);
+            }
+            tempThreeNodes.push_back(tempRow);
+        }
+        ThreeNodes.push_back(tempThreeNodes);
+    }
+
 }

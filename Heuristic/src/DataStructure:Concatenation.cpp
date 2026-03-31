@@ -18,6 +18,10 @@ double preprocessing::ConcatenateSingleRoute(int &day, int &vehicle, int &Insert
             {
                 TransportationCost += memory.TwoNodes[Input_route[InsertFrom]][Input_route[InsertFrom + insert_length - 1]] + IRPLR.Distance[0][Input_route[InsertFrom]+1];
             }
+            else if (insert_length == 3)
+            {
+                TransportationCost += memory.ThreeNodes[Input_route[InsertFrom]][Input_route[InsertFrom + 1]][Input_route[InsertFrom + 2]] + IRPLR.Distance[0][Input_route[InsertFrom]+1];
+            }
         }
         else
         {
@@ -30,6 +34,10 @@ double preprocessing::ConcatenateSingleRoute(int &day, int &vehicle, int &Insert
             else if (insert_length == 2)
             {
                 TransportationCost += memory.TwoNodes[Input_route[InsertFrom]][Input_route[InsertFrom + insert_length - 1]] + IRPLR.Distance[Input_route[InsertTo - 1]+1][Input_route[InsertFrom]+1];
+            }
+            else if (insert_length == 3)
+            {
+                TransportationCost += memory.ThreeNodes[Input_route[InsertFrom]][Input_route[InsertFrom + 1]][Input_route[InsertFrom + 2]] + IRPLR.Distance[Input_route[InsertTo - 1]+1][Input_route[InsertFrom]+1];
             }
         }
 
@@ -75,6 +83,11 @@ double preprocessing::ConcatenateSingleRoute(int &day, int &vehicle, int &Insert
             TransportationCost += IRPLR.Distance[Input_route[InsertTo-1]+1][Input_route[InsertFrom]+1];
 
         }
+        else if (insert_length == 3)
+        {
+            TransportationCost += memory.ThreeNodes[Input_route[InsertFrom]][Input_route[InsertFrom + 1]][Input_route[InsertFrom + 2]] + IRPLR.Distance[Input_route[InsertTo-1]+1][Input_route[InsertFrom]+1];
+        }
+        
 
         if (InsertTo == Input_route.size()) // if InsertTo is point the end
         {
@@ -90,8 +103,14 @@ double preprocessing::ConcatenateSingleRoute(int &day, int &vehicle, int &Insert
     }
 
     // cout<< "checking"<<endl;
+    // cout<< "InsertTo:"<<InsertTo<<", InsertFrom:"<< InsertFrom<<", insert_length:"<<insert_length<<endl;
+    // cout<< "Original route:";
     // vector<int> CopyOfRoute(Input_route);
-
+    // for (int i = 0; i < CopyOfRoute.size(); i++)
+    // {
+    //     cout << CopyOfRoute[i] << ",";
+    // }
+    // cout << endl;
     // CopyOfRoute.insert(CopyOfRoute.begin() + InsertTo,
     //                    CopyOfRoute.begin() + InsertFrom,
     //                    CopyOfRoute.begin() + InsertFrom + insert_length);

@@ -15,6 +15,7 @@ public:
 
    vector<double> SingleNode;             // Subpathes with single node, this is a global structure, no need to update
    vector<vector<double>> TwoNodes;       ////Subpathese with two nodes, this is a global structure, no need to update
+   vector<vector<vector<double>>> ThreeNodes; // Subpathes with three nodes, this is a global structure, no need to update
    vector<vector<vector<double>>> Prefix; // Subpathes begin with head, this is a local structure, keep it updated all time
    vector<vector<vector<double>>> Suffix; // Subpathes begin with tail, this is a local structure, keep it updated all time
 

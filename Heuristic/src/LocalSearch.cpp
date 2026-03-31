@@ -89,7 +89,6 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
                 SwapRemoveInsertPair.insert(temp_pair);
             }
         }
-
         while (whether_improved == 1)
         {
 
@@ -105,6 +104,8 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
         }
         cout << "Iteration applied for Operator: SwapRemoveInsert:" << counter << endl;
 
+        
+
         counter = 0;
         for (int day = 0; day < memory.TrackSingleRouteOptimisation.size(); day++)
         {
@@ -113,7 +114,7 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
                 if (memory.TrackSingleRouteOptimisation[day][vehicle] == 1)
                 {
                     int MinToReinsert = 1;
-                    int MaxToReinsert = 2;
+                    int MaxToReinsert = 3; //For more than, need to implement efficient evaluation for the move. Currently, it is naively implementation, which is time consuming.
                     whether_improved = 1;
                     while (whether_improved == 1)
                     {
