@@ -89,7 +89,6 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
                 SwapRemoveInsertPair.insert(temp_pair);
             }
         }
-
         while (whether_improved == 1)
         {
 
@@ -104,6 +103,8 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
             counter++;
         }
         cout << "Iteration applied for Operator: SwapRemoveInsert:" << counter << endl;
+
+        
 
         counter = 0;
         for (int day = 0; day < memory.TrackSingleRouteOptimisation.size(); day++)

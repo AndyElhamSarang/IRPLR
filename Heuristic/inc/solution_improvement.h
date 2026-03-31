@@ -90,7 +90,10 @@ int OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &day, int &v
 int OperatorRepair(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut);
 
 
-int OperatorTransfer();
+int OperatorTransfer(
+    input &IRPLR, 
+    solution &IRPSolution, 
+    double &PenaltyForStockOut);
 
 int LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory);
 
