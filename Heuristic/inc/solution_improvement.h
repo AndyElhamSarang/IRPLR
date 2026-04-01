@@ -93,7 +93,8 @@ int OperatorTransfer(
     input &IRPLR,
     solution &IRPSolution,
     double &PenaltyForStockOut,
-    vector<vector<int>> &TransferDetails);
+    vector<vector<int>> &TransferDetails,
+    preprocessing &memory);
 
 int LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory);
 

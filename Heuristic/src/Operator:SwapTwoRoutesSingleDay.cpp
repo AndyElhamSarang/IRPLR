@@ -251,7 +251,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                                     IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]][pick_day - 1]);
                                             }
 
-                                            if (NewDeliveryQuantityRoute1[route1_index][pick_day] == 0)
+                                            if (NewDeliveryQuantityRoute1[route1_index][pick_day] < 0.001)
                                             {
                                                 Whether_insert_fail = 1;
                                             }
@@ -362,7 +362,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                                     IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]][pick_day - 1]);
                                             }
 
-                                            if (NewDeliveryQuantityRoute2[route2_index][pick_day] == 0)
+                                            if (NewDeliveryQuantityRoute2[route2_index][pick_day] < 0.001)
                                             {
                                                 Whether_insert_fail = 1;
                                             }

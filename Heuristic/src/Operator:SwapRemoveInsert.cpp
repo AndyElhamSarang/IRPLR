@@ -224,7 +224,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                          IRPSolution.InventoryLevel[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]][pick_day - 1]);
                                                  }
 
-                                                if (NewDeliveryQuantityCustomerInsert[insert_index][pick_day] == 0)
+                                                if (NewDeliveryQuantityCustomerInsert[insert_index][pick_day] < 0.001)
                                                 {
                                                     Whether_insert_fail = 1;
                                                 }
