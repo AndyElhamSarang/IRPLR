@@ -131,7 +131,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             // IRPSolution.Validation(IRPLR);
             cout << "Total LocalSearch time:" << total_LocalSearch_time << "s." << endl;
             IRPSolution.GetLogisticRatio(IRPLR);
-            IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
+            // IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
             // IRPSolution.print_solution(IRPLR);
             cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
             cout << "ViolationStockOut" << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << endl;

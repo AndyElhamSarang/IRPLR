@@ -765,7 +765,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
         memory.TrackSolutionStatus[move[0]][move[3]] = 1;          // Mark route as changed
         memory.TrackSingleRouteOptimisation[move[0]][move[1]] = 1; // Mark route as changed
         memory.TrackSingleRouteOptimisation[move[0]][move[3]] = 1; // Mark route as changed
-
+        IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
         ////////////////////////////////////////////////////////////////////////
         //                                                                    //
         //             Verify the correctness of the output                   //

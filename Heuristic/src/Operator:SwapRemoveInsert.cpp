@@ -473,7 +473,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                   IRPSolution.Route[move[0]][move[1]].begin() + move[2] + move[5] + move[4]);
         memory.TrackSolutionStatus[move[0]][move[1]] = 1;          // Mark route as changed
         memory.TrackSingleRouteOptimisation[move[0]][move[1]] = 1; // Mark route as changed
-
+        IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
         ////////////////////////////////////////////////////////////////////////
         //                                                                    //
         //             Verify the correctness of the output                   //

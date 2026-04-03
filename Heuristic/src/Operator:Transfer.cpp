@@ -5,34 +5,52 @@ int solution_improvement::OperatorTransfer(
     solution &IRPSolution,
     double &PenaltyForStockOut,
     vector<vector<int>> &TransferDetails,
-    preprocessing &memory
-)
+    preprocessing &memory)
 { // Current implementation only permits at most one customer therefore
 
     int TransferNumber = 1;
     assert(TransferNumber <= 1);
-    assert(TransferNumber <= 1);
 
     cout << "Transfer starting solution" << endl;
     int whether_improved_or_not = 0;
+    double accumulated_time = 0;
+    time_t accumulate_start_time;
+    time_t accumulate_end_time;
     double LR_objv = numeric_limits<double>::max();
     IRPSolution.GetLogisticRatio(IRPLR);
-    IRPSolution.print_solution(IRPLR);
+    // IRPSolution.print_solution(IRPLR);
     // cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << endl;
     LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
     // cout << "LR objv:" << LR_objv << endl;
-
-    vector<vector<double>> ImpDeliveryQuantityCustomerTransfer;
-    vector<vector<double>> ImpInventoryLevelCustomerTransfer;
+    double objv_begin = LR_objv;
+    vector<double> ImpDeliveryQuantityCustomerTransfer;
+    vector<double> ImpInventoryLevelCustomerTransfer;
     vector<vector<double>> ImpVehicleLoad;
     double ImpStockOut = 0;
     double ImpLogisticRatio = 0;
     double ImpTotalTransportationCost = 0;
     double ImpTotalDelivery = 0;
 
+    vector<int> move;
+    for (int i = 0; i < 10; i++)
+    {
+        move.push_back(0);
+        // move[0]: pick_day1
+        // move[1]: pick_vehicle1
+        // move[2]: pick_position_in_vehicle1
+        // move[3]: pick_day2
+        // move[4]: pick_vehicle2
+        // move[5]: pick_position_in_vehicle2
+        // move[6]: Swap_length1
+        // move[7]: Swap_length2
+        // move[8]: customer_index
+    }
+
     int solutionCounter = 0;
     int working_solutionCounter = 0;
     int naive_implementation = 0;
+
+    time(&accumulate_start_time);
     try
     {
 
@@ -61,21 +79,21 @@ int solution_improvement::OperatorTransfer(
             double NewStockOut = IRPSolution.ViolationStockOut;
             double ChangeInTotalQuantity = 0;
             vector<vector<double>> CopyVehicleLoad = IRPSolution.VehicleLoad;
-            cout << "================================================================" << endl;
-            cout << "TransferDetails: Retailer " << TransferDetails[i][0] << ", from day " << TransferDetails[i][1] << " to day " << TransferDetails[i][2] << endl;
-            cout << "NewDeliveryQuantityCustomerTransfer:";
-            for (int period = 0; period < NewDeliveryQuantityCustomerTransfer.size(); period++)
-            {
-                cout << NewDeliveryQuantityCustomerTransfer[period] << ",";
-            }
-            cout << endl;
+            // cout << "================================================================" << endl;
+            // cout << "TransferDetails: Retailer " << TransferDetails[i][0] << ", from day " << TransferDetails[i][1] << " to day " << TransferDetails[i][2] << endl;
+            // cout << "NewDeliveryQuantityCustomerTransfer:";
+            // for (int period = 0; period < NewDeliveryQuantityCustomerTransfer.size(); period++)
+            // {
+            //     cout << NewDeliveryQuantityCustomerTransfer[period] << ",";
+            // }
+            // cout << endl;
 
-            cout << "NewInventoryLevelCustomerTransfer:";
-            for (int period = 0; period < NewInventoryLevelCustomerTransfer.size(); period++)
-            {
-                cout << NewInventoryLevelCustomerTransfer[period] << ",";
-            }
-            cout << endl;
+            // cout << "NewInventoryLevelCustomerTransfer:";
+            // for (int period = 0; period < NewInventoryLevelCustomerTransfer.size(); period++)
+            // {
+            //     cout << NewInventoryLevelCustomerTransfer[period] << ",";
+            // }
+            // cout << endl;
 
             /////////////////////////////////////////////////////////////////////////////////
             // Get change in delivery quantity and inventory level for the removed customers
@@ -115,22 +133,22 @@ int solution_improvement::OperatorTransfer(
                     TransferDetails[i][0],
                     IRPLR);
             }
-            cout << "--------------------------------------------------------------------------------" << endl;
-            cout << "After removing the customer from the original day, the change in total quantity is: " << ChangeInTotalQuantity << ", and the new stock out is: " << NewStockOut << endl;
+            // cout << "--------------------------------------------------------------------------------" << endl;
+            // cout << "After removing the customer from the original day, the change in total quantity is: " << ChangeInTotalQuantity << ", and the new stock out is: " << NewStockOut << endl;
 
-            cout << "NewDeliveryQuantityCustomerTransfer:";
-            for (int period = 0; period < NewDeliveryQuantityCustomerTransfer.size(); period++)
-            {
-                cout << NewDeliveryQuantityCustomerTransfer[period] << ",";
-            }
-            cout << endl;
+            // cout << "NewDeliveryQuantityCustomerTransfer:";
+            // for (int period = 0; period < NewDeliveryQuantityCustomerTransfer.size(); period++)
+            // {
+            //     cout << NewDeliveryQuantityCustomerTransfer[period] << ",";
+            // }
+            // cout << endl;
 
-            cout << "NewInventoryLevelCustomerTransfer:";
-            for (int period = 0; period < NewInventoryLevelCustomerTransfer.size(); period++)
-            {
-                cout << NewInventoryLevelCustomerTransfer[period] << ",";
-            }
-            cout << endl;
+            // cout << "NewInventoryLevelCustomerTransfer:";
+            // for (int period = 0; period < NewInventoryLevelCustomerTransfer.size(); period++)
+            // {
+            //     cout << NewInventoryLevelCustomerTransfer[period] << ",";
+            // }
+            // cout << endl;
 
             int Whether_insert_fail = 0; // if insert does not lead to an increase on delivery quantity, this move fails, therefore skip the evalution
             ////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +170,6 @@ int solution_improvement::OperatorTransfer(
                         IRPLR.Retailers[TransferDetails[i][0]].InventoryMax,
                         IRPLR.Retailers[TransferDetails[i][0]].Demand,
                         IRPLR.Retailers[TransferDetails[i][0]].InventoryBegin);
-
                 }
                 else
                 {
@@ -161,7 +178,7 @@ int solution_improvement::OperatorTransfer(
                         CopyVehicleLoad[TransferDetails[i][2]][VehicleIndexNewDay],
                         IRPLR.Retailers[TransferDetails[i][0]].InventoryMax,
                         IRPLR.Retailers[TransferDetails[i][0]].Demand,
-                        IRPSolution.InventoryLevel[TransferDetails[i][0]][TransferDetails[i][2] - 1]);
+                        NewInventoryLevelCustomerTransfer[TransferDetails[i][2] - 1]);
                 }
                 if (temp_NewDeliveryQuantityCustomerTransfer > NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]])
                 {
@@ -171,16 +188,15 @@ int solution_improvement::OperatorTransfer(
             }
             if (NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]] < 0.001)
             {
-                Whether_insert_fail = 1; 
+                Whether_insert_fail = 1;
                 assert(VehicleIndexInserted == IRPLR.NumberOfVehicles + 1);
             }
             else
             {
-                assert(NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]] >0.001);
+                assert(NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]] > 0.001);
                 assert(IRPSolution.DeliveryQuantity[TransferDetails[i][0]][TransferDetails[i][2]] < 0.001);
                 ChangeInTotalQuantity += NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]] - IRPSolution.DeliveryQuantity[TransferDetails[i][0]][TransferDetails[i][2]];
                 CopyVehicleLoad[TransferDetails[i][2]][VehicleIndexInserted] = CopyVehicleLoad[TransferDetails[i][2]][VehicleIndexInserted] + NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]];
-
 
                 if (TransferDetails[i][2] == 0)
                 {
@@ -200,7 +216,7 @@ int solution_improvement::OperatorTransfer(
                 else
                 {
                     AdjustQuantityAndInventoryLevel(
-                        IRPSolution.InventoryLevel[TransferDetails[i][0]][TransferDetails[i][2] - 1],
+                        NewInventoryLevelCustomerTransfer[TransferDetails[i][2] - 1],
                         TransferDetails[i][2],
                         VehicleIndexInserted,
                         NewDeliveryQuantityCustomerTransfer,
@@ -212,115 +228,163 @@ int solution_improvement::OperatorTransfer(
                         TransferDetails[i][0],
                         IRPLR);
                 }
-
-                
             }
 
-            cout << "--------------------------------------------------------------------------------" << endl;
-            cout << "After adding the customer from the original day to the new day, " << "at vehicle " << VehicleIndexInserted << ", the change in total quantity is: " << ChangeInTotalQuantity << ", and the new stock out is: " << NewStockOut << endl;
+            // cout << "--------------------------------------------------------------------------------" << endl;
+            // cout << "After adding the customer from the original day to the new day, " << "at vehicle " << VehicleIndexInserted << ", the change in total quantity is: " << ChangeInTotalQuantity << ", and the new stock out is: " << NewStockOut << endl;
 
-            cout << "NewDeliveryQuantityCustomerTransfer:";
-            for (int period = 0; period < NewDeliveryQuantityCustomerTransfer.size(); period++)
-            {
-                cout << NewDeliveryQuantityCustomerTransfer[period] << ",";
-            }
-            cout << endl;
+            // cout << "NewDeliveryQuantityCustomerTransfer:";
+            // for (int period = 0; period < NewDeliveryQuantityCustomerTransfer.size(); period++)
+            // {
+            //     cout << NewDeliveryQuantityCustomerTransfer[period] << ",";
+            // }
+            // cout << endl;
 
-            cout << "NewInventoryLevelCustomerTransfer:";
-            for (int period = 0; period < NewInventoryLevelCustomerTransfer.size(); period++)
-            {
-                cout << NewInventoryLevelCustomerTransfer[period] << ",";
-            }
-            cout << endl;
+            // cout << "NewInventoryLevelCustomerTransfer:";
+            // for (int period = 0; period < NewInventoryLevelCustomerTransfer.size(); period++)
+            // {
+            //     cout << NewInventoryLevelCustomerTransfer[period] << ",";
+            // }
+            // cout << endl;
 
             if (Whether_insert_fail == 0)
             {
                 working_solutionCounter++;
-                int temp_int = IRPLR.NumberOfVehicles + 1; 
+                int temp_int = IRPLR.NumberOfVehicles + 1;
+                int temp_int2 = 0;
                 double NewRouteCostRemoved = memory.ConcatenateSwapTwoRoutesSingleDay(
                     TransferDetails[i][1],
                     IRPSolution.VehicleAllocation[TransferDetails[i][0]][TransferDetails[i][1]],
                     IRPSolution.VisitOrder[TransferDetails[i][0]][TransferDetails[i][1]],
                     TransferNumber,
                     temp_int,
-                    temp_int,
-                    temp_int,
+                    temp_int2,
+                    temp_int2,
                     IRPSolution,
                     IRPLR,
                     memory);
-                // double NewTotalTransportationCost =
-                //     IRPSolution.TotalTransportationCost - IRPSolution.TransportationCostPerRoute[pick_day][pick_vehicle1] - IRPSolution.TransportationCostPerRoute[pick_day][pick_vehicle2] + NewRoute1Cost + NewRoute2Cost;
+                int CheapestInsertPosition = IRPSolution.Route[TransferDetails[i][2]][VehicleIndexInserted].size() + 1;
+                double NewRouteCostInserted = numeric_limits<double>::max();
+                for (int insert_position = 0; insert_position <= IRPSolution.Route[TransferDetails[i][2]][VehicleIndexInserted].size(); insert_position++) // A position in the new vehicle
+                {
 
-                // double NewTotalDelivery = IRPSolution.TotalDelivery + ChangeInTotalQuantity;
-                // double NewLogisticRatio = NewTotalTransportationCost / NewTotalDelivery;
-                // double temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut);
+                    double TempNewRouteCostInserted = memory.ConcatenateChepestInsertion(
+                        TransferDetails[i][2],
+                        VehicleIndexInserted,
+                        insert_position,
+                        temp_int2,
+                        TransferDetails[i][1],
+                        IRPSolution.VehicleAllocation[TransferDetails[i][0]][TransferDetails[i][1]],
+                        IRPSolution.VisitOrder[TransferDetails[i][0]][TransferDetails[i][1]],
+                        TransferNumber,
+                        IRPSolution,
+                        IRPLR,
+                        memory);
+                    if (TempNewRouteCostInserted < NewRouteCostInserted)
+                    {
+                        NewRouteCostInserted = TempNewRouteCostInserted;
+                        CheapestInsertPosition = insert_position;
+                    }
+                }
+                assert(CheapestInsertPosition < IRPSolution.Route[TransferDetails[i][2]][VehicleIndexInserted].size() + 1);
 
+                
+                double NewTotalTransportationCost =
+                    IRPSolution.TotalTransportationCost - IRPSolution.TransportationCostPerRoute[TransferDetails[i][1]][IRPSolution.VehicleAllocation[TransferDetails[i][0]][TransferDetails[i][1]]] + NewRouteCostRemoved - IRPSolution.TransportationCostPerRoute[TransferDetails[i][2]][VehicleIndexInserted] + NewRouteCostInserted;
 
+                double NewTotalDelivery = IRPSolution.TotalDelivery + ChangeInTotalQuantity;
+                double NewLogisticRatio = NewTotalTransportationCost / NewTotalDelivery;
+                double temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut);
 
+                if (objv_begin - temp_LR_objv > 0.00001)
+                {
 
+                    if (LR_objv - temp_LR_objv > 0.00001)
+                    {
+                        whether_improved_or_not = 1;
+                        LR_objv = temp_LR_objv;
+
+                        move[0] = TransferDetails[i][1];
+                        move[1] = IRPSolution.VehicleAllocation[TransferDetails[i][0]][TransferDetails[i][1]];
+                        move[2] = IRPSolution.VisitOrder[TransferDetails[i][0]][TransferDetails[i][1]];
+                        move[3] = TransferDetails[i][2];
+                        move[4] = VehicleIndexInserted;
+                        move[5] = CheapestInsertPosition;
+                        move[6] = TransferNumber;
+                        move[7] = 0;
+                        move[8] = TransferDetails[i][0];
+                        ImpDeliveryQuantityCustomerTransfer.clear();
+                        ImpInventoryLevelCustomerTransfer.clear();
+                        ImpDeliveryQuantityCustomerTransfer = NewDeliveryQuantityCustomerTransfer;
+                        ImpInventoryLevelCustomerTransfer = NewInventoryLevelCustomerTransfer;
+                        ImpVehicleLoad = CopyVehicleLoad;
+                        ImpStockOut = NewStockOut;
+                        ImpLogisticRatio = NewLogisticRatio;
+                        ImpTotalTransportationCost = NewTotalTransportationCost;
+                        ImpTotalDelivery = NewTotalDelivery;
+                    }
+                }
 
                 ////////////////////////////////////////////////////////////////////////
-                                            //                                                                    //
-                                            //      Verify the correctness of the efficient implementation        //
-                                            //                                                                    //
-                                            ////////////////////////////////////////////////////////////////////////
+                //                                                                    //
+                //      Verify the correctness of the efficient implementation        //
+                //                                                                    //
+                ////////////////////////////////////////////////////////////////////////
 
-                                            // vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
-                                            // cout << "pick_day: " << pick_day << ", pick_vehicle1: " << pick_vehicle1 << ", vehicle1 size: " << IRPSolution.Route[pick_day][pick_vehicle1].size() << ", pick_position_in_vehicle1: " << pick_position_in_vehicle1 << ", Swap_length1: " << Swap_length1 << ", pick_vehicle2: " << pick_vehicle2 << ", vehicle2 size: " << IRPSolution.Route[pick_day][pick_vehicle2].size() << ", pick_position_in_vehicle2: " << pick_position_in_vehicle2 << ", Swap_length2: " << Swap_length2 << endl;
-                                            // for (int i = 0; i < TempRoute.size(); i++)
-                                            // {
-                                            //     for (int j = 0; j < TempRoute[i].size(); j++)
-                                            //     {
-                                            //         cout << "Route for day " << i << ", vehicle " << j << ": ";
-                                            //         for (int k = 0; k < TempRoute[i][j].size(); k++)
-                                            //         {
-                                            //             cout << TempRoute[i][j][k] << ", ";
-                                            //         }
-                                            //         cout << endl;
-                                            //     }
-                                            // }
-                                            // TempRoute[pick_day][pick_vehicle1].insert(TempRoute[pick_day][pick_vehicle1].begin() + pick_position_in_vehicle1,
-                                            //                                           TempRoute[pick_day][pick_vehicle2].begin() + pick_position_in_vehicle2,
-                                            //                                           TempRoute[pick_day][pick_vehicle2].begin() + pick_position_in_vehicle2 + Swap_length2);
-                                            // TempRoute[pick_day][pick_vehicle2].erase(TempRoute[pick_day][pick_vehicle2].begin() + pick_position_in_vehicle2,
-                                            //                                          TempRoute[pick_day][pick_vehicle2].begin() + pick_position_in_vehicle2 + Swap_length2);
-                                            // TempRoute[pick_day][pick_vehicle2].insert(TempRoute[pick_day][pick_vehicle2].begin() + pick_position_in_vehicle2,
-                                            //                                           TempRoute[pick_day][pick_vehicle1].begin() + pick_position_in_vehicle1 + Swap_length2,
-                                            //                                           TempRoute[pick_day][pick_vehicle1].begin() + pick_position_in_vehicle1 + Swap_length2 + Swap_length1);
-                                            // TempRoute[pick_day][pick_vehicle1].erase(TempRoute[pick_day][pick_vehicle1].begin() + pick_position_in_vehicle1 + Swap_length2,
-                                            //                                          TempRoute[pick_day][pick_vehicle1].begin() + pick_position_in_vehicle1 + Swap_length2 + Swap_length1);
+                // vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
+                // cout << "Customer " << TransferDetails[i][0] << ", "
+                //      << "remove_day: " << TransferDetails[i][1] << ", remove from vehicle: " << IRPSolution.VehicleAllocation[TransferDetails[i][0]][TransferDetails[i][1]]
+                //      << ", remove position: " << IRPSolution.VisitOrder[TransferDetails[i][0]][TransferDetails[i][1]] << ", remove_length: " << TransferNumber
+                //      << ", insert_day: " << TransferDetails[i][2] << ", insert vehicle: " << VehicleIndexInserted << ", insert_position: " << CheapestInsertPosition << ", insert_length: " << TransferNumber << endl;
+                // for (int i = 0; i < TempRoute.size(); i++)
+                // {
+                //     for (int j = 0; j < TempRoute[i].size(); j++)
+                //     {
+                //         cout << "Route for day " << i << ", vehicle " << j << ": ";
+                //         for (int k = 0; k < TempRoute[i][j].size(); k++)
+                //         {
+                //             cout << TempRoute[i][j][k] << ", ";
+                //         }
+                //         cout << endl;
+                //     }
+                // }
+                // TempRoute[TransferDetails[i][2]][VehicleIndexInserted].insert(TempRoute[TransferDetails[i][2]][VehicleIndexInserted].begin() + CheapestInsertPosition,
+                //                                                               TempRoute[TransferDetails[i][1]][IRPSolution.VehicleAllocation[TransferDetails[i][0]][TransferDetails[i][1]]].begin() + IRPSolution.VisitOrder[TransferDetails[i][0]][TransferDetails[i][1]],
+                //                                                               TempRoute[TransferDetails[i][1]][IRPSolution.VehicleAllocation[TransferDetails[i][0]][TransferDetails[i][1]]].begin() + IRPSolution.VisitOrder[TransferDetails[i][0]][TransferDetails[i][1]] + TransferNumber);
+                // TempRoute[TransferDetails[i][1]][IRPSolution.VehicleAllocation[TransferDetails[i][0]][TransferDetails[i][1]]].erase(
+                //     TempRoute[TransferDetails[i][1]][IRPSolution.VehicleAllocation[TransferDetails[i][0]][TransferDetails[i][1]]].begin() + IRPSolution.VisitOrder[TransferDetails[i][0]][TransferDetails[i][1]],
+                //     TempRoute[TransferDetails[i][1]][IRPSolution.VehicleAllocation[TransferDetails[i][0]][TransferDetails[i][1]]].begin() + IRPSolution.VisitOrder[TransferDetails[i][0]][TransferDetails[i][1]] + TransferNumber);
 
-                                            // double CheckRouteCost = 0;
-                                            // for (int i = 0; i < TempRoute.size(); i++)
-                                            // {
-                                            //     for (int j = 0; j < TempRoute[i].size(); j++)
-                                            //     {
-                                            //         if (TempRoute[i][j].size() != 0)
-                                            //         {
-                                            //             CheckRouteCost += IRPLR.Distance[0][TempRoute[i][j][0] + 1];
-                                            //             CheckRouteCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
-                                            //             for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
-                                            //             {
-                                            //                 CheckRouteCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
-                                            //             }
-                                            //         }
-                                            //     }
-                                            // }
-                                            // for (int i = 0; i < TempRoute.size(); i++)
-                                            // {
-                                            //     for (int j = 0; j < TempRoute[i].size(); j++)
-                                            //     {
-                                            //         cout << "Route for day " << i << ", vehicle " << j << ": ";
-                                            //         for (int k = 0; k < TempRoute[i][j].size(); k++)
-                                            //         {
-                                            //             cout << TempRoute[i][j][k] << ", ";
-                                            //         }
-                                            //         cout << endl;
-                                            //     }
-                                            // }
-                                            // cout << "NewTotalTransportationCost:" << NewTotalTransportationCost << ", Check Route Cost:" << CheckRouteCost << endl;
-                                            // assert(fabs(NewTotalTransportationCost - CheckRouteCost) < 0.00001);
-                                      
+                // double CheckRouteCost = 0;
+                // for (int i = 0; i < TempRoute.size(); i++)
+                // {
+                //     for (int j = 0; j < TempRoute[i].size(); j++)
+                //     {
+                //         if (TempRoute[i][j].size() != 0)
+                //         {
+                //             CheckRouteCost += IRPLR.Distance[0][TempRoute[i][j][0] + 1];
+                //             CheckRouteCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
+                //             for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
+                //             {
+                //                 CheckRouteCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
+                //             }
+                //         }
+                //     }
+                // }
+                // for (int i = 0; i < TempRoute.size(); i++)
+                // {
+                //     for (int j = 0; j < TempRoute[i].size(); j++)
+                //     {
+                //         cout << "Route for day " << i << ", vehicle " << j << ": ";
+                //         for (int k = 0; k < TempRoute[i][j].size(); k++)
+                //         {
+                //             cout << TempRoute[i][j][k] << ", ";
+                //         }
+                //         cout << endl;
+                //     }
+                // }
+                // cout << "NewTotalTransportationCost:" << NewTotalTransportationCost << ", Check Route Cost:" << CheckRouteCost << endl;
+                // assert(fabs(NewTotalTransportationCost - CheckRouteCost) < 0.00001);
             }
         }
     }
@@ -328,59 +392,92 @@ int solution_improvement::OperatorTransfer(
     {
         cout << "!Stop by time limit" << endl;
     }
-    // cout << "Total solution explored:" << solutionCounter << endl;
-    // cout << "whether_improved_or_not:" << whether_improved_or_not << endl;
-    // if (whether_improved_or_not == 1)
-    // {
-    //     IRPSolution.Route = ImpRoute;
-    //     IRPSolution.InventoryLevel = ImpInventoryLevel;
-    //     IRPSolution.DeliveryQuantity = ImpDeliveryQuantity;
-    //     IRPSolution.UnallocatedCustomers = ImpUnallocatedCustomers;
-    //     IRPSolution.VehicleAllocation = ImpVehicleAllocation;
-    //     IRPSolution.VehicleLoad = ImpVehicleLoad;
-    //     IRPSolution.VisitOrder = ImpVisitOrder;
-    //     IRPSolution.ViolationStockOut = ImpStockOut;
 
-    //     IRPSolution.GetLogisticRatio(IRPLR);
-    //     assert(fabs(IRPSolution.ViolationStockOut - ImpStockOut) < 0.00001);
+    time(&accumulate_end_time);
+    accumulated_time += difftime(accumulate_end_time, accumulate_start_time);
+    cout << "Accumulated time:" << accumulated_time << endl;
+    cout << "Total solution explored:" << solutionCounter << endl;
+    cout << "Valid insertion:" << working_solutionCounter << endl;
+    cout << "whether_improved_or_not:" << whether_improved_or_not << endl;
+    cout << "ImpLogisticRatio:" << ImpLogisticRatio << "\t ImpStockOut:" << ImpStockOut << endl;
 
-    //     // Update the visit order
-    //     for (int i = 0; i < IRPSolution.VisitOrder.size(); i++)
-    //     {
-    //         for (int j = 0; j < IRPSolution.VisitOrder[i].size(); j++)
-    //         {
-    //             IRPSolution.VehicleAllocation[i][j] = IRPLR.NumberOfVehicles + 1;
-    //             IRPSolution.VisitOrder[i][j] = IRPLR.Retailers.size() + 1;
-    //         }
-    //     }
+    ////////////////////////////////////////////////////////////////////////////
+    //                                                                        //
+    //       Make up the solution, adjust its inventory level and route       //
+    //                                                                        //
+    ////////////////////////////////////////////////////////////////////////////
+    if (whether_improved_or_not == 1) // whether_improved_or_not==1
+    {
+        // IRPSolution.print_solution(IRPLR);
+        // cout << "Improved solution found by SwapTwoRoutesSingleDay operator:" << endl;
+        // cout << ImpLogisticRatio << "\t" << ImpStockOut << endl;
+        // for(int i=0;i<move.size();i++)
+        // {
+        //     cout<<"move["<<i<<"]:"<<move[i]<<"\t";
+        // }
+        // cout<<endl;
+        IRPSolution.VehicleLoad = ImpVehicleLoad;
+        IRPSolution.LogisticRatio = ImpLogisticRatio;
+        IRPSolution.ViolationStockOut = ImpStockOut;
 
-    //     IRPSolution.UnallocatedCustomers.clear();
-    //     for (int i = 0; i < IRPSolution.Route.size(); i++) // For this time period
-    //     {
-    //         vector<int> TempUnallocatedCustomer;             // Look for unallcated customers at this time period
-    //         for (int x = 0; x < IRPLR.Retailers.size(); x++) // Check each retailers
-    //         {
-    //             int UnallocatedYesOrNo = 0;
-    //             for (int j = 0; j < IRPSolution.Route[i].size(); j++) // index j for vehicle
-    //             {
-    //                 for (int k = 0; k < IRPSolution.Route[i][j].size(); k++) // index k for position
-    //                 {
+        IRPSolution.DeliveryQuantity[move[8]] = ImpDeliveryQuantityCustomerTransfer;
+        IRPSolution.InventoryLevel[move[8]] = ImpInventoryLevelCustomerTransfer;
+        IRPSolution.VehicleAllocation[move[8]][move[0]] = IRPLR.NumberOfVehicles + 1; // update the vehicle allocation for the moved customer
+        IRPSolution.VehicleAllocation[move[8]][move[3]] = move[4];
+        // IRPSolution.VisitOrder[move[8]][move[0]] = IRPLR.Retailers.size() + 1; // after the move, the customer is no longer in the original route, therefore set visit order to be -1
+        // IRPSolution.VisitOrder[move[8]][move[3]] = move[5];
 
-    //                     if (IRPSolution.Route[i][j][k] == x)
-    //                     {
-    //                         UnallocatedYesOrNo = 1;
-    //                         IRPSolution.VehicleAllocation[x][i] = j;
-    //                         IRPSolution.VisitOrder[x][i] = k;
-    //                     }
-    //                 }
-    //             }
-    //             if (UnallocatedYesOrNo == 0) // This customer is not visited
-    //             {
-    //                 TempUnallocatedCustomer.push_back(x);
-    //             }
-    //         }
-    //         IRPSolution.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
-    //     }
-    // }
+        IRPSolution.Route[move[3]][move[4]].insert(IRPSolution.Route[move[3]][move[4]].begin() + move[5],
+                                                   IRPSolution.Route[move[0]][move[1]].begin() + move[2],
+                                                   IRPSolution.Route[move[0]][move[1]].begin() + move[2] + move[6]);
+        IRPSolution.Route[move[0]][move[1]].erase(IRPSolution.Route[move[0]][move[1]].begin() + move[2],
+                                                  IRPSolution.Route[move[0]][move[1]].begin() + move[2] + move[6]);
+        memory.TrackSolutionStatus[move[0]][move[1]] = 1;          // Mark route as changed
+        memory.TrackSolutionStatus[move[3]][move[4]] = 1;          // Mark route as changed
+        memory.TrackSingleRouteOptimisation[move[0]][move[1]] = 1; // Mark route as changed
+        memory.TrackSingleRouteOptimisation[move[3]][move[4]] = 1; // Mark route as changed
+        IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
+        ////////////////////////////////////////////////////////////////////////
+        //                                                                    //
+        //             Verify the correctness of the output                   //
+        //                                                                    //
+        ////////////////////////////////////////////////////////////////////////
+
+        // double CheckRouteCost = 0;
+        // for (int i = 0; i < IRPSolution.Route.size(); i++)
+        // {
+        //     for (int j = 0; j < IRPSolution.Route[i].size(); j++)
+        //     {
+        //         if (IRPSolution.Route[i][j].size() != 0)
+        //         {
+        //             CheckRouteCost += IRPLR.Distance[0][IRPSolution.Route[i][j][0] + 1];
+        //             CheckRouteCost += IRPLR.Distance[IRPSolution.Route[i][j][IRPSolution.Route[i][j].size() - 1] + 1][0];
+        //             for (int test = 0; test < IRPSolution.Route[i][j].size() - 1; test++)
+        //             {
+        //                 CheckRouteCost += IRPLR.Distance[IRPSolution.Route[i][j][test] + 1][IRPSolution.Route[i][j][test + 1] + 1];
+        //             }
+        //         }
+        //     }
+        // }
+        // cout << "ImpTotalTransportationCost:" << ImpTotalTransportationCost << "\t CheckRouteCost:" << CheckRouteCost << endl;
+        // assert(fabs(ImpTotalTransportationCost - CheckRouteCost) < 0.00001);
+
+        // double CheckTotalDelivery = 0;
+        // for (int i = 0; i < IRPSolution.DeliveryQuantity.size(); i++)
+        // {
+
+        //     for (int j = 0; j < IRPSolution.DeliveryQuantity[i].size(); j++)
+        //     {
+        //         CheckTotalDelivery += IRPSolution.DeliveryQuantity[i][j];
+        //         // cout<<IRPSolution.DeliveryQuantity[i][j]<<",";
+        //     }
+        //     // cout << endl;
+        //     // cout<<"Customer "<<i<<", total delivery after move:"<<total_delivery_for_customer<<endl;
+        // }
+        // cout << "ImpTotalDelivery:" << ImpTotalDelivery << "\t CheckTotalDelivery:" << CheckTotalDelivery << endl;
+        // IRPSolution.print_solution(IRPLR);
+        // IRPSolution.Validation(IRPLR);
+        // assert(fabs(ImpTotalDelivery - CheckTotalDelivery) < 0.00001);
+    }
     return whether_improved_or_not;
 }

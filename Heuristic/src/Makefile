@@ -20,6 +20,7 @@ andy:
 	DataStructure:ConcatenationInterSwap.cpp \
 	DataStructure:ConcatenationSwapTwoRoutesSingleDay.cpp \
 	DataStructure:ConcatenationSwapInsertRemove.cpp \
+	DataStructure:ConcatenationChepestInsertion.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	SolutionUtility.cpp \
@@ -53,6 +54,7 @@ andy_DISABLE_COUT:
 	DataStructure:ConcatenationInterSwap.cpp \
 	DataStructure:ConcatenationSwapTwoRoutesSingleDay.cpp \
 	DataStructure:ConcatenationSwapInsertRemove.cpp \
+	DataStructure:ConcatenationChepestInsertion.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	SolutionUtility.cpp \
@@ -87,6 +89,7 @@ andy_lenovo:
 	DataStructure:ConcatenationInterSwap.cpp \
 	DataStructure:ConcatenationSwapTwoRoutesSingleDay.cpp \
 	DataStructure:ConcatenationSwapInsertRemove.cpp \
+	DataStructure:ConcatenationChepestInsertion.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	SolutionUtility.cpp \
@@ -120,6 +123,7 @@ andy_desktop:
 	DataStructure:ConcatenationInterSwap.cpp \
 	DataStructure:ConcatenationSwapTwoRoutesSingleDay.cpp \
 	DataStructure:ConcatenationSwapInsertRemove.cpp \
+	DataStructure:ConcatenationChepestInsertion.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	SolutionUtility.cpp \
@@ -153,6 +157,7 @@ andy_testpc:
 	DataStructure:ConcatenationInterSwap.cpp \
 	DataStructure:ConcatenationSwapTwoRoutesSingleDay.cpp \
 	DataStructure:ConcatenationSwapInsertRemove.cpp \
+	DataStructure:ConcatenationChepestInsertion.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	SolutionUtility.cpp \
@@ -187,6 +192,7 @@ andy_testpc_DISABLE_COUT:
 	DataStructure:ConcatenationInterSwap.cpp \
 	DataStructure:ConcatenationSwapTwoRoutesSingleDay.cpp \
 	DataStructure:ConcatenationSwapInsertRemove.cpp \
+	DataStructure:ConcatenationChepestInsertion.cpp \
 	DataStructure:Print.cpp \
 	HGS:ReadParameter.cpp HGS:Call.cpp \
 	SolutionUtility.cpp \
