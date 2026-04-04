@@ -23,6 +23,10 @@ time_t start_time_to_best;
 time_t end_time_to_best;
 time_t LS_start_time;
 time_t LS_end_time;
+time_t total_start_time;
+time_t total_end_time;
+bool whether_results_reported_30 = false;
+bool whether_results_reported_60 = false;
 int main()
 {
 	file read_file;
@@ -39,7 +43,7 @@ int main()
 			Table<<",Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,Time";
 		}
 
-		Table << ",GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_To_best,T_Total\n";
+		Table << ",BestCostAt30s,BestQuantityAt30s,BestLogisticRatioAt30s,TimeAt30s,BestCostAt60s,BestQuantityAt60s,BestLogisticRatioAt60s,TimeAt60s,GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_To_best,T_Total\n";
 	}
 
 	for (int i = 0; i < read_file.instances.size(); i++)
@@ -90,8 +94,9 @@ int main()
 			////////////////////////////////////////////////////////////////
 			solution GlobalBest;
 			GlobalBest.LogisticRatio = numeric_limits<double>::max(); // Set a large value
-			time_t total_start_time;
-			time_t total_end_time;
+			solution IRPSolution30s;
+			solution IRPSolution60s;
+
 			time(&total_start_time);
 			time(&start_time_to_best);
 			for (int j = 0; j < NumberOfInitialSolutions; j++)
@@ -121,7 +126,7 @@ int main()
 				generator.seed(static_cast<unsigned int>(time(0)));
 				solution_improvement Metaheuristic;
 				// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
-				Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest);
+				Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, IRPSolution30s, IRPSolution60s);
 
 				
 			}
@@ -129,6 +134,23 @@ int main()
 			double accum_time = difftime(total_end_time, total_start_time);
 			cout<<"Global best"<<endl;
 			GlobalBest.Validation(IRPLR);
+			if(whether_results_reported_30 == false )
+			{
+				Table << "-,-,-,-,";
+			
+			}
+			else
+			{
+				Table << IRPSolution30s.TotalTransportationCost << "," << IRPSolution30s.TotalDelivery << "," << IRPSolution30s.LogisticRatio << "," << IRPSolution30s.solution_time << ",";
+			}
+			if(whether_results_reported_60 == false)
+			{
+				Table << "-,-,-,-,";
+			}
+			else
+			{
+				Table << IRPSolution60s.TotalTransportationCost << "," << IRPSolution60s.TotalDelivery << "," << IRPSolution60s.LogisticRatio << "," << IRPSolution60s.solution_time << ",";
+			}
 			if (OutputResults == 1)
 			{
 

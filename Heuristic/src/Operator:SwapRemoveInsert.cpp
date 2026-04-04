@@ -205,24 +205,24 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                             int Whether_insert_fail = 0; // if insert does not lead to an increase on delivery quantity, this move fails, therefore skip the evalution
                                             for (int insert_index = 0; insert_index < insert_length; insert_index++)
                                             {
-                                                 if (pick_day == 0)
-                                                 {
-                                                     NewDeliveryQuantityCustomerInsert[insert_index][pick_day] = DeliveryMax(
-                                                         IRPLR.Vehicle.capacity,
-                                                         CopyVehicleLoad[pick_day][pick_vehicle],
-                                                         IRPLR.Retailers[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]].InventoryMax,
-                                                         IRPLR.Retailers[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]].Demand,
-                                                         IRPLR.Retailers[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]].InventoryBegin);
-                                                 }
-                                                 else
-                                                 {
-                                                     NewDeliveryQuantityCustomerInsert[insert_index][pick_day] = DeliveryMax(
-                                                         IRPLR.Vehicle.capacity,
-                                                         CopyVehicleLoad[pick_day][pick_vehicle],
-                                                         IRPLR.Retailers[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]].InventoryMax,
-                                                         IRPLR.Retailers[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]].Demand,
-                                                         IRPSolution.InventoryLevel[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]][pick_day - 1]);
-                                                 }
+                                                if (pick_day == 0)
+                                                {
+                                                    NewDeliveryQuantityCustomerInsert[insert_index][pick_day] = DeliveryMax(
+                                                        IRPLR.Vehicle.capacity,
+                                                        CopyVehicleLoad[pick_day][pick_vehicle],
+                                                        IRPLR.Retailers[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]].InventoryMax,
+                                                        IRPLR.Retailers[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]].Demand,
+                                                        IRPLR.Retailers[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]].InventoryBegin);
+                                                }
+                                                else
+                                                {
+                                                    NewDeliveryQuantityCustomerInsert[insert_index][pick_day] = DeliveryMax(
+                                                        IRPLR.Vehicle.capacity,
+                                                        CopyVehicleLoad[pick_day][pick_vehicle],
+                                                        IRPLR.Retailers[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]].InventoryMax,
+                                                        IRPLR.Retailers[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]].Demand,
+                                                        IRPSolution.InventoryLevel[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]][pick_day - 1]);
+                                                }
 
                                                 if (NewDeliveryQuantityCustomerInsert[insert_index][pick_day] < 0.001)
                                                 {
@@ -452,13 +452,11 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
         {
             IRPSolution.DeliveryQuantity[IRPSolution.UnallocatedCustomers[move[0]][move[3] + insert_index]] = ImpDeliveryQuantityCustomerInsert[insert_index];
             IRPSolution.InventoryLevel[IRPSolution.UnallocatedCustomers[move[0]][move[3] + insert_index]] = ImpInventoryLevelCustomerInsert[insert_index];
-            IRPSolution.VehicleAllocation[IRPSolution.UnallocatedCustomers[move[0]][move[3] + insert_index]][move[0]] = move[1];
         }
         for (int remove_index = 0; remove_index < move[4]; remove_index++)
         {
             IRPSolution.DeliveryQuantity[IRPSolution.Route[move[0]][move[1]][move[2] + remove_index]] = ImpDeliveryQuantityCustomerRemove[remove_index];
             IRPSolution.InventoryLevel[IRPSolution.Route[move[0]][move[1]][move[2] + remove_index]] = ImpInventoryLevelCustomerRemove[remove_index];
-            IRPSolution.VehicleAllocation[IRPSolution.Route[move[0]][move[1]][move[2] + remove_index]][move[0]] = IRPLR.NumberOfVehicles + 1; // Mark as unallocated
         }
 
         IRPSolution.Route[move[0]][move[1]].insert(IRPSolution.Route[move[0]][move[1]].begin() + move[2],

@@ -19,5 +19,10 @@ extern double LocalSearchTimeLimit;
 extern time_t LS_start_time;
 extern time_t LS_end_time;
 
+extern time_t total_start_time;
+extern time_t total_end_time;
 extern int NumberOfBalacingOperatorCalled;
 extern int NumberOfVehicleAtMinimumDelivery;
+
+extern bool whether_results_reported_30;
+extern bool whether_results_reported_60;

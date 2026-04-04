@@ -32,7 +32,7 @@ int solution_improvement::OperatorTransfer(
     double ImpTotalDelivery = 0;
 
     vector<int> move;
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 9; i++)
     {
         move.push_back(0);
         // move[0]: pick_day1
@@ -288,7 +288,6 @@ int solution_improvement::OperatorTransfer(
                 }
                 assert(CheapestInsertPosition < IRPSolution.Route[TransferDetails[i][2]][VehicleIndexInserted].size() + 1);
 
-                
                 double NewTotalTransportationCost =
                     IRPSolution.TotalTransportationCost - IRPSolution.TransportationCostPerRoute[TransferDetails[i][1]][IRPSolution.VehicleAllocation[TransferDetails[i][0]][TransferDetails[i][1]]] + NewRouteCostRemoved - IRPSolution.TransportationCostPerRoute[TransferDetails[i][2]][VehicleIndexInserted] + NewRouteCostInserted;
 
@@ -409,8 +408,6 @@ int solution_improvement::OperatorTransfer(
     if (whether_improved_or_not == 1) // whether_improved_or_not==1
     {
         // IRPSolution.print_solution(IRPLR);
-        // cout << "Improved solution found by SwapTwoRoutesSingleDay operator:" << endl;
-        // cout << ImpLogisticRatio << "\t" << ImpStockOut << endl;
         // for(int i=0;i<move.size();i++)
         // {
         //     cout<<"move["<<i<<"]:"<<move[i]<<"\t";
@@ -422,16 +419,26 @@ int solution_improvement::OperatorTransfer(
 
         IRPSolution.DeliveryQuantity[move[8]] = ImpDeliveryQuantityCustomerTransfer;
         IRPSolution.InventoryLevel[move[8]] = ImpInventoryLevelCustomerTransfer;
-        IRPSolution.VehicleAllocation[move[8]][move[0]] = IRPLR.NumberOfVehicles + 1; // update the vehicle allocation for the moved customer
-        IRPSolution.VehicleAllocation[move[8]][move[3]] = move[4];
-        // IRPSolution.VisitOrder[move[8]][move[0]] = IRPLR.Retailers.size() + 1; // after the move, the customer is no longer in the original route, therefore set visit order to be -1
-        // IRPSolution.VisitOrder[move[8]][move[3]] = move[5];
 
+        IRPSolution.UnallocatedCustomers[move[0]].insert(IRPSolution.UnallocatedCustomers[move[0]].begin(),
+                                                         IRPSolution.Route[move[0]][move[1]].begin() + move[2],
+                                                         IRPSolution.Route[move[0]][move[1]].begin() + move[2] + move[6]);
         IRPSolution.Route[move[3]][move[4]].insert(IRPSolution.Route[move[3]][move[4]].begin() + move[5],
                                                    IRPSolution.Route[move[0]][move[1]].begin() + move[2],
                                                    IRPSolution.Route[move[0]][move[1]].begin() + move[2] + move[6]);
         IRPSolution.Route[move[0]][move[1]].erase(IRPSolution.Route[move[0]][move[1]].begin() + move[2],
                                                   IRPSolution.Route[move[0]][move[1]].begin() + move[2] + move[6]);
+        bool whether_remove_inserted_customer_exists = false;
+        for (int remove_inserted_customer = 0; remove_inserted_customer < IRPSolution.UnallocatedCustomers[move[3]].size(); remove_inserted_customer++)
+        {
+            if (IRPSolution.UnallocatedCustomers[move[3]][remove_inserted_customer] == move[8])
+            {
+                whether_remove_inserted_customer_exists = true;
+                IRPSolution.UnallocatedCustomers[move[3]].erase(IRPSolution.UnallocatedCustomers[move[3]].begin()+ remove_inserted_customer, IRPSolution.UnallocatedCustomers[move[3]].begin()+ remove_inserted_customer + move[6]);
+                break;
+            }
+        }
+        assert(whether_remove_inserted_customer_exists == true);
         memory.TrackSolutionStatus[move[0]][move[1]] = 1;          // Mark route as changed
         memory.TrackSolutionStatus[move[3]][move[4]] = 1;          // Mark route as changed
         memory.TrackSingleRouteOptimisation[move[0]][move[1]] = 1; // Mark route as changed
@@ -475,8 +482,11 @@ int solution_improvement::OperatorTransfer(
         //     // cout<<"Customer "<<i<<", total delivery after move:"<<total_delivery_for_customer<<endl;
         // }
         // cout << "ImpTotalDelivery:" << ImpTotalDelivery << "\t CheckTotalDelivery:" << CheckTotalDelivery << endl;
+
+        
+
         // IRPSolution.print_solution(IRPLR);
-        // IRPSolution.Validation(IRPLR);
+        // // IRPSolution.Validation(IRPLR);
         // assert(fabs(ImpTotalDelivery - CheckTotalDelivery) < 0.00001);
     }
     return whether_improved_or_not;

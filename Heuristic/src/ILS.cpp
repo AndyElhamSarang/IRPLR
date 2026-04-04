@@ -1,5 +1,5 @@
 #include "lib.h"
-void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest)
+void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest, solution &IRPSolution30s,solution &IRPSolution60s)
 {
     cout << "//////////////////////////////////////" << endl;
     cout << "//   Start Iterated Local Search    //" << endl;
@@ -94,7 +94,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     bool RunHGSAtEnd = false;
     // assert(UseSwapRemoveInsert!=UseSwapRemoveInsertRebalance);
     int LocalSearchCounter = 0;
-    int MaxDisturbance = 2 * (IRPLR.NumberOfRetailers + 1 * IRPLR.TimeHorizon + 1 * IRPLR.NumberOfVehicles);
+    int MaxDisturbance = 2 * (IRPLR.NumberOfRetailers + 10 * IRPLR.TimeHorizon + 10 * IRPLR.NumberOfVehicles);
     time(&LS_start_time);
     try
     {
@@ -108,7 +108,6 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 throw time_limit_reached;
             }
             // assert(UseSwapRemoveInsert!=UseSwapRemoveInsertRebalance);
-            
 
             time_t LocalSearch_start_time;
             time_t LocalSearch_end_time;
@@ -118,11 +117,11 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             //                                                               //
             ///////////////////////////////////////////////////////////////////
             time(&LocalSearch_start_time);
-            cout<<"---------------------------------------------"<<endl;
-            cout << "Start Local Search, iteration " << LocalSearchCounter <<", with Disturbance Counter: " << DisturbanceCounter << endl;
-            cout<<"---------------------------------------------"<<endl;
-            ImprovedLocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory);    
-            // LocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory);         
+            cout << "---------------------------------------------" << endl;
+            cout << "Start Local Search, iteration " << LocalSearchCounter << ", with Disturbance Counter: " << DisturbanceCounter << endl;
+            cout << "---------------------------------------------" << endl;
+            ImprovedLocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory);
+            // LocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory);
             time(&LocalSearch_end_time);
             double total_LocalSearch_time = difftime(LocalSearch_end_time, LocalSearch_start_time);
 
@@ -137,6 +136,40 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "ViolationStockOut" << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << endl;
 
             cout << "---------------------------------------------" << endl;
+
+            ////////////////////////////////////////////////
+            //                                            //
+            //     Report Global Best Solution at 30s     //
+            //                                            //
+            ////////////////////////////////////////////////
+            time(&total_end_time);
+            double accum_time = difftime(total_end_time, total_start_time);
+            if (accum_time >=30 && whether_results_reported_30 == false)
+            {
+                whether_results_reported_30 = true;
+                IRPSolution30s=GlobalBest; // Record the best solution found at 30s time point
+                IRPSolution30s.TotalTransportationCost=GlobalBest.TotalTransportationCost;
+                IRPSolution30s.TotalDelivery=GlobalBest.TotalDelivery;
+                IRPSolution30s.LogisticRatio=GlobalBest.LogisticRatio;
+                IRPSolution30s.solution_time=accum_time;
+
+                 
+            }
+
+            ////////////////////////////////////////////////
+            //                                            //
+            //     Report Global Best Solution at 60s     //
+            //                                            //
+            ////////////////////////////////////////////////
+            if (accum_time >=60 && whether_results_reported_60 == false)
+            {
+                whether_results_reported_60 = true;
+                IRPSolution60s=GlobalBest; // Record the best solution found at 60s time point
+                IRPSolution60s.TotalTransportationCost=GlobalBest.TotalTransportationCost;
+                IRPSolution60s.TotalDelivery=GlobalBest.TotalDelivery;
+                IRPSolution60s.LogisticRatio=GlobalBest.LogisticRatio;
+                IRPSolution60s.solution_time=accum_time;                  
+            }
 
             // if (IRPSolution.ViolationStockOut != 0)
             // {
@@ -202,14 +235,14 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 IRPSolution.GetLogisticRatio(IRPLR);
                 cout << "Solution after removing customer with 0 delivery " << endl;
                 cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
-              
+
                 ///////////////////////////////////////////////////////////////////////////////
-                
+
                 if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
                 {
                     GlobalBest = IRPSolution;
                     GlobalBest.LogisticRatio = IRPSolution.LogisticRatio;
-                    
+
                     time(&end_time_to_best);
                     GlobalBest.solution_time = difftime(end_time_to_best, start_time_to_best);
                     cout << "$GlobalBest solution is updated at time:" << GlobalBest.solution_time << " s,\t with " << "TotalTransportationCost:" << GlobalBest.TotalTransportationCost << ",\t TotalDelivery:" << GlobalBest.TotalDelivery << ",\t LogisticRatio:" << GlobalBest.LogisticRatio << ",\t at local search iteration:" << LocalSearchCounter << endl;
@@ -251,9 +284,9 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     time(&rebalance_start_time);
                     double LogisctiRatioAfterRebalance = numeric_limits<double>::max();
                     LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
-                                                                           TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel,
-                                                                           TempVehicleAllocation, TempVisitOrder,
-                                                                           counting_infeasible_case, is_Rebalace_infeasible);
+                                                                    TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel,
+                                                                    TempVehicleAllocation, TempVisitOrder,
+                                                                    counting_infeasible_case, is_Rebalace_infeasible);
                     time(&rebalance_end_time);
                     total_rebalance_time += difftime(rebalance_end_time, rebalance_start_time);
                     NumberOfRebalance++;
@@ -272,7 +305,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                             IRPSolution.VisitOrder = TempVisitOrder;
                             IRPSolution.GetLogisticRatio(IRPLR);
                             // IRPSolution.print_solution(IRPLR);
-                            cout<<"After rebalance"<<endl;
+                            cout << "After rebalance" << endl;
                             // IRPSolution.Validation(IRPLR);
                             if (LogisticRatioBeforeRebalance - LogisctiRatioAfterRebalance > 0.00001)
                             {
@@ -306,7 +339,6 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     cout << "@Best solution is updated at time:" << update_time << " s,\t with " << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << ",\t TotalDelivery:" << IRPSolution.TotalDelivery << ",\t LogisticRatio:" << IRPSolution.LogisticRatio << ",\t at local search iteration:" << DisturbanceCounter << endl;
                     BestIRP_Solution = IRPSolution;
                     BestIRP_Solution.LogisticRatio = IRPSolution.LogisticRatio;
-                    
                 }
                 if (NumberOfFeasibleSolution >= ToAdjustPenalty)
                 {
@@ -315,12 +347,13 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     NumberOfFeasibleSolution = 0;
                 }
             }
-            cout << "DisturbanceCounter:" << DisturbanceCounter<<", PenaltyForStockOut:" << PenaltyForStockOut << endl;
-            cout<<"-----------------------------------------------"<<endl;
-            cout<<"Start Disturbance Operator" << endl;
+            cout << "DisturbanceCounter:" << DisturbanceCounter << ", PenaltyForStockOut:" << PenaltyForStockOut << endl;
+            cout << "-----------------------------------------------" << endl;
+            cout << "Start Disturbance Operator" << endl;
             OperatorDisturb(IRPLR, GlobalBest, IRPSolution, DisturbanceCounter, MaxDisturbance);
-            cout<<"End Disturbance Operator" << endl;
-            cout<<"------------------------------------------------"<<endl;
+            IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
+            cout << "End Disturbance Operator" << endl;
+            cout << "------------------------------------------------" << endl;
             DisturbanceCounter++;
         }
     }
@@ -334,7 +367,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     //                Routing                    //
     //                                           //
     ///////////////////////////////////////////////
-    // // RunHGSAtEnd = true; //Always run HGS at the end to further improve the solution. 
+    // // RunHGSAtEnd = true; //Always run HGS at the end to further improve the solution.
     // if (RunHGSAtEnd == true)
     // {
     //     cout << "Best solution before HGS" << endl;
