@@ -1,5 +1,91 @@
 #include "lib.h"
-int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory)
+
+
+void RecordSolution(solution &IRPSolution, solution &SolutionToRecord, double &time_stamp)
+{
+    IRPSolution = SolutionToRecord;
+    IRPSolution.TotalTransportationCost = SolutionToRecord.TotalTransportationCost;
+    IRPSolution.TotalDelivery = SolutionToRecord.TotalDelivery;
+    IRPSolution.LogisticRatio = SolutionToRecord.LogisticRatio;
+    IRPSolution.solution_time = time_stamp;
+}
+void RecordSolution_First_30s_60s(input &IRPLR, solution &IRPSolution, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, int &DisturbanceCounter, bool &RunHGSAtEnd)
+{
+
+    time(&total_end_time);
+    double accum_time = difftime(total_end_time, total_start_time);
+
+    ////////////////////////////////////////////////
+    //                                            //
+    //     Report Global Best Solution at 30s     //
+    //                                            //
+    ////////////////////////////////////////////////
+    cout<<"Accumulated time: " << accum_time << "s." << endl;
+    if (accum_time > 30 && whether_results_reported_30 == false)
+    {
+        cout<<"30s time point reached." << endl;
+        IRPSolution.GetLogisticRatio(IRPLR);
+        assert(IRPSolution.ViolationStockOut >= -0.00001);
+        if (fabs(IRPSolution.ViolationStockOut - 0) < 0.001)
+        {
+            if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
+            {
+                RecordSolution(GlobalBest, IRPSolution, accum_time);
+                RunHGSAtEnd = true;
+                DisturbanceCounter = 0;
+            }
+        }
+        whether_results_reported_30 = true;
+        RecordSolution(IRPSolution30s, GlobalBest, accum_time);
+    }
+
+    ////////////////////////////////////////////////
+    //                                            //
+    //     Report Global Best Solution at 60s     //
+    //                                            //
+    ////////////////////////////////////////////////
+    if (accum_time > 60 && whether_results_reported_60 == false)
+    {
+        cout << "60s time point reached." << endl;
+        IRPSolution.GetLogisticRatio(IRPLR);
+
+        assert(IRPSolution.ViolationStockOut >= -0.00001);
+        if (fabs(IRPSolution.ViolationStockOut - 0) < 0.001)
+        {
+            if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
+            {
+
+                RecordSolution(GlobalBest, IRPSolution, accum_time);
+                RunHGSAtEnd = true;
+                DisturbanceCounter = 0;
+            }
+        }
+
+        whether_results_reported_60 = true;
+        RecordSolution(IRPSolution60s, GlobalBest, accum_time);
+    }
+
+    if (whether_results_reported_first_improvement == false)
+    {
+        cout<<"First improvement time point reached." << endl;
+        IRPSolution.GetLogisticRatio(IRPLR);
+        assert(IRPSolution.ViolationStockOut >= -0.00001);
+        if (fabs(IRPSolution.ViolationStockOut - 0) < 0.001)
+        {
+            if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
+            {
+                RecordSolution(GlobalBest, IRPSolution, accum_time);
+                RunHGSAtEnd = true;
+                DisturbanceCounter = 0;
+            }
+        }
+
+        whether_results_reported_first_improvement = true;
+        RecordSolution(FirstImprovementSolution, GlobalBest, accum_time);
+    }
+}
+
+int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory,solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s, int &DisturbanceCounter, bool &RunHGSAtEnd)
 {
     int whether_improved_via_local_search = 0;
     memory.PopulatePrefixAndSuffix(IRPLR, IRPSolution);
@@ -8,272 +94,288 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
     bool whether_improved_via_SwapTwoRoutesOnSingleDay = true;
     bool whether_improved_via_InterSwap = true;
     int true_local = 0;
-    while (true_local == 0)
+    try
     {
-        true_local = 1;
-        int whether_improved = 1;
-        int counter = 0;
-        //////////////////////////////////////////////////
-        //                                              //
-        //                 Operator:Shift               //
-        //                                              //
-        //////////////////////////////////////////////////
-        
-        int min_shift1 = 1;
-        int max_shift1 = 3;
-        int min_shift2 = 0;
-        int max_shift2 = 0;
-
-        set<vector<int>> ShiftTwoRoutesOnSingleDayPair; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
-        for (int day = 0; day < IRPSolution.Route.size(); day++)
+        while (true_local == 0)
         {
-            for (int vehicle_1 = 0; vehicle_1 < IRPSolution.Route[day].size(); vehicle_1++)
+            true_local = 1;
+            int whether_improved = 1;
+            int counter = 0;
+            //////////////////////////////////////////////////
+            //                                              //
+            //                 Operator:Shift               //
+            //                                              //
+            //////////////////////////////////////////////////
+
+            int min_shift1 = 1;
+            int max_shift1 = 3;
+            int min_shift2 = 0;
+            int max_shift2 = 0;
+
+            set<vector<int>> ShiftTwoRoutesOnSingleDayPair; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
+            for (int day = 0; day < IRPSolution.Route.size(); day++)
             {
-                for (int vehicle_2 = vehicle_1 + 1; vehicle_2 < IRPSolution.Route[day].size(); vehicle_2++)
+                for (int vehicle_1 = 0; vehicle_1 < IRPSolution.Route[day].size(); vehicle_1++)
                 {
-                    if (vehicle_2 > vehicle_1)
+                    for (int vehicle_2 = vehicle_1 + 1; vehicle_2 < IRPSolution.Route[day].size(); vehicle_2++)
                     {
-                        vector<int> temp_pair;
-                        temp_pair.push_back(day);
-                        temp_pair.push_back(vehicle_1);
-                        temp_pair.push_back(vehicle_2);
-                        ShiftTwoRoutesOnSingleDayPair.insert(temp_pair);
-                    }
-                }
-            }
-        }
-        int InitialSizeOfShiftTwoRoutesOnSingleDayPair = ShiftTwoRoutesOnSingleDayPair.size();
-        set<vector<int>> ShiftTwoRoutesOnSingleDayPairToReconsider; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
-        while (whether_improved == 1)
-        {
-            // Re-add any pairs flagged to be reconsidered
-            for (const auto &p : ShiftTwoRoutesOnSingleDayPairToReconsider)
-            {
-                ShiftTwoRoutesOnSingleDayPair.insert(p);
-            }
-            ShiftTwoRoutesOnSingleDayPairToReconsider.clear();
-            // cout << "InitialSizeOfShiftTwoRoutesOnSingleDayPair: " << InitialSizeOfShiftTwoRoutesOnSingleDayPair <<", ShiftTwoRoutesOnSingleDayPairToReconsider: "<< ShiftTwoRoutesOnSingleDayPairToReconsider.size()<<", Size of reduced ShiftTwoRoutesOnSingleDayPair: " << ShiftTwoRoutesOnSingleDayPair.size() << endl;
-            whether_improved = OperatorSwapTwoRoutesOnSingleDay(
-                IRPLR,
-                IRPSolution,
-                PenaltyForStockOut,
-                memory,
-                ShiftTwoRoutesOnSingleDayPair,
-                ShiftTwoRoutesOnSingleDayPairToReconsider,
-                min_shift1,
-                max_shift1,
-                min_shift2,
-                max_shift2);
-            if (whether_improved == 1)
-            {
-                true_local = 0;
-            }
-            // IRPSolution.Validation(IRPLR);
-            memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
-            counter++;
-        }
-
-        cout << "Iteration applied for Operator: SwapTwoRoutesOnSingleDay:" << counter << endl;
-
-        //////////////////////////////////////////////////
-        //                                              //
-        //                 Operator:Swap               //
-        //                                              //
-        //////////////////////////////////////////////////
-        true_local = 1;
-        whether_improved = 1;
-        counter = 0;
-        int min_swap1 = 1;
-        int max_swap1 = 2;
-        int min_swap2 = 1;
-        int max_swap2 = 2;
-
-        set<vector<int>> SwapTwoRoutesOnSingleDayPair; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
-        for (int day = 0; day < IRPSolution.Route.size(); day++)
-        {
-            for (int vehicle_1 = 0; vehicle_1 < IRPSolution.Route[day].size(); vehicle_1++)
-            {
-                for (int vehicle_2 = vehicle_1 + 1; vehicle_2 < IRPSolution.Route[day].size(); vehicle_2++)
-                {
-                    if (vehicle_2 > vehicle_1)
-                    {
-                        vector<int> temp_pair;
-                        temp_pair.push_back(day);
-                        temp_pair.push_back(vehicle_1);
-                        temp_pair.push_back(vehicle_2);
-                        SwapTwoRoutesOnSingleDayPair.insert(temp_pair);
-                    }
-                }
-            }
-        }
-        int InitialSizeOfSwapTwoRoutesOnSingleDayPair = SwapTwoRoutesOnSingleDayPair.size();
-        set<vector<int>> SwapTwoRoutesOnSingleDayPairToReconsider; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
-        while (whether_improved == 1)
-        {
-            // Re-add any pairs flagged to be reconsidered
-            for (const auto &p : SwapTwoRoutesOnSingleDayPairToReconsider)
-            {
-                SwapTwoRoutesOnSingleDayPair.insert(p);
-            }
-            SwapTwoRoutesOnSingleDayPairToReconsider.clear();
-            // cout << "InitialSizeOfSwapTwoRoutesOnSingleDayPair: " << InitialSizeOfSwapTwoRoutesOnSingleDayPair <<", SwapTwoRoutesOnSingleDayPairToReconsider: "<< SwapTwoRoutesOnSingleDayPairToReconsider.size()<<", Size of reduced SwapTwoRoutesOnSingleDayPair: " << SwapTwoRoutesOnSingleDayPair.size() << endl;
-            whether_improved = OperatorSwapTwoRoutesOnSingleDay(
-                IRPLR,
-                IRPSolution,
-                PenaltyForStockOut,
-                memory,
-                SwapTwoRoutesOnSingleDayPair,
-                SwapTwoRoutesOnSingleDayPairToReconsider,
-                min_swap1,
-                max_swap1,
-                min_swap2,
-                max_swap2);
-            if (whether_improved == 1)
-            {
-                true_local = 0;
-            }
-            // IRPSolution.Validation(IRPLR);
-            memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
-            counter++;
-        }
-        cout << "Iteration applied for Operator: SwapTwoRoutesOnSingleDay:" << counter << endl;
-
-        ////////////////////////////////////////////////
-        //                                            //
-        //              Operator:Transfer             //
-        //                                            //
-        ////////////////////////////////////////////////
-
-
-        cout << "Start Operator: Transfer:" << counter << endl;
-        true_local = 1;
-        whether_improved = 1;
-        counter = 0;
-
-        while (whether_improved == 1)
-        {
-            vector<vector<int>> TransferDetails;
-
-            for (int i = 0; i < IRPSolution.DeliveryQuantity.size(); i++) // For customer i
-            {
-                for (int j = 0; j < IRPSolution.DeliveryQuantity[i].size(); j++) // For day j
-                {
-                    if (IRPSolution.DeliveryQuantity[i][j] > 0) // If this customer is visited at day j,
-                    {
-                        for (int k = 0; k < IRPSolution.DeliveryQuantity[i].size(); k++)
+                        if (vehicle_2 > vehicle_1)
                         {
-                            if (IRPSolution.DeliveryQuantity[i][k] < 0.001 && k!=j)
+                            vector<int> temp_pair;
+                            temp_pair.push_back(day);
+                            temp_pair.push_back(vehicle_1);
+                            temp_pair.push_back(vehicle_2);
+                            ShiftTwoRoutesOnSingleDayPair.insert(temp_pair);
+                        }
+                    }
+                }
+            }
+            int InitialSizeOfShiftTwoRoutesOnSingleDayPair = ShiftTwoRoutesOnSingleDayPair.size();
+            set<vector<int>> ShiftTwoRoutesOnSingleDayPairToReconsider; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
+            while (whether_improved == 1)
+            {
+                // Re-add any pairs flagged to be reconsidered
+                for (const auto &p : ShiftTwoRoutesOnSingleDayPairToReconsider)
+                {
+                    ShiftTwoRoutesOnSingleDayPair.insert(p);
+                }
+                ShiftTwoRoutesOnSingleDayPairToReconsider.clear();
+                // cout << "InitialSizeOfShiftTwoRoutesOnSingleDayPair: " << InitialSizeOfShiftTwoRoutesOnSingleDayPair <<", ShiftTwoRoutesOnSingleDayPairToReconsider: "<< ShiftTwoRoutesOnSingleDayPairToReconsider.size()<<", Size of reduced ShiftTwoRoutesOnSingleDayPair: " << ShiftTwoRoutesOnSingleDayPair.size() << endl;
+                whether_improved = OperatorSwapTwoRoutesOnSingleDay(
+                    IRPLR,
+                    IRPSolution,
+                    PenaltyForStockOut,
+                    memory,
+                    ShiftTwoRoutesOnSingleDayPair,
+                    ShiftTwoRoutesOnSingleDayPairToReconsider,
+                    min_shift1,
+                    max_shift1,
+                    min_shift2,
+                    max_shift2);
+                if (whether_improved == 1)
+                {
+                    true_local = 0;
+                }
+                // IRPSolution.Validation(IRPLR);
+                memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
+                RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+                counter++;
+            }
+
+            cout << "Iteration applied for Operator: SwapTwoRoutesOnSingleDay:" << counter << endl;
+
+            //////////////////////////////////////////////////
+            //                                              //
+            //                 Operator:Swap               //
+            //                                              //
+            //////////////////////////////////////////////////
+            true_local = 1;
+            whether_improved = 1;
+            counter = 0;
+            int min_swap1 = 1;
+            int max_swap1 = 2;
+            int min_swap2 = 1;
+            int max_swap2 = 2;
+
+            set<vector<int>> SwapTwoRoutesOnSingleDayPair; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
+            for (int day = 0; day < IRPSolution.Route.size(); day++)
+            {
+                for (int vehicle_1 = 0; vehicle_1 < IRPSolution.Route[day].size(); vehicle_1++)
+                {
+                    for (int vehicle_2 = vehicle_1 + 1; vehicle_2 < IRPSolution.Route[day].size(); vehicle_2++)
+                    {
+                        if (vehicle_2 > vehicle_1)
+                        {
+                            vector<int> temp_pair;
+                            temp_pair.push_back(day);
+                            temp_pair.push_back(vehicle_1);
+                            temp_pair.push_back(vehicle_2);
+                            SwapTwoRoutesOnSingleDayPair.insert(temp_pair);
+                        }
+                    }
+                }
+            }
+            int InitialSizeOfSwapTwoRoutesOnSingleDayPair = SwapTwoRoutesOnSingleDayPair.size();
+            set<vector<int>> SwapTwoRoutesOnSingleDayPairToReconsider; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
+            while (whether_improved == 1)
+            {
+                // Re-add any pairs flagged to be reconsidered
+                for (const auto &p : SwapTwoRoutesOnSingleDayPairToReconsider)
+                {
+                    SwapTwoRoutesOnSingleDayPair.insert(p);
+                }
+                SwapTwoRoutesOnSingleDayPairToReconsider.clear();
+                // cout << "InitialSizeOfSwapTwoRoutesOnSingleDayPair: " << InitialSizeOfSwapTwoRoutesOnSingleDayPair <<", SwapTwoRoutesOnSingleDayPairToReconsider: "<< SwapTwoRoutesOnSingleDayPairToReconsider.size()<<", Size of reduced SwapTwoRoutesOnSingleDayPair: " << SwapTwoRoutesOnSingleDayPair.size() << endl;
+                whether_improved = OperatorSwapTwoRoutesOnSingleDay(
+                    IRPLR,
+                    IRPSolution,
+                    PenaltyForStockOut,
+                    memory,
+                    SwapTwoRoutesOnSingleDayPair,
+                    SwapTwoRoutesOnSingleDayPairToReconsider,
+                    min_swap1,
+                    max_swap1,
+                    min_swap2,
+                    max_swap2);
+                if (whether_improved == 1)
+                {
+                    true_local = 0;
+                }
+                // IRPSolution.Validation(IRPLR);
+                memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
+                RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+                counter++;
+            }
+            cout << "Iteration applied for Operator: SwapTwoRoutesOnSingleDay:" << counter << endl;
+
+            ////////////////////////////////////////////////
+            //                                            //
+            //              Operator:Transfer             //
+            //                                            //
+            ////////////////////////////////////////////////
+
+            cout << "Start Operator: Transfer:" << counter << endl;
+            true_local = 1;
+            whether_improved = 1;
+            counter = 0;
+
+            while (whether_improved == 1)
+            {
+                vector<vector<int>> TransferDetails;
+
+                for (int i = 0; i < IRPSolution.DeliveryQuantity.size(); i++) // For customer i
+                {
+                    for (int j = 0; j < IRPSolution.DeliveryQuantity[i].size(); j++) // For day j
+                    {
+                        if (IRPSolution.DeliveryQuantity[i][j] > 0) // If this customer is visited at day j,
+                        {
+                            for (int k = 0; k < IRPSolution.DeliveryQuantity[i].size(); k++)
                             {
-                                vector<int> temp_transfer_detail;
-                                temp_transfer_detail.push_back(i); // Retailer index
-                                temp_transfer_detail.push_back(j); // Day index visited
-                                temp_transfer_detail.push_back(k); // Day index unvisited
-                                assert(IRPSolution.VehicleAllocation[i][j] < IRPLR.NumberOfVehicles); // The vehicle index should be less than the number of vehicles, otherwise, it means this customer is not actually visited on day j, which is wrong.
-                                TransferDetails.push_back(temp_transfer_detail);
+                                if (IRPSolution.DeliveryQuantity[i][k] < 0.001 && k != j)
+                                {
+                                    vector<int> temp_transfer_detail;
+                                    temp_transfer_detail.push_back(i);                                    // Retailer index
+                                    temp_transfer_detail.push_back(j);                                    // Day index visited
+                                    temp_transfer_detail.push_back(k);                                    // Day index unvisited
+                                    assert(IRPSolution.VehicleAllocation[i][j] < IRPLR.NumberOfVehicles); // The vehicle index should be less than the number of vehicles, otherwise, it means this customer is not actually visited on day j, which is wrong.
+                                    TransferDetails.push_back(temp_transfer_detail);
+                                }
                             }
                         }
                     }
                 }
-            }
-            // for(int i=0;i<TransferDetails.size();i++)
-            // {
-            //     cout<<"TransferDetails["<<i<<"]:"<<"\t";
-            //     for(int j=0;j<TransferDetails[i].size();j++)
-            //     {
-            //         cout<<TransferDetails[i][j]<<"\t";
-            //     }
-            //     cout<<endl;
-            // }
-            whether_improved = OperatorTransfer(
-                IRPLR,
-                IRPSolution,
-                PenaltyForStockOut,
-                TransferDetails,
-                memory);
-            if (whether_improved == 1)
-            {
-                true_local = 0;
-            }
-
-            memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
-            counter++;
-            // assert(counter < 1); 
-        }
-
-        cout << "Iteration applied for Operator Transfer:" << counter << endl;
-
-        //////////////////////////////////////////////////////////////////////
-        //                                                                  //
-        //       Operator:SwapRemoveInsert with unallocated customer        //
-        //                                                                  //
-        //////////////////////////////////////////////////////////////////////
-
-        int min_remove_length = 0;
-        int max_remove_length = 1;
-        int min_insert_length = 0;
-        int max_insert_length = 1;
-        whether_improved = 1;
-        counter = 0;
-        set<vector<int>> SwapRemoveInsertPair; // Index 0: day, Index 1: vehicle
-        for (int day = 0; day < IRPSolution.Route.size(); day++)
-        {
-            for (int vehicle = 0; vehicle < IRPSolution.Route[day].size(); vehicle++)
-            {
-                vector<int> temp_pair;
-                temp_pair.push_back(day);
-                temp_pair.push_back(vehicle);
-                SwapRemoveInsertPair.insert(temp_pair);
-            }
-        }
-
-        while (whether_improved == 1)
-        {
-
-            whether_improved = OperatorSwapRemoveInsert(IRPLR, IRPSolution, PenaltyForStockOut, memory, SwapRemoveInsertPair, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
-            if (whether_improved == 1)
-            {
-                whether_improved_via_SwapRemoveInsertPair = true;
-                true_local = 0;
-            }
-            memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
-            // IRPSolution.Validation(IRPLR);
-            counter++;
-        }
-        cout << "Iteration applied for Operator: SwapRemoveInsert:" << counter << endl;
-
-        //////////////////////////////////////////////////////////////////////
-        //                                                                  //
-        //              Operator:Intra for route optimisation               //
-        //                                                                  //
-        //////////////////////////////////////////////////////////////////////
-        counter = 0;
-        for (int day = 0; day < memory.TrackSingleRouteOptimisation.size(); day++)
-        {
-            for (int vehicle = 0; vehicle < memory.TrackSingleRouteOptimisation[day].size(); vehicle++)
-            {
-                if (memory.TrackSingleRouteOptimisation[day][vehicle] == 1)
+                // for(int i=0;i<TransferDetails.size();i++)
+                // {
+                //     cout<<"TransferDetails["<<i<<"]:"<<"\t";
+                //     for(int j=0;j<TransferDetails[i].size();j++)
+                //     {
+                //         cout<<TransferDetails[i][j]<<"\t";
+                //     }
+                //     cout<<endl;
+                // }
+                whether_improved = OperatorTransfer(
+                    IRPLR,
+                    IRPSolution,
+                    PenaltyForStockOut,
+                    TransferDetails,
+                    memory);
+                if (whether_improved == 1)
                 {
-                    int MinToReinsert = 1;
-                    int MaxToReinsert = 3; // For more than, need to implement efficient evaluation for the move. Currently, it is naively implementation, which is time consuming.
-                    whether_improved = 1;
-                    while (whether_improved == 1)
-                    {
-                        memory.PopulateSingleRouteSubpath(IRPLR, IRPSolution.Route[day][vehicle]);
-                        whether_improved = OperatorIntra(IRPLR, IRPSolution.Route[day][vehicle], day, vehicle, MinToReinsert, MaxToReinsert, memory, IRPSolution.TotalTransportationCost);
-                        if (whether_improved == 1)
-                        {
-                            true_local = 0;
-                        }
-                        memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
-                    }
-                    memory.TrackSingleRouteOptimisation[day][vehicle] = 0;
-                    counter++;
+                    true_local = 0;
+                }
+
+                memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
+                RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+                counter++;
+                // assert(counter < 1);
+            }
+
+            cout << "Iteration applied for Operator Transfer:" << counter << endl;
+
+            //////////////////////////////////////////////////////////////////////
+            //                                                                  //
+            //       Operator:SwapRemoveInsert with unallocated customer        //
+            //                                                                  //
+            //////////////////////////////////////////////////////////////////////
+
+            int min_remove_length = 0;
+            int max_remove_length = 1;
+            int min_insert_length = 0;
+            int max_insert_length = 1;
+            whether_improved = 1;
+            counter = 0;
+            set<vector<int>> SwapRemoveInsertPair; // Index 0: day, Index 1: vehicle
+            for (int day = 0; day < IRPSolution.Route.size(); day++)
+            {
+                for (int vehicle = 0; vehicle < IRPSolution.Route[day].size(); vehicle++)
+                {
+                    vector<int> temp_pair;
+                    temp_pair.push_back(day);
+                    temp_pair.push_back(vehicle);
+                    SwapRemoveInsertPair.insert(temp_pair);
                 }
             }
-        }
-        IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
 
-        cout << "Iteration applied for Operator: Intra:" << counter << endl;
+            while (whether_improved == 1)
+            {
+
+                whether_improved = OperatorSwapRemoveInsert(IRPLR, IRPSolution, PenaltyForStockOut, memory, SwapRemoveInsertPair, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
+                if (whether_improved == 1)
+                {
+                    whether_improved_via_SwapRemoveInsertPair = true;
+                    true_local = 0;
+                }
+                memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
+                RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+
+                // IRPSolution.Validation(IRPLR);
+                counter++;
+            }
+            cout << "Iteration applied for Operator: SwapRemoveInsert:" << counter << endl;
+
+            //////////////////////////////////////////////////////////////////////
+            //                                                                  //
+            //              Operator:Intra for route optimisation               //
+            //                                                                  //
+            //////////////////////////////////////////////////////////////////////
+            counter = 0;
+            for (int day = 0; day < memory.TrackSingleRouteOptimisation.size(); day++)
+            {
+                for (int vehicle = 0; vehicle < memory.TrackSingleRouteOptimisation[day].size(); vehicle++)
+                {
+                    if (memory.TrackSingleRouteOptimisation[day][vehicle] == 1)
+                    {
+                        int MinToReinsert = 1;
+                        int MaxToReinsert = 3; // For more than, need to implement efficient evaluation for the move. Currently, it is naively implementation, which is time consuming.
+                        whether_improved = 1;
+                        while (whether_improved == 1)
+                        {
+                            memory.PopulateSingleRouteSubpath(IRPLR, IRPSolution.Route[day][vehicle]);
+                            whether_improved = OperatorIntra(IRPLR, IRPSolution.Route[day][vehicle], day, vehicle, MinToReinsert, MaxToReinsert, memory, IRPSolution.TotalTransportationCost);
+                            if (whether_improved == 1)
+                            {
+                                true_local = 0;
+                            }
+                            memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
+                            RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+
+                        }
+                        memory.TrackSingleRouteOptimisation[day][vehicle] = 0;
+                        counter++;
+                    }
+                }
+            }
+            IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
+
+            cout << "Iteration applied for Operator: Intra:" << counter << endl;
+        }
+    }
+
+    catch (int time_limit_reached)
+    {
+        cout << "!Stop by time limit" << endl;
+         RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+               
     }
     return whether_improved_via_local_search;
 }

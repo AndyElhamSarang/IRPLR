@@ -51,9 +51,9 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                     {
                                         if (pick_unallocated_customer + insert_length <= IRPSolution.UnallocatedCustomers[pick_day].size() && pick_allocated_customer + remove_length <= IRPSolution.Route[pick_day][pick_vehicle].size()) // Make sure the operator does not go outside the range
                                         {
-                                            time(&LS_end_time);
-                                            double total_ls_time = difftime(LS_end_time, LS_start_time);
-                                            if (total_ls_time - LocalSearchTimeLimit > 0.00001)
+                                            time(&total_end_time);
+                                            double total_ls_time = difftime(total_end_time, total_start_time);
+                                            if (total_ls_time - MainAlgorithmTimeLimit > 0.00001)
                                             {
                                                 int time_limit_reached = total_ls_time;
                                                 throw time_limit_reached;

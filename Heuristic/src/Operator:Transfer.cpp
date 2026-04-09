@@ -59,9 +59,9 @@ int solution_improvement::OperatorTransfer(
             int pick_day_removed = TransferDetails[i][1];
             int pick_vehicle_added = TransferDetails[i][2];
 
-            time(&LS_end_time);
-            double total_ls_time = difftime(LS_end_time, LS_start_time);
-            if (total_ls_time - LocalSearchTimeLimit > 0.00001)
+            time(&total_end_time);
+            double total_ls_time = difftime(total_end_time, total_start_time);
+            if (total_ls_time - MainAlgorithmTimeLimit > 0.00001)
             {
                 int time_limit_reached = total_ls_time;
                 throw time_limit_reached;

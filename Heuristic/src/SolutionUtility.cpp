@@ -271,18 +271,18 @@ void InventoryLevel_Cannot_Exceed_Maximum(input &IRPLR, solution &IRPSolution)
 void CustomerCannotVisitMoreThanOncePerPeriod(input &IRPLR, solution &IRPSolution)
 {
     cout << "Check Each Customer is Visited at Most Once Per Period" << endl;
-    for(int i=0;i<IRPSolution.Route.size();i++) // For each time period
+    for (int i = 0; i < IRPSolution.Route.size(); i++) // For each time period
     {
-        for(int j=0;j<IRPLR.Retailers.size();j++)
+        for (int j = 0; j < IRPLR.Retailers.size(); j++)
         {
             bool Visited = false;
-            for(int k=0;k<IRPSolution.Route[i].size();k++) // For each vehicle
+            for (int k = 0; k < IRPSolution.Route[i].size(); k++) // For each vehicle
             {
-                for(int x=0;x<IRPSolution.Route[i][k].size();x++) // For each position in the route
+                for (int x = 0; x < IRPSolution.Route[i][k].size(); x++) // For each position in the route
                 {
-                    if(IRPSolution.Route[i][k][x]==j)
+                    if (IRPSolution.Route[i][k][x] == j)
                     {
-                        if(Visited==false)
+                        if (Visited == false)
                         {
                             Visited = true;
                         }
@@ -298,13 +298,12 @@ void CustomerCannotVisitMoreThanOncePerPeriod(input &IRPLR, solution &IRPSolutio
     cout << "Check passed!" << endl;
 }
 
-
 void NotUseMoreThanVehicleAvailable(input &IRPLR, solution &IRPSolution)
 {
     cout << "Check Not to Use More Vehicles Than Available" << endl;
     for (int i = 0; i < IRPSolution.Route.size(); i++)
     {
-        
+
         assert(IRPSolution.Route[i].size() <= IRPLR.NumberOfVehicles && "More vehicles used than available");
     }
     cout << "Check passed!" << endl;
@@ -318,47 +317,44 @@ void DeliverZeroIfNotVisitedViceVersa(input &IRPLR, solution &IRPSolution)
     //  IRPSolution.Route[0][0].erasepush_back(5); // This is just for testing, it will be removed later. We want to make sure the check can capture the error if the first customer is visited but delivery quantity is zero.
     //  IRPSolution.print_solution(IRPLR);
     cout << "Check Demand is Zero if Not Visited, and is More than Zero if Visited" << endl;
-    for(int i=0;i<IRPSolution.DeliveryQuantity.size();i++) // For each retailer
+    for (int i = 0; i < IRPSolution.DeliveryQuantity.size(); i++) // For each retailer
     {
-        for(int j=0;j<IRPSolution.DeliveryQuantity[i].size();j++) // For each time period
+        for (int j = 0; j < IRPSolution.DeliveryQuantity[i].size(); j++) // For each time period
         {
-            if(IRPSolution.DeliveryQuantity[i][j] >= 0.001)
+            if (IRPSolution.DeliveryQuantity[i][j] >= 0.001)
             {
                 bool Visited = false;
-                for(int k=0;k<IRPSolution.Route[j].size();k++) // For each vehicle
+                for (int k = 0; k < IRPSolution.Route[j].size(); k++) // For each vehicle
                 {
-                    for(int x=0;x<IRPSolution.Route[j][k].size();x++) // For each position in the route
+                    for (int x = 0; x < IRPSolution.Route[j][k].size(); x++) // For each position in the route
                     {
-                        if(IRPSolution.Route[j][k][x]==i)
+                        if (IRPSolution.Route[j][k][x] == i)
                         {
                             Visited = true;
                         }
                     }
                 }
-                assert(Visited==true && "if demand is more than zero, it should be visited");
+                assert(Visited == true && "if demand is more than zero, it should be visited");
             }
             else
             {
                 bool Visited = false;
-                for(int k=0;k<IRPSolution.Route[j].size();k++) // For each vehicle
+                for (int k = 0; k < IRPSolution.Route[j].size(); k++) // For each vehicle
                 {
-                    for(int x=0;x<IRPSolution.Route[j][k].size();x++) // For each position in the route
+                    for (int x = 0; x < IRPSolution.Route[j][k].size(); x++) // For each position in the route
                     {
-                        if(IRPSolution.Route[j][k][x]==i)
+                        if (IRPSolution.Route[j][k][x] == i)
                         {
                             Visited = true;
                         }
                     }
                 }
-                assert(Visited==false && "If demand is zero, it should not be visited");
-
+                assert(Visited == false && "If demand is zero, it should not be visited");
             }
         }
     }
     cout << "Check passed!" << endl;
 }
-
-
 
 void solution::Validation(input &IRPLR)
 {

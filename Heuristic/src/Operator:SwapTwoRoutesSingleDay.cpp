@@ -77,9 +77,9 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
 
                                 if (pick_position_in_vehicle2 + Swap_length2 <= IRPSolution.Route[pick_day][pick_vehicle2].size() && pick_position_in_vehicle1 + Swap_length1 <= IRPSolution.Route[pick_day][pick_vehicle1].size()) // Make sure the operator does not go outside the range
                                 {
-                                    time(&LS_end_time);
-                                    double total_ls_time = difftime(LS_end_time, LS_start_time);
-                                    if (total_ls_time - LocalSearchTimeLimit > 0.00001)
+                                    time(&total_end_time);
+                                    double total_ls_time = difftime(total_end_time, total_start_time);
+                                    if (total_ls_time - MainAlgorithmTimeLimit > 0.00001)
                                     {
                                         int time_limit_reached = total_ls_time;
                                         throw time_limit_reached;

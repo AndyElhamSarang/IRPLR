@@ -1,5 +1,5 @@
 #include "lib.h"
-void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest, solution &IRPSolution30s,solution &IRPSolution60s)
+void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s)
 {
     cout << "//////////////////////////////////////" << endl;
     cout << "//   Start Iterated Local Search    //" << endl;
@@ -100,9 +100,9 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     {
         while (DisturbanceCounter < MaxDisturbance)
         {
-            time(&LS_end_time);
-            double total_ls_time = difftime(LS_end_time, LS_start_time);
-            if (total_ls_time - LocalSearchTimeLimit > 0.00001)
+            time(&total_end_time);
+            double total_ls_time = difftime(total_end_time, total_start_time);
+            if (total_ls_time - MainAlgorithmTimeLimit > 0.00001)
             {
                 int time_limit_reached = total_ls_time;
                 throw time_limit_reached;
@@ -120,8 +120,8 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "---------------------------------------------" << endl;
             cout << "Start Local Search, iteration " << LocalSearchCounter << ", with Disturbance Counter: " << DisturbanceCounter << endl;
             cout << "---------------------------------------------" << endl;
-            ImprovedLocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory);
-            // LocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory);
+            ImprovedLocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory,GlobalBest, FirstImprovementSolution, IRPSolution30s,IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+            // LocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s,IRPSolution60s);
             time(&LocalSearch_end_time);
             double total_LocalSearch_time = difftime(LocalSearch_end_time, LocalSearch_start_time);
 
@@ -136,40 +136,6 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "ViolationStockOut" << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << endl;
 
             cout << "---------------------------------------------" << endl;
-
-            ////////////////////////////////////////////////
-            //                                            //
-            //     Report Global Best Solution at 30s     //
-            //                                            //
-            ////////////////////////////////////////////////
-            time(&total_end_time);
-            double accum_time = difftime(total_end_time, total_start_time);
-            if (accum_time >=30 && whether_results_reported_30 == false)
-            {
-                whether_results_reported_30 = true;
-                IRPSolution30s=GlobalBest; // Record the best solution found at 30s time point
-                IRPSolution30s.TotalTransportationCost=GlobalBest.TotalTransportationCost;
-                IRPSolution30s.TotalDelivery=GlobalBest.TotalDelivery;
-                IRPSolution30s.LogisticRatio=GlobalBest.LogisticRatio;
-                IRPSolution30s.solution_time=accum_time;
-
-                 
-            }
-
-            ////////////////////////////////////////////////
-            //                                            //
-            //     Report Global Best Solution at 60s     //
-            //                                            //
-            ////////////////////////////////////////////////
-            if (accum_time >=60 && whether_results_reported_60 == false)
-            {
-                whether_results_reported_60 = true;
-                IRPSolution60s=GlobalBest; // Record the best solution found at 60s time point
-                IRPSolution60s.TotalTransportationCost=GlobalBest.TotalTransportationCost;
-                IRPSolution60s.TotalDelivery=GlobalBest.TotalDelivery;
-                IRPSolution60s.LogisticRatio=GlobalBest.LogisticRatio;
-                IRPSolution60s.solution_time=accum_time;                  
-            }
 
             // if (IRPSolution.ViolationStockOut != 0)
             // {
@@ -240,9 +206,9 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
 
                 if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
                 {
+                    
                     GlobalBest = IRPSolution;
                     GlobalBest.LogisticRatio = IRPSolution.LogisticRatio;
-
                     time(&end_time_to_best);
                     GlobalBest.solution_time = difftime(end_time_to_best, start_time_to_best);
                     cout << "$GlobalBest solution is updated at time:" << GlobalBest.solution_time << " s,\t with " << "TotalTransportationCost:" << GlobalBest.TotalTransportationCost << ",\t TotalDelivery:" << GlobalBest.TotalDelivery << ",\t LogisticRatio:" << GlobalBest.LogisticRatio << ",\t at local search iteration:" << LocalSearchCounter << endl;

@@ -1,5 +1,5 @@
 #include "lib.h"
-int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory)
+int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory,solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s)
 {
     int whether_improved_via_local_search = 0;
     memory.PopulatePrefixAndSuffix(IRPLR, IRPSolution);
