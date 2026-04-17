@@ -5,7 +5,7 @@ private:
 public:
 
 void LargeNeighbourhoodSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory);
-void IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest);
+void IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s);
 void LNS_Repair(input &IRPLR, solution &IRPSolution, HGS &Routing);
 void LNS_Destory(input &IRPLR, solution &IRPSolution, HGS &Routing);
 
@@ -89,16 +89,17 @@ int OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &day, int &v
 
 int OperatorRepair(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut);
 
-
 int OperatorTransfer(
-    input &IRPLR, 
-    solution &IRPSolution, 
-    double &PenaltyForStockOut);
+    input &IRPLR,
+    solution &IRPSolution,
+    double &PenaltyForStockOut,
+    vector<vector<int>> &TransferDetails,
+    preprocessing &memory);
 
-int LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory);
+int LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory,solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s);
 
 
-int ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory);
+int ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory,solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s, int &DisturbanceCounter, bool &RunHGSAtEnd);
 
 void PrintTempSolution(input &IRPLR, 
                        vector<vector<vector<int>>> &Route,

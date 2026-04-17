@@ -40,4 +40,6 @@ public:
    double ConcatenateInter(int route1, int head, int route2, int insert_begin, int insert_length, int remove, solution &IRPSolution, input &IRPLR, preprocessing &memory );
    double ConcatenateSwapTwoRoutesSingleDay(int &day, int &route1, int &InsertTo, int &RemoveLength, int &route2, int &InsertFrom, int &InsertLength,  solution &IRPSolution, input &IRPLR, preprocessing &memory);
    double ConcatenateSwapInsertRemove(int &day, int &route, int &InsertTo, int &RemoveLength, int &InsertFrom, int &InsertLength, solution &IRPSolution, input &IRPLR, preprocessing &memory  );
-};
+
+   double ConcatenateChepestInsertion(int &day1, int &route1, int &InsertTo, int &RemoveLength, int &day2, int &route2, int &InsertFrom, int &InsertLength, solution &IRPSolution, input &IRPLR, preprocessing &memory);
+  };

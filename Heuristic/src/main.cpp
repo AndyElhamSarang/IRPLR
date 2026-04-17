@@ -9,7 +9,7 @@ int printout_initial = 0;
 int NumberOfBalacingOperatorCalled = 0;
 int NumberOfVehicleAtMinimumDelivery = 0;
 
-double LocalSearchTimeLimit = 36000.0; // Default local search time limit is 12 seconds for each initial solution
+double MainAlgorithmTimeLimit = 120.0; // Default local search time limit is 12 seconds for each initial solution
 
 double power = 2.0;
 ofstream Table;
@@ -23,6 +23,11 @@ time_t start_time_to_best;
 time_t end_time_to_best;
 time_t LS_start_time;
 time_t LS_end_time;
+time_t total_start_time;
+time_t total_end_time;
+bool whether_results_reported_30 = false;
+bool whether_results_reported_60 = false;
+bool whether_results_reported_first_improvement = false;
 int main()
 {
 	file read_file;
@@ -39,7 +44,7 @@ int main()
 			Table<<",Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,Time";
 		}
 
-		Table << ",GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_To_best,T_Total\n";
+		Table << ",FirstImpCost,FirstImpQuantity,FirstImpLogisticRatio,TimeAtFirstImprovement,BestCostAt30s,BestQuantityAt30s,BestLogisticRatioAt30s,TimeAt30s,BestCostAt60s,BestQuantityAt60s,BestLogisticRatioAt60s,TimeAt60s,GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_To_best,T_Total\n";
 	}
 
 	for (int i = 0; i < read_file.instances.size(); i++)
@@ -65,9 +70,9 @@ int main()
 			HGS Routing;
 			Routing.ReadParameter();
 			Routing.HGSTimelimit = Routing.HGSTimelimit * (IRPLR.NumberOfRetailers - 1); // Set the time limit to be the number of retailers times the original time limit
-			// LocalSearchTimeLimit = LocalSearchTimeLimit * NumberOfInitialSolutions;
+			// MainAlgorithmTimeLimit = MainAlgorithmTimeLimit * NumberOfInitialSolutions;
 			cout << "HGS timelimit: " << Routing.HGSTimelimit << endl;
-			cout << "Local search timelimit: " << LocalSearchTimeLimit << endl;
+			cout << "Local search timelimit: " << MainAlgorithmTimeLimit << endl;
 			if (OutputResults == 1)
 			{
 				Table << read_file.instances[i][j] << "," << IRPLR.TimeHorizon << "," << IRPLR.NumberOfRetailers << "," << IRPLR.NumberOfVehicles << ","; // Print instance feastures in the table
@@ -90,8 +95,14 @@ int main()
 			////////////////////////////////////////////////////////////////
 			solution GlobalBest;
 			GlobalBest.LogisticRatio = numeric_limits<double>::max(); // Set a large value
-			time_t total_start_time;
-			time_t total_end_time;
+			solution FirstImprovementSolution;
+			solution IRPSolution30s;
+			solution IRPSolution60s;
+
+			whether_results_reported_30 = false;
+			whether_results_reported_60 = false;
+			whether_results_reported_first_improvement = false;
+
 			time(&total_start_time);
 			time(&start_time_to_best);
 			for (int j = 0; j < NumberOfInitialSolutions; j++)
@@ -121,7 +132,7 @@ int main()
 				generator.seed(static_cast<unsigned int>(time(0)));
 				solution_improvement Metaheuristic;
 				// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
-				Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest);
+				Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution,IRPSolution30s, IRPSolution60s);
 
 				
 			}
@@ -129,6 +140,33 @@ int main()
 			double accum_time = difftime(total_end_time, total_start_time);
 			cout<<"Global best"<<endl;
 			GlobalBest.Validation(IRPLR);
+			cout<<"whether_results_reported at 30s: "<<whether_results_reported_30<<", whether_results_reported at 60s: "<<whether_results_reported_60<<", whether_results_reported at first improvement: "<<whether_results_reported_first_improvement<<endl;
+			if(whether_results_reported_first_improvement == false )
+			{
+				Table << "-,-,-,-,";
+			
+			}
+			else
+			{
+				Table << FirstImprovementSolution.TotalTransportationCost << "," << FirstImprovementSolution.TotalDelivery << "," << FirstImprovementSolution.LogisticRatio << "," << FirstImprovementSolution.solution_time << ",";
+			}
+			if(whether_results_reported_30 == false )
+			{
+				Table << "-,-,-,-,";
+			
+			}
+			else
+			{
+				Table << IRPSolution30s.TotalTransportationCost << "," << IRPSolution30s.TotalDelivery << "," << IRPSolution30s.LogisticRatio << "," << IRPSolution30s.solution_time << ",";
+			}
+			if(whether_results_reported_60 == false)
+			{
+				Table << "-,-,-,-,";
+			}
+			else
+			{
+				Table << IRPSolution60s.TotalTransportationCost << "," << IRPSolution60s.TotalDelivery << "," << IRPSolution60s.LogisticRatio << "," << IRPSolution60s.solution_time << ",";
+			}
 			if (OutputResults == 1)
 			{
 

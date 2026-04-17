@@ -51,9 +51,9 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                     {
                                         if (pick_unallocated_customer + insert_length <= IRPSolution.UnallocatedCustomers[pick_day].size() && pick_allocated_customer + remove_length <= IRPSolution.Route[pick_day][pick_vehicle].size()) // Make sure the operator does not go outside the range
                                         {
-                                            time(&LS_end_time);
-                                            double total_ls_time = difftime(LS_end_time, LS_start_time);
-                                            if (total_ls_time - LocalSearchTimeLimit > 0.00001)
+                                            time(&total_end_time);
+                                            double total_ls_time = difftime(total_end_time, total_start_time);
+                                            if (total_ls_time - MainAlgorithmTimeLimit > 0.00001)
                                             {
                                                 int time_limit_reached = total_ls_time;
                                                 throw time_limit_reached;
@@ -260,7 +260,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                 double CopyOfQ = TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day]; // Should always be zero at this line
                                                 TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day] = min(IRPLR.Vehicle.capacity - TempVehicleLoad[pick_day][pick_vehicle], IRPLR.Retailers[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]].InventoryMax - TempInventoryLevel[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day]);
 
-                                                if (TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day] == 0)
+                                                if (TempDeliveryQuantity[TempRoute[pick_day][pick_vehicle][pick_allocated_customer]][pick_day] < 0.001)
                                                 {
                                                     Whether_insert_fail = 1;
                                                 }

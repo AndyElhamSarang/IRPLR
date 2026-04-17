@@ -3,7 +3,7 @@
 #include <sstream>
 void InventoryLevel_is_non_negative_and_upto_date(input &IRPLR, solution &IRPSolution)
 {
-   cout<<"Checking inventory level is non-negative and up-to-date."<<endl;
+    // cout << "Checking inventory level is non-negative and up-to-date." << endl;
     // cout << "----------------------------------------------------------------------------------------------------" << endl;
     // const int id_width2 = 1;
     // const int id_width = 3;
@@ -178,25 +178,25 @@ void InventoryLevel_is_non_negative_and_upto_date(input &IRPLR, solution &IRPSol
         }
     }
     // cout << "--------------------------------------------------" << endl;
-    cout<<"Check passed!"<<endl;
+    cout << "Check passed!" << endl;
 }
 
 void Delivery_Quantity_Cannot_Exceed_InventoryMax(input &IRPLR, solution &IRPSolution)
 {
-    cout<<"Checking delivery quantity cannot exceed inventory max."<<endl;
+    cout << "Checking delivery quantity cannot exceed inventory max." << endl;
     for (int i = 0; i < IRPSolution.InventoryLevel.size(); i++)
     {
         assert(IRPLR.Retailers[i].InventoryBegin + IRPSolution.DeliveryQuantity[i][0] <= IRPLR.Retailers[i].InventoryMax + 0.00001);
-        for (int j = 0; j < IRPSolution.InventoryLevel[i].size()-1; j++)
+        for (int j = 0; j < IRPSolution.InventoryLevel[i].size() - 1; j++)
         {
-            assert(IRPSolution.InventoryLevel[i][j] + IRPSolution.DeliveryQuantity[i][j+1] <= IRPLR.Retailers[i].InventoryMax + 0.00001);
+            assert(IRPSolution.InventoryLevel[i][j] + IRPSolution.DeliveryQuantity[i][j + 1] <= IRPLR.Retailers[i].InventoryMax + 0.00001);
         }
     }
-    cout<<"Check passed!"<<endl;
+    cout << "Check passed!" << endl;
 }
 void NumberOfVisitsPerCustomerCannotLessThanMin(input &IRPLR, solution &IRPSolution)
 {
-    cout<<"Check Number of Visits Per Customer Cannot Less Than Minimum Visit Demand"<<endl;
+    cout << "Check Number of Visits Per Customer Cannot Less Than Minimum Visit Demand" << endl;
     vector<int> ListNumberOfVisits;
     for (int z = 0; z < IRPLR.Retailers.size(); z++)
     {
@@ -216,17 +216,17 @@ void NumberOfVisitsPerCustomerCannotLessThanMin(input &IRPLR, solution &IRPSolut
         }
         ListNumberOfVisits.push_back(NumberOfVisits);
     }
-    for(int i = 0; i < ListNumberOfVisits.size(); i++)
+    for (int i = 0; i < ListNumberOfVisits.size(); i++)
     {
         // cout<<"Number of visits for customer "<<i<<": "<<ListNumberOfVisits[i]<<" versus "<<IRPLR.MinimumVisitDemand[i]<<endl;
         assert(ListNumberOfVisits[i] >= IRPLR.MinimumVisitDemand[i]);
     }
-    cout<<"Check passed!"<<endl;
+    cout << "Check passed!" << endl;
 }
 void Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(input &IRPLR, solution &IRPSolution)
 {
     // IRPSolution.print_solution(IRPLR);
-    cout<<"Check Total Delivery Quantity Per Route Cannot Exceed Vehicle Capacity"<<endl;
+    cout << "Check Total Delivery Quantity Per Route Cannot Exceed Vehicle Capacity" << endl;
     for (int i = 0; i < IRPSolution.Route.size(); i++)
     {
         for (int j = 0; j < IRPSolution.Route[i].size(); j++)
@@ -236,24 +236,24 @@ void Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(input &IRPLR, solu
                 double TotalDeliveryQuantityRoute = 0;
                 for (int k = 0; k < IRPSolution.Route[i][j].size(); k++)
                 {
-                    assert(IRPSolution.DeliveryQuantity[IRPSolution.Route[i][j][k]][i] >= -0.00001);
+                    assert(IRPSolution.DeliveryQuantity[IRPSolution.Route[i][j][k]][i] >= -0.00001 && "Delivery quantity is non-negative");
                     TotalDeliveryQuantityRoute += IRPSolution.DeliveryQuantity[IRPSolution.Route[i][j][k]][i];
                 }
                 // cout<<"TotalDeliveryQuantityRoute for day "<<i<<", vehicle "<<j<<": "<<TotalDeliveryQuantityRoute<<" versus "<<IRPLR.Vehicle.capacity<<", "<<IRPSolution.VehicleLoad[i][j]<<endl;
-                assert(TotalDeliveryQuantityRoute <= IRPLR.Vehicle.capacity + 0.00001);
+                assert(TotalDeliveryQuantityRoute <= IRPLR.Vehicle.capacity + 0.00001 && "Total delivery quantity exceeds vehicle capacity");
             }
         }
     }
-    cout<<"Check passed!"<<endl;
+    cout << "Check passed!" << endl;
 }
 void InventoryLevel_Cannot_Exceed_Maximum(input &IRPLR, solution &IRPSolution)
 {
-    cout<<"Check Inventory Level Cannot Exceed Maximum"<<endl;
+    cout << "Check Inventory Level Cannot Exceed Maximum" << endl;
     for (int i = 0; i < IRPSolution.InventoryLevel.size(); i++) // For each retailer
     {
-        for (int j = 0; j < IRPSolution.InventoryLevel[i].size(); j++)// For each time period
+        for (int j = 0; j < IRPSolution.InventoryLevel[i].size(); j++) // For each time period
         {
-            if(j == 0)
+            if (j == 0)
             {
                 // cout<<"InventoryLevel for Retailer "<<i<<", period "<<j<<": "<<IRPSolution.DeliveryQuantity[i][j]<<" versus "<<IRPLR.Retailers[i].InventoryBegin<<endl;
                 assert(IRPLR.Retailers[i].InventoryBegin + IRPSolution.DeliveryQuantity[i][j] <= IRPLR.Retailers[i].InventoryMax + 0.00001);
@@ -261,22 +261,112 @@ void InventoryLevel_Cannot_Exceed_Maximum(input &IRPLR, solution &IRPSolution)
             else
             {
                 // cout<<"InventoryLevel for Retailer "<<i<<", period "<<j<<": "<<IRPSolution.DeliveryQuantity[i][j]<<" versus "<<IRPLR.Retailers[i].InventoryBegin<<endl;
-                assert(IRPSolution.InventoryLevel[i][j-1] + IRPSolution.DeliveryQuantity[i][j] <= IRPLR.Retailers[i].InventoryMax + 0.00001);
+                assert(IRPSolution.InventoryLevel[i][j - 1] + IRPSolution.DeliveryQuantity[i][j] <= IRPLR.Retailers[i].InventoryMax + 0.00001);
             }
         }
     }
-    cout<<"Check passed!"<<endl;
+    cout << "Check passed!" << endl;
 }
+
+void CustomerCannotVisitMoreThanOncePerPeriod(input &IRPLR, solution &IRPSolution)
+{
+    cout << "Check Each Customer is Visited at Most Once Per Period" << endl;
+    for (int i = 0; i < IRPSolution.Route.size(); i++) // For each time period
+    {
+        for (int j = 0; j < IRPLR.Retailers.size(); j++)
+        {
+            bool Visited = false;
+            for (int k = 0; k < IRPSolution.Route[i].size(); k++) // For each vehicle
+            {
+                for (int x = 0; x < IRPSolution.Route[i][k].size(); x++) // For each position in the route
+                {
+                    if (IRPSolution.Route[i][k][x] == j)
+                    {
+                        if (Visited == false)
+                        {
+                            Visited = true;
+                        }
+                        else
+                        {
+                            assert(false && "Customer cannot be visited more than once per period");
+                        }
+                    }
+                }
+            }
+        }
+    }
+    cout << "Check passed!" << endl;
+}
+
+void NotUseMoreThanVehicleAvailable(input &IRPLR, solution &IRPSolution)
+{
+    cout << "Check Not to Use More Vehicles Than Available" << endl;
+    for (int i = 0; i < IRPSolution.Route.size(); i++)
+    {
+
+        assert(IRPSolution.Route[i].size() <= IRPLR.NumberOfVehicles && "More vehicles used than available");
+    }
+    cout << "Check passed!" << endl;
+}
+
+void DeliverZeroIfNotVisitedViceVersa(input &IRPLR, solution &IRPSolution)
+{
+    // Unit tests
+    //  IRPSolution.Route[0][0].erase(IRPSolution.Route[0][0].begin(), IRPSolution.Route[0][0].begin() + 1); // This is just for testing, it will be removed later. We want to make sure the check can capture the error if the first customer is visited but delivery quantity is zero.
+    //  IRPSolution.print_solution(IRPLR);
+    //  IRPSolution.Route[0][0].erasepush_back(5); // This is just for testing, it will be removed later. We want to make sure the check can capture the error if the first customer is visited but delivery quantity is zero.
+    //  IRPSolution.print_solution(IRPLR);
+    cout << "Check Demand is Zero if Not Visited, and is More than Zero if Visited" << endl;
+    for (int i = 0; i < IRPSolution.DeliveryQuantity.size(); i++) // For each retailer
+    {
+        for (int j = 0; j < IRPSolution.DeliveryQuantity[i].size(); j++) // For each time period
+        {
+            if (IRPSolution.DeliveryQuantity[i][j] >= 0.001)
+            {
+                bool Visited = false;
+                for (int k = 0; k < IRPSolution.Route[j].size(); k++) // For each vehicle
+                {
+                    for (int x = 0; x < IRPSolution.Route[j][k].size(); x++) // For each position in the route
+                    {
+                        if (IRPSolution.Route[j][k][x] == i)
+                        {
+                            Visited = true;
+                        }
+                    }
+                }
+                assert(Visited == true && "if demand is more than zero, it should be visited");
+            }
+            else
+            {
+                bool Visited = false;
+                for (int k = 0; k < IRPSolution.Route[j].size(); k++) // For each vehicle
+                {
+                    for (int x = 0; x < IRPSolution.Route[j][k].size(); x++) // For each position in the route
+                    {
+                        if (IRPSolution.Route[j][k][x] == i)
+                        {
+                            Visited = true;
+                        }
+                    }
+                }
+                assert(Visited == false && "If demand is zero, it should not be visited");
+            }
+        }
+    }
+    cout << "Check passed!" << endl;
+}
+
 void solution::Validation(input &IRPLR)
-{   
-    
-    Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(IRPLR, *this); 
+{
+
+    Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(IRPLR, *this);
     Delivery_Quantity_Cannot_Exceed_InventoryMax(IRPLR, *this);
     InventoryLevel_is_non_negative_and_upto_date(IRPLR, *this);
-    NumberOfVisitsPerCustomerCannotLessThanMin(IRPLR, *this);   
+    NumberOfVisitsPerCustomerCannotLessThanMin(IRPLR, *this);
     InventoryLevel_Cannot_Exceed_Maximum(IRPLR, *this);
-    //Not use more than vehicle available
-    //Each customer is visited once per period.
+    CustomerCannotVisitMoreThanOncePerPeriod(IRPLR, *this);
+    NotUseMoreThanVehicleAvailable(IRPLR, *this);
+    DeliverZeroIfNotVisitedViceVersa(IRPLR, *this);
 }
 
 void solution::UpdateVehicleAllocationVisitOrder(input &IRPLR)
@@ -287,18 +377,11 @@ void solution::UpdateVehicleAllocationVisitOrder(input &IRPLR)
     //                                                                   //
     ///////////////////////////////////////////////////////////////////////
 
-    for (int i = 0; i < VisitOrder.size(); i++)
-    {
-        for (int j = 0; j < VisitOrder[i].size(); j++)
-        {
-            VisitOrder[i][j] = IRPLR.Retailers.size() + 1;
-        }
-    }
-
     for (int i = 0; i < Route.size(); i++) // For this time period
     {
         for (int x = 0; x < IRPLR.Retailers.size(); x++) // Check each retailers
         {
+            bool Visited = false;
             for (int j = 0; j < Route[i].size(); j++) // index j for vehicle
             {
                 for (int k = 0; k < Route[i][j].size(); k++) // index k for position
@@ -307,8 +390,15 @@ void solution::UpdateVehicleAllocationVisitOrder(input &IRPLR)
                     if (Route[i][j][k] == x)
                     {
                         VisitOrder[x][i] = k;
+                        VehicleAllocation[x][i] = j;
+                        Visited = true;
                     }
                 }
+            }
+            if (Visited == false) // This customer is not visited
+            {
+                VisitOrder[x][i] = IRPLR.Retailers.size() + 1;
+                VehicleAllocation[x][i] = IRPLR.NumberOfVehicles + 1;
             }
         }
     }
@@ -316,7 +406,6 @@ void solution::UpdateVehicleAllocationVisitOrder(input &IRPLR)
 
 void solution::print_solution(input &IRPLR)
 {
-    
 
     const int id_width2 = 1;
     const int id_width = 3;
@@ -452,7 +541,6 @@ void solution::print_solution(input &IRPLR)
     }
 }
 
-
 void solution::GetLogisticRatio(input &IRPLR)
 {
     StockOutPerCustomer.clear();
@@ -522,15 +610,15 @@ void solution::GetLogisticRatio(input &IRPLR)
     }
     LogisticRatio = TotalTransportationCost / TotalDelivery;
 
-    for(int i=0;i<InventoryLevel.size();i++)
+    for (int i = 0; i < InventoryLevel.size(); i++)
     {
-        double StockOutOfThisCustomer=0;
-        for(int j=0;j<InventoryLevel[i].size();j++)
+        double StockOutOfThisCustomer = 0;
+        for (int j = 0; j < InventoryLevel[i].size(); j++)
         {
-            if(InventoryLevel[i][j]<0)
+            if (InventoryLevel[i][j] < 0)
             {
-                ViolationStockOut-=InventoryLevel[i][j];
-                StockOutOfThisCustomer-=InventoryLevel[i][j];
+                ViolationStockOut -= InventoryLevel[i][j];
+                StockOutOfThisCustomer -= InventoryLevel[i][j];
             }
         }
         StockOutPerCustomer.push_back(StockOutOfThisCustomer);
