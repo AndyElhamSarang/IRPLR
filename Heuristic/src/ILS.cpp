@@ -80,7 +80,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     // BestIRP_Solution.print_solution(IRPLR);
     // cout << "Best logistic ratio:" << BestIRP_Solution.LogisticRatio << endl;
     int DisturbanceCounter = 0;
-    double PenaltyForStockOut = 1;
+    double PenaltyForStockOut = 1000;
     int ToAdjustPenalty = 10;
     int ItForCurrentPenalty = 0;
     int NumberOfInfeasibleSolution = 0;

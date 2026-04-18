@@ -102,8 +102,8 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
     {
         for (int time = 0; time < IRPLR.TimeHorizon; time++)
         {
-            // cout<<"Rebalanceing time "<< time<<endl;
-            // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation,VisitOrder);
+            cout<<"Rebalanceing time "<< time<<endl;
+            PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation,VisitOrder);
             ///////////////////////////////////////////////////////////////
             //                                                           //
             //                For this time horizon,                     //
@@ -181,38 +181,36 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
             
             for (int i = 0; i < DeliveryQuantity.size(); i++) // Index i for retailer
             {
-                for (int j = 0; j < DeliveryQuantity[i].size(); j++) // Index j for time period
-                {
-                    if (DeliveryQuantity[i][j] == 0 && VehicleAllocation[i][j] < IRPLR.NumberOfVehicles)
-                    {
-                        UnallocatedCustomers[j].push_back(Route[j][VehicleAllocation[i][j]][VisitOrder[i][j]]);
-                        Route[j][VehicleAllocation[i][j]].erase(Route[j][VehicleAllocation[i][j]].begin() + VisitOrder[i][j], Route[j][VehicleAllocation[i][j]].begin() + VisitOrder[i][j] + 1);
 
-                        for (int k = 0; k < VisitOrder.size(); k++)
+                if (DeliveryQuantity[i][time] == 0 && VehicleAllocation[i][time] < IRPLR.NumberOfVehicles)
+                {
+                    UnallocatedCustomers[time].push_back(Route[time][VehicleAllocation[i][time]][VisitOrder[i][time]]);
+                    Route[time][VehicleAllocation[i][time]].erase(Route[time][VehicleAllocation[i][time]].begin() + VisitOrder[i][time], Route[time][VehicleAllocation[i][time]].begin() + VisitOrder[i][time] + 1);
+
+                    for (int k = 0; k < VisitOrder.size(); k++)
+                    {
+                        if (VehicleAllocation[k][time] == VehicleAllocation[i][time]) // Find visits in the same vehicle as Retailer i on day j
                         {
-                            if (VehicleAllocation[k][j] == VehicleAllocation[i][j]) // Find visits in the same vehicle as Retailer i on day j
+                            if (VisitOrder[k][time] > VisitOrder[i][time]) // If this visit is after the visit of Retailer i
                             {
-                                if (VisitOrder[k][j] > VisitOrder[i][j]) // If this visit is after the visit of Retailer i
-                                {
-                                    VisitOrder[k][j] = VisitOrder[k][j] - 1;
-                                }
+                                VisitOrder[k][time] = VisitOrder[k][time] - 1;
                             }
                         }
-                        VisitOrder[i][j] = IRPLR.Retailers.size() + 1;
-                        VehicleAllocation[i][j] = IRPLR.NumberOfVehicles + 1;
                     }
-                    else
+                    VisitOrder[i][time] = IRPLR.Retailers.size() + 1;
+                    VehicleAllocation[i][time] = IRPLR.NumberOfVehicles + 1;
+                }
+                else
+                {
+                    if (VehicleAllocation[i][time] == IRPLR.NumberOfVehicles + 1)
                     {
-                        if (VehicleAllocation[i][j] == IRPLR.NumberOfVehicles + 1)
-                        {
-                            assert(DeliveryQuantity[i][j] == 0);
-                        }
+                        assert(DeliveryQuantity[i][time] == 0);
                     }
                 }
             }
            
-            // cout << "After deliver minimum to survive on time "  <<time<< endl;
-            // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation,VisitOrder);
+            cout << "After deliver minimum to survive on time "  <<time<< endl;
+            PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation,VisitOrder);
             //////////////////////////////////////////////////////////////
             //                                                          //
             //     For the remaining capacity of vehicle,               //
@@ -359,8 +357,8 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                 CustomerWeight.erase(CustomerWeight.begin() + RandomCustomer, CustomerWeight.begin() + RandomCustomer + 1);
                 CumulativeCustomerWeight.erase(CumulativeCustomerWeight.begin() + RandomCustomer, CumulativeCustomerWeight.begin() + RandomCustomer + 1);
             }
-            // cout << "After complete rebalancing, time " <<time<< endl;
-            // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation,VisitOrder);
+            cout << "After complete rebalancing, time " <<time<< endl;
+            PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation,VisitOrder);
 
             // assert(aborter == 1);
         }
