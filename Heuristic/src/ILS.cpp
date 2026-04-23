@@ -80,7 +80,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     // BestIRP_Solution.print_solution(IRPLR);
     // cout << "Best logistic ratio:" << BestIRP_Solution.LogisticRatio << endl;
     int DisturbanceCounter = 0;
-    double PenaltyForStockOut = 1;
+    double PenaltyForStockOut = 10000;
     int ToAdjustPenalty = 10;
     int ItForCurrentPenalty = 0;
     int NumberOfInfeasibleSolution = 0;
@@ -240,13 +240,22 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     cout << "!LogisticRatio before rebalance:" << GlobalBest.LogisticRatio << endl;
                     int is_Rebalace_infeasible = 0;
                     int counting_infeasible_case = 0;
-                    vector<vector<vector<int>>> TempRoute(GlobalBest.Route);
-                    vector<vector<int>> TempUnallocatedCustomers(GlobalBest.UnallocatedCustomers);
-                    vector<vector<double>> TempVehicleLoad(GlobalBest.VehicleLoad);
-                    vector<vector<double>> TempDeliveryQuantity(GlobalBest.DeliveryQuantity);
-                    vector<vector<double>> TempInventoryLevel(GlobalBest.InventoryLevel);
-                    vector<vector<int>> TempVehicleAllocation(GlobalBest.VehicleAllocation);
-                    vector<vector<int>> TempVisitOrder(GlobalBest.VisitOrder);
+                    // vector<vector<vector<int>>> TempRoute(GlobalBest.Route);
+                    // vector<vector<int>> TempUnallocatedCustomers(GlobalBest.UnallocatedCustomers);
+                    // vector<vector<double>> TempVehicleLoad(GlobalBest.VehicleLoad);
+                    // vector<vector<double>> TempDeliveryQuantity(GlobalBest.DeliveryQuantity);
+                    // vector<vector<double>> TempInventoryLevel(GlobalBest.InventoryLevel);
+                    // vector<vector<int>> TempVehicleAllocation(GlobalBest.VehicleAllocation);
+                    // vector<vector<int>> TempVisitOrder(GlobalBest.VisitOrder);
+
+                    vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
+                    vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
+                    vector<vector<double>> TempVehicleLoad(IRPSolution.VehicleLoad);
+                    vector<vector<double>> TempDeliveryQuantity(IRPSolution.DeliveryQuantity);
+                    vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
+                    vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
+                    vector<vector<int>> TempVisitOrder(IRPSolution.VisitOrder);
+                    
                     time(&rebalance_start_time);
                     double LogisctiRatioAfterRebalance = numeric_limits<double>::max();
                     LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
@@ -308,7 +317,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 }
                 if (NumberOfFeasibleSolution >= ToAdjustPenalty)
                 {
-                    // PenaltyForStockOut = PenaltyForStockOut / 2;
+                    PenaltyForStockOut = PenaltyForStockOut / 2;
                     ItForCurrentPenalty = 0;
                     NumberOfFeasibleSolution = 0;
                 }

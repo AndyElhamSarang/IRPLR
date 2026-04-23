@@ -21,7 +21,7 @@ void RecordSolution_First_30s_60s(input &IRPLR, solution &IRPSolution, solution 
     //                                            //
     ////////////////////////////////////////////////
     cout<<"Accumulated time: " << accum_time << "s." << endl;
-    if (accum_time > 30 && whether_results_reported_30 == false)
+    if (accum_time > 29 && whether_results_reported_30 == false)
     {
         cout<<"30s time point reached." << endl;
         IRPSolution.GetLogisticRatio(IRPLR);
@@ -44,7 +44,7 @@ void RecordSolution_First_30s_60s(input &IRPLR, solution &IRPSolution, solution 
     //     Report Global Best Solution at 60s     //
     //                                            //
     ////////////////////////////////////////////////
-    if (accum_time > 60 && whether_results_reported_60 == false)
+    if (accum_time > 59 && whether_results_reported_60 == false)
     {
         cout << "60s time point reached." << endl;
         IRPSolution.GetLogisticRatio(IRPLR);
