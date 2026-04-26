@@ -625,3 +625,4 @@ void solution::GetLogisticRatio(input &IRPLR)
     }
     // Validation(IRPLR);
 }
+

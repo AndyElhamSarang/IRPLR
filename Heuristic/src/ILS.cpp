@@ -80,14 +80,27 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     // BestIRP_Solution.print_solution(IRPLR);
     // cout << "Best logistic ratio:" << BestIRP_Solution.LogisticRatio << endl;
     int DisturbanceCounter = 0;
-    double PenaltyForStockOut = 10000;
+    int MethodToUpdatePenalty = 1;
+    // Method 1: Double or half
+    // Method 2: Lagrangian relaxation
+    double PenaltyForStockOut = 0;
+    if (MethodToUpdatePenalty == 0)
+    {
+
+        assert(PenaltyForStockOut == 1);
+    }
+    else if (MethodToUpdatePenalty == 1)
+    {
+        //assert(PenaltyForStockOut == 0);
+    }
     int ToAdjustPenalty = 10;
     int ItForCurrentPenalty = 0;
     int NumberOfInfeasibleSolution = 0;
     int NumberOfFeasibleSolution = 0;
     int FeasibleSolutionCounter = 0;
     int BetterFeasibleSolutionCounter = 0;
-
+    int CountFeasibleLocalSearchOut = 0;
+    int CountInFeasibleLocalSearchOut = 0;
     int NumberOfRebalance = 0;
     int NumberOfRebalanceImproved = 0;
     double AccumulatedPrecentageRebalanceImprovement = 0;
@@ -102,7 +115,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
         {
             time(&total_end_time);
             double total_ls_time = difftime(total_end_time, total_start_time);
-            if (total_ls_time - MainAlgorithmTimeLimit > 0.00001)
+            if (total_ls_time - MainAlgorithmTimeLimit > -0.01)
             {
                 int time_limit_reached = total_ls_time;
                 throw time_limit_reached;
@@ -120,6 +133,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "---------------------------------------------" << endl;
             cout << "Start Local Search, iteration " << LocalSearchCounter << ", with Disturbance Counter: " << DisturbanceCounter << endl;
             cout << "---------------------------------------------" << endl;
+
             ImprovedLocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory,GlobalBest, FirstImprovementSolution, IRPSolution30s,IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
             // LocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s,IRPSolution60s);
             time(&LocalSearch_end_time);
@@ -146,16 +160,11 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             ItForCurrentPenalty++;
             if (IRPSolution.ViolationStockOut - 0 > 0.00001)
             {
-                NumberOfInfeasibleSolution++;
-                if (NumberOfInfeasibleSolution >= ToAdjustPenalty)
-                {
-                    PenaltyForStockOut = PenaltyForStockOut * 2;
-                    ItForCurrentPenalty = 0;
-                    NumberOfInfeasibleSolution = 0;
-                }
+                CountInFeasibleLocalSearchOut++;
             }
             else
             {
+                CountFeasibleLocalSearchOut++;
                 NumberOfFeasibleSolution++;
                 FeasibleSolutionCounter++;
                 cout << "!Feasible solution obtained" << endl;
@@ -315,13 +324,47 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     BestIRP_Solution = IRPSolution;
                     BestIRP_Solution.LogisticRatio = IRPSolution.LogisticRatio;
                 }
-                if (NumberOfFeasibleSolution >= ToAdjustPenalty)
-                {
-                    PenaltyForStockOut = PenaltyForStockOut / 2;
-                    ItForCurrentPenalty = 0;
-                    NumberOfFeasibleSolution = 0;
-                }
             }
+
+            /////////////////////////////////////////////////////
+            //                                                 //
+            //    Method 1 to update Penalty for stockout      //
+            //                                                 //
+            /////////////////////////////////////////////////////
+            // if (IRPSolution.ViolationStockOut - 0 > 0.00001)
+            // {
+            //     NumberOfInfeasibleSolution++;
+            //     if (NumberOfInfeasibleSolution >= ToAdjustPenalty)
+            //     {
+            //         PenaltyForStockOut = PenaltyForStockOut * 2;
+            //         ItForCurrentPenalty = 0;
+            //         NumberOfInfeasibleSolution = 0;
+            //     }
+            // }
+            // else
+            // {
+
+            //     if (NumberOfFeasibleSolution >= ToAdjustPenalty)
+            //     {
+            //         PenaltyForStockOut = PenaltyForStockOut / 2;
+            //         ItForCurrentPenalty = 0;
+            //         NumberOfFeasibleSolution = 0;
+            //     }
+            // }
+            /////////////////////////////////////////////////////
+            //                                                 //
+            //    Method 2 to update Penalty for stockout      //
+            //                                                 //
+            /////////////////////////////////////////////////////
+            // if (IRPSolution.ViolationStockOut - 0 > 0.00001)
+            // {
+            //     double eta = 0.1;
+            //     double norm_2 = IRPSolution.ViolationStockOut * IRPSolution.ViolationStockOut;
+            //     double objv_LR = IRPSolution.LogisticRatio + PenaltyForStockOut * IRPSolution.ViolationStockOut;
+            //     double tau = eta * (GlobalBest.LogisticRatio - objv_LR) / norm_2;
+            //     PenaltyForStockOut = PenaltyForStockOut + IRPSolution.ViolationStockOut * tau;
+            // }
+
             cout << "DisturbanceCounter:" << DisturbanceCounter << ", PenaltyForStockOut:" << PenaltyForStockOut << endl;
             cout << "-----------------------------------------------" << endl;
             cout << "Start Disturbance Operator" << endl;
@@ -329,6 +372,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
             cout << "End Disturbance Operator" << endl;
             cout << "------------------------------------------------" << endl;
+            Global_total_iteration++;
             DisturbanceCounter++;
         }
     }

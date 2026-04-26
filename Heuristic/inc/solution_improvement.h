@@ -21,6 +21,7 @@ double Calculate_la_relax_objv(
     double &stockout_penalty, 
     double &stockout
 );
+void InitialiseUpdateLagrangianMultipler(solution &IRPSolution, double &PenaltyForStockOut, solution &GlobalBest);
 void AdjustQuantityAndInventoryLevel(
     double &begining_inventory, 
     int &day, 

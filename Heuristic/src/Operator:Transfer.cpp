@@ -19,7 +19,7 @@ int solution_improvement::OperatorTransfer(
     double LR_objv = numeric_limits<double>::max();
     IRPSolution.GetLogisticRatio(IRPLR);
     // IRPSolution.print_solution(IRPLR);
-    // cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << endl;
+    cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << endl;
     LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
     // cout << "LR objv:" << LR_objv << endl;
     double objv_begin = LR_objv;
@@ -61,7 +61,7 @@ int solution_improvement::OperatorTransfer(
 
             time(&total_end_time);
             double total_ls_time = difftime(total_end_time, total_start_time);
-            if (total_ls_time - MainAlgorithmTimeLimit > 0.00001)
+            if (total_ls_time - MainAlgorithmTimeLimit > -0.01)
             {
                 int time_limit_reached = total_ls_time;
                 throw time_limit_reached;
@@ -394,11 +394,11 @@ int solution_improvement::OperatorTransfer(
 
     time(&accumulate_end_time);
     accumulated_time += difftime(accumulate_end_time, accumulate_start_time);
-    cout << "Accumulated time:" << accumulated_time << endl;
-    cout << "Total solution explored:" << solutionCounter << endl;
-    cout << "Valid insertion:" << working_solutionCounter << endl;
-    cout << "whether_improved_or_not:" << whether_improved_or_not << endl;
-    cout << "ImpLogisticRatio:" << ImpLogisticRatio << "\t ImpStockOut:" << ImpStockOut << endl;
+    cout << "Accumulated time:" << accumulated_time << ";";
+    cout << "Total solution explored:" << solutionCounter << ";";
+    cout << "Valid insertion:" << working_solutionCounter << ";";
+    cout << "whether_improved_or_not:" << whether_improved_or_not << ";";
+    cout << "ImpLogisticRatio:" << ImpLogisticRatio << ", ImpStockOut:" << ImpStockOut << endl;
 
     ////////////////////////////////////////////////////////////////////////////
     //                                                                        //
@@ -434,7 +434,7 @@ int solution_improvement::OperatorTransfer(
             if (IRPSolution.UnallocatedCustomers[move[3]][remove_inserted_customer] == move[8])
             {
                 whether_remove_inserted_customer_exists = true;
-                IRPSolution.UnallocatedCustomers[move[3]].erase(IRPSolution.UnallocatedCustomers[move[3]].begin()+ remove_inserted_customer, IRPSolution.UnallocatedCustomers[move[3]].begin()+ remove_inserted_customer + move[6]);
+                IRPSolution.UnallocatedCustomers[move[3]].erase(IRPSolution.UnallocatedCustomers[move[3]].begin() + remove_inserted_customer, IRPSolution.UnallocatedCustomers[move[3]].begin() + remove_inserted_customer + move[6]);
                 break;
             }
         }
@@ -482,8 +482,6 @@ int solution_improvement::OperatorTransfer(
         //     // cout<<"Customer "<<i<<", total delivery after move:"<<total_delivery_for_customer<<endl;
         // }
         // cout << "ImpTotalDelivery:" << ImpTotalDelivery << "\t CheckTotalDelivery:" << CheckTotalDelivery << endl;
-
-        
 
         // IRPSolution.print_solution(IRPLR);
         // // IRPSolution.Validation(IRPLR);

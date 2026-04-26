@@ -4,6 +4,7 @@ extern int printout_initialOutputCVRP;
 extern int printout_initialRouting;
 extern int printout_initialReadCVRP;
 extern int printout_initial;
+extern int Global_total_iteration;
 extern base_generator_type generator;
 extern ofstream Table;
 extern string MachineDirectory;

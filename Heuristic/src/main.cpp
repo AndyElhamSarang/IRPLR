@@ -5,7 +5,7 @@ int printout_initialOutputCVRP = 0;
 int printout_initialRouting = 0;
 int printout_initialReadCVRP = 0;
 int printout_initial = 0;
-
+int Global_total_iteration = 0;
 int NumberOfBalacingOperatorCalled = 0;
 int NumberOfVehicleAtMinimumDelivery = 0;
 
@@ -44,7 +44,7 @@ int main()
 			Table<<",Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,Time";
 		}
 
-		Table << ",FirstImpCost,FirstImpQuantity,FirstImpLogisticRatio,TimeAtFirstImprovement,BestCostAt30s,BestQuantityAt30s,BestLogisticRatioAt30s,TimeAt30s,BestCostAt60s,BestQuantityAt60s,BestLogisticRatioAt60s,TimeAt60s,GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_To_best,T_Total\n";
+		Table << ",FirstImpCost,FirstImpQuantity,FirstImpLogisticRatio,TimeAtFirstImprovement,BestCostAt30s,BestQuantityAt30s,BestLogisticRatioAt30s,TimeAt30s,BestCostAt60s,BestQuantityAt60s,BestLogisticRatioAt60s,TimeAt60s,GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_iteration,T_To_best,T_Total\n";
 	}
 
 	for (int i = 0; i < read_file.instances.size(); i++)
@@ -143,8 +143,7 @@ int main()
 			cout<<"whether_results_reported at 30s: "<<whether_results_reported_30<<", whether_results_reported at 60s: "<<whether_results_reported_60<<", whether_results_reported at first improvement: "<<whether_results_reported_first_improvement<<endl;
 			if(whether_results_reported_first_improvement == false )
 			{
-				Table << "-,-,-,-,";
-			
+				Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << GlobalBest.solution_time << ",";
 			}
 			else
 			{
@@ -152,7 +151,7 @@ int main()
 			}
 			if(whether_results_reported_30 == false )
 			{
-				Table << "-,-,-,-,";
+				Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << GlobalBest.solution_time << ",";
 			
 			}
 			else
@@ -161,7 +160,7 @@ int main()
 			}
 			if(whether_results_reported_60 == false)
 			{
-				Table << "-,-,-,-,";
+				Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << GlobalBest.solution_time << ",";
 			}
 			else
 			{
@@ -170,7 +169,7 @@ int main()
 			if (OutputResults == 1)
 			{
 
-				Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << GlobalBest.solution_time << "," << accum_time << ",";
+				Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << Global_total_iteration << "," << GlobalBest.solution_time << "," << accum_time << ",";
 			}
 			if (OutputResults == 1)
 			{
