@@ -80,19 +80,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     // BestIRP_Solution.print_solution(IRPLR);
     // cout << "Best logistic ratio:" << BestIRP_Solution.LogisticRatio << endl;
     int DisturbanceCounter = 0;
-    int MethodToUpdatePenalty = 1;
-    // Method 1: Double or half
-    // Method 2: Lagrangian relaxation
-    double PenaltyForStockOut = 0;
-    if (MethodToUpdatePenalty == 0)
-    {
-
-        assert(PenaltyForStockOut == 1);
-    }
-    else if (MethodToUpdatePenalty == 1)
-    {
-        //assert(PenaltyForStockOut == 0);
-    }
+    double ScalarLagrangianRelaxation = 10;
     int ToAdjustPenalty = 10;
     int ItForCurrentPenalty = 0;
     int NumberOfInfeasibleSolution = 0;
@@ -134,8 +122,8 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "Start Local Search, iteration " << LocalSearchCounter << ", with Disturbance Counter: " << DisturbanceCounter << endl;
             cout << "---------------------------------------------" << endl;
 
-            ImprovedLocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory,GlobalBest, FirstImprovementSolution, IRPSolution30s,IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
-            // LocalSearch(IRPLR, IRPSolution, PenaltyForStockOut, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s,IRPSolution60s);
+            ImprovedLocalSearch(IRPLR, IRPSolution, ScalarLagrangianRelaxation, memory,GlobalBest, FirstImprovementSolution, IRPSolution30s,IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+            // LocalSearch(IRPLR, IRPSolution, ScalarLagrangianRelaxation, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s,IRPSolution60s);
             time(&LocalSearch_end_time);
             double total_LocalSearch_time = difftime(LocalSearch_end_time, LocalSearch_start_time);
 
@@ -147,15 +135,15 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             // IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
             // IRPSolution.print_solution(IRPLR);
             cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
-            cout << "ViolationStockOut" << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << endl;
+            cout << "ViolationStockOut" << IRPSolution.ViolationStockOut << "\t ScalarLagrangianRelaxation:" << ScalarLagrangianRelaxation << endl;
 
             cout << "---------------------------------------------" << endl;
 
             // if (IRPSolution.ViolationStockOut != 0)
             // {
-            //     int whether_improved_insert = OperatorInsert(IRPLR, IRPSolution, PenaltyForStockOut, memory);
+            //     int whether_improved_insert = OperatorInsert(IRPLR, IRPSolution, ScalarLagrangianRelaxation, memory);
             // }
-            // violation = OperatorRemove(IRPLR, IRPSolution,  PenaltyForStockOut, memory);
+            // violation = OperatorRemove(IRPLR, IRPSolution,  ScalarLagrangianRelaxation, memory);
 
             ItForCurrentPenalty++;
             if (IRPSolution.ViolationStockOut - 0 > 0.00001)
@@ -249,21 +237,21 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     cout << "!LogisticRatio before rebalance:" << GlobalBest.LogisticRatio << endl;
                     int is_Rebalace_infeasible = 0;
                     int counting_infeasible_case = 0;
-                    // vector<vector<vector<int>>> TempRoute(GlobalBest.Route);
-                    // vector<vector<int>> TempUnallocatedCustomers(GlobalBest.UnallocatedCustomers);
-                    // vector<vector<double>> TempVehicleLoad(GlobalBest.VehicleLoad);
-                    // vector<vector<double>> TempDeliveryQuantity(GlobalBest.DeliveryQuantity);
-                    // vector<vector<double>> TempInventoryLevel(GlobalBest.InventoryLevel);
-                    // vector<vector<int>> TempVehicleAllocation(GlobalBest.VehicleAllocation);
-                    // vector<vector<int>> TempVisitOrder(GlobalBest.VisitOrder);
+                    vector<vector<vector<int>>> TempRoute(GlobalBest.Route);
+                    vector<vector<int>> TempUnallocatedCustomers(GlobalBest.UnallocatedCustomers);
+                    vector<vector<double>> TempVehicleLoad(GlobalBest.VehicleLoad);
+                    vector<vector<double>> TempDeliveryQuantity(GlobalBest.DeliveryQuantity);
+                    vector<vector<double>> TempInventoryLevel(GlobalBest.InventoryLevel);
+                    vector<vector<int>> TempVehicleAllocation(GlobalBest.VehicleAllocation);
+                    vector<vector<int>> TempVisitOrder(GlobalBest.VisitOrder);
 
-                    vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
-                    vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
-                    vector<vector<double>> TempVehicleLoad(IRPSolution.VehicleLoad);
-                    vector<vector<double>> TempDeliveryQuantity(IRPSolution.DeliveryQuantity);
-                    vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
-                    vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
-                    vector<vector<int>> TempVisitOrder(IRPSolution.VisitOrder);
+                    // vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
+                    // vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
+                    // vector<vector<double>> TempVehicleLoad(IRPSolution.VehicleLoad);
+                    // vector<vector<double>> TempDeliveryQuantity(IRPSolution.DeliveryQuantity);
+                    // vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
+                    // vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
+                    // vector<vector<int>> TempVisitOrder(IRPSolution.VisitOrder);
                     
                     time(&rebalance_start_time);
                     double LogisctiRatioAfterRebalance = numeric_limits<double>::max();
@@ -328,44 +316,17 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
 
             /////////////////////////////////////////////////////
             //                                                 //
-            //    Method 1 to update Penalty for stockout      //
+            //      Update Scalar for relaxation stockout      //
             //                                                 //
             /////////////////////////////////////////////////////
-            // if (IRPSolution.ViolationStockOut - 0 > 0.00001)
-            // {
-            //     NumberOfInfeasibleSolution++;
-            //     if (NumberOfInfeasibleSolution >= ToAdjustPenalty)
-            //     {
-            //         PenaltyForStockOut = PenaltyForStockOut * 2;
-            //         ItForCurrentPenalty = 0;
-            //         NumberOfInfeasibleSolution = 0;
-            //     }
-            // }
-            // else
-            // {
 
-            //     if (NumberOfFeasibleSolution >= ToAdjustPenalty)
-            //     {
-            //         PenaltyForStockOut = PenaltyForStockOut / 2;
-            //         ItForCurrentPenalty = 0;
-            //         NumberOfFeasibleSolution = 0;
-            //     }
-            // }
-            /////////////////////////////////////////////////////
-            //                                                 //
-            //    Method 2 to update Penalty for stockout      //
-            //                                                 //
-            /////////////////////////////////////////////////////
-            // if (IRPSolution.ViolationStockOut - 0 > 0.00001)
-            // {
-            //     double eta = 0.1;
-            //     double norm_2 = IRPSolution.ViolationStockOut * IRPSolution.ViolationStockOut;
-            //     double objv_LR = IRPSolution.LogisticRatio + PenaltyForStockOut * IRPSolution.ViolationStockOut;
-            //     double tau = eta * (GlobalBest.LogisticRatio - objv_LR) / norm_2;
-            //     PenaltyForStockOut = PenaltyForStockOut + IRPSolution.ViolationStockOut * tau;
-            // }
+            if (DisturbanceCounter >= ToAdjustPenalty)
+            {
+                ScalarLagrangianRelaxation = ScalarLagrangianRelaxation / 2;
+                ItForCurrentPenalty = 0;
+            }
 
-            cout << "DisturbanceCounter:" << DisturbanceCounter << ", PenaltyForStockOut:" << PenaltyForStockOut << endl;
+            cout << "DisturbanceCounter:" << DisturbanceCounter << ", ScalarLagrangianRelaxation:" << ScalarLagrangianRelaxation << endl;
             cout << "-----------------------------------------------" << endl;
             cout << "Start Disturbance Operator" << endl;
             OperatorDisturb(IRPLR, GlobalBest, IRPSolution, DisturbanceCounter, MaxDisturbance);

@@ -15,22 +15,21 @@ double solution_improvement::Calculate_la_relax_objv(double &logistic_ratio, dou
     return la_relax_objv;
 }
 
-void solution_improvement::InitialiseUpdateLagrangianMultipler(solution &IRPSolution, double &PenaltyForStockOut, solution &GlobalBest)
+void solution_improvement::InitialiseUpdateLagrangianMultipler(solution &IRPSolution, double &PenaltyForStockOut, solution &GlobalBest, double &ScalarLagrangianRelaxation)
 {
-    double eta = 10;
     double norm_2 = IRPSolution.ViolationStockOut * IRPSolution.ViolationStockOut;
     double objv_LR = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
     double tau = 0;
     if (GlobalBest.LogisticRatio - objv_LR > 0.00001)
     {
 
-        tau = (eta * (GlobalBest.LogisticRatio - objv_LR)) / (norm_2 + 0.00001);
+        tau = (ScalarLagrangianRelaxation * (GlobalBest.LogisticRatio - objv_LR)) / (norm_2 + 0.00001);
     }
     else
     {
-        tau = (0.1 * eta * GlobalBest.LogisticRatio) / (norm_2 + 0.00001);
+        tau = (0.1 * ScalarLagrangianRelaxation * GlobalBest.LogisticRatio) / (norm_2 + 0.00001);
     }
-    cout<<"eta: "<<eta<<", norm_2: "<<norm_2<<", GlobalBest.LogisticRatio: "<<GlobalBest.LogisticRatio<<", objv_LR: "<<objv_LR<<",GlobalBest.LogisticRatio - objv_LR: "<<GlobalBest.LogisticRatio - objv_LR<<", tau: "<<tau<<endl;
+    cout<<"ScalarLagrangianRelaxation: "<<ScalarLagrangianRelaxation<<", norm_2: "<<norm_2<<", GlobalBest.LogisticRatio: "<<GlobalBest.LogisticRatio<<", objv_LR: "<<objv_LR<<",GlobalBest.LogisticRatio - objv_LR: "<<GlobalBest.LogisticRatio - objv_LR<<", tau: "<<tau<<endl;
     cout<<"ViolationStockOut: "<<IRPSolution.ViolationStockOut<<", (IRPSolution.ViolationStockOut + 0.00001) * tau: "<<(IRPSolution.ViolationStockOut + 0.00001) * tau<<", PenaltyForStockOut: "<<PenaltyForStockOut<<", PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.00001) * tau:"<<PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.00001) * tau<<endl;
     PenaltyForStockOut = PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.001) * tau;
 }

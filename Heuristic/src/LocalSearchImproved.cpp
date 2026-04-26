@@ -84,14 +84,14 @@ void RecordSolution_First_30s_60s(input &IRPLR, solution &IRPSolution, solution 
     }
 }
 
-int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, int &DisturbanceCounter, bool &RunHGSAtEnd)
+int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &ScalarLagrangianRelaxation, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, int &DisturbanceCounter, bool &RunHGSAtEnd)
 {
     int whether_improved_via_local_search = 0;
     memory.PopulatePrefixAndSuffix(IRPLR, IRPSolution);
     IRPSolution.GetLogisticRatio(IRPLR);
     // Initialise penalty for stockout
-    PenaltyForStockOut = 0;
-    InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest);
+    double PenaltyForStockOut = 0;
+    InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
     bool whether_improved_via_SwapRemoveInsertPair = true;
     bool whether_improved_via_SwapTwoRoutesOnSingleDay = true;
     bool whether_improved_via_InterSwap = true;
@@ -154,7 +154,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     max_shift1,
                     min_shift2,
                     max_shift2);
-                InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest);
+                InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
                     true_local = 0;
@@ -220,7 +220,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     max_swap1,
                     min_swap2,
                     max_swap2);
-                InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest);
+                InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
                     true_local = 0;
@@ -283,7 +283,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     PenaltyForStockOut,
                     TransferDetails,
                     memory);
-                InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest);
+                InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
                     true_local = 0;
@@ -325,7 +325,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             {
 
                 whether_improved = OperatorSwapRemoveInsert(IRPLR, IRPSolution, PenaltyForStockOut, memory, SwapRemoveInsertPair, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
-                InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest);
+                InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
                     whether_improved_via_SwapRemoveInsertPair = true;
