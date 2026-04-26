@@ -21,7 +21,7 @@ double Calculate_la_relax_objv(
     double &stockout_penalty, 
     double &stockout
 );
-void InitialiseUpdateLagrangianMultipler(solution &IRPSolution, double &PenaltyForStockOut, solution &GlobalBest);
+void InitialiseUpdateLagrangianMultipler(solution &IRPSolution, double &PenaltyForStockOut, solution &GlobalBest, double &ScalarLagrangianRelaxation);
 void AdjustQuantityAndInventoryLevel(
     double &begining_inventory, 
     int &day, 
@@ -100,7 +100,7 @@ int OperatorTransfer(
 int LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory,solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s);
 
 
-int ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory,solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s, int &DisturbanceCounter, bool &RunHGSAtEnd);
+int ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &ScalarLagrangianRelaxation, preprocessing &memory,solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s, int &DisturbanceCounter, bool &RunHGSAtEnd);
 
 void PrintTempSolution(input &IRPLR, 
                        vector<vector<vector<int>>> &Route,
