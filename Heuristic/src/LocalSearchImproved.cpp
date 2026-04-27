@@ -154,7 +154,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     max_shift1,
                     min_shift2,
                     max_shift2);
-                InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
+                // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
                     true_local = 0;
@@ -220,7 +220,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     max_swap1,
                     min_swap2,
                     max_swap2);
-                InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
+                // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
                     true_local = 0;
@@ -283,7 +283,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     PenaltyForStockOut,
                     TransferDetails,
                     memory);
-                InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
+                // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
                     true_local = 0;
@@ -325,7 +325,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             {
 
                 whether_improved = OperatorSwapRemoveInsert(IRPLR, IRPSolution, PenaltyForStockOut, memory, SwapRemoveInsertPair, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
-                InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
+                // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
                     whether_improved_via_SwapRemoveInsertPair = true;
@@ -339,6 +339,13 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             }
             cout << "Iteration applied for Operator: SwapRemoveInsert:" << counter << endl;
 
+            //////////////////////////////////////////////////////////////////////
+            //                                                                  //
+            //                       Adjust multiplier                          //
+            //                                                                  //
+            //////////////////////////////////////////////////////////////////////
+
+            InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
             //////////////////////////////////////////////////////////////////////
             //                                                                  //
             //              Operator:Intra for route optimisation               //

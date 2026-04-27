@@ -235,6 +235,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 {
                     double LogisticRatioBeforeRebalance = GlobalBest.LogisticRatio;
                     cout << "!LogisticRatio before rebalance:" << GlobalBest.LogisticRatio << endl;
+                    GlobalBest.print_solution(IRPLR);
                     int is_Rebalace_infeasible = 0;
                     int counting_infeasible_case = 0;
                     vector<vector<vector<int>>> TempRoute(GlobalBest.Route);
@@ -255,10 +256,10 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     
                     time(&rebalance_start_time);
                     double LogisctiRatioAfterRebalance = numeric_limits<double>::max();
-                    LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
-                                                                    TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel,
-                                                                    TempVehicleAllocation, TempVisitOrder,
-                                                                    counting_infeasible_case, is_Rebalace_infeasible);
+                    // LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
+                    //                                                 TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel,
+                    //                                                 TempVehicleAllocation, TempVisitOrder,
+                    //                                                 counting_infeasible_case, is_Rebalace_infeasible);
                     time(&rebalance_end_time);
                     total_rebalance_time += difftime(rebalance_end_time, rebalance_start_time);
                     NumberOfRebalance++;
@@ -329,6 +330,9 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "DisturbanceCounter:" << DisturbanceCounter << ", ScalarLagrangianRelaxation:" << ScalarLagrangianRelaxation << endl;
             cout << "-----------------------------------------------" << endl;
             cout << "Start Disturbance Operator" << endl;
+
+           
+
             OperatorDisturb(IRPLR, GlobalBest, IRPSolution, DisturbanceCounter, MaxDisturbance);
             IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
             cout << "End Disturbance Operator" << endl;
