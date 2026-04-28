@@ -233,33 +233,39 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 }
                 if (Activate_rebalance == true)
                 {
-                    double LogisticRatioBeforeRebalance = GlobalBest.LogisticRatio;
-                    cout << "!LogisticRatio before rebalance:" << GlobalBest.LogisticRatio << endl;
-                    GlobalBest.print_solution(IRPLR);
+
+
                     int is_Rebalace_infeasible = 0;
                     int counting_infeasible_case = 0;
-                    vector<vector<vector<int>>> TempRoute(GlobalBest.Route);
-                    vector<vector<int>> TempUnallocatedCustomers(GlobalBest.UnallocatedCustomers);
-                    vector<vector<double>> TempVehicleLoad(GlobalBest.VehicleLoad);
-                    vector<vector<double>> TempDeliveryQuantity(GlobalBest.DeliveryQuantity);
-                    vector<vector<double>> TempInventoryLevel(GlobalBest.InventoryLevel);
-                    vector<vector<int>> TempVehicleAllocation(GlobalBest.VehicleAllocation);
-                    vector<vector<int>> TempVisitOrder(GlobalBest.VisitOrder);
 
-                    // vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
-                    // vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
-                    // vector<vector<double>> TempVehicleLoad(IRPSolution.VehicleLoad);
-                    // vector<vector<double>> TempDeliveryQuantity(IRPSolution.DeliveryQuantity);
-                    // vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
-                    // vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
-                    // vector<vector<int>> TempVisitOrder(IRPSolution.VisitOrder);
+                    // double LogisticRatioBeforeRebalance = GlobalBest.LogisticRatio;
+                    // cout << "!LogisticRatio before rebalance:" << GlobalBest.LogisticRatio << endl;
+                    // GlobalBest.print_solution(IRPLR);
+                    // vector<vector<vector<int>>> TempRoute(GlobalBest.Route);
+                    // vector<vector<int>> TempUnallocatedCustomers(GlobalBest.UnallocatedCustomers);
+                    // vector<vector<double>> TempVehicleLoad(GlobalBest.VehicleLoad);
+                    // vector<vector<double>> TempDeliveryQuantity(GlobalBest.DeliveryQuantity);
+                    // vector<vector<double>> TempInventoryLevel(GlobalBest.InventoryLevel);
+                    // vector<vector<int>> TempVehicleAllocation(GlobalBest.VehicleAllocation);
+                    // vector<vector<int>> TempVisitOrder(GlobalBest.VisitOrder);
+
+                    double LogisticRatioBeforeRebalance = IRPSolution.LogisticRatio;
+                    cout << "!LogisticRatio before rebalance:" << LogisticRatioBeforeRebalance << endl;
+                    IRPSolution.print_solution(IRPLR);
+                    vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
+                    vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
+                    vector<vector<double>> TempVehicleLoad(IRPSolution.VehicleLoad);
+                    vector<vector<double>> TempDeliveryQuantity(IRPSolution.DeliveryQuantity);
+                    vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
+                    vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
+                    vector<vector<int>> TempVisitOrder(IRPSolution.VisitOrder);
                     
                     time(&rebalance_start_time);
                     double LogisctiRatioAfterRebalance = numeric_limits<double>::max();
-                    // LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
-                    //                                                 TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel,
-                    //                                                 TempVehicleAllocation, TempVisitOrder,
-                    //                                                 counting_infeasible_case, is_Rebalace_infeasible);
+                    LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
+                                                                    TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel,
+                                                                    TempVehicleAllocation, TempVisitOrder,
+                                                                    counting_infeasible_case, is_Rebalace_infeasible);
                     time(&rebalance_end_time);
                     total_rebalance_time += difftime(rebalance_end_time, rebalance_start_time);
                     NumberOfRebalance++;
