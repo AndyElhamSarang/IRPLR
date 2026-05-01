@@ -119,7 +119,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                 {
                     // assert(IRPLR.Vehicle.capacity - VehicleLoad[time][VehicleAllocation[customer][time]] > 0.00001);
                     double MinimumQuantityToSurvive = 0;
-                    for (int time_i = time; time_i < NextVisitTime[customer][time]; time_i++)
+                    for (int time_i = time; time_i < IRPLR.TimeHorizon; time_i++)
                     {
                         // cout << MinimumQuantityToSurvive << "," << InventoryLevel[customer][time_i] << endl;
                         //  If inventory level is negative, need to deliver enough to make it non-negative
@@ -130,17 +130,16 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                         }
                     }
                     MinimumQuantityToSurvive = -MinimumQuantityToSurvive;
-                    cout << "MinimumQuantityToSurvive:" << MinimumQuantityToSurvive << endl;
-                    MinimumQuantityToSurvive = min(MinimumQuantityToSurvive, IRPLR.Retailers[customer].InventoryMax);
+                    cout << "Largest stockout:" << MinimumQuantityToSurvive << endl;
                     if (time == 0)
                     {
                         MinimumQuantityToSurvive = min(fabs(MinimumQuantityToSurvive), IRPLR.Retailers[customer].InventoryMax - IRPLR.Retailers[customer].InventoryBegin);
-                        cout << "fabs(MinimumQuantityToSurvive):" << fabs(MinimumQuantityToSurvive) << ", IRPLR.Retailers[customer].InventoryMax - IRPLR.Retailers[customer].InventoryBegin:" << IRPLR.Retailers[customer].InventoryMax - IRPLR.Retailers[customer].InventoryBegin << ", min(fabs(MinimumQuantityToSurvive), IRPLR.Retailers[customer].InventoryMax - IRPLR.Retailers[customer].InventoryBegin): " << min(fabs(MinimumQuantityToSurvive), IRPLR.Retailers[customer].InventoryMax - IRPLR.Retailers[customer].InventoryBegin) << endl;
+                        cout << "fabs(MinimumQuantityToSurvive):" << fabs(MinimumQuantityToSurvive) << ", IRPLR.Retailers[customer].InventoryMax - IRPLR.Retailers[customer].InventoryBegin:" << IRPLR.Retailers[customer].InventoryMax - IRPLR.Retailers[customer].InventoryBegin << ", min(Largest stockout, IRPLR.Retailers[customer].InventoryMax - IRPLR.Retailers[customer].InventoryBegin): " << min(fabs(MinimumQuantityToSurvive), IRPLR.Retailers[customer].InventoryMax - IRPLR.Retailers[customer].InventoryBegin) << endl;
                     }
                     else
                     {
-                        MinimumQuantityToSurvive = min(fabs(MinimumQuantityToSurvive), IRPLR.Retailers[customer].InventoryMax - InventoryLevel[customer][time - 1]);
-                        cout << "fabs(MinimumQuantityToSurvive):" << fabs(MinimumQuantityToSurvive) << ", IRPLR.Retailers[customer].InventoryMax - IRPLR.Retailers[customer].InventoryBegin:" << IRPLR.Retailers[customer].InventoryMax - IRPLR.Retailers[customer].InventoryBegin << ", min(fabs(MinimumQuantityToSurvive), IRPLR.Retailers[customer].InventoryMax - InventoryLevel[customer][time - 1]): " << min(fabs(MinimumQuantityToSurvive), IRPLR.Retailers[customer].InventoryMax - InventoryLevel[customer][time - 1]) << endl;
+                        MinimumQuantityToSurvive = min(fabs(MinimumQuantityToSurvive), IRPLR.Retailers[customer].InventoryMax - max(0.0, InventoryLevel[customer][time - 1]));
+                        cout << "fabs(MinimumQuantityToSurvive):" << fabs(MinimumQuantityToSurvive)  << ",max(0.0, InventoryLevel[customer][time - 1]):"<<max(0.0, InventoryLevel[customer][time - 1])<<", min(Largest stockout, IRPLR.Retailers[customer].InventoryMax - InventoryLevel[customer][time - 1]): " << min(fabs(MinimumQuantityToSurvive), IRPLR.Retailers[customer].InventoryMax - max(0.0, InventoryLevel[customer][time - 1])) << endl;
                     }
                     assert(MinimumQuantityToSurvive >= 0);
                     DeliveryQuantity[customer][time] = min(IRPLR.Vehicle.capacity - VehicleLoad[time][VehicleAllocation[customer][time]],
@@ -188,7 +187,13 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
         while (StockoutResolved == false && SlackIsZero == false)
         {
            
-              
+
+        ///////////////////////////////////////////////////////////////
+        //                                                           //
+        //                Find if stockout exists                    //
+        //         Record the time and amount of first stockout      //
+        //                                                           //
+        ///////////////////////////////////////////////////////////////
             vector<vector<int>> CustomerStockoutTime;
             vector<double> CustomerStockout;
             bool StockoutExists = false;
@@ -227,7 +232,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
             }
             else if (CustomerStockoutTime.size() != 0)
             {
-                // If a customer has stockout, find where this customer is visited where a slack exists, i.e., delivery quantity is less than maximum inventory.
+                // If a customer has stockout, find where this customer is visited, i.e., delivery quantity is less than maximum inventory.
                 assert(CustomerStockoutTime.size() == 1);
                 vector<vector<vector<int>>> StockoutCustomerSchedule;
                 // index 0, customer id
@@ -245,11 +250,23 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                         {
                             if (VehicleAllocation[CustomerStockoutTime[StockoutCustomer][0]][j] < IRPLR.NumberOfVehicles)
                             {
-                                if (DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][j] < IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax)
+                                if(j==0)
                                 {
-                                    // cout<<"t"<<j<<"(Vehicle "<<VehicleAllocation[CustomerStockoutTime[StockoutCustomer][0]][j]<<"), ";
-                                    TempStockoutCustomerSchedule.push_back({CustomerStockoutTime[StockoutCustomer][0], j, VehicleAllocation[CustomerStockoutTime[StockoutCustomer][0]][j]});
-                                    TempQuantityCanAdjust.push_back(min(fabs(CustomerStockout[StockoutCustomer]), max(IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax - DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][j], 0.0)));
+                                    if (DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][j] < IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax - IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryBegin)
+                                    {
+                                        // cout<<"t"<<j<<"(Vehicle "<<VehicleAllocation[CustomerStockoutTime[StockoutCustomer][0]][j]<<"), ";
+                                        TempStockoutCustomerSchedule.push_back({CustomerStockoutTime[StockoutCustomer][0], j, VehicleAllocation[CustomerStockoutTime[StockoutCustomer][0]][j]});
+                                        TempQuantityCanAdjust.push_back(min(fabs(CustomerStockout[StockoutCustomer]), max(IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax - DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][j]- IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryBegin, 0.0)));
+                                    }
+                                }
+                                else
+                                {
+                                    if (DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][j] < IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax - InventoryLevel[CustomerStockoutTime[StockoutCustomer][0]][j-1])
+                                    {
+                                        // cout<<"t"<<j<<"(Vehicle "<<VehicleAllocation[CustomerStockoutTime[StockoutCustomer][0]][j]<<"), ";
+                                        TempStockoutCustomerSchedule.push_back({CustomerStockoutTime[StockoutCustomer][0], j, VehicleAllocation[CustomerStockoutTime[StockoutCustomer][0]][j]});
+                                        TempQuantityCanAdjust.push_back(min(fabs(CustomerStockout[StockoutCustomer]), max(IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax - DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][j]- IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryBegin- InventoryLevel[CustomerStockoutTime[StockoutCustomer][0]][j-1], 0.0)));
+                                    }
                                 }
                             }
                         }
@@ -331,11 +348,13 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                                 int TimeOfThisVisit = CustomerCanAdjust[StockoutCustomer][StockoutCustomerVisit][CanAdjustCustomer][1];
                                 int VehicleOfThisVisit = VehicleAllocation[CustomerIDCanAdjust][TimeOfThisVisit];
                                 bool SlackAvailable = false;
+
+                                cout<<"check if there is slack in any of the previous visits for customer " << CustomerIDCanAdjust << endl;
                                 for (int i = 0; i < TimeOfThisVisit; i++) // check if there is slack in any of the previous visits
                                 {
-                                    if (VehicleAllocation[CustomerIDCanAdjust][i] < IRPLR.NumberOfVehicles)
+                                    if (VehicleAllocation[CustomerIDCanAdjust][i] < IRPLR.NumberOfVehicles)//If this is visited, check if there is slack
                                     {
-                                        cout << "IRPLR.Retailers[CustomerIDCanAdjust].InventoryMax - DeliveryQuantity[CustomerIDCanAdjust][i]: " << IRPLR.Retailers[CustomerIDCanAdjust].InventoryMax - DeliveryQuantity[CustomerIDCanAdjust][i] << ", IRPLR.Vehicle.capacity - VehicleLoad[i][VehicleAllocation[CustomerIDCanAdjust][i]]:" << IRPLR.Vehicle.capacity - VehicleLoad[i][VehicleAllocation[CustomerIDCanAdjust][i]] << endl;
+                                        // cout << "IRPLR.Retailers[CustomerIDCanAdjust].InventoryMax: " << IRPLR.Retailers[CustomerIDCanAdjust].InventoryMax<<", DeliveryQuantity[CustomerIDCanAdjust][i]:" << DeliveryQuantity[CustomerIDCanAdjust][i] << ", IRPLR.Vehicle.capacity:" << IRPLR.Vehicle.capacity<<", VehicleLoad[i][VehicleAllocation[CustomerIDCanAdjust][i]]:" << VehicleLoad[i][VehicleAllocation[CustomerIDCanAdjust][i]] << endl;
                                         
                                         double PreviousInventory = 0;
                                         if(i==0)
@@ -346,10 +365,15 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                                         {
                                             PreviousInventory = max(0.0, InventoryLevel[CustomerIDCanAdjust][i-1]);
                                         }
-                                        double AvailableInventorySlack = min(IRPLR.Retailers[CustomerIDCanAdjust].InventoryMax - PreviousInventory - DeliveryQuantity[CustomerIDCanAdjust][i],0.0); 
+                                        double AvailableInventorySlack = max(IRPLR.Retailers[CustomerIDCanAdjust].InventoryMax - PreviousInventory - DeliveryQuantity[CustomerIDCanAdjust][i],0.0); 
+                                        cout<<"AvailableInventorySlack based on inventory limit for customer " << CustomerIDCanAdjust << " at time " << i << " is " << AvailableInventorySlack << endl;
+
+
+                                        cout<<"IRPLR.Retailers[CustomerIDCanAdjust].InventoryMax:"<<IRPLR.Retailers[CustomerIDCanAdjust].InventoryMax<<", PreviousInventory:"<< PreviousInventory <<", DeliveryQuantity[CustomerIDCanAdjust][i]:"<< DeliveryQuantity[CustomerIDCanAdjust][i]<<endl;
                                         double AvailableSlack = min(AvailableInventorySlack, IRPLR.Vehicle.capacity - VehicleLoad[i][VehicleAllocation[CustomerIDCanAdjust][i]]);
                                         cout << "available slack for customer " << CustomerIDCanAdjust << " at time " << i << " is " << AvailableSlack << " delivery quantity:" << DeliveryQuantity[CustomerIDCanAdjust][TimeOfThisVisit] << endl;
                                         AvailableSlack = min(AvailableSlack, DeliveryQuantity[CustomerIDCanAdjust][TimeOfThisVisit]); // Cannot adjust more than the delivery quantity at TimeOfThisVisit
+
                                         if (AvailableSlack > 0.00001)
                                         {
 
@@ -423,6 +447,120 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                                         }
                                     }
                                 }
+                                cout<<"check if there is slack in any of the future visits for customer " << CustomerIDCanAdjust << endl;
+                                for (int i = TimeOfThisVisit + 1; i < IRPLR.TimeHorizon; i++) // check if there is slack in any of the future visits
+                                {
+                                    if (VehicleAllocation[CustomerIDCanAdjust][i] < IRPLR.NumberOfVehicles)//If this is visited, check if there is slack
+                                    {
+                                        
+                                        cout<<"QuantityCanAdjust[StockoutCustomer][StockoutCustomerVisit]:"<< QuantityCanAdjust[StockoutCustomer][StockoutCustomerVisit] <<", DeliveryQuantity[CustomerIDCanAdjust][TimeOfThisVisit]:"<< DeliveryQuantity[CustomerIDCanAdjust][TimeOfThisVisit] <<", InventoryLevel:" <<InventoryLevel[CustomerIDCanAdjust][TimeOfThisVisit] << endl;
+
+                                        double Inventory  = max(0.0, InventoryLevel[CustomerIDCanAdjust][TimeOfThisVisit]);
+                                        double QuantityCanAdjustInFutureVisit = min(QuantityCanAdjust[StockoutCustomer][StockoutCustomerVisit], min(DeliveryQuantity[CustomerIDCanAdjust][TimeOfThisVisit],Inventory));
+    double LargestStockout = 0;
+                                            double tempInventoryBegin = 0;
+                                        if(TimeOfThisVisit== 0)
+                                        {
+                                            tempInventoryBegin = IRPLR.Retailers[CustomerIDCanAdjust].InventoryBegin - QuantityCanAdjustInFutureVisit;
+                                        }
+                                        else
+                                        {
+                                            tempInventoryBegin = InventoryLevel[CustomerIDCanAdjust][TimeOfThisVisit-1] - QuantityCanAdjustInFutureVisit;
+                                        }
+
+                                            for (int y = TimeOfThisVisit; y < i; y++)
+                                            {
+                                                tempInventoryBegin = tempInventoryBegin - IRPLR.Retailers[CustomerIDCanAdjust].Demand + DeliveryQuantity[CustomerIDCanAdjust][y];
+
+                                                cout<<"Time "<<y<<", Inventory:"<<tempInventoryBegin<<endl;
+                                                if(tempInventoryBegin < -0.00001)
+                                                {
+                                                    if(LargestStockout > tempInventoryBegin)
+                                                    {
+                                                        LargestStockout = tempInventoryBegin;
+                                                    }
+                                                }
+                                            }
+if(LargestStockout < -0.00001)
+{
+LargestStockout = -LargestStockout;
+                                                    QuantityCanAdjustInFutureVisit = max(0.0, QuantityCanAdjustInFutureVisit - tempInventoryBegin);
+
+}double AvailableSlack = min(QuantityCanAdjustInFutureVisit, IRPLR.Vehicle.capacity - VehicleLoad[i][VehicleAllocation[CustomerIDCanAdjust][i]]);
+                                        cout << "available slack for customer " << CustomerIDCanAdjust << " at time " << i << " is " << AvailableSlack << endl;
+
+
+                                         if (AvailableSlack > 0.00001)
+                                        {
+
+                                            SlackIsZero = false;
+                                            DeliveryQuantity[CustomerIDCanAdjust][i] += AvailableSlack;
+                                            VehicleLoad[i][VehicleAllocation[CustomerIDCanAdjust][i]] += AvailableSlack;
+                                            DeliveryQuantity[CustomerIDCanAdjust][TimeOfThisVisit] -= AvailableSlack;
+                                            VehicleLoad[TimeOfThisVisit][VehicleAllocation[CustomerIDCanAdjust][TimeOfThisVisit]] -= AvailableSlack;
+
+                                            if ( TimeOfThisVisit== 0)
+                                            {
+                                                double tempInventory = IRPLR.Retailers[CustomerIDCanAdjust].InventoryBegin;
+                                                for (int y = 0; y < InventoryLevel[CustomerIDCanAdjust].size(); y++)
+                                                {
+
+                                                    tempInventory = tempInventory - IRPLR.Retailers[CustomerIDCanAdjust].Demand + DeliveryQuantity[CustomerIDCanAdjust][y];
+                                                    InventoryLevel[CustomerIDCanAdjust][y] = tempInventory;
+                                                }
+                                            }
+                                            else
+                                            {
+
+                                                double tempInventory = InventoryLevel[CustomerIDCanAdjust][TimeOfThisVisit - 1];
+                                                for (int y = TimeOfThisVisit; y < InventoryLevel[CustomerIDCanAdjust].size(); y++)
+                                                {
+                                                    tempInventory = tempInventory - IRPLR.Retailers[CustomerIDCanAdjust].Demand + DeliveryQuantity[CustomerIDCanAdjust][y];
+                                                    InventoryLevel[CustomerIDCanAdjust][y] = tempInventory;
+                                                }
+                                            }
+                                            DeliveryQuantity[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]][StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][1]] += AvailableSlack;
+                                            VehicleLoad[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][1]][StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][2]] += AvailableSlack;
+
+                                            if (TimeOfThisVisit == 0)
+                                            {
+
+                                                double tempInventory = IRPLR.Retailers[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]].InventoryBegin;
+                                                for (int y = 0; y < InventoryLevel[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]].size(); y++)
+                                                {
+
+                                                    tempInventory = tempInventory - IRPLR.Retailers[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]].Demand + DeliveryQuantity[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]][y];
+                                                    InventoryLevel[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]][y] = tempInventory;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                double tempInventory = InventoryLevel[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]][TimeOfThisVisit - 1];
+                                                for (int y = TimeOfThisVisit; y < InventoryLevel[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]].size(); y++)
+                                                {
+                                                    tempInventory = tempInventory - IRPLR.Retailers[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]].Demand + DeliveryQuantity[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]][y];
+                                                    InventoryLevel[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]][y] = tempInventory;
+                                                }
+                                            }
+                                            QuantityCanAdjust[StockoutCustomer][StockoutCustomerVisit] = min(fabs(CustomerStockout[StockoutCustomer]) - AvailableSlack, max(IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax - DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][TimeOfThisVisit], 0.0));
+                                            cout << "fabs(CustomerStockout[StockoutCustomer]):" << fabs(CustomerStockout[StockoutCustomer]) << ", AvailableSlack: " << AvailableSlack << ", IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax:" << IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax << ", DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][TimeOfThisVisit]: " << DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][TimeOfThisVisit] << endl;
+                                            PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
+                                            assert(DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][TimeOfThisVisit] <= IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax);
+                                            cout << "Check if stockout is resolved for customer " << StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0] << " QuantityCanAdjust[StockoutCustomer][StockoutCustomerVisit] " << QuantityCanAdjust[StockoutCustomer][StockoutCustomerVisit] << endl;
+                                            
+                                            bool StockoutResolvedAtTimeOfThisVisit = true;
+                                            if (InventoryLevel[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]][TimeOfThisVisit] < -0.00001)
+                                            {
+                                                StockoutResolvedAtTimeOfThisVisit = false;
+                                            }
+                                            if (StockoutResolvedAtTimeOfThisVisit == true)
+                                            {
+                                                // assert(QuantityCanAdjust[StockoutCustomer][StockoutCustomerVisit] == 0);
+                                                throw TimeOfThisVisit;
+                                            }
+                                        }
+                                    }
+                                }
                                 // double AvailableSlack = IRPLR.Retailers[CustomerIDCanAdjust].InventoryMax - DeliveryQuantity[CustomerIDCanAdjust][TimeOfThisVisit];
                                 // double QuantityToAdjust = min(AvailableSlack, fabs(CustomerStockout[StockoutCustomer]));
                                 // DeliveryQuantity[CustomerIDCanAdjust][TimeOfThisVisit] += QuantityToAdjust;
@@ -475,6 +613,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                 if (InventoryLevel[customer][time] < -0.00001)
                 {
                     cout << "Customer " << customer << " has negative inventory level " << InventoryLevel[customer][time] << " at time " << time << endl;
+                    assert(InventoryLevel[customer][time] > 0.00001);
                     throw InventoryLevel[customer][time];
                 }
             }
