@@ -19,7 +19,7 @@ void RecordSolution_First_30s_60s(input &IRPLR, solution &IRPSolution, solution 
     //     Report Global Best Solution at 30s     //
     //                                            //
     ////////////////////////////////////////////////
-    cout << "Accumulated time: " << accum_time << "s." << endl;
+    // cout << "Accumulated time: " << accum_time << "s." << endl;
     if (accum_time > 29 && whether_results_reported_30 == false)
     {
         cout << "30s time point reached." << endl;
@@ -247,15 +247,15 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             {
                 vector<vector<int>> TransferDetails;
 
-                for (int i = 0; i < IRPSolution.DeliveryQuantity.size(); i++) // For customer i
+                for (int i = 0; i < IRPSolution.VehicleAllocation.size(); i++) // For customer i
                 {
-                    for (int j = 0; j < IRPSolution.DeliveryQuantity[i].size(); j++) // For day j
+                    for (int j = 0; j < IRPSolution.VehicleAllocation[i].size(); j++) // For day j
                     {
-                        if (IRPSolution.DeliveryQuantity[i][j] > 0) // If this customer is visited at day j,
+                        if (IRPSolution.VehicleAllocation[i][j] < IRPLR.NumberOfVehicles + 1) // If customer i is visited at day j,
                         {
-                            for (int k = 0; k < IRPSolution.DeliveryQuantity[i].size(); k++)
+                            for (int k = 0; k < IRPSolution.VehicleAllocation[i].size(); k++)
                             {
-                                if (IRPSolution.DeliveryQuantity[i][k] < 0.001 && k != j)
+                                if (IRPSolution.VehicleAllocation[i][k] >= IRPLR.NumberOfVehicles && k != j)
                                 {
                                     vector<int> temp_transfer_detail;
                                     temp_transfer_detail.push_back(i);                                    // Retailer index
@@ -277,6 +277,8 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 //     }
                 //     cout<<endl;
                 // }
+                // IRPSolution.print_solution(IRPLR);
+
                 whether_improved = OperatorTransfer(
                     IRPLR,
                     IRPSolution,

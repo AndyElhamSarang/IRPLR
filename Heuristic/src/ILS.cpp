@@ -1,5 +1,5 @@
 #include "lib.h"
-void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s)
+void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s)
 {
     cout << "//////////////////////////////////////" << endl;
     cout << "//   Start Iterated Local Search    //" << endl;
@@ -122,7 +122,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "Start Local Search, iteration " << LocalSearchCounter << ", with Disturbance Counter: " << DisturbanceCounter << endl;
             cout << "---------------------------------------------" << endl;
 
-            ImprovedLocalSearch(IRPLR, IRPSolution, ScalarLagrangianRelaxation, memory,GlobalBest, FirstImprovementSolution, IRPSolution30s,IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+            ImprovedLocalSearch(IRPLR, IRPSolution, ScalarLagrangianRelaxation, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
             // LocalSearch(IRPLR, IRPSolution, ScalarLagrangianRelaxation, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s,IRPSolution60s);
             time(&LocalSearch_end_time);
             double total_LocalSearch_time = difftime(LocalSearch_end_time, LocalSearch_start_time);
@@ -203,7 +203,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
 
                 if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
                 {
-                    
+
                     GlobalBest = IRPSolution;
                     GlobalBest.LogisticRatio = IRPSolution.LogisticRatio;
                     time(&end_time_to_best);
@@ -234,7 +234,6 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 if (Activate_rebalance == true)
                 {
 
-
                     int is_Rebalace_infeasible = 0;
                     int counting_infeasible_case = 0;
 
@@ -250,8 +249,8 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     // vector<vector<int>> TempVisitOrder(GlobalBest.VisitOrder);
 
                     double LogisticRatioBeforeRebalance = IRPSolution.LogisticRatio;
-                    cout << "!LogisticRatio before rebalance:" << LogisticRatioBeforeRebalance << endl;
-                    IRPSolution.print_solution(IRPLR);
+
+                    // IRPSolution.print_solution(IRPLR);
                     vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
                     vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
                     vector<vector<double>> TempVehicleLoad(IRPSolution.VehicleLoad);
@@ -259,7 +258,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     vector<vector<double>> TempInventoryLevel(IRPSolution.InventoryLevel);
                     vector<vector<int>> TempVehicleAllocation(IRPSolution.VehicleAllocation);
                     vector<vector<int>> TempVisitOrder(IRPSolution.VisitOrder);
-                    
+
                     time(&rebalance_start_time);
                     double LogisctiRatioAfterRebalance = numeric_limits<double>::max();
                     LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
@@ -269,9 +268,9 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     time(&rebalance_end_time);
                     total_rebalance_time += difftime(rebalance_end_time, rebalance_start_time);
                     NumberOfRebalance++;
-                    // cout<<"!LogisticRatio after rebalance:" << LogisctiRatioAfterRebalance <<","<<NumberOfRebalance<<","<<total_rebalance_time<< endl;
                     if (counting_infeasible_case == 0)
                     {
+                        cout << "!LogisticRatio before rebalance:" << LogisticRatioBeforeRebalance << ", LogisticRatio after feasible rebalance:" << LogisctiRatioAfterRebalance << "," << NumberOfRebalance << "," << total_rebalance_time << endl;
                         if (LogisticRatioBeforeRebalance - LogisctiRatioAfterRebalance > 0.00001)
                         {
 
@@ -283,6 +282,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                             IRPSolution.VehicleAllocation = TempVehicleAllocation;
                             IRPSolution.VisitOrder = TempVisitOrder;
                             IRPSolution.GetLogisticRatio(IRPLR);
+                            IRPSolution.Validation(IRPLR);
                             // IRPSolution.print_solution(IRPLR);
                             cout << "After rebalance" << endl;
                             // IRPSolution.Validation(IRPLR);
@@ -337,10 +337,66 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "-----------------------------------------------" << endl;
             cout << "Start Disturbance Operator" << endl;
 
-           
+            vector<vector<vector<int>>> DisturbRoute(GlobalBest.Route);
+            vector<vector<int>> DisturbUnallocatedCustomers(GlobalBest.UnallocatedCustomers);
+            vector<vector<double>> DisturbVehicleLoad(GlobalBest.VehicleLoad);
+            vector<vector<double>> DisturbDeliveryQuantity(GlobalBest.DeliveryQuantity);
+            vector<vector<double>> DisturbInventoryLevel(GlobalBest.InventoryLevel);
+            vector<vector<int>> DisturbVehicleAllocation(GlobalBest.VehicleAllocation);
+            vector<vector<int>> DisturbVisitOrder(GlobalBest.VisitOrder);
+            int Disturb_counting_infeasible_case = 0;
+            int Disturb_is_Rebalace_infeasible = 0;
+            time(&rebalance_start_time);
+            double Disturb_LogisctiRatioAfterRebalance = numeric_limits<double>::max();
+            Disturb_LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, DisturbRoute, DisturbUnallocatedCustomers,
+                                                                    DisturbVehicleLoad, DisturbDeliveryQuantity, DisturbInventoryLevel,
+                                                                    DisturbVehicleAllocation, DisturbVisitOrder,
+                                                                    Disturb_counting_infeasible_case, Disturb_is_Rebalace_infeasible);
 
-            OperatorDisturb(IRPLR, GlobalBest, IRPSolution, DisturbanceCounter, MaxDisturbance);
+            time(&rebalance_end_time);
+            total_rebalance_time += difftime(rebalance_end_time, rebalance_start_time);
+            NumberOfRebalance++;
+            if (Disturb_counting_infeasible_case == 0)
+            {
+                cout << "!LogisticRatio before disturb rebalance:" << GlobalBest.LogisticRatio << ", LogisticRatio after feasible rebalance:" << Disturb_LogisctiRatioAfterRebalance << "," << NumberOfRebalance << "," << total_rebalance_time << endl;
+                if (GlobalBest.LogisticRatio - Disturb_LogisctiRatioAfterRebalance > 0.00001)
+                {
+                    AccumulatedPrecentageRebalanceImprovement += ((GlobalBest.LogisticRatio - Disturb_LogisctiRatioAfterRebalance) / GlobalBest.LogisticRatio) * 100;
+                    NumberOfRebalanceImproved++;
+                    cout << "!Rebalance obtained better feasible solution with objv:" << GlobalBest.LogisticRatio << "," << Disturb_LogisctiRatioAfterRebalance << endl;
+                    
+                    GlobalBest.Route = DisturbRoute;
+                    GlobalBest.UnallocatedCustomers = DisturbUnallocatedCustomers;
+                    GlobalBest.VehicleLoad = DisturbVehicleLoad;
+                    GlobalBest.DeliveryQuantity = DisturbDeliveryQuantity;
+                    GlobalBest.InventoryLevel = DisturbInventoryLevel;
+                    GlobalBest.VehicleAllocation = DisturbVehicleAllocation;
+                    GlobalBest.VisitOrder = DisturbVisitOrder;
+                    GlobalBest.GetLogisticRatio(IRPLR);
+                    // IRPSolution.print_solution(IRPLR);
+                    cout << "After rebalance" << endl;
+                    // IRPSolution.Validation(IRPLR);
+                    GlobalBest.Validation(IRPLR);
+
+                   
+
+                    assert(fabs(GlobalBest.LogisticRatio - Disturb_LogisctiRatioAfterRebalance) < 0.00001);
+                }
+            }
+            solution DisturbIRPSolution;
+            DisturbIRPSolution.Route = DisturbRoute;
+            DisturbIRPSolution.UnallocatedCustomers = DisturbUnallocatedCustomers;
+            DisturbIRPSolution.VehicleLoad = DisturbVehicleLoad;
+            DisturbIRPSolution.DeliveryQuantity = DisturbDeliveryQuantity;
+            DisturbIRPSolution.InventoryLevel = DisturbInventoryLevel;
+            DisturbIRPSolution.VehicleAllocation = DisturbVehicleAllocation;
+            DisturbIRPSolution.VisitOrder = DisturbVisitOrder;
+            DisturbIRPSolution.GetLogisticRatio(IRPLR);
+            OperatorDisturb(IRPLR, DisturbIRPSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
+        
+            // OperatorDisturb(IRPLR, GlobalBest, IRPSolution, DisturbanceCounter, MaxDisturbance);
             IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
+            IRPSolution.print_solution(IRPLR);
             cout << "End Disturbance Operator" << endl;
             cout << "------------------------------------------------" << endl;
             Global_total_iteration++;
