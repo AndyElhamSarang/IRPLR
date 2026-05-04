@@ -41,7 +41,7 @@ int main()
 		Table << ",#TimePeriods,#Customer,#Vehicle";
 		for(int i = 0; i<NumberOfInitialSolutions; i++)
 		{
-			Table<<",Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,Time";
+			Table<<",Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,RebalanceMaxPercentageImprovement,RebalanceMinPercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,Time";
 		}
 
 		Table << ",FirstImpCost,FirstImpQuantity,FirstImpLogisticRatio,TimeAtFirstImprovement,BestCostAt30s,BestQuantityAt30s,BestLogisticRatioAt30s,TimeAt30s,BestCostAt60s,BestQuantityAt60s,BestLogisticRatioAt60s,TimeAt60s,GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_iteration,T_To_best,T_Total\n";

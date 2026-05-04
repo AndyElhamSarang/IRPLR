@@ -555,12 +555,10 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                                                     NewStockOut,
                                                     StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0],
                                                     IRPLR);
-
-                                                
                                             }
                                             else
                                             {
-                                                 AdjustQuantityAndInventoryLevel(
+                                                AdjustQuantityAndInventoryLevel(
                                                     InventoryLevel[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]][StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][1] - 1],
                                                     StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][1],
                                                     VehicleAllocation[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0]][StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][1]],
@@ -572,7 +570,6 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                                                     NewStockOut,
                                                     StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0],
                                                     IRPLR);
-                                                
                                             }
                                             QuantityCanAdjust[StockoutCustomer][StockoutCustomerVisit] = min(fabs(CustomerStockout[StockoutCustomer]) - AvailableSlack, max(IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax - DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][TimeOfThisVisit], 0.0));
                                             // cout << "fabs(CustomerStockout[StockoutCustomer]):" << fabs(CustomerStockout[StockoutCustomer]) << ", AvailableSlack: " << AvailableSlack << ", IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax:" << IRPLR.Retailers[CustomerStockoutTime[StockoutCustomer][0]].InventoryMax << ", DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][TimeOfThisVisit]: " << DeliveryQuantity[CustomerStockoutTime[StockoutCustomer][0]][TimeOfThisVisit] << endl;
@@ -680,12 +677,13 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
         //                                                           //
         ///////////////////////////////////////////////////////////////
 
-            ///////////////////////////////////////////////////////////////////////////
-            //                                                                       //
-            //     At this stage, the schedule of this time is already feasible      //
-            //                                                                       //
-            ///////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////
+        //                                                                       //
+        //     At this stage, the schedule of this time is already feasible      //
+        //                                                                       //
+        ///////////////////////////////////////////////////////////////////////////
 
+        PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
         for (int time = 0; time < IRPLR.TimeHorizon; time++)
         {
 
@@ -766,7 +764,6 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                         //      << " ; " << 1 / TempCusomterWeight << " ; " << InventoryLevel[customer][time - 1] + 1
                         //      << " ; " << (IRPLR.Retailers[customer].Demand * (NextVisitTime[customer][time] - time) * MaxNumberOfConseuctiveDaysACustomerNotVisited[customer])
                         //      << " ; " << IRPLR.Retailers[customer].Demand << " ; " << NextVisitTime[customer][time] - time << " ; " << MaxNumberOfConseuctiveDaysACustomerNotVisited[customer] << endl;
-                       
                     }
 
                     TempCustomerWeight.push_back((1 / TempCusomterWeight) * 100);
@@ -781,6 +778,9 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
             double CumulativeWeight = 0;
             while (CustomerWeight.size() != 0)
             {
+                cout << "---------" << endl;
+
+                PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
                 vector<vector<int>> CumulativeCustomerWeight(CustomerWeight);
 
                 CumulativeWeight = 0;
@@ -832,9 +832,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                 }
                 else
                 {
-                    // cout<<"InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][time - 1]:"<<InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][time - 1]<<
-                    // ", DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][time]:"<<DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][time]<<
-                    // ", IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].InventoryMax:"<<IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].InventoryMax<<endl; 
+                    // cout << "InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][time - 1]:" << InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][time - 1] << ", DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][time]:" << DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][time] << ", IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].InventoryMax:" << IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].InventoryMax << endl;
                     assert(InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][time - 1] + DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][time] <= IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].InventoryMax + 0.00001);
 
                     DeliverMore = min(IRPLR.Vehicle.capacity - VehicleLoad[time][VehicleAllocation[CumulativeCustomerWeight[RandomCustomer][0]][time]],
@@ -852,25 +850,37 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                 VehicleLoad[time][VehicleAllocation[CumulativeCustomerWeight[RandomCustomer][0]][time]] += DeliverMore;
 
                 assert(DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][time] >= 0);
+                double ChangeInTotalQuantity = 0;
+                double NewStockOut = 0;
                 if (time == 0)
                 {
-                    double tempInventory = IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].InventoryBegin;
-                    for (int y = 0; y < InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]].size(); y++)
-                    {
-
-                        tempInventory = tempInventory - IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].Demand + DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][y];
-                        InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][y] = tempInventory;
-                    }
+                    AdjustQuantityAndInventoryLevel(
+                        IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].InventoryBegin,
+                        time,
+                        VehicleAllocation[CumulativeCustomerWeight[RandomCustomer][0]][time],
+                        DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]],
+                        InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]],
+                        VehicleLoad,
+                        VehicleAllocation,
+                        ChangeInTotalQuantity,
+                        NewStockOut,
+                        CumulativeCustomerWeight[RandomCustomer][0],
+                        IRPLR);
                 }
                 else
                 {
-
-                    double tempInventory = InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][time - 1];
-                    for (int y = time; y < InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]].size(); y++)
-                    {
-                        tempInventory = tempInventory - IRPLR.Retailers[CumulativeCustomerWeight[RandomCustomer][0]].Demand + DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][y];
-                        InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][y] = tempInventory;
-                    }
+                    AdjustQuantityAndInventoryLevel(
+                        InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]][time - 1],
+                        time,
+                        VehicleAllocation[CumulativeCustomerWeight[RandomCustomer][0]][time],
+                        DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]],
+                        InventoryLevel[CumulativeCustomerWeight[RandomCustomer][0]],
+                        VehicleLoad,
+                        VehicleAllocation,
+                        ChangeInTotalQuantity,
+                        NewStockOut,
+                        CumulativeCustomerWeight[RandomCustomer][0],
+                        IRPLR);
                 }
 
                 CustomerWeight.erase(CustomerWeight.begin() + RandomCustomer, CustomerWeight.begin() + RandomCustomer + 1);
