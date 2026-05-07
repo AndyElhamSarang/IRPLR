@@ -366,7 +366,14 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 int Disturb_is_Rebalace_infeasible = 0;
                 time(&rebalance_start_time);
                 double Disturb_LogisctiRatioAfterRebalance = numeric_limits<double>::max();
-                Disturb_LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, DisturbRoute, DisturbUnallocatedCustomers,
+                // Disturb_LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, DisturbRoute, DisturbUnallocatedCustomers,
+                //                                                         DisturbVehicleLoad, DisturbDeliveryQuantity, DisturbInventoryLevel,
+                //                                                         DisturbVehicleAllocation, DisturbVisitOrder,
+                //                                                         Disturb_counting_infeasible_case, Disturb_is_Rebalace_infeasible);
+
+
+
+                Disturb_LogisctiRatioAfterRebalance = OperatorBalancing_light_version(IRPLR, memory, DisturbRoute, DisturbUnallocatedCustomers,
                                                                         DisturbVehicleLoad, DisturbDeliveryQuantity, DisturbInventoryLevel,
                                                                         DisturbVehicleAllocation, DisturbVisitOrder,
                                                                         Disturb_counting_infeasible_case, Disturb_is_Rebalace_infeasible);

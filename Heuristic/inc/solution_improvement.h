@@ -82,6 +82,17 @@ vector<vector<int>> &VisitOrder,
 int &CountingInfeasibleCase,
 int & FeasibleRebalanceOrNot);
 
+double OperatorBalancing_light_version(input &IRPLR, preprocessing &memory,
+                                               vector<vector<vector<int>>> &Route,        // Stay fixed if no redundant visit
+                                               vector<vector<int>> &UnallocatedCustomers, // Stay fixed if no redundant visit
+                                               vector<vector<double>> &VehicleLoad,
+                                               vector<vector<double>> &DeliveryQuantity,
+                                               vector<vector<double>> &InventoryLevel,
+                                               vector<vector<int>> &VehicleAllocation, // Stay fixed if no redundant visit
+                                               vector<vector<int>> &VisitOrder,        // Stay fixed if no redundant visit
+                                               int &CountingInfeasibleCase,
+                                               int &FeasibleRebalanceOrNot);
+
 int OperatorIntra(input &IRPLR, vector<int> &route, int &day, int &vehicle, int &MinToReinsert, int &MaxToReinsert, preprocessing &memory, double &CurrentTransportationCost);
 
 void OperatorDisturb(input &IRPLR, solution &GlobalBest, solution &IRPSolution, int &DisturbanceCounter, int &MaxDisturbance);
