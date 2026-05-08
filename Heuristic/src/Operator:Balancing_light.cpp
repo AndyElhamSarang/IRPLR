@@ -23,13 +23,6 @@ double solution_improvement::OperatorBalancing_light_version(input &IRPLR, prepr
 
     double LogisticRatio = 0;
     vector<int> AllCustomers;
-    for (int i = 0; i < VehicleLoad.size(); i++)
-    {
-        for (int j = 0; j < VehicleLoad[i].size(); j++)
-        {
-            VehicleLoad[i][j] = 0;
-        }
-    }
     for (int i = 0; i < DeliveryQuantity.size(); i++)
     {
 
@@ -37,11 +30,7 @@ double solution_improvement::OperatorBalancing_light_version(input &IRPLR, prepr
         double tempInventory = IRPLR.Retailers[i].InventoryBegin;
         for (int j = 0; j < DeliveryQuantity[i].size(); j++)
         {
-
             TempNextVisitTime.push_back(IRPLR.TimeHorizon);
-            DeliveryQuantity[i][j] = 0;
-            InventoryLevel[i][j] = tempInventory - IRPLR.Retailers[i].Demand;
-            tempInventory = tempInventory - IRPLR.Retailers[i].Demand;
         }
         NextVisitTime.push_back(TempNextVisitTime);
         AllCustomers.push_back(i);
@@ -104,9 +93,16 @@ double solution_improvement::OperatorBalancing_light_version(input &IRPLR, prepr
     assert(AllCustomers.size() != 0);
     try
     {
-        
 
-        
+        for (int customer = 0; customer < DeliveryQuantity.size(); customer++)
+        {
+            for (int time = 0; time < DeliveryQuantity[customer].size(); time++)
+            {
+                int possible_quantity_removal = 0;
+                
+            }
+        }
+
         for (int customer = 0; customer < InventoryLevel.size(); customer++)
         {
             for (int time = 0; time < InventoryLevel[customer].size(); time++)
@@ -494,10 +490,14 @@ double solution_improvement::OperatorBalancing_light_version(input &IRPLR, prepr
         // cout << NewLogisticRatio << "," << CurrentLogisticRatio << endl;
 
         // assert(aborter == 1);
+
+        PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
     }
     catch (double rebalacing_facing_stock_out)
     {
         CountingInfeasibleCase++;
+
+        PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
         cout << "rebalacing_facing_stock_out, break" << endl;
     }
     // cout << "End balancing" << endl;

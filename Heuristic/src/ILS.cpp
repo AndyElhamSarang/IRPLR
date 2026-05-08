@@ -377,6 +377,8 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                                                                         DisturbVehicleLoad, DisturbDeliveryQuantity, DisturbInventoryLevel,
                                                                         DisturbVehicleAllocation, DisturbVisitOrder,
                                                                         Disturb_counting_infeasible_case, Disturb_is_Rebalace_infeasible);
+                cout << "After rebalance" << endl;
+
 
                 time(&rebalance_end_time);
                 total_rebalance_time += difftime(rebalance_end_time, rebalance_start_time);
@@ -428,6 +430,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "------------------------------------------------" << endl;
             Global_total_iteration++;
             DisturbanceCounter++;
+            assert(DisturbanceCounter<1);
         }
     }
     catch (int time_limit_reached)
