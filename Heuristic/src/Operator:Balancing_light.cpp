@@ -1,21 +1,20 @@
 #include "lib.h"
 double solution_improvement::OperatorBalancing_light_version(input &IRPLR, preprocessing &memory,
-                                               vector<vector<vector<int>>> &Route,        // Stay fixed if no redundant visit
-                                               vector<vector<int>> &UnallocatedCustomers, // Stay fixed if no redundant visit
-                                               vector<vector<double>> &VehicleLoad,
-                                               vector<vector<double>> &DeliveryQuantity,
-                                               vector<vector<double>> &InventoryLevel,
-                                               vector<vector<int>> &VehicleAllocation, // Stay fixed if no redundant visit
-                                               vector<vector<int>> &VisitOrder,        // Stay fixed if no redundant visit
-                                               int &CountingInfeasibleCase,
-                                               int &FeasibleRebalanceOrNot)
+                                                             vector<vector<vector<int>>> &Route,        // Stay fixed if no redundant visit
+                                                             vector<vector<int>> &UnallocatedCustomers, // Stay fixed if no redundant visit
+                                                             vector<vector<double>> &VehicleLoad,
+                                                             vector<vector<double>> &DeliveryQuantity,
+                                                             vector<vector<double>> &InventoryLevel,
+                                                             vector<vector<int>> &VehicleAllocation, // Stay fixed if no redundant visit
+                                                             vector<vector<int>> &VisitOrder,        // Stay fixed if no redundant visit
+                                                             int &CountingInfeasibleCase,
+                                                             int &FeasibleRebalanceOrNot)
 {
     FeasibleRebalanceOrNot = 0;
 
-    PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
+    // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
 
-
-     // cout << "Balancing quantity operator" << endl;
+    // cout << "Balancing quantity operator" << endl;
     vector<int> MaxNumberOfConseuctiveDaysACustomerNotVisited;
     vector<vector<int>> NextVisitTime;
     vector<int> NumberOfVisits;
@@ -97,22 +96,59 @@ double solution_improvement::OperatorBalancing_light_version(input &IRPLR, prepr
         for (int customer = 0; customer < DeliveryQuantity.size(); customer++)
         {
             for (int time = 0; time < DeliveryQuantity[customer].size(); time++)
-            {
-                int possible_quantity_removal = 0;
-                
+            {               
+                if (VehicleAllocation[customer][time] < IRPLR.NumberOfVehicles)
+                {
+                    double InventoryBranchout  = 0;
+                    if (time == 0)
+                    {
+                        InventoryBranchout  = IRPLR.Retailers[customer].InventoryBegin;
+                    }
+                    else
+                    {
+                        InventoryBranchout  = InventoryLevel[customer][time - 1];
+                    }
+                    double possible_quantity_removal = min(InventoryLevel[customer][time], DeliveryQuantity[customer][time]);
+                    double LargestStockout = 0;
+                    InventoryBranchout = InventoryBranchout - IRPLR.Retailers[customer].Demand + DeliveryQuantity[customer][time] - possible_quantity_removal;
+                    // cout<<InventoryBranchout<<",";
+                    if(LargestStockout < -InventoryBranchout)
+                    {
+                        LargestStockout = -InventoryBranchout;
+                    }
+                    for (int Subsequent_Time = time+1; Subsequent_Time < DeliveryQuantity[customer].size(); Subsequent_Time++)
+                    {
+                        InventoryBranchout = InventoryBranchout - IRPLR.Retailers[customer].Demand + DeliveryQuantity[customer][Subsequent_Time];
+                        // cout<<InventoryBranchout<<",";
+                        if (LargestStockout < -InventoryBranchout)
+                        {
+                            LargestStockout = -InventoryBranchout;
+                        }
+                    }
+                    // cout << endl;
+                    possible_quantity_removal = max(0.0, possible_quantity_removal - LargestStockout);
+
+                    // cout << "Customer " << customer << " at time " << time << ": possible quantity removal: " << possible_quantity_removal << endl;
+                    DeliveryQuantity[customer][time] = DeliveryQuantity[customer][time] - possible_quantity_removal;
+                    InventoryLevel[customer][time] = InventoryLevel[customer][time] - possible_quantity_removal;
+                    for(int Subsequent_Time = time+1; Subsequent_Time < DeliveryQuantity[customer].size(); Subsequent_Time++)
+                    {
+                        InventoryLevel[customer][Subsequent_Time] = InventoryLevel[customer][Subsequent_Time-1] - IRPLR.Retailers[customer].Demand + DeliveryQuantity[customer][Subsequent_Time];
+                    }
+                    VehicleLoad[time][VehicleAllocation[customer][time]] = VehicleLoad[time][VehicleAllocation[customer][time]] - possible_quantity_removal;
+                    // cout << "After removing possible quantity removal, check inventory level feasibility." << endl;
+                    // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
+                }
             }
         }
+        // cout << "After remove slack quantity, check inventory level feasibility." << endl;
+        // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
 
         for (int customer = 0; customer < InventoryLevel.size(); customer++)
         {
             for (int time = 0; time < InventoryLevel[customer].size(); time++)
             {
-                if (InventoryLevel[customer][time] < -0.00001)
-                {
-                    // cout << "Customer " << customer << " has negative inventory level " << InventoryLevel[customer][time] << " at time " << time << endl;
-                    // assert(InventoryLevel[customer][time] > 0.00001);
-                    throw InventoryLevel[customer][time];
-                }
+                assert(InventoryLevel[customer][time] > -0.00001);
             }
         }
         // ///////////////////////////////////////////////////////////////
@@ -151,7 +187,7 @@ double solution_improvement::OperatorBalancing_light_version(input &IRPLR, prepr
         //                                                                       //
         ///////////////////////////////////////////////////////////////////////////
 
-        PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
+        // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
         for (int time = 0; time < IRPLR.TimeHorizon; time++)
         {
 
@@ -248,7 +284,7 @@ double solution_improvement::OperatorBalancing_light_version(input &IRPLR, prepr
             {
                 cout << "---------" << endl;
 
-                PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
+                // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
                 vector<vector<int>> CumulativeCustomerWeight(CustomerWeight);
 
                 CumulativeWeight = 0;
@@ -360,53 +396,12 @@ double solution_improvement::OperatorBalancing_light_version(input &IRPLR, prepr
             // assert(aborter == 1);
         }
 
-        // ///////////////////////////////////////////////////////////////////////////
-        // //                                                                       //
-        // //           The following code removes unnecessary visits               //
-        // //                  to avoid high travel costs.                          //
-        // //                                                                       //
-        // ///////////////////////////////////////////////////////////////////////////
-
-        // for (int time = 0; time < IRPLR.TimeHorizon; time++)
-        // {
-
-        //     // Search for an existing visit that delivers nothing, find the visit in the route and delete it
-        //     // Otherwise if an existing visit delivers, computes the total delivery quantity by incrementing the delivery quantity of each visit.
-
-        //     for (int i = 0; i < DeliveryQuantity.size(); i++) // Index i for retailer
-        //     {
-
-        //         if (DeliveryQuantity[i][time] == 0 && VehicleAllocation[i][time] < IRPLR.NumberOfVehicles)
-        //         {
-        //             UnallocatedCustomers[time].push_back(Route[time][VehicleAllocation[i][time]][VisitOrder[i][time]]);
-        //             Route[time][VehicleAllocation[i][time]].erase(Route[time][VehicleAllocation[i][time]].begin() + VisitOrder[i][time], Route[time][VehicleAllocation[i][time]].begin() + VisitOrder[i][time] + 1);
-
-        //             for (int k = 0; k < VisitOrder.size(); k++)
-        //             {
-        //                 if (VehicleAllocation[k][time] == VehicleAllocation[i][time]) // Find visits in the same vehicle as Retailer i on day j
-        //                 {
-        //                     if (VisitOrder[k][time] > VisitOrder[i][time]) // If this visit is after the visit of Retailer i
-        //                     {
-        //                         VisitOrder[k][time] = VisitOrder[k][time] - 1;
-        //                     }
-        //                 }
-        //             }
-        //             VisitOrder[i][time] = IRPLR.Retailers.size() + 1;
-        //             VehicleAllocation[i][time] = IRPLR.NumberOfVehicles + 1;
-        //         }
-        //         else
-        //         {
-        //             if (VehicleAllocation[i][time] == IRPLR.NumberOfVehicles + 1)
-        //             {
-        //                 assert(DeliveryQuantity[i][time] == 0);
-        //             }
-        //         }
-        //     }
-        // }
-
-        // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
-        // Search for an existing visit that delivers nothing, find the visit in the route and delete it
-        // Otherwise if an existing visit delivers, computes the total delivery quantity by incrementing the delivery quantity of each visit.
+        ///////////////////////////////////////////////////////////////////////////
+        //                                                                       //
+        //           The following code removes unnecessary visits               //
+        //                  to avoid high travel costs.                          //
+        //                                                                       //
+        ///////////////////////////////////////////////////////////////////////////
         double temp_total_delivery_quantity = 0;
         for (int i = 0; i < DeliveryQuantity.size(); i++) // Index i for retailer
         {
@@ -491,13 +486,13 @@ double solution_improvement::OperatorBalancing_light_version(input &IRPLR, prepr
 
         // assert(aborter == 1);
 
-        PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
+        // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
     }
     catch (double rebalacing_facing_stock_out)
     {
         CountingInfeasibleCase++;
 
-        PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
+        // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
         cout << "rebalacing_facing_stock_out, break" << endl;
     }
     // cout << "End balancing" << endl;
