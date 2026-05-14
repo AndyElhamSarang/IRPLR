@@ -683,7 +683,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
         //                                                                       //
         ///////////////////////////////////////////////////////////////////////////
 
-        PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
+        // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
         for (int time = 0; time < IRPLR.TimeHorizon; time++)
         {
 
@@ -778,9 +778,9 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
             double CumulativeWeight = 0;
             while (CustomerWeight.size() != 0)
             {
-                cout << "---------" << endl;
+                // cout << "---------" << endl;
 
-                PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
+                // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
                 vector<vector<int>> CumulativeCustomerWeight(CustomerWeight);
 
                 CumulativeWeight = 0;
