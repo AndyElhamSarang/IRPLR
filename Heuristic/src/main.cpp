@@ -39,7 +39,7 @@ int main()
 		if (OutputResults == 1)
 		{
 			string experiment_str = to_string(experiment+1);
-			string experiment_name = "MS_no_rebalance_tuning_LR";
+			string experiment_name = "MS";
 			string file_type = ".csv";
 			string file_name = experiment_name + "_exp" + experiment_str + file_type;
 			Table.open(file_name);

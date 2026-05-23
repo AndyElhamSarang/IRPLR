@@ -353,77 +353,77 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "DisturbanceCounter:" << DisturbanceCounter << ", AdjustPenalty:" << AdjustPenalty << ", ToAdjustPenalty:" << ToAdjustPenalty << " ,ScalarLagrangianRelaxation:" << ScalarLagrangianRelaxation << endl;
             cout << "-----------------------------------------------" << endl;
             cout << "Start Disturbance Operator" << endl;
-            // if (run_disturb_rebalance == true)
-            // {
-            //     run_disturb_rebalance = false;
-            //     vector<vector<vector<int>>> DisturbRoute(GlobalBest.Route);
-            //     vector<vector<int>> DisturbUnallocatedCustomers(GlobalBest.UnallocatedCustomers);
-            //     vector<vector<double>> DisturbVehicleLoad(GlobalBest.VehicleLoad);
-            //     vector<vector<double>> DisturbDeliveryQuantity(GlobalBest.DeliveryQuantity);
-            //     vector<vector<double>> DisturbInventoryLevel(GlobalBest.InventoryLevel);
-            //     vector<vector<int>> DisturbVehicleAllocation(GlobalBest.VehicleAllocation);
-            //     vector<vector<int>> DisturbVisitOrder(GlobalBest.VisitOrder);
-            //     int Disturb_counting_infeasible_case = 0;
-            //     int Disturb_is_Rebalace_infeasible = 0;
-            //     time(&rebalance_start_time);
-            //     double Disturb_LogisctiRatioAfterRebalance = numeric_limits<double>::max();
-            //     // Disturb_LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, DisturbRoute, DisturbUnallocatedCustomers,
-            //     //                                                         DisturbVehicleLoad, DisturbDeliveryQuantity, DisturbInventoryLevel,
-            //     //                                                         DisturbVehicleAllocation, DisturbVisitOrder,
-            //     //                                                         Disturb_counting_infeasible_case, Disturb_is_Rebalace_infeasible);
+            if (run_disturb_rebalance == true)
+            {
+                run_disturb_rebalance = false;
+                vector<vector<vector<int>>> DisturbRoute(GlobalBest.Route);
+                vector<vector<int>> DisturbUnallocatedCustomers(GlobalBest.UnallocatedCustomers);
+                vector<vector<double>> DisturbVehicleLoad(GlobalBest.VehicleLoad);
+                vector<vector<double>> DisturbDeliveryQuantity(GlobalBest.DeliveryQuantity);
+                vector<vector<double>> DisturbInventoryLevel(GlobalBest.InventoryLevel);
+                vector<vector<int>> DisturbVehicleAllocation(GlobalBest.VehicleAllocation);
+                vector<vector<int>> DisturbVisitOrder(GlobalBest.VisitOrder);
+                int Disturb_counting_infeasible_case = 0;
+                int Disturb_is_Rebalace_infeasible = 0;
+                time(&rebalance_start_time);
+                double Disturb_LogisctiRatioAfterRebalance = numeric_limits<double>::max();
+                Disturb_LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, DisturbRoute, DisturbUnallocatedCustomers,
+                                                                        DisturbVehicleLoad, DisturbDeliveryQuantity, DisturbInventoryLevel,
+                                                                        DisturbVehicleAllocation, DisturbVisitOrder,
+                                                                        Disturb_counting_infeasible_case, Disturb_is_Rebalace_infeasible);
 
 
 
-            //     Disturb_LogisctiRatioAfterRebalance = OperatorBalancing_light_version(IRPLR, memory, DisturbRoute, DisturbUnallocatedCustomers,
-            //                                                             DisturbVehicleLoad, DisturbDeliveryQuantity, DisturbInventoryLevel,
-            //                                                             DisturbVehicleAllocation, DisturbVisitOrder,
-            //                                                             Disturb_counting_infeasible_case, Disturb_is_Rebalace_infeasible);
-            //     cout << "After rebalance" << endl;
+                // Disturb_LogisctiRatioAfterRebalance = OperatorBalancing_light_version(IRPLR, memory, DisturbRoute, DisturbUnallocatedCustomers,
+                //                                                         DisturbVehicleLoad, DisturbDeliveryQuantity, DisturbInventoryLevel,
+                //                                                         DisturbVehicleAllocation, DisturbVisitOrder,
+                //                                                         Disturb_counting_infeasible_case, Disturb_is_Rebalace_infeasible);
+                cout << "After rebalance" << endl;
 
 
-            //     time(&rebalance_end_time);
-            //     total_rebalance_time += difftime(rebalance_end_time, rebalance_start_time);
-            //     NumberOfRebalance++;
-            //     if (Disturb_counting_infeasible_case == 0)
-            //     {
-            //         NumberOfFeasibleRebalance++;
-            //         cout << "!LogisticRatio before disturb rebalance:" << GlobalBest.LogisticRatio << ", LogisticRatio after feasible rebalance:" << Disturb_LogisctiRatioAfterRebalance << "," << NumberOfRebalance << "," << total_rebalance_time << endl;
-            //         if (GlobalBest.LogisticRatio - Disturb_LogisctiRatioAfterRebalance > 0.00001)
-            //         {
-            //             double RebalanceImprovement = ((GlobalBest.LogisticRatio - Disturb_LogisctiRatioAfterRebalance) / GlobalBest.LogisticRatio) * 100;
-            //             AccumulatedPrecentageRebalanceImprovement += RebalanceImprovement;
-            //             if (RebalanceMaxPrecentageImprovement < RebalanceImprovement)
-            //             {
-            //                 RebalanceMaxPrecentageImprovement = RebalanceImprovement;
-            //             }
-            //             if (RebalanceMinPrecentageImprovement < 0.00001)
-            //             {
-            //                 RebalanceMinPrecentageImprovement = RebalanceImprovement;
-            //             }
-            //             else if (RebalanceMinPrecentageImprovement > RebalanceImprovement)
-            //             {
-            //                 RebalanceMinPrecentageImprovement = RebalanceImprovement;
-            //             }
-            //             NumberOfRebalanceImproved++;
-            //             cout << "!Rebalance obtained better feasible solution with objv:" << GlobalBest.LogisticRatio << "," << Disturb_LogisctiRatioAfterRebalance << endl;
+                time(&rebalance_end_time);
+                total_rebalance_time += difftime(rebalance_end_time, rebalance_start_time);
+                NumberOfRebalance++;
+                if (Disturb_counting_infeasible_case == 0)
+                {
+                    NumberOfFeasibleRebalance++;
+                    cout << "!LogisticRatio before disturb rebalance:" << GlobalBest.LogisticRatio << ", LogisticRatio after feasible rebalance:" << Disturb_LogisctiRatioAfterRebalance << "," << NumberOfRebalance << "," << total_rebalance_time << endl;
+                    if (GlobalBest.LogisticRatio - Disturb_LogisctiRatioAfterRebalance > 0.00001)
+                    {
+                        double RebalanceImprovement = ((GlobalBest.LogisticRatio - Disturb_LogisctiRatioAfterRebalance) / GlobalBest.LogisticRatio) * 100;
+                        AccumulatedPrecentageRebalanceImprovement += RebalanceImprovement;
+                        if (RebalanceMaxPrecentageImprovement < RebalanceImprovement)
+                        {
+                            RebalanceMaxPrecentageImprovement = RebalanceImprovement;
+                        }
+                        if (RebalanceMinPrecentageImprovement < 0.00001)
+                        {
+                            RebalanceMinPrecentageImprovement = RebalanceImprovement;
+                        }
+                        else if (RebalanceMinPrecentageImprovement > RebalanceImprovement)
+                        {
+                            RebalanceMinPrecentageImprovement = RebalanceImprovement;
+                        }
+                        NumberOfRebalanceImproved++;
+                        cout << "!Rebalance obtained better feasible solution with objv:" << GlobalBest.LogisticRatio << "," << Disturb_LogisctiRatioAfterRebalance << endl;
 
-            //             GlobalBest.Route = DisturbRoute;
-            //             GlobalBest.UnallocatedCustomers = DisturbUnallocatedCustomers;
-            //             GlobalBest.VehicleLoad = DisturbVehicleLoad;
-            //             GlobalBest.DeliveryQuantity = DisturbDeliveryQuantity;
-            //             GlobalBest.InventoryLevel = DisturbInventoryLevel;
-            //             GlobalBest.VehicleAllocation = DisturbVehicleAllocation;
-            //             GlobalBest.VisitOrder = DisturbVisitOrder;
-            //             GlobalBest.GetLogisticRatio(IRPLR);
-            //             // IRPSolution.print_solution(IRPLR);
-            //             cout << "After rebalance" << endl;
-            //             // IRPSolution.Validation(IRPLR);
-            //             // GlobalBest.Validation(IRPLR);
+                        GlobalBest.Route = DisturbRoute;
+                        GlobalBest.UnallocatedCustomers = DisturbUnallocatedCustomers;
+                        GlobalBest.VehicleLoad = DisturbVehicleLoad;
+                        GlobalBest.DeliveryQuantity = DisturbDeliveryQuantity;
+                        GlobalBest.InventoryLevel = DisturbInventoryLevel;
+                        GlobalBest.VehicleAllocation = DisturbVehicleAllocation;
+                        GlobalBest.VisitOrder = DisturbVisitOrder;
+                        GlobalBest.GetLogisticRatio(IRPLR);
+                        // IRPSolution.print_solution(IRPLR);
+                        cout << "After rebalance" << endl;
+                        // IRPSolution.Validation(IRPLR);
+                        // GlobalBest.Validation(IRPLR);
 
-            //             assert(fabs(GlobalBest.LogisticRatio - Disturb_LogisctiRatioAfterRebalance) < 0.00001);
-            //         }
-            //     }
-            // }
+                        assert(fabs(GlobalBest.LogisticRatio - Disturb_LogisctiRatioAfterRebalance) < 0.00001);
+                    }
+                }
+            }
 
             OperatorDisturb(IRPLR, GlobalBest, IRPSolution, DisturbanceCounter, MaxDisturbance);
             IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);

@@ -41,7 +41,7 @@ andy:
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_light.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy) -I $(andy_boost) \
-	-o MS_no_rebalance_tuning_LR.out -O3
+	-o MS.out -O3
 andy_DISABLE_COUT:
 	$(CC) main.cpp file:Read_andy.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
