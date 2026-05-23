@@ -10,7 +10,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
     time_t accumulate_end_time;
     double LR_objv = numeric_limits<double>::max();
     IRPSolution.GetLogisticRatio(IRPLR);
-    cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut: " << IRPSolution.ViolationStockOut << endl;
+    cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut: " << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut: " << PenaltyForStockOut << endl;
 
     // IRPSolution.print_solution(IRPLR);
     // for (int i = 0; i < IRPSolution.TransportationCostPerRoute.size(); i++)
@@ -79,7 +79,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                 {
                                     time(&total_end_time);
                                     double total_ls_time = difftime(total_end_time, total_start_time);
-                                    if (total_ls_time - MainAlgorithmTimeLimit > 0.00001)
+                                    if (total_ls_time - MainAlgorithmTimeLimit > -0.01)
                                     {
                                         int time_limit_reached = total_ls_time;
                                         throw time_limit_reached;
@@ -672,11 +672,11 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
     }
     time(&accumulate_end_time);
     accumulated_time += difftime(accumulate_end_time, accumulate_start_time);
-    cout << "Accumulated time:" << accumulated_time << endl;
-    cout << "Total solution explored:" << solutionCounter << endl;
-    cout << "Valid insertion:" << working_solutionCounter << endl;
-    cout << "whether_improved_or_not:" << whether_improved_or_not << endl;
-    cout << "ImpLogisticRatio:" << ImpLogisticRatio << "\t ImpStockOut:" << ImpStockOut << endl;
+    cout << "Accumulated time:" << accumulated_time << ";";
+    cout << "Total solution explored:" << solutionCounter << ";";
+    cout << "Valid insertion:" << working_solutionCounter << ";";
+    cout << "whether_improved_or_not:" << whether_improved_or_not << ";";
+    cout << "ImpLogisticRatio:" << ImpLogisticRatio << ", ImpStockOut:" << ImpStockOut << endl;
 
     ////////////////////////////////////////////////////////////////////////////
     //                                                                        //
@@ -700,7 +700,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
         {
             IRPSolution.DeliveryQuantity[IRPSolution.Route[move[0]][move[3]][move[4] + route2_index]] = ImpDeliveryQuantityRoute2[route2_index];
             IRPSolution.InventoryLevel[IRPSolution.Route[move[0]][move[3]][move[4] + route2_index]] = ImpInventoryLevelRoute2[route2_index];
-           
+
             for (int day = move[0]; day < IRPSolution.VehicleAllocation[IRPSolution.Route[move[0]][move[3]][move[4] + route2_index]].size(); day++)
             {
                 if (IRPSolution.VehicleAllocation[IRPSolution.Route[move[0]][move[3]][move[4] + route2_index]][day] < IRPLR.NumberOfVehicles) // For vehicle j that visits this customer on day i
@@ -726,7 +726,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
         {
             IRPSolution.DeliveryQuantity[IRPSolution.Route[move[0]][move[1]][move[2] + route1_index]] = ImpDeliveryQuantityRoute1[route1_index];
             IRPSolution.InventoryLevel[IRPSolution.Route[move[0]][move[1]][move[2] + route1_index]] = ImpInventoryLevelRoute1[route1_index];
-           
+
             for (int day = move[0]; day < IRPSolution.VehicleAllocation[IRPSolution.Route[move[0]][move[1]][move[2] + route1_index]].size(); day++)
             {
                 if (IRPSolution.VehicleAllocation[IRPSolution.Route[move[0]][move[1]][move[2] + route1_index]][day] < IRPLR.NumberOfVehicles)

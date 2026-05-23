@@ -355,6 +355,37 @@ void DeliverZeroIfNotVisitedViceVersa(input &IRPLR, solution &IRPSolution)
     }
     cout << "Check passed!" << endl;
 }
+void EitherVisitedorUnallocated(input &IRPLR, solution &IRPSolution)
+{
+    cout << "Check Each Customer is Either Visited or Unallocated" << endl;
+    for (int i = 0; i < IRPLR.Retailers.size(); i++) // For each retailer
+    {
+        for (int j = 0; j < IRPLR.TimeHorizon; j++) // For each time period
+        {
+            bool Visited = false;
+            for (int k = 0; k < IRPSolution.Route[j].size(); k++) // For each vehicle
+            {
+                for (int x = 0; x < IRPSolution.Route[j][k].size(); x++) // For each position in the route
+                {
+                    if (IRPSolution.Route[j][k][x] == i)
+                    {
+                        Visited = true;
+                    }
+                }
+            }
+            bool Unallocated = false;
+            for (int k = 0; k < IRPSolution.UnallocatedCustomers[j].size(); k++)
+            {
+                if (IRPSolution.UnallocatedCustomers[j][k] == i)
+                {
+                    Unallocated = true;
+                }
+            }
+            assert(Visited != Unallocated && "Each customer should be either visited or unallocated");
+        }
+    }
+    cout << "Check passed!" << endl;
+}
 
 void solution::Validation(input &IRPLR)
 {
@@ -367,6 +398,7 @@ void solution::Validation(input &IRPLR)
     CustomerCannotVisitMoreThanOncePerPeriod(IRPLR, *this);
     NotUseMoreThanVehicleAvailable(IRPLR, *this);
     DeliverZeroIfNotVisitedViceVersa(IRPLR, *this);
+    EitherVisitedorUnallocated(IRPLR, *this);
 }
 
 void solution::UpdateVehicleAllocationVisitOrder(input &IRPLR)
@@ -516,10 +548,10 @@ void solution::print_solution(input &IRPLR)
     cout << "Route:" << endl;
     for (int i = 0; i < Route.size(); i++)
     {
-        cout << "Time period " << i << ":" << endl;
         for (int j = 0; j < Route[i].size(); j++)
         {
-            cout << "Vehicle " << j << endl;
+            
+        cout << "Time period " << i << ", " << "Vehicle " << j << " : ";
             if (Route[i][j].size() != 0)
             {
                 for (int k = 0; k < Route[i][j].size() - 1; k++)
@@ -528,8 +560,7 @@ void solution::print_solution(input &IRPLR)
                 }
                 cout << Route[i][j][Route[i][j].size() - 1] << "(" << DeliveryQuantity[Route[i][j][Route[i][j].size() - 1]][i] << ")";
             }
-            cout << endl;
-            cout << "Load VS Capacity: " << VehicleLoad[i][j] << "," << IRPLR.Vehicle.capacity << endl;
+            cout <<  " \t ||Load VS Capacity: " << VehicleLoad[i][j] << "," << IRPLR.Vehicle.capacity << endl;
         }
         assert(Route[i].size() == IRPLR.NumberOfVehicles);
         cout << "Unallocated customers:";
@@ -625,3 +656,4 @@ void solution::GetLogisticRatio(input &IRPLR)
     }
     // Validation(IRPLR);
 }
+

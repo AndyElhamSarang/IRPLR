@@ -93,10 +93,10 @@ void solution_improvement::PrintTempSolution(input &IRPLR,
     cout << "Route:" << endl;
     for (int i = 0; i < Route.size(); i++)
     {
-        cout << "Time period " << i << ":" << endl;
         for (int j = 0; j < Route[i].size(); j++)
         {
-            cout << "Vehicle " << j << endl;
+
+            cout << "Time period " << i << ", " << "Vehicle " << j << " : ";
             if (Route[i][j].size() != 0)
             {
                 for (int k = 0; k < Route[i][j].size() - 1; k++)
@@ -105,8 +105,7 @@ void solution_improvement::PrintTempSolution(input &IRPLR,
                 }
                 cout << Route[i][j][Route[i][j].size() - 1] << "(" << DeliveryQuantity[Route[i][j][Route[i][j].size() - 1]][i] << ")";
             }
-            cout << endl;
-            cout << "Load VS Capacity: " << VehicleLoad[i][j] << "," << IRPLR.Vehicle.capacity << endl;
+            cout << " \t ||Load VS Capacity: " << VehicleLoad[i][j] << "," << IRPLR.Vehicle.capacity << endl;
         }
         assert(Route[i].size() == IRPLR.NumberOfVehicles);
         cout << "Unallocated customers:";

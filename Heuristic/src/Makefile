@@ -38,10 +38,10 @@ andy:
 	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Transfer.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_light.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy) -I $(andy_boost) \
-	-o MS.out -O3
+	-o MS_no_rebalance_tuning_LR.out -O3
 andy_DISABLE_COUT:
 	$(CC) main.cpp file:Read_andy.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
@@ -72,11 +72,11 @@ andy_DISABLE_COUT:
 	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Transfer.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_light.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-DDISABLE_COUT \
-	-o MS_DISABLE_COUT.out -O3
+	-o MS_no_rebalance_tuning_LR_DISABLE_COUT.out -O3
 andy_lenovo:
 	$(CC) main.cpp file:Read_andy_lenovo.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
@@ -107,7 +107,7 @@ andy_lenovo:
 	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Transfer.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_light.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy_lenovo) -I $(andy_lenovo_boost) \
 	-o irplr.out -O3
@@ -141,7 +141,7 @@ andy_desktop:
 	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Transfer.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_light.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
 	-o test.out
@@ -175,7 +175,7 @@ andy_testpc:
 	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Transfer.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_light.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-o irplr.out -O3
@@ -210,10 +210,13 @@ andy_testpc_DISABLE_COUT:
 	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Transfer.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_light.cpp Operator:Transfer.cpp \
 	Operator:Disturb.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-DDISABLE_COUT \
 	-o irplr.out -O3
 clean:
 	rm -f *.txt *.csv *.o *.lp *.mps *.out
+# For running multiple executables:
+# run:
+# ./irplr.out && ./irplr_no_rebalance.out
