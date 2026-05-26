@@ -16,7 +16,6 @@ ofstream Table;
 base_generator_type generator(static_cast<unsigned int>(time(0)));
 string MachineDirectory;
 int OutputResults;
-int NumberOfInitialSolutions;
 time_t start_time;
 time_t end_time;
 time_t start_time_to_best;
@@ -28,13 +27,21 @@ time_t total_end_time;
 bool whether_results_reported_30 = false;
 bool whether_results_reported_60 = false;
 bool whether_results_reported_first_improvement = false;
+//Parameters
+int NumberOfInitialSolutions=0;
+int NumberOfExperiments =0;
+string AllowLagrangianRelaxation;
+string TypeOfRebalance;
+double InitialLagrangianScalar = 0;
+double ToAdjustLagrangianScalar = 0;
+int ToTriggerAdjustment = 0;
 int main()
 {
 	file read_file;
 	read_file.ReadDirectory();
 	read_file.ReadIRPInstanceName();
 	read_file.ReadGlobalParameter();
-	for (int experiment = 0; experiment < 5; experiment++)
+	for (int experiment = 0; experiment < NumberOfExperiments; experiment++)
 	{
 		if (OutputResults == 1)
 		{

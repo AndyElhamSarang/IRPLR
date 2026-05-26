@@ -91,7 +91,14 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
     IRPSolution.GetLogisticRatio(IRPLR);
     // Initialise penalty for stockout
     double PenaltyForStockOut = 0;
-    InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
+    if(AllowLagrangianRelaxation == "YES")
+    {
+        InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
+    }
+    else if(AllowLagrangianRelaxation == "NO")
+    {
+        PenaltyForStockOut = 100000; // A very large penalty for stockout to discourage any infeasible moves.
+    }
     bool whether_improved_via_SwapRemoveInsertPair = true;
     bool whether_improved_via_SwapTwoRoutesOnSingleDay = true;
     bool whether_improved_via_InterSwap = true;

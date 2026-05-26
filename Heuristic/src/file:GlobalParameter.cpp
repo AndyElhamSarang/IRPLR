@@ -85,4 +85,81 @@ void file::ReadGlobalParameter()
     stringstream ss_TakeNumberOfInitialSolutions(TakeParameter);
     ss_TakeNumberOfInitialSolutions >> NumberOfInitialSolutions;
     cout << dummyline << ":" << NumberOfInitialSolutions << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_TakeNumberOfExperiments(TakeParameter);
+    ss_TakeNumberOfExperiments >> NumberOfExperiments;
+    cout << dummyline << ":" << NumberOfExperiments << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_TakeAllowLagrangianRelaxation(TakeParameter);
+    ss_TakeAllowLagrangianRelaxation >> AllowLagrangianRelaxation;
+    cout << dummyline << ":" << AllowLagrangianRelaxation << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_TakeTypeOfRebalance(TakeParameter);
+    ss_TakeTypeOfRebalance >> TypeOfRebalance;
+    cout << dummyline << ":" << TypeOfRebalance << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_TakeInitialLagrangianScalar(TakeParameter);
+    ss_TakeInitialLagrangianScalar >> InitialLagrangianScalar;
+    cout << dummyline << ":" << InitialLagrangianScalar << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_TakeToAdjustLagrangianScalar(TakeParameter);
+    ss_TakeToAdjustLagrangianScalar >> ToAdjustLagrangianScalar;
+    cout << dummyline << ":" << ToAdjustLagrangianScalar << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_TakeToTriggerAdjustment(TakeParameter);
+    ss_TakeToTriggerAdjustment >> ToTriggerAdjustment;
+    cout << dummyline << ":" << ToTriggerAdjustment << endl;
+    //Inout parameter validation
+    bool valid_input = true;
+    if(NumberOfInitialSolutions <= 0)
+    {
+        cout << "Error: NumberOfInitialSolutions should be a positive integer." << endl;
+        valid_input = false;
+    }
+    if(NumberOfExperiments <= 0)
+    {
+        cout << "Error: NumberOfExperiments should be a positive integer." << endl;
+        valid_input = false;
+    }
+    if (AllowLagrangianRelaxation != "YES" && AllowLagrangianRelaxation != "NO")
+    {
+        cout << "Error: Invalid value for AllowLagrangianRelaxation. Please set it to either 'YES' or 'NO'." << endl;
+        valid_input = false;
+    }
+    if (TypeOfRebalance != "GUARANTEE_FEASIBILITY" && TypeOfRebalance != "NOT_GUARANTEE_FEASIBILITY")
+    {
+        cout << "Error: Invalid value for TypeOfRebalance. Please set it to either 'GUARANTEE_FEASIBILITY' or 'NOT_GUARANTEE_FEASIBILITY'." << endl;
+        valid_input = false;
+    }
+    if (InitialLagrangianScalar <= 0)
+    {
+        cout << "Error: InitialLagrangianScalar should be positive." << endl;
+        valid_input = false;
+    }
+    if (ToAdjustLagrangianScalar <= 0)
+    {
+        cout << "Error: ToAdjustLagrangianScalar should be positive." << endl;
+        valid_input = false;
+    }
+    if (ToTriggerAdjustment <= 0)
+    {
+        cout << "Error: ToTriggerAdjustment should be a positive integer." << endl;
+        valid_input = false;
+    }
+    if (valid_input == false)
+    {
+        exit(1);
+    }
 }

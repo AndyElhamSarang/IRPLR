@@ -82,7 +82,7 @@ vector<vector<int>> &VisitOrder,
 int &CountingInfeasibleCase,
 int & FeasibleRebalanceOrNot);
 
-double OperatorBalancing_light_version(input &IRPLR, preprocessing &memory,
+double OperatorBalancing_guarantee_feasibility(input &IRPLR, preprocessing &memory,
                                                vector<vector<vector<int>>> &Route,        // Stay fixed if no redundant visit
                                                vector<vector<int>> &UnallocatedCustomers, // Stay fixed if no redundant visit
                                                vector<vector<double>> &VehicleLoad,

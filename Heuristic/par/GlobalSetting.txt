@@ -14,3 +14,15 @@ Output results as table
 1
 NumberOfInitialSolution
 5
+NumberOfExperiments
+1
+AllowLagrangianRelaxation
+NO
+TypeOfRebalance
+NOT_GUARANTEE_FEASIBILITY
+InitialLagrangianScalar
+10
+ToAdjustLagrangianScalar
+0.5
+ToTriggerAdjustment
+20
