@@ -31,4 +31,6 @@ public:
   void GetLogisticRatio(input &IRPLR);
   double GetTransCostSingleRoute(/*int route, int head, int tail, int insert_length, vector<int> &Input_route, data &wsrp, proprecessing &memory*/);
   void Validation(input &IRPLR);
+
+  void OutputJSON(input &IRPLR, const string &OutputFileName);
 };

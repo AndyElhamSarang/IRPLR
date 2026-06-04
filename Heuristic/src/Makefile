@@ -216,7 +216,7 @@ andy_testpc_DISABLE_COUT:
 	-DDISABLE_COUT \
 	-o irplr.out -O3
 clean:
-	rm -f *.txt *.csv *.o *.lp *.mps *.out
+	rm -f *.txt *.csv *.o *.lp *.mps *.out *.json
 # For running multiple executables:
 # run:
 # ./irplr.out && ./irplr_no_rebalance.out

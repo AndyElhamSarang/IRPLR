@@ -9,6 +9,7 @@ class file
   
   string InstanceFile;
   vector<string> InstanceDirectories;
+  string JSONDirectory;
   //vector< is > isfile;
   void ReadDirectory();
   void ReadIRPInstanceName();

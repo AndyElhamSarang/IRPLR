@@ -3,6 +3,7 @@ void file::ReadDirectory()
 {
 
     MachineDirectory = "/home/andy/Desktop/";
+    JSONDirectory = MachineDirectory + "Curtin/IRPLR/IRPLR/JSON/";
     cout << "Read Parameter" << endl;
     string InputInstanceName = MachineDirectory + "Curtin/IRPLR/IRPLR/Heuristic/par/Instances.txt";
     ifstream ifinstance;

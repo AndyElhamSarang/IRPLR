@@ -82,6 +82,12 @@ void file::ReadGlobalParameter()
 
     getline(ifGlobal, dummyline);
     getline(ifGlobal, TakeParameter);
+    stringstream ss_TakeOutputSolutionJSON(TakeParameter);
+    ss_TakeOutputSolutionJSON >> OutputSolutionJSON;
+    cout << dummyline << ": " << OutputSolutionJSON << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
     stringstream ss_TakeNumberOfInitialSolutions(TakeParameter);
     ss_TakeNumberOfInitialSolutions >> NumberOfInitialSolutions;
     cout << dummyline << ":" << NumberOfInitialSolutions << endl;
@@ -121,8 +127,20 @@ void file::ReadGlobalParameter()
     stringstream ss_TakeToTriggerAdjustment(TakeParameter);
     ss_TakeToTriggerAdjustment >> ToTriggerAdjustment;
     cout << dummyline << ":" << ToTriggerAdjustment << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_TakeGridResolution(TakeParameter);
+    ss_TakeGridResolution >> GridResolution;
+    cout << dummyline << ":" << GridResolution << endl;
+
     //Inout parameter validation
     bool valid_input = true;
+    if(OutputSolutionJSON != "YES" && OutputSolutionJSON != "NO")
+    {
+        cout << "Error: Invalid value for OutputSolutionJSON. Please set it to either 'YES' or 'NO'." << endl;
+        valid_input = false;
+    }
     if(NumberOfInitialSolutions <= 0)
     {
         cout << "Error: NumberOfInitialSolutions should be a positive integer." << endl;
@@ -156,6 +174,11 @@ void file::ReadGlobalParameter()
     if (ToTriggerAdjustment <= 0)
     {
         cout << "Error: ToTriggerAdjustment should be a positive integer." << endl;
+        valid_input = false;
+    }
+    if (GridResolution <= 0)
+    {
+        cout << "Error: GridResolution should be a positive integer." << endl;
         valid_input = false;
     }
     if (valid_input == false)

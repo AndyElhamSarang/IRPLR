@@ -657,3 +657,154 @@ void solution::GetLogisticRatio(input &IRPLR)
     // Validation(IRPLR);
 }
 
+
+void solution::OutputJSON(input &IRPLR, const string &OutputFileName)
+{
+    cout << "Outputting solution to JSON file: " << OutputFileName << endl;
+    
+    ofstream jsonFile(OutputFileName);
+    if (!jsonFile.is_open())
+    {
+        cerr << "Error: Cannot open file " << OutputFileName << " for writing." << endl;
+        return;
+    }
+    
+    jsonFile << "{\n";
+    jsonFile << "  \"metadata\": {\n";
+    jsonFile << "    \"num_retailers\": " << IRPLR.NumberOfRetailers << ",\n";
+    jsonFile << "    \"time_horizon\": " << IRPLR.TimeHorizon << ",\n";
+    jsonFile << "    \"num_vehicles\": " << IRPLR.NumberOfVehicles << ",\n";
+    jsonFile << "    \"vehicle_capacity\": " << IRPLR.Vehicle.capacity << ",\n";
+    jsonFile << "    \"depot_x\": " << IRPLR.Supplier.xCoord << ",\n";
+    jsonFile << "    \"depot_y\": " << IRPLR.Supplier.yCoord << "\n";
+    jsonFile << "  },\n";
+    
+    jsonFile << "  \"metrics\": {\n";
+    jsonFile << "    \"total_transportation_cost\": " << fixed << setprecision(2) << TotalTransportationCost << ",\n";
+    jsonFile << "    \"logistic_ratio\": " << fixed << setprecision(4) << LogisticRatio << ",\n";
+    jsonFile << "    \"total_delivery\": " << fixed << setprecision(2) << TotalDelivery << ",\n";
+    jsonFile << "    \"violation_stock_out\": " << fixed << setprecision(2) << ViolationStockOut << ",\n";
+    jsonFile << "    \"solution_time_seconds\": " << fixed << setprecision(4) << solution_time << "\n";
+    jsonFile << "  },\n";
+    
+    jsonFile << "  \"retailers\": [\n";
+    for (int i = 0; i < IRPLR.Retailers.size(); i++)
+    {
+        jsonFile << "    {\n";
+        jsonFile << "      \"id\": " << i << ",\n";
+        jsonFile << "      \"x_coord\": " << IRPLR.Retailers[i].xCoord << ",\n";
+        jsonFile << "      \"y_coord\": " << IRPLR.Retailers[i].yCoord << ",\n";
+        jsonFile << "      \"inventory_begin\": " << IRPLR.Retailers[i].InventoryBegin << ",\n";
+        jsonFile << "      \"inventory_max\": " << IRPLR.Retailers[i].InventoryMax << ",\n";
+        jsonFile << "      \"inventory_min\": " << IRPLR.Retailers[i].InventoryMin << ",\n";
+        jsonFile << "      \"demand\": " << IRPLR.Retailers[i].Demand << ",\n";
+        jsonFile << "      \"stock_out_penalty\": " << fixed << setprecision(2) << StockOutPerCustomer[i] << ",\n";
+        jsonFile << "      \"min_visit_demand\": " << IRPLR.MinimumVisitDemand[i] << "\n";
+        jsonFile << "    }";
+        if (i < IRPLR.Retailers.size() - 1)
+            jsonFile << ",";
+        jsonFile << "\n";
+    }
+    jsonFile << "  ],\n";
+    
+    jsonFile << "  \"schedule\": [\n";
+    for (int t = 0; t < Route.size(); t++)
+    {
+        jsonFile << "    {\n";
+        jsonFile << "      \"time_period\": " << t << ",\n";
+        jsonFile << "      \"vehicles\": [\n";
+        
+        for (int v = 0; v < Route[t].size(); v++)
+        {
+            jsonFile << "        {\n";
+            jsonFile << "          \"vehicle_id\": " << v << ",\n";
+            jsonFile << "          \"route\": [";
+            
+            for (int k = 0; k < Route[t][v].size(); k++)
+            {
+                jsonFile << Route[t][v][k];
+                if (k < Route[t][v].size() - 1)
+                    jsonFile << ", ";
+            }
+            jsonFile << "],\n";
+            
+            jsonFile << "          \"load\": " << fixed << setprecision(2) << VehicleLoad[t][v] << ",\n";
+            jsonFile << "          \"deliveries\": [";
+            
+            for (int k = 0; k < Route[t][v].size(); k++)
+            {
+                int retailer_id = Route[t][v][k];
+                jsonFile << fixed << setprecision(2) << DeliveryQuantity[retailer_id][t];
+                if (k < Route[t][v].size() - 1)
+                    jsonFile << ", ";
+            }
+            jsonFile << "]\n";
+            
+            jsonFile << "        }";
+            if (v < Route[t].size() - 1)
+                jsonFile << ",";
+            jsonFile << "\n";
+        }
+        
+        jsonFile << "      ],\n";
+        jsonFile << "      \"unallocated_customers\": [";
+        for (int j = 0; j < UnallocatedCustomers[t].size(); j++)
+        {
+            jsonFile << UnallocatedCustomers[t][j];
+            if (j < UnallocatedCustomers[t].size() - 1)
+                jsonFile << ", ";
+        }
+        jsonFile << "]\n";
+        
+        jsonFile << "    }";
+        if (t < Route.size() - 1)
+            jsonFile << ",";
+        jsonFile << "\n";
+    }
+    jsonFile << "  ],\n";
+    
+    jsonFile << "  \"inventory_and_delivery\": [\n";
+    for (int i = 0; i < InventoryLevel.size(); i++)
+    {
+        jsonFile << "    {\n";
+        jsonFile << "      \"retailer_id\": " << i << ",\n";
+        jsonFile << "      \"inventory_begin\": " << IRPLR.Retailers[i].InventoryBegin << ",\n";
+        jsonFile << "      \"timeline\": [\n";
+        
+        for (int t = 0; t < InventoryLevel[i].size(); t++)
+        {
+            jsonFile << "        {\n";
+            jsonFile << "          \"time_period\": " << t << ",\n";
+            jsonFile << "          \"inventory_level\": " << fixed << setprecision(2) << InventoryLevel[i][t] << ",\n";
+            jsonFile << "          \"delivery_quantity\": " << fixed << setprecision(2) << DeliveryQuantity[i][t] << ",\n";
+            
+            if (VehicleAllocation[i][t] < IRPLR.NumberOfVehicles)
+            {
+                jsonFile << "          \"vehicle_allocated\": " << VehicleAllocation[i][t] << ",\n";
+                jsonFile << "          \"visit_order\": " << VisitOrder[i][t] << "\n";
+            }
+            else
+            {
+                jsonFile << "          \"vehicle_allocated\": null,\n";
+                jsonFile << "          \"visit_order\": null\n";
+            }
+            
+            jsonFile << "        }";
+            if (t < InventoryLevel[i].size() - 1)
+                jsonFile << ",";
+            jsonFile << "\n";
+        }
+        
+        jsonFile << "      ]\n";
+        jsonFile << "    }";
+        if (i < InventoryLevel.size() - 1)
+            jsonFile << ",";
+        jsonFile << "\n";
+    }
+    jsonFile << "  ]\n";
+    
+    jsonFile << "}\n";
+    jsonFile.close();
+    
+    cout << "JSON output successfully written to " << OutputFileName << endl;
+}

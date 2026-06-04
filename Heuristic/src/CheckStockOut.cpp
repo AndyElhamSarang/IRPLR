@@ -11,6 +11,6 @@ int solution::CheckStockOut(input &IRPLR, int &RetailerIndex)
             break;
         }
     }
-
+    
     return NextStockOutPeriod;
 }

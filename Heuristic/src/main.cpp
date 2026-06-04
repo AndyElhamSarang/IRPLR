@@ -1,6 +1,6 @@
 #include "lib.h"
 int printout_inputdata = 0;
-int printout_initialSchedule = 0;
+int printout_initialSchedule =0;
 int printout_initialOutputCVRP = 0;
 int printout_initialRouting = 0;
 int printout_initialReadCVRP = 0;
@@ -27,6 +27,7 @@ time_t total_end_time;
 bool whether_results_reported_30 = false;
 bool whether_results_reported_60 = false;
 bool whether_results_reported_first_improvement = false;
+string OutputSolutionJSON;
 //Parameters
 int NumberOfInitialSolutions=0;
 int NumberOfExperiments =0;
@@ -35,6 +36,7 @@ string TypeOfRebalance;
 double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
+int GridResolution = 0;
 int main()
 {
 	file read_file;
@@ -63,9 +65,10 @@ int main()
 		{
 			for (int j = 0; j < read_file.instances[i].size(); j++)
 			{
-
+				string true_instance_name = read_file.instances[i][j].substr(read_file.instances[i][j].size() - (read_file.instances[i][j].size() - MachineDirectory.size() - read_file.InstanceDirectories[i].size() ));
+				true_instance_name = true_instance_name.erase(true_instance_name.size() - 4);
 				cout << "---------------------------------------------" << endl;
-				cout << read_file.instances[i][j] << endl;
+				cout << true_instance_name << endl;
 				cout << "---------------------------------------------" << endl;
 
 				cout << "@ ---------------------------------------------" << endl;
@@ -87,7 +90,7 @@ int main()
 				cout << "Local search timelimit: " << MainAlgorithmTimeLimit << endl;
 				if (OutputResults == 1)
 				{
-					Table << read_file.instances[i][j] << "," << IRPLR.TimeHorizon << "," << IRPLR.NumberOfRetailers << "," << IRPLR.NumberOfVehicles << ","; // Print instance feastures in the table
+					Table << true_instance_name  << "," << IRPLR.TimeHorizon << "," << IRPLR.NumberOfRetailers << "," << IRPLR.NumberOfVehicles << ","; // Print instance feastures in the table
 				}
 				////////////////////////////////////////////////////////////////
 				//                                                            //
@@ -138,6 +141,10 @@ int main()
 					}
 					cout << "!Initial solution " << j + 1 << endl;
 					IRPSolution.print_solution(IRPLR);
+					if(OutputSolutionJSON == "YES")
+					{
+						IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + true_instance_name + "_initial_solution_" + to_string(j) + ".json");
+					}
 					IRPSolution.GetLogisticRatio(IRPLR);
 					cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
 					IRPSolution.Validation(IRPLR);
@@ -145,11 +152,20 @@ int main()
 					solution_improvement Metaheuristic;
 					// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
 					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s);
+
+					if(OutputSolutionJSON == "YES")
+					{
+						IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + true_instance_name + "_final_solution_" + to_string(j) + ".json");
+					}
 				}
 				time(&total_end_time);
 				double accum_time = difftime(total_end_time, total_start_time);
 				cout << "Global best" << endl;
 				GlobalBest.Validation(IRPLR);
+				if(OutputSolutionJSON == "YES")
+				{
+					GlobalBest.OutputJSON(IRPLR, read_file.JSONDirectory + true_instance_name + "_global_best.json");
+				}
 				cout << "whether_results_reported at 30s: " << whether_results_reported_30 << ", whether_results_reported at 60s: " << whether_results_reported_60 << ", whether_results_reported at first improvement: " << whether_results_reported_first_improvement << endl;
 				if (whether_results_reported_first_improvement == false)
 				{

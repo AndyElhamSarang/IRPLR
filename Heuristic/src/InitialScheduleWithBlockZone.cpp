@@ -30,10 +30,10 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
     // Initialize solution arrays and structures
     IRPSolution.Initialization(IRPLR);
     
-    if (printout_initialSchedule == 1)
-    {
-        IRPSolution.print_solution(IRPLR);
-    }
+    // if (printout_initialSchedule == 1)
+    // {
+    //     IRPSolution.print_solution(IRPLR);
+    // }
 
     boost_random_mechanism RandomInitial; // random helper for initial schedule
 
@@ -51,6 +51,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
     for (int i = 0; i < IRPLR.Retailers.size(); i++)
     {
         int checkNextStockOutPeriod = IRPSolution.CheckStockOut(IRPLR, i);
+        assert(checkNextStockOutPeriod < IRPLR.TimeHorizon);// Sanity check: stock-out period should be within the time horizon
         double ratio_capacity_vs_demand = IRPLR.Retailers[i].InventoryMax / IRPLR.Retailers[i].Demand;
         if (printout_initialSchedule == 1)
         {
@@ -82,10 +83,10 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
     assert(GroupOfRetailersCounter == IRPLR.Retailers.size());
 
     // Determine bounding box of all coordinates (supplier + retailers)
-    int MaxYCoord = IRPLR.Supplier.yCoord;
-    int MinYCoord = IRPLR.Supplier.yCoord;
-    int MaxXCoord = IRPLR.Supplier.xCoord;
-    int MinXCoord = IRPLR.Supplier.xCoord;
+    double MaxYCoord = IRPLR.Supplier.yCoord;
+    double MinYCoord = IRPLR.Supplier.yCoord;
+    double MaxXCoord = IRPLR.Supplier.xCoord;
+    double MinXCoord = IRPLR.Supplier.xCoord;
 
     for (int i = 0; i < IRPLR.Retailers.size(); i++)
     {
@@ -113,33 +114,33 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
     }
 
     // Number of divisions per dimension for block partitioning (e.g., 4x4 grid)
-    double NumberOfDivision = 4;
+    double NumberOfDivision = GridResolution; // This can be set as a parameter (e.g., 4 for 4x4 grid)
 
     // Compute block size in x and y (ceil to ensure coverage)
-    int xDivision = ceil((MaxXCoord - MinXCoord) / NumberOfDivision);
-    int yDivision = ceil((MaxYCoord - MinYCoord) / NumberOfDivision);
-    vector<vector<int>> BlockCoord; // Each entry: {LeftX, RightX, BottomY, TopY}
+    double xDivision = (MaxXCoord - MinXCoord) / NumberOfDivision;
+    double yDivision = (MaxYCoord - MinYCoord) / NumberOfDivision;
+    vector<vector<double>> BlockCoord; // Each entry: {LeftX, RightX, BottomY, TopY}
 
     if (printout_initialSchedule == 1)
     {
-        cout << xDivision << "," << yDivision << endl;
+        cout  << xDivision << "," << yDivision << endl;
     }
 
     // Build block coordinates by iterating grid cells
-    int tempLeftXCoord = MinXCoord;
-    int tempRightXCoord = MinXCoord;
+    double tempLeftXCoord = MinXCoord;
+    double tempRightXCoord = MinXCoord;
     for (int i = 0; i < NumberOfDivision; i++)
     {
         tempLeftXCoord = tempRightXCoord;
         tempRightXCoord = tempRightXCoord + xDivision;
 
-        int tempBottomYCoord = MinYCoord;
-        int tempTopYCoord = MinYCoord;
+        double tempBottomYCoord = MinYCoord;
+        double tempTopYCoord = MinYCoord;
         for (int j = 0; j < NumberOfDivision; j++)
         {
             tempBottomYCoord = tempTopYCoord;
             tempTopYCoord = tempTopYCoord + yDivision;
-            vector<int> tempBlockCoord;
+            vector<double> tempBlockCoord;
             // store block bounding box: left, right, bottom, top
             tempBlockCoord.push_back(tempLeftXCoord);
             tempBlockCoord.push_back(tempRightXCoord);
@@ -159,7 +160,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
     }
 
     // Make a copy for sorting by distance to depot
-    vector<vector<int>> SortedBlockCoord(BlockCoord);
+    vector<vector<double>> SortedBlockCoord(BlockCoord);
 
     if (printout_initialSchedule == 1)
     {
@@ -195,7 +196,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
             // swap if center one is closer than center two -> produce descending order
             if (DistanceCenterOneToDepot < DistanceCenterTwoToDepot)
             {
-                vector<int> tempSortedBlockCoord(SortedBlockCoord[i + 1]);
+                vector<double> tempSortedBlockCoord(SortedBlockCoord[i + 1]);
                 SortedBlockCoord[i + 1] = SortedBlockCoord[i];
                 SortedBlockCoord[i] = tempSortedBlockCoord;
                 swap = true;
@@ -213,6 +214,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
             double CenterYCoord = SortedBlockCoord[i][2] + ((SortedBlockCoord[i][3] - SortedBlockCoord[i][2]) / DividByTwo);
 
             double DistanceCenterToDepot = sqrt(pow(CenterXCoord - IRPLR.Supplier.xCoord, power) + pow(CenterYCoord - IRPLR.Supplier.yCoord, power));
+            cout << "LeftXCoord:" << SortedBlockCoord[i][0] << ", RightXCoord:" << SortedBlockCoord[i][1] << ", TopYCoord:" << SortedBlockCoord[i][2] << ", BottomYCoord:" << SortedBlockCoord[i][3] << ",";
             cout << "CenterXCoord:" << CenterXCoord << " ,CenterYCoord:" << CenterYCoord << " ,DistanceCenterToDepot:" << DistanceCenterToDepot << endl;
         }
     }
@@ -232,13 +234,19 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         // assign retailers in this period to one of the blocks based on coordinates
         for (int j = 0; j < GroupOfRetailers[i].size(); j++)
         {
+            bool assignedBlock = false;
             for (int k = 0; k < SortedBlockCoord.size(); k++)
             {
                 if (IRPLR.Retailers[GroupOfRetailers[i][j]].xCoord >= SortedBlockCoord[k][0] && IRPLR.Retailers[GroupOfRetailers[i][j]].xCoord <= SortedBlockCoord[k][1] && IRPLR.Retailers[GroupOfRetailers[i][j]].yCoord >= SortedBlockCoord[k][2] && IRPLR.Retailers[GroupOfRetailers[i][j]].yCoord <= SortedBlockCoord[k][3])
                 {
                     TempCompleteGroupOfRetailers[k].push_back(GroupOfRetailers[i][j]);
+                    assignedBlock = true;
                     break;
                 }
+            }
+            if (assignedBlock == false)
+            {
+                cout << "Error: Retailer " << GroupOfRetailers[i][j] << " with coordinates (" << IRPLR.Retailers[GroupOfRetailers[i][j]].xCoord << "," << IRPLR.Retailers[GroupOfRetailers[i][j]].yCoord << ") was not assigned to any block!" << endl;
             }
         }
         CompleteGroupOfRetailers.push_back(TempCompleteGroupOfRetailers);
@@ -281,7 +289,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         {
             if (printout_initialSchedule == 1)
             {
-                cout << "Zone " << j << endl;
+                cout << "Day " << i << ", Zone " << j << endl;
             }
             for (int k = 0; k < CompleteGroupOfRetailers[i][j].size(); k++)
             {
@@ -294,10 +302,8 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                     double CenterYCoord = SortedBlockCoord[j][2] + ((SortedBlockCoord[j][3] - SortedBlockCoord[j][2]) / DividByTwo);
                     double DistanceCenterToDepot = sqrt(pow(CenterXCoord - IRPLR.Supplier.xCoord, power) + pow(CenterYCoord - IRPLR.Supplier.yCoord, power));
 
-                    cout << "Retailer " << CompleteGroupOfRetailers[i][j][k] << ": checkNextStockOutPeriod:" << checkNextStockOutPeriod << ", ratio_capacity_vs_demand:" << ratio_capacity_vs_demand << " ,MaxInventory:" << IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].InventoryMax << " ,Demand:" << IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].Demand << endl;
-                    cout << "xCoord:" << IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].xCoord << ", yCoord:" << IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].yCoord << endl;
-                    cout << "LeftXCoord:" << SortedBlockCoord[j][0] << ", RightXCoord:" << SortedBlockCoord[j][1] << ", TopYCoord:" << SortedBlockCoord[j][2] << ", BottomYCoord:" << SortedBlockCoord[j][3] << endl;
-                    cout << "CenterXCoord:" << CenterXCoord << " ,CenterYCoord:" << CenterYCoord << " ,DistanceCenterToDepot:" << DistanceCenterToDepot << endl;
+                    cout << "Retailer info: Retailer " << CompleteGroupOfRetailers[i][j][k] << ": checkNextStockOutPeriod:" << checkNextStockOutPeriod << ", ratio_capacity_vs_demand:" << ratio_capacity_vs_demand << " ,MaxInventory:" << IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].InventoryMax << " ,Demand:" << IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].Demand << ", xCoord:" << IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].xCoord << ", yCoord:" << IRPLR.Retailers[CompleteGroupOfRetailers[i][j][k]].yCoord << endl;
+                    cout << "Blocks info: LeftXCoord:" << SortedBlockCoord[j][0] << ", RightXCoord:" << SortedBlockCoord[j][1] << ", TopYCoord:" << SortedBlockCoord[j][2] << ", BottomYCoord:" << SortedBlockCoord[j][3] << ", CenterXCoord:" << CenterXCoord << " ,CenterYCoord:" << CenterYCoord << " ,DistanceCenterToDepot:" << DistanceCenterToDepot << endl;
                 }
                 counterNumberOfRetailers++;
             }
@@ -454,10 +460,10 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 // Move current period forward after assignment
                                 CurrentPeriod = RandomPickANonStockOutPeriod + 1;
 
-                                if (printout_initialSchedule == 1)
-                                {
-                                    IRPSolution.print_solution(IRPLR);
-                                }
+                                // if (printout_initialSchedule == 1)
+                                // {
+                                //     IRPSolution.print_solution(IRPLR);
+                                // }
                             }
                         }
                         else
@@ -553,10 +559,10 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][i] = tempInventory;
                             }
                             CurrentPeriod = LookBackwardPeriod + 1;
-                            if (printout_initialSchedule == 1)
-                            {
-                                IRPSolution.print_solution(IRPLR);
-                            }
+                            // if (printout_initialSchedule == 1)
+                            // {
+                            //     IRPSolution.print_solution(IRPLR);
+                            // }
                         }
                     }
                 }
