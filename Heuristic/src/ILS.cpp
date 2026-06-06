@@ -453,80 +453,82 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     //                Routing                    //
     //                                           //
     ///////////////////////////////////////////////
-    // RunHGSAtEnd = true; //Always run HGS at the end to further improve the solution.
-    if (RunHGSAtEnd == true)
+    if (ActivateHGS == "YES")
     {
-        cout << "Best solution before HGS" << endl;
-        GlobalBest.print_solution(IRPLR);
+        assert(ActivateHGS == "YES");
+        if (RunHGSAtEnd == true)
+        {
+            cout << "Best solution before HGS" << endl;
+            GlobalBest.print_solution(IRPLR);
 
-        for (int i = 0; i < GlobalBest.Route.size(); i++)
-        {
-            int NumberOfCustomerOfDay = 0;
-            for (int j = 0; j < GlobalBest.Route[i].size(); j++)
+            for (int i = 0; i < GlobalBest.Route.size(); i++)
             {
-                NumberOfCustomerOfDay += GlobalBest.Route[i][j].size();
-            }
-            if (NumberOfCustomerOfDay > 1)
-            {
-                GlobalBest.OutputCVRP(IRPLR, i, GlobalBest.Route[i]);
-                Routing.CallHGS(IRPLR);
-                GlobalBest.ReadCVRP_Solution(IRPLR, i, GlobalBest.Route[i]);
-            }
-        }
-        // cout << "IRPLR.NumberOfRetailers:" << IRPLR.NumberOfRetailers << ", " << "IRPLR.Retailers.size():" << IRPLR.Retailers.size() << endl;
-        for (int i = 0; i < GlobalBest.VisitOrder.size(); i++)
-        {
-            for (int j = 0; j < GlobalBest.VisitOrder[i].size(); j++)
-            {
-                GlobalBest.VehicleAllocation[i][j] = IRPLR.NumberOfVehicles + 1;
-                GlobalBest.VisitOrder[i][j] = IRPLR.Retailers.size() + 1;
-            }
-        }
-
-        GlobalBest.UnallocatedCustomers.clear();
-        for (int i = 0; i < GlobalBest.Route.size(); i++) // For this time period
-        {
-            vector<int> TempUnallocatedCustomer;             // Look for unallcated customers at this time period
-            for (int x = 0; x < IRPLR.Retailers.size(); x++) // Check each retailers
-            {
-                int UnallocatedYesOrNo = 0;
-                for (int j = 0; j < GlobalBest.Route[i].size(); j++) // index j for vehicle
+                int NumberOfCustomerOfDay = 0;
+                for (int j = 0; j < GlobalBest.Route[i].size(); j++)
                 {
-                    for (int k = 0; k < GlobalBest.Route[i][j].size(); k++) // index k for position
-                    {
+                    NumberOfCustomerOfDay += GlobalBest.Route[i][j].size();
+                }
+                if (NumberOfCustomerOfDay > 1)
+                {
+                    GlobalBest.OutputCVRP(IRPLR, i, GlobalBest.Route[i]);
+                    Routing.CallHGS(IRPLR);
+                    GlobalBest.ReadCVRP_Solution(IRPLR, i, GlobalBest.Route[i]);
+                }
+            }
+            // cout << "IRPLR.NumberOfRetailers:" << IRPLR.NumberOfRetailers << ", " << "IRPLR.Retailers.size():" << IRPLR.Retailers.size() << endl;
+            for (int i = 0; i < GlobalBest.VisitOrder.size(); i++)
+            {
+                for (int j = 0; j < GlobalBest.VisitOrder[i].size(); j++)
+                {
+                    GlobalBest.VehicleAllocation[i][j] = IRPLR.NumberOfVehicles + 1;
+                    GlobalBest.VisitOrder[i][j] = IRPLR.Retailers.size() + 1;
+                }
+            }
 
-                        if (GlobalBest.Route[i][j][k] == x)
+            GlobalBest.UnallocatedCustomers.clear();
+            for (int i = 0; i < GlobalBest.Route.size(); i++) // For this time period
+            {
+                vector<int> TempUnallocatedCustomer;             // Look for unallcated customers at this time period
+                for (int x = 0; x < IRPLR.Retailers.size(); x++) // Check each retailers
+                {
+                    int UnallocatedYesOrNo = 0;
+                    for (int j = 0; j < GlobalBest.Route[i].size(); j++) // index j for vehicle
+                    {
+                        for (int k = 0; k < GlobalBest.Route[i][j].size(); k++) // index k for position
                         {
-                            UnallocatedYesOrNo = 1;
-                            GlobalBest.VehicleAllocation[x][i] = j;
-                            GlobalBest.VisitOrder[x][i] = k;
+
+                            if (GlobalBest.Route[i][j][k] == x)
+                            {
+                                UnallocatedYesOrNo = 1;
+                                GlobalBest.VehicleAllocation[x][i] = j;
+                                GlobalBest.VisitOrder[x][i] = k;
+                            }
                         }
                     }
+                    if (UnallocatedYesOrNo == 0) // This customer is not visited
+                    {
+                        TempUnallocatedCustomer.push_back(x);
+                    }
                 }
-                if (UnallocatedYesOrNo == 0) // This customer is not visited
-                {
-                    TempUnallocatedCustomer.push_back(x);
-                }
+                GlobalBest.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
             }
-            GlobalBest.UnallocatedCustomers.push_back(TempUnallocatedCustomer);
+
+            time(&end_time_to_best);
+            GlobalBest.solution_time = difftime(end_time_to_best, start_time_to_best);
+            cout << "$GlobalBest solution is updated at time:" << GlobalBest.solution_time << " s,\t with " << "TotalTransportationCost:" << GlobalBest.TotalTransportationCost << ",\t TotalDelivery:" << GlobalBest.TotalDelivery << ",\t LogisticRatio:" << GlobalBest.LogisticRatio << ",\t at local search iteration:" << DisturbanceCounter << endl;
         }
-
-        time(&end_time_to_best);
-        GlobalBest.solution_time = difftime(end_time_to_best, start_time_to_best);
-        cout << "$GlobalBest solution is updated at time:" << GlobalBest.solution_time << " s,\t with " << "TotalTransportationCost:" << GlobalBest.TotalTransportationCost << ",\t TotalDelivery:" << GlobalBest.TotalDelivery << ",\t LogisticRatio:" << GlobalBest.LogisticRatio << ",\t at local search iteration:" << DisturbanceCounter << endl;
+        else
+        {
+            cout << "Do not run HGS at the end." << endl;
+        }
+        if (OutputSolutionJSON == "YES")
+        {
+            IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName + "_final_solution_afterHGS_" + to_string(MS_ITERATION) + ".json");
+        }
+        // cout << "Solution after Optimizing the routes on the best found" << endl;
+        // BestIRP_Solution.print_solution(IRPLR);
+        // cout << "TotalTransportationCost:" << BestIRP_Solution.TotalTransportationCost << "\t TotalDelivery:" << BestIRP_Solution.TotalDelivery << "\t LogistcRatio:" << BestIRP_Solution.LogisticRatio << endl;
     }
-    else
-    {
-        cout << "Do not run HGS at the end." << endl;
-    }
-    if (OutputSolutionJSON == "YES")
-    {
-        IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName + "_final_solution_afterHGS_" + to_string(MS_ITERATION) + ".json");
-    }
-    // cout << "Solution after Optimizing the routes on the best found" << endl;
-    // BestIRP_Solution.print_solution(IRPLR);
-    // cout << "TotalTransportationCost:" << BestIRP_Solution.TotalTransportationCost << "\t TotalDelivery:" << BestIRP_Solution.TotalDelivery << "\t LogistcRatio:" << BestIRP_Solution.LogisticRatio << endl;
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     time(&end_time);
     double total_time = difftime(end_time, start_time);

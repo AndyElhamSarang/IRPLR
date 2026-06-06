@@ -36,3 +36,4 @@ extern bool whether_results_reported_30;
 extern bool whether_results_reported_60;
 extern bool whether_results_reported_first_improvement;
 extern string OutputSolutionJSON;
+extern string ActivateHGS;

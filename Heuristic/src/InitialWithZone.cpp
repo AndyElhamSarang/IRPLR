@@ -34,33 +34,34 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
     //                Routing                    //
     //                                           //
     ///////////////////////////////////////////////
-
-    for (int i = 0; i < IRPSolution.Route.size(); i++)
+    if (ActivateHGS == "YES")
     {
-        int NumberOfCustomerOfDay = 0;
-        for (int j = 0; j < IRPSolution.Route[i].size(); j++)
+        for (int i = 0; i < IRPSolution.Route.size(); i++)
         {
-            NumberOfCustomerOfDay += IRPSolution.Route[i][j].size();
+            int NumberOfCustomerOfDay = 0;
+            for (int j = 0; j < IRPSolution.Route[i].size(); j++)
+            {
+                NumberOfCustomerOfDay += IRPSolution.Route[i][j].size();
+            }
+            if (NumberOfCustomerOfDay > 1)
+            {
+                IRPSolution.OutputCVRP(IRPLR, i, IRPSolution.Route[i]);
+                Routing.CallHGS(IRPLR);
+                IRPSolution.ReadCVRP_Solution(IRPLR, i, IRPSolution.Route[i]);
+            }
         }
-        if (NumberOfCustomerOfDay > 1)
+        IRPSolution.GetLogisticRatio(IRPLR);
+        if (printout_initial == 1)
         {
-            IRPSolution.OutputCVRP(IRPLR, i, IRPSolution.Route[i]);
-            Routing.CallHGS(IRPLR);
-            IRPSolution.ReadCVRP_Solution(IRPLR, i, IRPSolution.Route[i]);
+            cout << "Solution after Optimizing the routes" << endl;
+            IRPSolution.print_solution(IRPLR);
+            cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
+        }
+        if (OutputSolutionJSON == "YES")
+        {
+            IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName + "_initial_solution_afterHGS_" + to_string(MS_ITERATION) + ".json");
         }
     }
-    IRPSolution.GetLogisticRatio(IRPLR);
-    if (printout_initial == 1)
-    {
-        cout << "Solution after Optimizing the routes" << endl;
-        IRPSolution.print_solution(IRPLR);
-        cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
-    }
-    if (OutputSolutionJSON == "YES")
-    {
-        IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName + "_initial_solution_afterHGS_" + to_string(MS_ITERATION) + ".json");
-    }
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     if (OutputResults == 1)

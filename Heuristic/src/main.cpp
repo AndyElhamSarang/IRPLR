@@ -37,6 +37,7 @@ double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
 int GridResolution = 0;
+string ActivateHGS;
 int main()
 {
 	file read_file;

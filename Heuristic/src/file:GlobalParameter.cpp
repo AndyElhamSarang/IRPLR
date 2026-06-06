@@ -134,6 +134,12 @@ void file::ReadGlobalParameter()
     ss_TakeGridResolution >> GridResolution;
     cout << dummyline << ":" << GridResolution << endl;
 
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_ActivateHGS(TakeParameter);
+    ss_ActivateHGS >> ActivateHGS;
+    cout << dummyline << ":" << ActivateHGS << endl;
+
     //Inout parameter validation
     bool valid_input = true;
     if(OutputSolutionJSON != "YES" && OutputSolutionJSON != "NO")
@@ -179,6 +185,11 @@ void file::ReadGlobalParameter()
     if (GridResolution <= 0)
     {
         cout << "Error: GridResolution should be a positive integer." << endl;
+        valid_input = false;
+    }
+    if (ActivateHGS != "YES" && ActivateHGS != "NO")
+    {
+        cout << "Error: Invalid value for ActivateHGS. Please set it to either 'YES' or 'NO'." << endl;
         valid_input = false;
     }
     if (valid_input == false)

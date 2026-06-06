@@ -7,7 +7,12 @@ void input::ReadIRPInstance(string &InstanceSource, string &InstanceType, string
     Distance.clear();
     InstanceName.clear();
     if (InstanceType == "Single vehicle IRP")
+    {
         NumberOfVehicles = 1;
+        InstanceName  = InstanceSource.substr(MachineDirectory.size() + InstanceDirectories.size(), InstanceSource.size());
+        InstanceName = InstanceName.erase(InstanceName.size() - 4);
+        cout << "Instance's name: " << InstanceName << endl;        
+    }
     else if (InstanceType == "Multiple vehicles IRP")
     {
         string ExtractNumberOfVehicles = InstanceSource.substr(MachineDirectory.size() + InstanceDirectories.size(), InstanceSource.size());
