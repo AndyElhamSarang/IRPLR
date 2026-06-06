@@ -9,7 +9,7 @@ public:
     void INITIAL(input &IRPLR, solution &IRPSolution, HGS & Routing);
     void Initial_Schedule(input &IRPLR, solution &IRPSolution);
 
-    void INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HGS &Routing, solution &GlobalBest);
+    void INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HGS &Routing, solution &GlobalBest, file &read_file, int &MS_ITERATION);
     void Initial_CircleZone_Schedule(input &IRPLR, solution &IRPSolution);
     void Initial_BlockZone_Schedule(input &IRPLR, solution &IRPSolution);
 };

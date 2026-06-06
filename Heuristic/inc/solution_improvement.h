@@ -5,7 +5,7 @@ private:
 public:
 
 void LargeNeighbourhoodSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory);
-void IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s);
+void IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s, file &read_file, int &MS_ITERATION);
 void LNS_Repair(input &IRPLR, solution &IRPSolution, HGS &Routing);
 void LNS_Destory(input &IRPLR, solution &IRPSolution, HGS &Routing);
 

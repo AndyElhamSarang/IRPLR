@@ -1,5 +1,5 @@
 #include "lib.h"
-void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HGS &Routing,solution &GlobalBest)
+void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HGS &Routing,solution &GlobalBest, file &read_file, int &MS_ITERATION)
 {
     if (printout_initial == 1)
     {
@@ -25,35 +25,41 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
         cout << "Original solution" << endl;
         IRPSolution.print_solution(IRPLR);
     }
-
+    if (OutputSolutionJSON == "YES")
+    {
+        IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName + "_initial_solution_" + to_string(MS_ITERATION) + ".json");
+    }
     ///////////////////////////////////////////////
     //                                           //
     //                Routing                    //
     //                                           //
     ///////////////////////////////////////////////
 
-    // for (int i = 0; i < IRPSolution.Route.size(); i++)
-    // {
-    //     int NumberOfCustomerOfDay = 0;
-    //     for (int j = 0; j < IRPSolution.Route[i].size(); j++)
-    //     {
-    //         NumberOfCustomerOfDay += IRPSolution.Route[i][j].size();
-    //     }
-    //     if (NumberOfCustomerOfDay > 1)
-    //     {
-    //         IRPSolution.OutputCVRP(IRPLR, i, IRPSolution.Route[i]);
-    //         Routing.CallHGS(IRPLR);
-    //         IRPSolution.ReadCVRP_Solution(IRPLR, i, IRPSolution.Route[i]);
-    //     }
-    // }
-    // IRPSolution.GetLogisticRatio(IRPLR);
-    // if (printout_initial == 1)
-    // {
-    //     cout << "Solution after Optimizing the routes" << endl;
-    //     IRPSolution.print_solution(IRPLR);
-    //     cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
-    // }
-   
+    for (int i = 0; i < IRPSolution.Route.size(); i++)
+    {
+        int NumberOfCustomerOfDay = 0;
+        for (int j = 0; j < IRPSolution.Route[i].size(); j++)
+        {
+            NumberOfCustomerOfDay += IRPSolution.Route[i][j].size();
+        }
+        if (NumberOfCustomerOfDay > 1)
+        {
+            IRPSolution.OutputCVRP(IRPLR, i, IRPSolution.Route[i]);
+            Routing.CallHGS(IRPLR);
+            IRPSolution.ReadCVRP_Solution(IRPLR, i, IRPSolution.Route[i]);
+        }
+    }
+    IRPSolution.GetLogisticRatio(IRPLR);
+    if (printout_initial == 1)
+    {
+        cout << "Solution after Optimizing the routes" << endl;
+        IRPSolution.print_solution(IRPLR);
+        cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
+    }
+    if (OutputSolutionJSON == "YES")
+    {
+        IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName + "_initial_solution_afterHGS_" + to_string(MS_ITERATION) + ".json");
+    }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

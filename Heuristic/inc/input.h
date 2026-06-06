@@ -29,6 +29,7 @@ private:
   };
 
 public:
+  string InstanceName;
   int NumberOfRetailers;
   int TimeHorizon;
   int NumberOfVehicles;

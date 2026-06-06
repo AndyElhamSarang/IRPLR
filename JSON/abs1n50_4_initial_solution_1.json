@@ -12,7 +12,7 @@
     "logistic_ratio": 2.4022,
     "total_delivery": 13124.00,
     "violation_stock_out": 0.00,
-    "solution_time_seconds": 14.0000
+    "solution_time_seconds": 16.0000
   },
   "retailers": [
     {
@@ -595,7 +595,7 @@
           "deliveries": []
         }
       ],
-      "unallocated_customers": [1, 2, 3, 4, 5, 8, 10, 12, 13, 14, 15, 16, 17, 19, 20, 21, 23, 24, 25, 27, 28, 29, 30, 31, 32, 33, 34, 36, 37, 38, 40, 41, 42, 44, 46, 48, 49]
+      "unallocated_customers": []
     },
     {
       "time_period": 1,
@@ -625,7 +625,7 @@
           "deliveries": []
         }
       ],
-      "unallocated_customers": [0, 1, 3, 4, 6, 7, 9, 11, 12, 13, 17, 22, 23, 26, 31, 35, 36, 37, 42, 45, 47, 49]
+      "unallocated_customers": []
     },
     {
       "time_period": 2,
@@ -655,7 +655,7 @@
           "deliveries": [141.00, 135.00, 92.00, 198.00]
         }
       ],
-      "unallocated_customers": [2, 5, 14, 15, 18, 20, 21, 25, 26, 27, 29, 30, 32, 33, 40, 41, 43, 44, 46]
+      "unallocated_customers": []
     },
     {
       "time_period": 3,
@@ -685,7 +685,7 @@
           "deliveries": []
         }
       ],
-      "unallocated_customers": [3, 5, 6, 9, 12, 13, 15, 16, 17, 20, 25, 27, 28, 31, 32, 38, 39, 40, 42, 46, 47, 48]
+      "unallocated_customers": []
     },
     {
       "time_period": 4,
@@ -715,7 +715,7 @@
           "deliveries": []
         }
       ],
-      "unallocated_customers": [0, 1, 2, 3, 4, 7, 8, 10, 14, 18, 19, 21, 22, 23, 26, 29, 31, 33, 34, 36, 37, 44, 49]
+      "unallocated_customers": []
     },
     {
       "time_period": 5,
@@ -745,7 +745,7 @@
           "deliveries": []
         }
       ],
-      "unallocated_customers": [1, 2, 4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16, 17, 19, 20, 23, 24, 25, 26, 27, 28, 30, 32, 35, 36, 37, 38, 39, 40, 41, 42, 43, 45, 46, 47, 48, 49]
+      "unallocated_customers": []
     }
   ],
   "inventory_and_delivery": [

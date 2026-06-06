@@ -1,16 +1,19 @@
 #include "lib.h"
 
-void input::ReadIRPInstance(string &InstanceName, string &InstanceType, string &InstanceDirectories)
+void input::ReadIRPInstance(string &InstanceSource, string &InstanceType, string &InstanceDirectories)
 {
     // cout << "Read instance data" << endl;
     Retailers.clear();
     Distance.clear();
+    InstanceName.clear();
     if (InstanceType == "Single vehicle IRP")
         NumberOfVehicles = 1;
     else if (InstanceType == "Multiple vehicles IRP")
     {
-        string ExtractNumberOfVehicles = InstanceName.substr(MachineDirectory.size() + InstanceDirectories.size(), InstanceName.size());
-        cout << "Instance's name: " << ExtractNumberOfVehicles << endl;
+        string ExtractNumberOfVehicles = InstanceSource.substr(MachineDirectory.size() + InstanceDirectories.size(), InstanceSource.size());
+        InstanceName = ExtractNumberOfVehicles;
+        InstanceName = InstanceName.erase(InstanceName.size() - 4);
+        cout << "Instance's name: " << InstanceName << endl;
         string ExtractNumberOfVehicles_step2 = ExtractNumberOfVehicles.substr(3, ExtractNumberOfVehicles.size());
         // cout<<"ExtractNumberOfVehicles_step2:"<<ExtractNumberOfVehicles_step2<<endl;
         stringstream ss_take_NumberOfVehicle(ExtractNumberOfVehicles_step2);
@@ -23,7 +26,7 @@ void input::ReadIRPInstance(string &InstanceName, string &InstanceType, string &
     string takeline;
     char taketab;
     ifstream ifinstance;
-    ifinstance.open(InstanceName.c_str());
+    ifinstance.open(InstanceSource.c_str());
     if (!ifinstance.is_open())
     {
         exit(EXIT_FAILURE);

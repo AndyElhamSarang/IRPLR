@@ -65,12 +65,7 @@ int main()
 		{
 			for (int j = 0; j < read_file.instances[i].size(); j++)
 			{
-				string true_instance_name = read_file.instances[i][j].substr(read_file.instances[i][j].size() - (read_file.instances[i][j].size() - MachineDirectory.size() - read_file.InstanceDirectories[i].size() ));
-				true_instance_name = true_instance_name.erase(true_instance_name.size() - 4);
-				cout << "---------------------------------------------" << endl;
-				cout << true_instance_name << endl;
-				cout << "---------------------------------------------" << endl;
-
+			
 				cout << "@ ---------------------------------------------" << endl;
 				cout << "@ " << read_file.instances[i][j] << endl;
 				cout << "@ ---------------------------------------------" << endl;
@@ -90,7 +85,7 @@ int main()
 				cout << "Local search timelimit: " << MainAlgorithmTimeLimit << endl;
 				if (OutputResults == 1)
 				{
-					Table << true_instance_name  << "," << IRPLR.TimeHorizon << "," << IRPLR.NumberOfRetailers << "," << IRPLR.NumberOfVehicles << ","; // Print instance feastures in the table
+					Table << IRPLR.InstanceName  << "," << IRPLR.TimeHorizon << "," << IRPLR.NumberOfRetailers << "," << IRPLR.NumberOfVehicles << ","; // Print instance feastures in the table
 				}
 				////////////////////////////////////////////////////////////////
 				//                                                            //
@@ -131,7 +126,7 @@ int main()
 					// initial_solution.INITIAL(IRPLR, IRPSolution, Routing);
 
 					generator.seed(12345 + j * 789); // Different seed for each initial solution
-					initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing, GlobalBest);
+					initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing, GlobalBest, read_file,j);
 					time(&end_time);
 					double total_time = difftime(end_time, start_time);
 					if (OutputResults == 1)
@@ -141,22 +136,16 @@ int main()
 					}
 					cout << "!Initial solution " << j + 1 << endl;
 					IRPSolution.print_solution(IRPLR);
-					if(OutputSolutionJSON == "YES")
-					{
-						IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + true_instance_name + "_initial_solution_" + to_string(j) + ".json");
-					}
+					
 					IRPSolution.GetLogisticRatio(IRPLR);
 					cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
 					IRPSolution.Validation(IRPLR);
 					generator.seed(static_cast<unsigned int>(time(0)));
 					solution_improvement Metaheuristic;
 					// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
-					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s);
+					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s,read_file, j);
 
-					if(OutputSolutionJSON == "YES")
-					{
-						IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + true_instance_name + "_final_solution_" + to_string(j) + ".json");
-					}
+					
 				}
 				time(&total_end_time);
 				double accum_time = difftime(total_end_time, total_start_time);
@@ -164,7 +153,7 @@ int main()
 				GlobalBest.Validation(IRPLR);
 				if(OutputSolutionJSON == "YES")
 				{
-					GlobalBest.OutputJSON(IRPLR, read_file.JSONDirectory + true_instance_name + "_global_best.json");
+					GlobalBest.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName+ "_global_best.json");
 				}
 				cout << "whether_results_reported at 30s: " << whether_results_reported_30 << ", whether_results_reported at 60s: " << whether_results_reported_60 << ", whether_results_reported at first improvement: " << whether_results_reported_first_improvement << endl;
 				if (whether_results_reported_first_improvement == false)
