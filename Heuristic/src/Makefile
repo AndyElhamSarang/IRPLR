@@ -30,7 +30,6 @@ andy:
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp  \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
-	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
@@ -64,7 +63,6 @@ andy_DISABLE_COUT:
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp  \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
-	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
@@ -99,7 +97,6 @@ andy_lenovo:
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
-	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
@@ -133,7 +130,6 @@ andy_desktop:
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
-	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
@@ -167,7 +163,6 @@ andy_testpc:
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
-	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
@@ -202,7 +197,6 @@ andy_testpc_DISABLE_COUT:
 	CheckStockOut.cpp \
 	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
 	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
-	LNS.cpp LNS:Destory.cpp LNS:Repair.cpp \
 	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
 	OperatorUtility.cpp \
 	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \

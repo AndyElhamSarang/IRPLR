@@ -79,7 +79,8 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                 {
                                     time(&total_end_time);
                                     double total_ls_time = difftime(total_end_time, total_start_time);
-                                    if (total_ls_time - MainAlgorithmTimeLimit > -0.01)
+                                    assert(total_ls_time - AccumulatedTimeHGS >= 0);
+                                    if (total_ls_time - MainAlgorithmTimeLimit - AccumulatedTimeHGS > -0.01)
                                     {
                                         int time_limit_reached = total_ls_time;
                                         throw time_limit_reached;

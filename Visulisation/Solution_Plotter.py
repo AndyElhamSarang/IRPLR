@@ -52,7 +52,7 @@ def plot_solution(json_path: Path) -> None:
         fig.delaxes(axes[j])
 
     fig.tight_layout()
-    out_path = Path(f"{json_path.stem}.png")
+    out_path = Path(f"/home/andy/Desktop/Curtin/IRPLR/IRPLR/Plots/{json_path.stem}.png")
     fig.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
     print(f"Saved plot: {out_path}")

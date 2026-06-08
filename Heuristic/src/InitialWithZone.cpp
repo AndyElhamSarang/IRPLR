@@ -34,6 +34,7 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
     //                Routing                    //
     //                                           //
     ///////////////////////////////////////////////
+    time(&HGS_start_time);
     if (ActivateHGS == "YES")
     {
         for (int i = 0; i < IRPSolution.Route.size(); i++)
@@ -59,14 +60,17 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
         }
         if (OutputSolutionJSON == "YES")
         {
-            IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName + "_initial_solution_afterHGS_" + to_string(MS_ITERATION) + ".json");
+            IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName + "_initial_afterHGS_solution_" + to_string(MS_ITERATION) + ".json");
         }
     }
+    time(&HGS_end_time);
+    double TimeForHGS = difftime(HGS_end_time, HGS_start_time);
+    AccumulatedTimeHGS += TimeForHGS;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     if (OutputResults == 1)
     {
-        Table << IRPSolution.TotalTransportationCost << "," << IRPSolution.TotalDelivery << "," << IRPSolution.LogisticRatio << ",";
+        Table << IRPSolution.TotalTransportationCost << "," << IRPSolution.TotalDelivery << "," << IRPSolution.LogisticRatio << ","<< TimeForHGS << ",";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

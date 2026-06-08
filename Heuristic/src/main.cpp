@@ -10,7 +10,7 @@ int NumberOfBalacingOperatorCalled = 0;
 int NumberOfVehicleAtMinimumDelivery = 0;
 
 double MainAlgorithmTimeLimit = 65.0; // Default local search time limit is 12 seconds for each initial solution
-
+double AccumulatedTimeHGS = 0.0;
 double power = 2.0;
 ofstream Table;
 base_generator_type generator(static_cast<unsigned int>(time(0)));
@@ -20,10 +20,10 @@ time_t start_time;
 time_t end_time;
 time_t start_time_to_best;
 time_t end_time_to_best;
-time_t LS_start_time;
-time_t LS_end_time;
 time_t total_start_time;
 time_t total_end_time;
+time_t HGS_start_time;
+time_t HGS_end_time;
 bool whether_results_reported_30 = false;
 bool whether_results_reported_60 = false;
 bool whether_results_reported_first_improvement = false;
@@ -53,13 +53,13 @@ int main()
 			string file_type = ".csv";
 			string file_name = experiment_name + "_exp" + experiment_str + file_type;
 			Table.open(file_name);
-			Table << ",#TimePeriods,#Customer,#Vehicle";
+			Table << ",#TimePeriods,#Nodes,#Vehicle";
 			for (int i = 0; i < NumberOfInitialSolutions; i++)
 			{
-				Table << ",Cost,Quantity,LogisticRatio,T_InitialSchedule,CostAfterHGS,Quantity,LogisticRatio,T_InitialSolution,NumberOfRebalance,NumberOfFeasibleRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,RebalanceMaxPercentageImprovement,RebalanceMinPercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,Time";
+				Table << ",InitialCost,InitialQuantity,InitialLogisticRatio,T_InitialSchedule,InitialCostAfterHGS,InitialQuantityAfterHGS,InitialLogisticRatioAfterHGS,InitialTimeForHGS,T_InitialSolution,NumberOfRebalance,NumberOfFeasibleRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,RebalanceMaxPercentageImprovement,RebalanceMinPercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,BestCostAfterHGS,BestQuantityAfterHGS,BestLogisticRatioAfterHGS,TimeForHGS,Time";
 			}
 
-			Table << ",FirstImpCost,FirstImpQuantity,FirstImpLogisticRatio,TimeAtFirstImprovement,BestCostAt30s,BestQuantityAt30s,BestLogisticRatioAt30s,TimeAt30s,BestCostAt60s,BestQuantityAt60s,BestLogisticRatioAt60s,TimeAt60s,GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_iteration,T_To_best,T_Total\n";
+			Table << ",FirstImpCost,FirstImpQuantity,FirstImpLogisticRatio,TimeAtFirstImprovement,BestCostAt30s,BestQuantityAt30s,BestLogisticRatioAt30s,TimeAt30s,BestCostAt60s,BestQuantityAt60s,BestLogisticRatioAt60s,TimeAt60s,GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_iteration,T_To_best,T_total_for_HGS,T_Total\n";
 		}
 
 		for (int i = 0; i < read_file.instances.size(); i++)
@@ -84,6 +84,7 @@ int main()
 				// MainAlgorithmTimeLimit = MainAlgorithmTimeLimit * NumberOfInitialSolutions;
 				cout << "HGS timelimit: " << Routing.HGSTimelimit << endl;
 				cout << "Local search timelimit: " << MainAlgorithmTimeLimit << endl;
+				AccumulatedTimeHGS = 0.0; // Reset accumulated time for HGS for each instance
 				if (OutputResults == 1)
 				{
 					Table << IRPLR.InstanceName  << "," << IRPLR.TimeHorizon << "," << IRPLR.NumberOfRetailers << "," << IRPLR.NumberOfVehicles << ","; // Print instance feastures in the table
@@ -184,7 +185,7 @@ int main()
 				if (OutputResults == 1)
 				{
 
-					Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << Global_total_iteration << "," << GlobalBest.solution_time << "," << accum_time << ",";
+					Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << Global_total_iteration << "," << GlobalBest.solution_time << "," << AccumulatedTimeHGS << "," << accum_time << ",";
 				}
 				if (OutputResults == 1)
 				{

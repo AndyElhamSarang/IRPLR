@@ -17,18 +17,11 @@ extern double InitialLagrangianScalar;
 extern double ToAdjustLagrangianScalar;
 extern int ToTriggerAdjustment;
 extern int GridResolution;
-extern time_t start_time;
-extern time_t start_time_to_best;
-extern time_t end_time_to_best;
-extern time_t end_time;
 extern double power;
 extern double MainAlgorithmTimeLimit;
+extern double AccumulatedTimeHGS;
 
-extern time_t LS_start_time;
-extern time_t LS_end_time;
 
-extern time_t total_start_time;
-extern time_t total_end_time;
 extern int NumberOfBalacingOperatorCalled;
 extern int NumberOfVehicleAtMinimumDelivery;
 
@@ -37,3 +30,14 @@ extern bool whether_results_reported_60;
 extern bool whether_results_reported_first_improvement;
 extern string OutputSolutionJSON;
 extern string ActivateHGS;
+
+
+
+extern time_t start_time; //General use to count time from one point to another.
+extern time_t end_time;
+extern time_t start_time_to_best;
+extern time_t end_time_to_best;
+extern time_t total_start_time;
+extern time_t total_end_time;
+extern time_t HGS_start_time;
+extern time_t HGS_end_time;
