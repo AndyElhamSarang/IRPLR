@@ -385,6 +385,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
         {
             cout << "Best solution before HGS" << endl;
             GlobalBest.print_solution(IRPLR);
+            cout << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << endl;
 
             for (int i = 0; i < GlobalBest.Route.size(); i++)
             {
@@ -440,6 +441,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
 
             time(&end_time_to_best);
             GlobalBest.solution_time = difftime(end_time_to_best, start_time_to_best);
+            GlobalBest.GetLogisticRatio(IRPLR);
             cout << "$GlobalBest solution is updated at time:" << GlobalBest.solution_time << " s,\t with " << "TotalTransportationCost:" << GlobalBest.TotalTransportationCost << ",\t TotalDelivery:" << GlobalBest.TotalDelivery << ",\t LogisticRatio:" << GlobalBest.LogisticRatio << ",\t at local search iteration:" << DisturbanceCounter << endl;
         }
         else
@@ -466,6 +468,4 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
 
          Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << TimeForHGS << "," << total_time << ",";
     }
-    // LNS_Destory(IRPLR, IRPSolution,Routing);
-    // LNS_Repair(IRPLR, IRPSolution,Routing);
 }

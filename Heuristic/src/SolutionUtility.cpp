@@ -1,6 +1,10 @@
 #include "lib.h"
 #include <iomanip>
 #include <sstream>
+void ComputeCorrectObjv()
+{}
+void CustomerVisitedAtMostOncePerPeriod(input &IRPLR, solution &IRPSolution)
+{}
 void InventoryLevel_is_non_negative_and_upto_date(input &IRPLR, solution &IRPSolution)
 {
     // cout << "Checking inventory level is non-negative and up-to-date." << endl;
