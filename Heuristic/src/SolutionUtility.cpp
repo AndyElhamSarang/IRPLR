@@ -1,10 +1,50 @@
 #include "lib.h"
 #include <iomanip>
 #include <sstream>
+void NoStockOutAtDepot(input &IRPLR, solution &IRPSolution)
+{
+    cout << "Check No Stock Out at Depot" << endl;
+    double DepotInventoryLevel = IRPLR.Supplier.InventoryBegin;
+    for (int t = 0; t < IRPLR.TimeHorizon; t++)
+    {
+        double TotalDeliveryToRetailersAtT = 0;
+        for (int i = 0; i < IRPSolution.DeliveryQuantity.size(); i++)
+        {
+            TotalDeliveryToRetailersAtT += IRPSolution.DeliveryQuantity[i][t];
+        }
+        DepotInventoryLevel = DepotInventoryLevel - TotalDeliveryToRetailersAtT + IRPLR.Supplier.QuantityProduced;
+        assert(DepotInventoryLevel >= -0.00001 && "Stock out at depot");
+    }
+    cout << "Check passed!" << endl;
+}
 void ComputeCorrectObjv()
 {}
 void CustomerVisitedAtMostOncePerPeriod(input &IRPLR, solution &IRPSolution)
-{}
+{
+    cout << "Check Each Customer is Visited at Most Once Per Period" << endl;
+    for (int t = 0; t < IRPSolution.Route.size(); t++)
+    {
+        for (int cust = 0; cust < IRPLR.Retailers.size(); cust++)
+        {
+            bool visited = false;
+            for (int v = 0; v < IRPSolution.Route[t].size(); v++)
+            {
+                for (int pos = 0; pos < IRPSolution.Route[t][v].size(); pos++)
+                {
+                    if (IRPSolution.Route[t][v][pos] == cust)
+                    {
+                        if (visited)
+                        {
+                            assert(false && "Customer cannot be visited more than once per period");
+                        }
+                        visited = true;
+                    }
+                }
+            }
+        }
+    }
+    cout << "Check passed!" << endl;
+}
 void InventoryLevel_is_non_negative_and_upto_date(input &IRPLR, solution &IRPSolution)
 {
     // cout << "Checking inventory level is non-negative and up-to-date." << endl;
@@ -403,6 +443,8 @@ void solution::Validation(input &IRPLR)
     NotUseMoreThanVehicleAvailable(IRPLR, *this);
     DeliverZeroIfNotVisitedViceVersa(IRPLR, *this);
     EitherVisitedorUnallocated(IRPLR, *this);
+    NoStockOutAtDepot(IRPLR, *this);
+    CustomerVisitedAtMostOncePerPeriod(IRPLR, *this);
 }
 
 void solution::UpdateVehicleAllocationVisitOrder(input &IRPLR)

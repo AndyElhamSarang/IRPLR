@@ -74,7 +74,7 @@ andy_DISABLE_COUT:
 	Operator:Disturb.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-DDISABLE_COUT \
-	-o MS_no_rebalance_tuning_LR_DISABLE_COUT.out -O3
+	-o MS_DISABLE_COUT.out -O3
 andy_lenovo:
 	$(CC) main.cpp file:Read_andy_lenovo.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
