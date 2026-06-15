@@ -151,8 +151,10 @@ int main()
 				}
 				time(&total_end_time);
 				double accum_time = difftime(total_end_time, total_start_time);
-				cout << "Global best" << endl;
 				GlobalBest.Validation(IRPLR);
+
+				cout << "Global best" << endl;
+				GlobalBest.print_solution(IRPLR);
 				if(OutputSolutionJSON == "YES")
 				{
 					GlobalBest.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName+ "_global_best.json");

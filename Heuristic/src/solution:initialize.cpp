@@ -6,8 +6,12 @@ void solution::Initialization(input &IRPLR)
     VehicleLoad.clear();
     DeliveryQuantity.clear();
     InventoryLevel.clear();
+    InventoryLevelSupplier.clear();
     VehicleAllocation.clear();
     VisitOrder.clear();
+    StockOutPerCustomer.clear();
+    TotalDeliveryPerDay.clear();
+    StockoutSupplier = 0;
 
     int DummyVehicleAllocation = IRPLR.NumberOfVehicles + 1;
 
@@ -18,6 +22,7 @@ void solution::Initialization(input &IRPLR)
         vector<int> tempVisitOrder;
         double tempInventory = IRPLR.Retailers[i].InventoryBegin;
         vector<int> TempVehicleAllocation;
+        double tempStockOutPerCustomer = 0;
         for (int j = 0; j < IRPLR.TimeHorizon; j++)
         {            
             TempDeliveryQuantity.push_back(0);
@@ -25,12 +30,18 @@ void solution::Initialization(input &IRPLR)
             tempInventoryLevel.push_back(tempInventory);
             TempVehicleAllocation.push_back(DummyVehicleAllocation);
             tempVisitOrder.push_back(IRPLR.Retailers.size()+1);
+            if(tempInventory < 0)
+            {
+                tempStockOutPerCustomer -= tempInventory;
+            }
         }
         DeliveryQuantity.push_back(TempDeliveryQuantity);
         InventoryLevel.push_back(tempInventoryLevel);
         VehicleAllocation.push_back(TempVehicleAllocation);
         VisitOrder.push_back(tempVisitOrder);
+        StockOutPerCustomer.push_back(tempStockOutPerCustomer);
     }
+    double tempInventorySupplier = IRPLR.Supplier.InventoryBegin;
     for (int i = 0; i < IRPLR.TimeHorizon; i++)
     {
         vector<vector<int>> temp_Route;
@@ -45,5 +56,13 @@ void solution::Initialization(input &IRPLR)
         VehicleLoad.push_back(temp_VehicleLoad);
         Route.push_back(temp_Route);
         UnallocatedCustomers.push_back(TempUnallocatedCustomers);
+        TotalDeliveryPerDay.push_back(0);
+        //Populate inventory level timeline for supplier based on InventoryBegin and QuantityProduced, and calculate stockout for supplier if any
+        tempInventorySupplier += IRPLR.Supplier.QuantityProduced;
+        InventoryLevelSupplier.push_back(tempInventorySupplier); 
+        if(InventoryLevelSupplier[i] < 0)
+        {
+            StockoutSupplier -= InventoryLevelSupplier[i];
+        }
     }
 }

@@ -13,9 +13,12 @@ public:
   vector<vector<double>> VehicleLoad;
   vector<vector<double>> DeliveryQuantity; //Main decision
   vector<vector<double>> InventoryLevel;
+  vector<double> InventoryLevelSupplier;
   vector<vector<int>> VehicleAllocation;
   vector<vector<int>> VisitOrder;
   vector<double> StockOutPerCustomer;
+  double StockoutSupplier;
+  vector<double> TotalDeliveryPerDay;
   vector<vector<double>> TransportationCostPerRoute; // Transportation cost for each route.
   
 

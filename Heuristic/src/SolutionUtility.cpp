@@ -4,6 +4,7 @@
 void NoStockOutAtDepot(input &IRPLR, solution &IRPSolution)
 {
     cout << "Check No Stock Out at Depot" << endl;
+    // IRPLR.Supplier.QuantityProduced = 0; // This is just for testing, it will be removed later. We want to make sure the check can capture the error if there is stock out at depot.
     double DepotInventoryLevel = IRPLR.Supplier.InventoryBegin;
     for (int t = 0; t < IRPLR.TimeHorizon; t++)
     {
@@ -14,6 +15,9 @@ void NoStockOutAtDepot(input &IRPLR, solution &IRPSolution)
         }
         DepotInventoryLevel = DepotInventoryLevel - TotalDeliveryToRetailersAtT + IRPLR.Supplier.QuantityProduced;
         assert(DepotInventoryLevel >= -0.00001 && "Stock out at depot");
+        IRPSolution.InventoryLevelSupplier[t] = DepotInventoryLevel;
+        IRPSolution.StockoutSupplier += max(-DepotInventoryLevel, 0.0);
+        IRPSolution.TotalDeliveryPerDay[t] = TotalDeliveryToRetailersAtT;
     }
     cout << "Check passed!" << endl;
 }
@@ -506,6 +510,20 @@ void solution::print_solution(input &IRPLR)
         }
         ListNumberOfVisits.push_back(NumberOfVisits);
     }
+
+    cout << "InventoryLevelSupplier(QuantityProducedPerDay, Stockout):" << "\tBegin\t" << setw(id_width) << "\t";;
+    for (int i = 0; i < IRPLR.TimeHorizon; i++)
+    {
+        cout << "t" << i << "\t" << setw(id_width) << "\t";
+    }
+    cout<<endl;
+    cout << "Supplier(" << IRPLR.Supplier.QuantityProduced << "," << StockoutSupplier << ")" << ":\t" << setw(id_width) << "\t \t \t \t \t" << IRPLR.Supplier.InventoryBegin<<"\t";
+    for (int i = 0; i < IRPLR.TimeHorizon; i++)
+    {
+        cout << "\t" << InventoryLevelSupplier[i] << "(" << TotalDeliveryPerDay[i] << ")";
+
+    }
+    cout << endl;
     cout << "InventoryLevel(Delivery Quantity, Vehicle, Order):" << endl;
     cout << "ID (Max Inv, Stockout, #Visits, Min_visits):\t" << setw(id_width) << "\tBegin\t" << setw(id_width) << "\t";
     for (int i = 0; i < IRPLR.TimeHorizon; i++)
@@ -513,6 +531,7 @@ void solution::print_solution(input &IRPLR)
         cout << "t" << i << "\t" << setw(id_width) << "\t";
     }
     cout << endl;
+    
     for (int i = 0; i < InventoryLevel.size(); i++)
     {
         cout << "Retailer " << i << "(" << IRPLR.Retailers[i].InventoryMax << "," << StockOutPerCustomer[i] << "," << ListNumberOfVisits[i] << "," << IRPLR.MinimumVisitDemand[i] << ")" << ":\t" << setw(id_width2) << "\t" << IRPLR.Retailers[i].InventoryBegin;
