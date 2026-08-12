@@ -14,21 +14,3 @@ Output results as table
 1
 Output solution as JSON
 NO
-NumberOfInitialSolution
-5
-NumberOfExperiments
-1
-AllowLagrangianRelaxation
-YES
-TypeOfRebalance
-NOT_GUARANTEE_FEASIBILITY
-InitialLagrangianScalar
-10
-ToAdjustLagrangianScalar
-0.5
-ToTriggerAdjustment
-20
-Grid_resolution_in_initial_solution_construction
-4
-Activate HGS
-NO

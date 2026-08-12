@@ -14,5 +14,6 @@ class file
   void ReadDirectory();
   void ReadIRPInstanceName();
 
+  void ReadGlobalSettings();
   void ReadGlobalParameter();
 };

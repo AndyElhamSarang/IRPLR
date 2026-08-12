@@ -7,7 +7,39 @@ andy_lenovo = /home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/inc
 andy_lenovo_boost = /home/andy/Desktop/c++_boost/boost_1_83_0
 andy_testpc = /home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/inc
 andy_testpc_boost = /home/andytestpc/Desktop/c++_boost/boost_1_83_0
-
+parameter_tuning:
+	$(CC) main_parameter_tuning.cpp file:Read_andy.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
+	Input:Read.cpp \
+	PrintData.cpp random.cpp \
+	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
+	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
+	DataStructure:Local.cpp \
+	DataStructure:Subpath.cpp \
+	DataStructure:Concatenation.cpp \
+	DataStructure:ConcatenationInterSwap.cpp \
+	DataStructure:ConcatenationSwapTwoRoutesSingleDay.cpp \
+	DataStructure:ConcatenationSwapInsertRemove.cpp \
+	DataStructure:ConcatenationChepestInsertion.cpp \
+	DataStructure:Print.cpp \
+	HGS:ReadParameter.cpp HGS:Call.cpp \
+	SolutionUtility.cpp \
+	solution.cpp solution:initialize.cpp   \
+	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
+	solution:GetTransCostSingleRoute.cpp \
+	CheckStockOut.cpp \
+	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp  \
+	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
+	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
+	OperatorUtility.cpp \
+	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
+	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
+	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
+	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
+	Operator:Repair.cpp Operator:Intra.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
+	Operator:Disturb.cpp \
+	-I $(andy) -I $(andy_boost) \
+	-o MS_parameter_tuning.out -O3
 andy:
 	$(CC) main.cpp file:Read_andy.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
