@@ -336,7 +336,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 whether_improved = OperatorSwapRemoveInsert(IRPLR, IRPSolution, PenaltyForStockOut, memory, SwapRemoveInsertPair, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
                 // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, GlobalBest, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
-                {
+                {  
                     whether_improved_via_SwapRemoveInsertPair = true;
                     true_local = 0;
                 }
