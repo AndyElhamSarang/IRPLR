@@ -1,17 +1,17 @@
 # Parameter space
 parameterFile = "./parameters.txt"
 # List of training instances
-trainInstancesFile = "./instances-list.txt"
+trainInstancesFile = "./instances-list_testpc_training.txt"
 # Target algorithm launcher
-targetRunner = "./target-runner"
+targetRunner = "./target-runner_testpc"
 # Directory from which the solver is executed
 execDir = "."
 # Stochastic algorithm
 deterministic = 0
 # Tuning budget
-maxExperiments = 300
+maxExperiments = 15000
 # Parallel execution
-parallel = 2
+parallel = 6
 # Output
 logFile = "./irace.Rdata"
 # Optional

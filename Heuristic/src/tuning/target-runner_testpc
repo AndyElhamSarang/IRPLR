@@ -1,0 +1,41 @@
+#!/bin/bash
+
+CONFIG_ID=$1
+INSTANCE_ID=$2
+SEED=$3
+INSTANCE=$4
+
+shift 4
+
+EXE="/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/MS_parameter_tuning.out"
+
+if [ ! -x "$EXE" ]; then
+    echo "ERROR: Cannot find executable $EXE" >&2
+    exit 1
+fi
+
+OUTPUT=$(mktemp)
+
+$EXE \
+    --instance "$INSTANCE" \
+    --NumberOfExperiments 1 \
+    --ActivateHGS NO \
+    --MainAlgorithmTimeLimit 65 \
+    "$@" \
+    > "$OUTPUT" 2>&1
+
+STATUS=$?
+
+if [ $STATUS -ne 0 ]; then
+    cat "$OUTPUT" >&2
+    rm -f "$OUTPUT"
+    exit 1
+fi
+
+COST=$(grep "IRACE_COST" "$OUTPUT" | tail -n 1 | awk '{print $2}')
+
+echo "$COST"
+
+rm -f "$OUTPUT"
+
+exit 0
