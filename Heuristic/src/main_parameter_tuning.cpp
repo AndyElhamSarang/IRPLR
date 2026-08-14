@@ -51,9 +51,24 @@ int main(int argc, char* argv[])
 	}
 
 	string instance;
-	// detect long-flag style
-	bool use_flags = (argc > 1 && strncmp(argv[1], "--", 2) == 0);
-	if (use_flags)
+	// If the first positional argument is not a flag, treat it as the instance path.
+	if (argc > 1 && strncmp(argv[1], "--", 2) != 0)
+	{
+		instance = argv[1];
+	}
+
+	// Detect whether any long-style flags are present among the arguments
+	bool any_flag = false;
+	for (int i = 1; i < argc; i++)
+	{
+		if (strncmp(argv[i], "--", 2) == 0)
+		{
+			any_flag = true;
+			break;
+		}
+	}
+
+	if (any_flag)
 	{
 		for (int i = 1; i < argc; i++)
 		{
@@ -145,8 +160,38 @@ int main(int argc, char* argv[])
 	}
 
 	file read_file;
-	read_file.ReadDirectory();
-	read_file.ReadIRPInstanceName();
+
+	MachineDirectory = "/home/andy/Desktop/";
+    // JSONDirectory = MachineDirectory + "Curtin/IRPLR/IRPLR/JSON/";
+	read_file.InstanceType = "Multiple vehicles IRP";
+
+	vector<string> temp_instances;
+	temp_instances.push_back(instance);
+    read_file.instances.push_back(temp_instances);
+	// Extract instance directory from full path so ReadIRPInstance receives the expected relative directory
+	string instance_dir = "";
+	size_t slash_pos = instance.find_last_of('/');
+	if (slash_pos != string::npos)
+	{
+		// If the provided instance path starts with MachineDirectory, store the relative directory
+		if (instance.rfind(MachineDirectory, 0) == 0)
+		{
+			instance_dir = instance.substr(MachineDirectory.size(), slash_pos - MachineDirectory.size() + 1);
+		}
+		else
+		{
+			// Fallback: remove leading slash to form a path similar to InstanceDirectories entries
+			instance_dir = instance.substr(0, slash_pos + 1);
+			if (!instance_dir.empty() && instance_dir[0] == '/')
+				instance_dir = instance_dir.substr(1);
+		}
+	}
+	else
+	{
+		instance_dir = "";
+	}
+	read_file.InstanceDirectories.push_back(instance_dir);
+
 	read_file.ReadGlobalSettings();
 	for (int experiment = 0; experiment < NumberOfExperiments; experiment++)
 	{
@@ -261,7 +306,7 @@ int main(int argc, char* argv[])
 				cout << "Global best" << endl;				
 				GlobalBest.print_solution(IRPLR);
 				cout << "BestTransportationCost:" << GlobalBest.TotalTransportationCost << "\t TotalDelivery:" << GlobalBest.TotalDelivery << "\t LogistcRatio:" << GlobalBest.LogisticRatio << endl;
-				cout << GlobalBest.LogisticRatio << endl;
+				cout << "IRACE_COST "<<GlobalBest.LogisticRatio << endl;
 				if(OutputSolutionJSON == "YES")
 				{
 					GlobalBest.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName+ "_global_best.json");
