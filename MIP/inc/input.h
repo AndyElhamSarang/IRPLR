@@ -1,3 +1,11 @@
+#ifndef INPUT_H
+#define INPUT_H
+
+#include <string>
+#include <vector>
+
+using namespace std;
+
 class input
 {
 private:
@@ -33,6 +41,8 @@ public:
   int TimeHorizon;
   int NumberOfVehicles;
   double VehiclesTotalCapacity;
+  string InstanceName;
+  vector<int> MinimumVisitDemand;
   depot Supplier;
   vector<customer> Retailers;
 
@@ -44,4 +54,11 @@ public:
 
   void ReadIRPInstance(string &InstanceName, string &InstanceType, string &InstanceDirectories);
   void PrintData();
+  double SupplierInitialInventory() const { return Supplier.InventoryBegin; }
+  double SupplierProduction() const { return Supplier.QuantityProduced; }
+  double CustomerInitialInventory(int customer) const { return Retailers[customer].InventoryBegin; }
+  double CustomerMaximumInventory(int customer) const { return Retailers[customer].InventoryMax; }
+  double CustomerDemand(int customer) const { return Retailers[customer].Demand; }
 };
+
+#endif

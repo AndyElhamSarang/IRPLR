@@ -1,10 +1,11 @@
 #include "lib.h"
 void file::ReadDirectory()
 {
-
+    
     MachineDirectory = "/home/andy/Desktop/";
+    string JSONDirectory = MachineDirectory + "Curtin/IRPLR/IRPLR/JSON/";
     cout << "Read Parameter" << endl;
-    string InputInstanceName = MachineDirectory + "Curtin/IRPLR/IRPLR/Heuristic/par/Instances.txt";
+    string InputInstanceName = MachineDirectory + "Curtin/IRPLR/IRPLR/MIP/par/Instances.txt";
     ifstream ifinstance;
     ifinstance.open(InputInstanceName.c_str());
     getline(ifinstance,InstanceType);
@@ -16,8 +17,10 @@ void file::ReadDirectory()
     getline(ifinstance, TakeDummyLine);
     string InstanceDirectory;
     while (getline(ifinstance, InstanceDirectory))
+    {
         InstanceDirectories.push_back(InstanceDirectory);
-        cout<<"Instance directories:"<<endl;
+    }
+    cout<<"Instance directories:"<<endl;
     for (int i = 0; i < InstanceDirectories.size(); i++)
         cout << InstanceDirectories[i] << endl;
 

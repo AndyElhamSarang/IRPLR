@@ -4,11 +4,13 @@ void input::PrintData()
 {
     cout << "NumberOfVehicles:" << NumberOfVehicles << endl;
     cout << "Supplier " << Supplier.ID << ":" << Supplier.xCoord << '\t' << Supplier.yCoord << '\t' << Supplier.InventoryBegin << '\t' << Supplier.QuantityProduced << '\t' << Supplier.InventoryCost << endl;
+    cout << "Retailer " << "ID" << ":" << "xC" << '\t' << "yC"
+         << '\t' << "I_B" << '\t' << "I_Max" << '\t' << "I_Min" << '\t' << "D" << '\t' << "I_C" << '\t' << "Min_V" << endl;
 
     for (int i = 0; i < Retailers.size(); i++)
     {
         cout << "Retailer " << Retailers[i].ID << ":" << Retailers[i].xCoord << '\t' << Retailers[i].yCoord
-             << '\t' << Retailers[i].InventoryBegin << '\t' << Retailers[i].InventoryMax << '\t' << Retailers[i].InventoryMin << '\t' << Retailers[i].Demand << '\t' << Retailers[i].InventoryCost << endl;
+             << '\t' << Retailers[i].InventoryBegin << '\t' << Retailers[i].InventoryMax << '\t' << Retailers[i].InventoryMin << '\t' << Retailers[i].Demand << '\t' << Retailers[i].InventoryCost << '\t' << MinimumVisitDemand[i] << endl;
     }
     cout << "Distance matrix:" << endl;
     for (int i = 0; i < Distance.size(); i++)
