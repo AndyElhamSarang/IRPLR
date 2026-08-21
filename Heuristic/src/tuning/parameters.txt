@@ -26,16 +26,16 @@
 ##    condition is satisfied, FALSE otherwise.
 
 # 1:            2:                   3:     4:      5:
-NumberOfInitialSolutions          "--NumberOfInitialSolutions "           i      (1, 10) 
-AllowLagrangianRelaxation         "--AllowLagrangianRelaxation "          o      ("NO", "YES") 
-TypeOfRebalance                   "--TypeOfRebalance "                    o      ("NOT_GUARANTEE_FEASIBILITY", "GUARANTEE_FEASIBILITY") 
+#NumberOfInitialSolutions          "--NumberOfInitialSolutions "           i      (1, 10) 
+#AllowLagrangianRelaxation         "--AllowLagrangianRelaxation "          o      ("NO", "YES") 
+#TypeOfRebalance                   "--TypeOfRebalance "                    o      ("NOT_GUARANTEE_FEASIBILITY", "GUARANTEE_FEASIBILITY") 
 InitialLagrangianScalar           "--InitialLagrangianScalar "            r      (0.0, 100) 
 ToAdjustLagrangianScalar          "--ToAdjustLagrangianScalar "           r      (0.1, 0.9) 
 ToTriggerAdjustment               "--ToTriggerAdjustment "                i      (1, 20) 
-GridResolution                    "--GridResolution "                     i      (2, 8) 
-theta                             "--theta "                              i      (1,3) 
-sigma                             "--sigma "                              i      (1,20) 
-phi                               "--phi "                                i      (1, 20) 
+#GridResolution                    "--GridResolution "                     i      (2, 8) 
+#theta                             "--theta "                              i      (1,3) 
+#sigma                             "--sigma "                              i      (1,20) 
+#phi                               "--phi "                                i      (1, 20) 
 
 
 [global]

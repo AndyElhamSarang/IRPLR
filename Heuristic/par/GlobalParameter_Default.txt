@@ -1,17 +1,17 @@
 NumberOfInitialSolution
 5
 NumberOfExperiments
-5
+1
 AllowLagrangianRelaxation
 YES
 TypeOfRebalance
 NOT_GUARANTEE_FEASIBILITY
 InitialLagrangianScalar
-19.4353
+10
 ToAdjustLagrangianScalar
-0.8628
+0.5
 ToTriggerAdjustment
-17
+20
 Grid_resolution_in_initial_solution_construction
 4
 Activate HGS
@@ -23,4 +23,4 @@ sigma
 phi
 10
 MainAlgorithmTimeLimit
-61
+65

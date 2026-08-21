@@ -21,6 +21,13 @@ $EXE \
     --NumberOfExperiments 1 \
     --ActivateHGS NO \
     --MainAlgorithmTimeLimit 65 \
+    --AllowLagrangianRelaxation YES \
+    --TypeOfRebalance NOT_GUARANTEE_FEASIBILITY \
+    --GridResolution 4 \
+    --theta 3 \
+    --sigma 10 \
+    --phi 10 \
+    --NumberOfInitialSolutions 5 \
     "$@" \
     > "$OUTPUT" 2>&1
 
