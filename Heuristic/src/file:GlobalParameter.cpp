@@ -1,10 +1,10 @@
 #include "lib.h"
-void file::ReadGlobalParameter()
+void file::ReadGlobalSettings()
 {
-    cout << "Read Global Parameter" << endl;
-    string GlbalSetting = MachineDirectory + "Curtin/IRPLR/IRPLR/Heuristic/par/GlobalSetting.txt";
+    cout << "Read Global Settings" << endl;
+    string GlobalSetting = MachineDirectory + "Curtin/IRPLR/IRPLR/Heuristic/par/GlobalSetting.txt";
     ifstream ifGlobal;
-    ifGlobal.open(GlbalSetting.c_str());
+    ifGlobal.open(GlobalSetting.c_str());
 
     string dummyline;
     string TakeParameter;
@@ -86,6 +86,34 @@ void file::ReadGlobalParameter()
     ss_TakeOutputSolutionJSON >> OutputSolutionJSON;
     cout << dummyline << ": " << OutputSolutionJSON << endl;
 
+    
+
+    //Inout parameter validation
+    bool valid_input = true;
+    if(OutputSolutionJSON != "YES" && OutputSolutionJSON != "NO")
+    {
+        cout << "Error: Invalid value for OutputSolutionJSON. Please set it to either 'YES' or 'NO'." << endl;
+        valid_input = false;
+    }
+    
+    if (valid_input == false)
+    {
+        exit(1);
+    }
+}
+
+
+void file::ReadGlobalParameter()
+{
+    
+   cout << "Read Global Parameter" << endl;
+    string GlobalParameter = MachineDirectory + "Curtin/IRPLR/IRPLR/Heuristic/par/GlobalParameter.txt";
+    ifstream ifGlobal;
+    ifGlobal.open(GlobalParameter.c_str());
+
+    string dummyline;
+    string TakeParameter;
+    
     getline(ifGlobal, dummyline);
     getline(ifGlobal, TakeParameter);
     stringstream ss_TakeNumberOfInitialSolutions(TakeParameter);
@@ -139,6 +167,30 @@ void file::ReadGlobalParameter()
     stringstream ss_ActivateHGS(TakeParameter);
     ss_ActivateHGS >> ActivateHGS;
     cout << dummyline << ":" << ActivateHGS << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_Theta(TakeParameter);
+    ss_Theta >> theta;
+    cout << dummyline << ":" << theta << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_Sigma(TakeParameter);
+    ss_Sigma >> sigma;
+    cout << dummyline << ":" << sigma << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_Phi(TakeParameter);
+    ss_Phi >> phi;
+    cout << dummyline << ":" << phi << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_MainAlgorithmTimeLimit(TakeParameter);
+    ss_MainAlgorithmTimeLimit >> MainAlgorithmTimeLimit;
+    cout << dummyline << ":" << MainAlgorithmTimeLimit << endl;
 
     //Inout parameter validation
     bool valid_input = true;

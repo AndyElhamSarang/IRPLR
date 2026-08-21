@@ -41,3 +41,7 @@ extern time_t total_start_time;
 extern time_t total_end_time;
 extern time_t HGS_start_time;
 extern time_t HGS_end_time;
+
+extern int theta;
+extern int sigma; 
+extern int phi;

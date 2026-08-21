@@ -1,0 +1,350 @@
+#------------------------------------------------------------------------------
+# irace: An implementation in R of (Elitist) Iterated Racing
+# Version: 4.4.3.dd8d85f
+# Copyright (C) 2010-2025
+# Manuel Lopez-Ibanez     <manuel.lopez-ibanez@manchester.ac.uk>
+# Jeremie Dubois-Lacoste
+# Leslie Perez Caceres    <leslie.perez.caceres@ulb.ac.be>
+#
+# This is free software, and you are welcome to redistribute it under certain
+# conditions.  See the GNU General Public License for details. There is NO
+# WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# irace builds upon previous code from the race package:
+#     race: Racing methods for the selection of the best
+#     Copyright (C) 2003 Mauro Birattari
+#------------------------------------------------------------------------------
+# installed at: /home/andytestpc/R/x86_64-pc-linux-gnu-library/4.3/irace
+# called with: --scenario scenario.txt
+# 2026-08-19 11:01:19 AWST: Reading parameter file '/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/parameters.txt'.
+# --- Parameters Hierarchy ---
+                 Parameter Level               Depends.on
+1  InitialLagrangianScalar     1  InitialLagrangianScalar
+2 ToAdjustLagrangianScalar     1 ToAdjustLagrangianScalar
+3      ToTriggerAdjustment     1      ToTriggerAdjustment
+# ------------------------
+## irace scenario:
+scenarioFile = "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/scenario.txt"
+execDir = "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning"
+parameterFile = "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/parameters.txt"
+parameters = <environment>
+initConfigurations = NULL
+configurationsFile = ""
+logFile = "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/irace.Rdata"
+recoveryFile = ""
+instances = c("/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs10n100_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs10n100_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs10n100_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs1n50_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs1n50_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs2n100_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs8n200_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs8n200_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs8n50_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs8n50_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs9n200_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs9n200_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs9n50_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs9n50_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs9n50_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs9n50_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs1n10_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs1n10_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs1n10_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs1n10_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs2n35_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs2n35_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs2n35_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs2n40_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs2n40_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs2n40_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n20_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n20_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n25_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n25_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n25_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n25_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n30_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n40_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n45_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n45_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n45_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n45_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n50_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n50_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n50_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n50_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n5_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n5_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n5_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n5_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n10_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n10_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n10_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n10_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n15_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n15_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n15_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n15_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n20_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n20_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n40_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n40_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n40_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n45_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n45_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n45_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n45_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n50_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n50_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n50_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n50_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n5_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n5_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n5_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n5_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n50_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n50_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n50_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n5_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n5_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n5_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n5_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs1n10_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs1n10_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs1n10_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs1n10_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs3n15_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs3n15_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n35_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n40_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n40_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n40_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n40_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n45_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n45_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n45_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n45_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n50_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n50_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n50_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n50_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n5_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n5_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n5_4.dat")
+trainInstancesDir = ""
+trainInstancesFile = "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/instances-list_testpc_training.txt"
+sampleInstances = TRUE
+testInstancesDir = ""
+testInstancesFile = ""
+testInstances = NULL
+testNbElites = 1L
+testIterationElites = FALSE
+testType = "friedman"
+firstTest = 5L
+blockSize = 1L
+eachTest = 1L
+targetRunner = "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/target-runner_testpc"
+targetRunnerLauncher = ""
+targetCmdline = "{configurationID} {instanceID} {seed} {instance} {bound} {targetRunnerArgs}"
+targetRunnerRetries = 0L
+targetRunnerTimeout = 0L
+targetRunnerData = ""
+targetRunnerParallel = NULL
+targetEvaluator = NULL
+deterministic = FALSE
+maxExperiments = 15000L
+minExperiments = NA_character_
+maxTime = 0L
+budgetEstimation = 0.05
+minMeasurableTime = 0.01
+parallel = 6L
+loadBalancing = TRUE
+mpi = FALSE
+batchmode = "0"
+quiet = FALSE
+debugLevel = 1L
+seed = NA_character_
+softRestart = TRUE
+softRestartThreshold = 1e-04
+elitist = TRUE
+elitistNewInstances = 1L
+elitistLimit = 2L
+repairConfiguration = NULL
+capping = FALSE
+cappingAfterFirstTest = FALSE
+cappingType = "median"
+boundType = "candidate"
+boundMax = NULL
+boundDigits = 0L
+boundPar = 1L
+boundAsTimeout = TRUE
+postselection = TRUE
+aclib = FALSE
+nbIterations = 0L
+nbExperimentsPerIteration = 0L
+minNbSurvival = 0L
+nbConfigurations = 0L
+mu = 5L
+confidence = 0.95
+## end of irace scenario
+# 2026-08-19 11:01:19 AWST: Initialization
+# Elitist race
+# Elitist new instances: 1
+# Elitist limit: 2
+# nbIterations: 3
+# minNbSurvival: 3
+# nbParameters: 3
+# seed: 159847497
+# confidence level: 0.95
+# budget: 15000
+# mu: 5
+# deterministic: FALSE
+
+# 2026-08-19 11:01:19 AWST: Iteration 1 of 3
+# experimentsUsed: 0
+# remainingBudget: 15000
+# currentBudget: 5000
+# nbConfigurations: 833
+# 2026-08-19 11:01:19 AWST: Sample 833 configurations from Sobol distribution
+# 2026-08-19 11:01:19 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          1|        833|          1|     5.975750000|        833|00:01:55|   NA|  NA|    NA|
+|x|          2|        833|        174|     3.180267000|       1666|02:40:55|+0.03|0.52|0.7164|
+|x|          3|        833|        174|     3.157571333|       2499|00:01:12|+0.01|0.34|0.9115|
+|x|          4|        833|        182|     3.239431250|       3332|00:04:25|+0.04|0.28|0.8520|
+|-|          5|        365|         52|     2.960483800|       4165|00:08:36|-0.10|0.12|0.8553|
+|=|          6|        365|         52|     2.976308167|       4530|00:02:04|-0.03|0.14|0.8428|
+|=|          7|        365|        467|     2.690136000|       4895|00:28:10|+0.01|0.15|0.8401|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because experiments for next test (5260) > max experiments (5000)
+Best-so-far configuration:         467    mean value:      2.690136000
+Description of the best-so-far configuration:
+    .ID. InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment .PARENT.
+467  467                 55.8993                   0.7498                  11       NA
+
+# 2026-08-19 14:28:39 AWST: Extracting elites
+# 2026-08-19 14:28:39 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment .PARENT. .RANK.          .WEIGHT.
+467  467                 55.8993                   0.7498                  11       NA  655.5 0.500000000000000
+400  400                 19.1806                   0.8560                  16       NA  706.5 0.333333333333333
+695  695                 17.5204                   0.8834                  17       NA  712.5 0.166666666666667
+# 2026-08-19 14:28:39 AWST: Initialise model
+# 2026-08-19 14:28:39 AWST: End of iteration 1
+# 2026-08-19 14:28:39 AWST: Iteration 2 of 3
+# experimentsUsed: 4895
+# remainingBudget: 10105
+# currentBudget: 5052
+# nbConfigurations: 634
+# 2026-08-19 14:28:39 AWST: Update model
+# 2026-08-19 14:28:39 AWST: Sample 631 configurations from model
+# 2026-08-19 14:28:39 AWST: Computing similarity of configurations .......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................... DONE
+# 2026-08-19 14:28:40 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          8|        634|        892|     1.847640000|        634|00:17:07|   NA|  NA|    NA|
+|x|          7|        634|       1096|     1.400416000|       1265|00:59:35|-0.00|0.50|0.9923|
+|x|          1|        634|       1096|     2.925527333|       1896|00:01:34|-0.00|0.33|0.6636|
+|x|          4|        634|       1230|     3.062707000|       2527|00:03:59|+0.02|0.27|0.7214|
+|=|          3|        634|       1230|     3.072601600|       3158|00:01:04|+0.02|0.21|0.5826|
+|-|          5|        345|       1019|     2.870874667|       3789|00:09:09|-0.11|0.07|0.7340|
+|=|          2|        345|       1019|     2.518745000|       4131|01:06:03|-0.07|0.08|0.7618|
+|=|          6|        345|       1019|     2.585830625|       4473|00:02:09|-0.04|0.09|0.7771|
+|=|          9|        345|       1019|     2.371933000|       4818|01:02:49|-0.03|0.09|0.7950|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because experiments for next test (5163) > max experiments (5052)
+Best-so-far configuration:        1019    mean value:      2.371933000
+Description of the best-so-far configuration:
+     .ID. InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment .PARENT.
+1019 1019                 19.4353                   0.8628                  17      400
+
+# 2026-08-19 18:12:13 AWST: Extracting elites
+# 2026-08-19 18:12:13 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+     .ID. InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment .PARENT. .RANK.          .WEIGHT.
+1019 1019                 19.4353                   0.8628                  17      400  783.0 0.500000000000000
+910   910                 16.7670                   0.8705                  17      400  903.5 0.333333333333333
+1124 1124                 32.2954                   0.8647                  16      400  972.5 0.166666666666667
+# 2026-08-19 18:12:13 AWST: End of iteration 2
+# 2026-08-19 18:12:13 AWST: Iteration 3 of 3
+# experimentsUsed: 9713
+# remainingBudget: 5287
+# currentBudget: 5287
+# nbConfigurations: 531
+# 2026-08-19 18:12:13 AWST: Update model
+# 2026-08-19 18:12:13 AWST: Sample 528 configurations from model
+# 2026-08-19 18:12:13 AWST: Computing similarity of configurations ................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................... DONE
+# 2026-08-19 18:12:13 AWST: Soft restart: 1501 1631 1657 1684 1692 1739 !
+# 2026-08-19 18:12:13 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         10|        531|       1706|    0.8886860000|        531|01:34:35|   NA|  NA|    NA|
+|x|          1|        531|       1706|     3.432218000|       1059|00:01:19|+0.00|0.50|0.4991|
+|x|          3|        531|       1706|     3.325538667|       1587|00:00:53|-0.00|0.33|0.6788|
+|x|          7|        531|       1751|     2.733452750|       2115|01:00:47|-0.01|0.24|0.7514|
+|=|          5|        531|       1754|     2.554288000|       2643|00:08:37|+0.00|0.20|0.7978|
+|=|          2|        531|       1754|     2.193860333|       3171|01:41:37|-0.01|0.16|0.8382|
+|=|          8|        531|       1019|     2.152720857|       3699|00:17:28|+0.00|0.14|0.8437|
+|=|          4|        531|       1019|     2.317538250|       4227|00:03:39|+0.01|0.13|0.8543|
+|-|          6|        270|       1019|     2.399526222|       4755|00:03:26|-0.07|0.05|0.9340|
+|=|          9|        270|       1019|     2.225648800|       5022|00:48:45|-0.05|0.05|0.9351|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because experiments for next test (5292) > max experiments (5287)
+Best-so-far configuration:        1019    mean value:      2.225648800
+Description of the best-so-far configuration:
+     .ID. InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment .PARENT.
+1019 1019                 19.4353                   0.8628                  17      400
+
+# 2026-08-19 23:53:23 AWST: Extracting elites
+# 2026-08-19 23:53:23 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+     .ID. InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment .PARENT. .RANK.          .WEIGHT.
+1019 1019                 19.4353                   0.8628                  17      400  827.0 0.500000000000000
+910   910                 16.7670                   0.8705                  17      400  977.5 0.333333333333333
+1520 1520                 32.7842                   0.8669                  16     1124  985.5 0.166666666666667
+# 2026-08-19 23:53:23 AWST: End of iteration 3
+# 2026-08-19 23:53:23 AWST: Iteration 4 of 4
+# experimentsUsed: 14735
+# remainingBudget: 265
+# currentBudget: 265
+# nbConfigurations: 26
+# 2026-08-19 23:53:23 AWST: Update model
+# 2026-08-19 23:53:23 AWST: Sample 23 configurations from model
+# 2026-08-19 23:53:23 AWST: Computing similarity of configurations .......................... DONE
+# 2026-08-19 23:53:23 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         11|         26|       1019|     4.318360000|         26|00:00:03|   NA|  NA|    NA|
+|x|          5|         26|       2014|     3.074110000|         49|00:00:22|+0.00|0.50|0.4808|
+|x|          2|         26|       1520|     2.184182333|         72|00:04:36|+0.03|0.35|0.6178|
+|x|         10|         26|       2014|     1.864218500|         95|00:04:19|+0.04|0.28|0.7119|
+|=|          6|         26|       2014|     2.102460800|        118|00:00:08|+0.07|0.26|0.7195|
+|=|          3|         26|       2014|     2.270747333|        141|00:00:02|+0.06|0.21|0.6079|
+|=|          7|         26|       2001|     2.088755857|        164|00:02:56|+0.05|0.18|0.6634|
+|=|          1|         26|       2001|     2.574630125|        187|00:00:03|+0.04|0.16|0.5834|
+|=|          8|         26|       1019|     2.493648444|        210|00:00:49|-0.02|0.09|0.6511|
+|=|          4|         26|       1019|     2.591409600|        233|00:00:09|-0.01|0.09|0.6706|
+|=|          9|         26|       1019|     2.415895273|        256|00:04:19|-0.00|0.09|0.6919|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because experiments for next test (282) > max experiments (265)
+Best-so-far configuration:        1019    mean value:      2.415895273
+Description of the best-so-far configuration:
+     .ID. InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment .PARENT.
+1019 1019                 19.4353                   0.8628                  17      400
+
+# 2026-08-20 00:11:14 AWST: Extracting elites
+# 2026-08-20 00:11:14 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+     .ID. InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment .PARENT. .RANK.          .WEIGHT.
+1019 1019                 19.4353                   0.8628                  17      400   99.5 0.500000000000000
+910   910                 16.7670                   0.8705                  17      400  117.5 0.333333333333333
+2006 2006                 23.9210                   0.8597                  17     1019  121.5 0.166666666666667
+# 2026-08-20 00:11:14 AWST: End of iteration 4
+# 2026-08-20 00:11:14 AWST: Stopped because there is not enough budget left to race more than the minimum (3).
+# You may either increase the budget or set 'minNbSurvival' to a lower value.
+# Iteration: 5
+# nbIterations: 5
+# experimentsUsed: 14991
+# timeUsed: 0
+# remainingBudget: 9
+# currentBudget: 9
+# number of elites: 3
+# nbConfigurations: 3
+# Total CPU user time: 270602.3, CPU sys time: 7333.29, Wall-clock time: 47394.89
+# 2026-08-20 00:11:14 AWST: Starting post-selection:
+# Configurations selected: 1019, 910, 2006, 1520, 1993, 1994, 1995, 1996, 1997.
+# Pending instances: 0, 0, 0, 0, 0, 0, 0, 0, 0.
+# 2026-08-20 00:11:14 AWST: seed: 159847497
+# Configurations: 9
+# Available experiments: 9
+# minSurvival: 1
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|.|          8|          9|        910|     1.852590000|          0|00:00:00|   NA|  NA|    NA|
+|.|          4|          9|        910|     2.661925000|          0|00:00:00|+0.21|0.60|0.8896|
+|.|          7|          9|        910|     2.095931000|          0|00:00:00|+0.26|0.51|0.7837|
+|.|         11|          9|        910|     2.651538250|          0|00:00:00|+0.18|0.38|0.6141|
+|.|          2|          9|        910|     2.204298400|          0|00:00:00|+0.25|0.40|0.6295|
+|.|          5|          9|        910|     2.143385333|          0|00:00:00|+0.29|0.41|0.6072|
+|.|          9|          9|        910|     1.932089286|          0|00:00:00|+0.24|0.35|0.6514|
+|.|          6|          9|        910|     2.072506875|          0|00:00:00|+0.21|0.31|0.6816|
+|.|          1|          9|        910|     2.506200556|          0|00:00:00|+0.19|0.28|0.6165|
+|.|         10|          9|        910|     2.346399000|          0|00:00:00|+0.15|0.23|0.6422|
+|.|          3|          9|        910|     2.416015455|          0|00:00:00|+0.13|0.21|0.5901|
+|-|         12|          4|       1019|     2.460377333|          9|00:00:02|-0.05|0.04|0.3873|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because experiments for next test (13) > max experiments (9)
+Best-so-far configuration:        1019    mean value:      2.460377333
+Description of the best-so-far configuration:
+     .ID. InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment .PARENT.
+1019 1019                 19.4353                   0.8628                  17      400
+
+# 2026-08-20 00:11:17 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+     .ID. InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment .PARENT. .RANK.          .WEIGHT.
+1019 1019                 19.4353                   0.8628                  17      400   27.0 0.500000000000000
+910   910                 16.7670                   0.8705                  17      400   30.5 0.333333333333333
+1520 1520                 32.7842                   0.8669                  16     1124   30.5 0.166666666666667
+# Total CPU user time: 270612.9, CPU sys time: 7335.504, Wall-clock time: 47397.84
+# Best configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+     InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment
+1019                 19.4353                   0.8628                  17
+910                  16.7670                   0.8705                  17
+1520                 32.7842                   0.8669                  16
+# Best configurations as commandlines (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+1019 --InitialLagrangianScalar 19.4353 --ToAdjustLagrangianScalar 0.8628 --ToTriggerAdjustment 17
+910  --InitialLagrangianScalar 16.767 --ToAdjustLagrangianScalar 0.8705 --ToTriggerAdjustment 17
+1520 --InitialLagrangianScalar 32.7842 --ToAdjustLagrangianScalar 0.8669 --ToTriggerAdjustment 16
+
+
+# Testing of elite configurations: 1 
+# Testing iteration configurations: FALSE 
+# 2026-08-20 00:11:17 AWST: No test instances, skip testing
