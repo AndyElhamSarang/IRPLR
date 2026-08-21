@@ -1,16 +1,24 @@
 #include "lib.h"
 
-void input::ReadIRPInstance(string &InstanceName, string &InstanceType, string &InstanceDirectories)
+void input::ReadIRPInstance(string &InstanceSource, string &InstanceType, string &InstanceDirectories)
 {
     // cout << "Read instance data" << endl;
     Retailers.clear();
     Distance.clear();
+    InstanceName.clear();
     if (InstanceType == "Single vehicle IRP")
+    {
         NumberOfVehicles = 1;
+        InstanceName  = InstanceSource.substr(MachineDirectory.size() + InstanceDirectories.size(), InstanceSource.size());
+        InstanceName = InstanceName.erase(InstanceName.size() - 4);
+        cout << "Instance's name: " << InstanceName << endl;        
+    }
     else if (InstanceType == "Multiple vehicles IRP")
     {
-        string ExtractNumberOfVehicles = InstanceName.substr(MachineDirectory.size() + InstanceDirectories.size(), InstanceName.size());
-        cout << "Instance's name: " << ExtractNumberOfVehicles << endl;
+        string ExtractNumberOfVehicles = InstanceSource.substr(MachineDirectory.size() + InstanceDirectories.size(), InstanceSource.size());
+        InstanceName = ExtractNumberOfVehicles;
+        InstanceName = InstanceName.erase(InstanceName.size() - 4);
+        cout << "Instance's name: " << InstanceName << endl;
         string ExtractNumberOfVehicles_step2 = ExtractNumberOfVehicles.substr(3, ExtractNumberOfVehicles.size());
         // cout<<"ExtractNumberOfVehicles_step2:"<<ExtractNumberOfVehicles_step2<<endl;
         stringstream ss_take_NumberOfVehicle(ExtractNumberOfVehicles_step2);
@@ -23,7 +31,7 @@ void input::ReadIRPInstance(string &InstanceName, string &InstanceType, string &
     string takeline;
     char taketab;
     ifstream ifinstance;
-    ifinstance.open(InstanceName.c_str());
+    ifinstance.open(InstanceSource.c_str());
     if (!ifinstance.is_open())
     {
         exit(EXIT_FAILURE);
@@ -100,19 +108,24 @@ void input::ReadIRPInstance(string &InstanceName, string &InstanceType, string &
             int travel = 0;
             if (i != j)
             {
+                 // double diff_X = AllCoord[i][0] - AllCoord[j][0];
+                // double diff_Y = AllCoord[i][1] - AllCoord[j][1];
+                // double float_travel = sqrt(pow(diff_X, power) + pow(diff_Y, power));
+                // double fractional_part = float_travel - floor(float_travel);
+                // if (fractional_part >= 0.5) 
+                // {
+                //     travel = ceil(float_travel);
+                // } 
+                // else 
+                // {
+                //     travel = floor(float_travel);
+                // } 
+
+
                 double diff_X = AllCoord[i][0] - AllCoord[j][0];
                 double diff_Y = AllCoord[i][1] - AllCoord[j][1];
                 double float_travel = sqrt(pow(diff_X, power) + pow(diff_Y, power));
-                double fractional_part = float_travel - floor(float_travel);
-                
-                if (fractional_part >= 0.5) 
-                {
-                    travel = ceil(float_travel);
-                } 
-                else 
-                {
-                    travel = floor(float_travel);
-                } 
+                travel = floor(float_travel); 
             }
             temp_distance.push_back(travel);
         }
@@ -194,4 +207,18 @@ void input::ReadIRPInstance(string &InstanceName, string &InstanceType, string &
         assert(AllPossibleSchedule[i].size() == TotalSchedules);
     }*/
     VehiclesTotalCapacity = Vehicle.capacity * NumberOfVehicles;
+
+    ////////////////////////////////////////////////////////
+    //                                                    //
+    //      Compute minimum number of visits needed       //
+    //          for each retailer based on                //
+    //           demand and Max Inventory                 //
+    //                                                    //
+    ////////////////////////////////////////////////////////
+    for (int i = 0; i < Retailers.size(); i++)
+    {
+        int MinimumVisit = ceil((Retailers[i].Demand * TimeHorizon - Retailers[i].InventoryBegin) / Retailers[i].InventoryMax);
+        MinimumVisitDemand .push_back(MinimumVisit);
+        
+    }
 }

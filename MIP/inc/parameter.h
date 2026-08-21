@@ -7,6 +7,7 @@ extern int printout_initial;
 extern base_generator_type generator;
 extern ofstream Table;
 extern string MachineDirectory;
+extern string JSONDirectory;
 extern int OutputResults;
 extern int NumberOfInitialSolutions;
 extern time_t start_time;
