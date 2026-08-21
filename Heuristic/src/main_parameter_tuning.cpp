@@ -41,13 +41,158 @@ string ActivateHGS;
 int theta=0;
 int sigma=0; 
 int phi=0;
-int main()
+int main(int argc, char* argv[])
 {
+	// Support both original positional arguments and modern `--flag value` style.
+	if (argc < 2)
+	{
+		cerr << "Usage: " << argv[0] << " <instance> <NumberOfInitialSolutions> ...\n       or: " << argv[0] << " --instance <file> --NumberOfInitialSolutions <n> ...\n";
+		return 1;
+	}
+
+	string instance;
+	// If the first positional argument is not a flag, treat it as the instance path.
+	if (argc > 1 && strncmp(argv[1], "--", 2) != 0)
+	{
+		instance = argv[1];
+	}
+
+	// Detect whether any long-style flags are present among the arguments
+	bool any_flag = false;
+	for (int i = 1; i < argc; i++)
+	{
+		if (strncmp(argv[i], "--", 2) == 0)
+		{
+			any_flag = true;
+			break;
+		}
+	}
+
+	if (any_flag)
+	{
+		for (int i = 1; i < argc; i++)
+		{
+			string opt = argv[i];
+			if (opt.rfind("--", 0) == 0)
+				opt = opt.substr(2);
+			else
+				continue;
+
+			if (i + 1 >= argc)
+			{
+				cerr << "Missing value for option --" << opt << endl;
+				return 1;
+			}
+			string val = argv[++i];
+
+			if (opt == "instance") instance = val;
+			else if (opt == "NumberOfInitialSolutions" || opt == "NumberOfInitialSolution") { NumberOfInitialSolutions = atoi(val.c_str()); }
+			else if (opt == "NumberOfExperiments") { NumberOfExperiments = atoi(val.c_str()); }
+			else if (opt == "AllowLagrangianRelaxation") { AllowLagrangianRelaxation = val; }
+			else if (opt == "TypeOfRebalance") { TypeOfRebalance = val; }
+			else if (opt == "InitialLagrangianScalar") { InitialLagrangianScalar = atof(val.c_str()); }
+			else if (opt == "ToAdjustLagrangianScalar") { ToAdjustLagrangianScalar = atof(val.c_str()); }
+			else if (opt == "ToTriggerAdjustment") { ToTriggerAdjustment = atoi(val.c_str()); }
+			else if (opt == "GridResolution" || opt == "Grid_resolution_in_initial_solution_construction") { GridResolution = atoi(val.c_str()); }
+			else if (opt == "ActivateHGS" || opt == "Activate HGS") { ActivateHGS = val; }
+			else if (opt == "theta") { theta = atoi(val.c_str()); }
+			else if (opt == "sigma") { sigma = atoi(val.c_str()); }
+			else if (opt == "phi") { phi = atoi(val.c_str()); }
+			else if (opt == "MainAlgorithmTimeLimit") { MainAlgorithmTimeLimit = atof(val.c_str()); }
+			else if (opt == "OutputResults") { OutputResults = atoi(val.c_str()); }
+			else if (opt == "OutputSolutionJSON") { OutputSolutionJSON = val; }
+			else
+			{
+				cerr << "Warning: unknown option --" << opt << " (ignored)" << endl;
+			}
+		}
+
+		cout << "Instance: " << instance << endl;
+		cout << "Number of Initial Solutions: " << NumberOfInitialSolutions << endl;
+		cout << "Number of Experiments: " << NumberOfExperiments << endl;
+		cout << "Allow Lagrangian Relaxation: " << AllowLagrangianRelaxation << endl;
+		cout << "Type of Rebalance: " << TypeOfRebalance << endl;
+		cout << "Initial Lagrangian Scalar: " << InitialLagrangianScalar << endl;
+		cout << "To Adjust Lagrangian Scalar: " << ToAdjustLagrangianScalar << endl;
+		cout << "To Trigger Adjustment: " << ToTriggerAdjustment << endl;
+		cout << "Grid Resolution: " << GridResolution << endl;
+		cout << "Activate HGS: " << ActivateHGS << endl;
+		cout << "Theta: " << theta << endl;
+		cout << "Sigma: " << sigma << endl;
+		cout << "Phi: " << phi << endl;
+		cout << "Main Algorithm Time Limit: " << MainAlgorithmTimeLimit << endl;
+	}
+	else
+	{
+		if (argc < 15)
+		{
+			cerr << "Usage: " << argv[0] << " <instance> <NumberOfInitialSolutions> <NumberOfExperiments> <AllowLagrangianRelaxation> <TypeOfRebalance> <InitialLagrangianScalar> <ToAdjustLagrangianScalar> <ToTriggerAdjustment> <GridResolution> <ActivateHGS> <theta> <sigma> <phi> <MainAlgorithmTimeLimit>\n";
+			return 1;
+		}
+
+		instance = argv[1];
+		NumberOfInitialSolutions = atoi(argv[2]);
+		cout << "Number of Initial Solutions: " << NumberOfInitialSolutions << endl;
+		NumberOfExperiments = atoi(argv[3]);
+		cout << "Number of Experiments: " << NumberOfExperiments << endl;
+		AllowLagrangianRelaxation= argv[4];
+		cout << "Allow Lagrangian Relaxation: " << AllowLagrangianRelaxation << endl;
+		TypeOfRebalance= argv[5];
+		cout << "Type of Rebalance: " << TypeOfRebalance << endl;
+		InitialLagrangianScalar = atof(argv[6]);
+		cout << "Initial Lagrangian Scalar: " << InitialLagrangianScalar << endl;
+		ToAdjustLagrangianScalar = atof(argv[7]);
+		cout << "To Adjust Lagrangian Scalar: " << ToAdjustLagrangianScalar << endl;
+		ToTriggerAdjustment = atoi(argv[8]);
+		cout << "To Trigger Adjustment: " << ToTriggerAdjustment << endl;
+		GridResolution = atoi(argv[9]);
+		cout << "Grid Resolution: " << GridResolution << endl;
+		ActivateHGS = argv[10];
+		cout << "Activate HGS: " << ActivateHGS << endl;
+		theta = atoi(argv[11]);
+		cout << "Theta: " << theta << endl;
+		sigma = atoi(argv[12]);
+		cout << "Sigma: " << sigma << endl;
+		phi = atoi(argv[13]);
+		cout << "Phi: " << phi << endl;
+		MainAlgorithmTimeLimit = atof(argv[14]);
+		cout << "Main Algorithm Time Limit: " << MainAlgorithmTimeLimit << endl;
+	}
+
 	file read_file;
-	read_file.ReadDirectory();
-	read_file.ReadIRPInstanceName();
+
+	MachineDirectory = "/home/andy/Desktop/";
+    // JSONDirectory = MachineDirectory + "Curtin/IRPLR/IRPLR/JSON/";
+	read_file.InstanceType = "Multiple vehicles IRP";
+
+	vector<string> temp_instances;
+	temp_instances.push_back(instance);
+    read_file.instances.push_back(temp_instances);
+	// Extract instance directory from full path so ReadIRPInstance receives the expected relative directory
+	string instance_dir = "";
+	size_t slash_pos = instance.find_last_of('/');
+	if (slash_pos != string::npos)
+	{
+		// If the provided instance path starts with MachineDirectory, store the relative directory
+		if (instance.rfind(MachineDirectory, 0) == 0)
+		{
+			instance_dir = instance.substr(MachineDirectory.size(), slash_pos - MachineDirectory.size() + 1);
+		}
+		else
+		{
+			// Fallback: remove leading slash to form a path similar to InstanceDirectories entries
+			instance_dir = instance.substr(0, slash_pos + 1);
+			if (!instance_dir.empty() && instance_dir[0] == '/')
+				instance_dir = instance_dir.substr(1);
+		}
+	}
+	else
+	{
+		instance_dir = "";
+	}
+	read_file.InstanceDirectories.push_back(instance_dir);
+
 	read_file.ReadGlobalSettings();
-	read_file.ReadGlobalParameter();
 	for (int experiment = 0; experiment < NumberOfExperiments; experiment++)
 	{
 		if (OutputResults == 1)
@@ -158,10 +303,10 @@ int main()
 				GlobalBest.Validation(IRPLR);
 				cout << "whether_results_reported at 30s: " << whether_results_reported_30 << ", whether_results_reported at 60s: " << whether_results_reported_60 << ", whether_results_reported at first improvement: " << whether_results_reported_first_improvement << endl;
 
-				cout << "Global best" << endl;
+				cout << "Global best" << endl;				
 				GlobalBest.print_solution(IRPLR);
 				cout << "BestTransportationCost:" << GlobalBest.TotalTransportationCost << "\t TotalDelivery:" << GlobalBest.TotalDelivery << "\t LogistcRatio:" << GlobalBest.LogisticRatio << endl;
-			
+				cout << "IRACE_COST "<<GlobalBest.LogisticRatio << endl;
 				if(OutputSolutionJSON == "YES")
 				{
 					GlobalBest.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName+ "_global_best.json");

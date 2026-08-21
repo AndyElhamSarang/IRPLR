@@ -1,0 +1,973 @@
+#------------------------------------------------------------------------------
+# irace: An implementation in R of (Elitist) Iterated Racing
+# Version: 4.4.3.dd8d85f
+# Copyright (C) 2010-2025
+# Manuel Lopez-Ibanez     <manuel.lopez-ibanez@manchester.ac.uk>
+# Jeremie Dubois-Lacoste
+# Leslie Perez Caceres    <leslie.perez.caceres@ulb.ac.be>
+#
+# This is free software, and you are welcome to redistribute it under certain
+# conditions.  See the GNU General Public License for details. There is NO
+# WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# irace builds upon previous code from the race package:
+#     race: Racing methods for the selection of the best
+#     Copyright (C) 2003 Mauro Birattari
+#------------------------------------------------------------------------------
+# installed at: /home/andytestpc/R/x86_64-pc-linux-gnu-library/4.3/irace
+# called with: --scenario scenario.txt
+# 2026-08-14 17:17:47 AWST: Reading parameter file '/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/parameters.txt'.
+# --- Parameters Hierarchy ---
+                   Parameter Level                Depends.on
+1   NumberOfInitialSolutions     1  NumberOfInitialSolutions
+2  AllowLagrangianRelaxation     1 AllowLagrangianRelaxation
+3            TypeOfRebalance     1           TypeOfRebalance
+4    InitialLagrangianScalar     1   InitialLagrangianScalar
+5   ToAdjustLagrangianScalar     1  ToAdjustLagrangianScalar
+6        ToTriggerAdjustment     1       ToTriggerAdjustment
+7             GridResolution     1            GridResolution
+8                      theta     1                     theta
+9                      sigma     1                     sigma
+10                       phi     1                       phi
+# ------------------------
+## irace scenario:
+scenarioFile = "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/scenario.txt"
+execDir = "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning"
+parameterFile = "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/parameters.txt"
+parameters = <environment>
+initConfigurations = NULL
+configurationsFile = ""
+logFile = "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/irace.Rdata"
+recoveryFile = ""
+instances = c("/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs10n100_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs10n100_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs10n100_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs1n50_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs1n50_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs2n100_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs8n200_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs8n200_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs8n50_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs8n50_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs9n200_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs9n200_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs9n50_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs9n50_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs9n50_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Big_Instances/Istanze0105/abs9n50_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs1n10_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs1n10_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs1n10_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs1n10_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs2n35_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs2n35_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs2n35_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs2n40_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs2n40_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs2n40_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n20_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n20_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n25_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n25_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n25_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n25_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n30_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n40_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n45_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n45_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n45_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n45_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n50_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n50_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n50_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n50_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n5_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n5_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n5_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs3n5_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n10_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n10_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n10_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n10_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n15_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n15_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n15_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n15_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n20_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n20_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n40_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n40_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n40_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n45_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n45_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n45_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n45_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n50_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n50_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n50_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n50_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n5_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n5_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n5_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs4n5_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n50_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n50_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n50_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n5_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n5_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n5_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h3/abs5n5_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs1n10_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs1n10_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs1n10_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs1n10_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs3n15_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs3n15_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n35_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n40_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n40_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n40_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n40_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n45_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n45_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n45_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n45_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n50_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n50_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n50_4.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n50_5.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n5_2.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n5_3.dat", "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs5n5_4.dat")
+trainInstancesDir = ""
+trainInstancesFile = "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/instances-list_testpc_training.txt"
+sampleInstances = TRUE
+testInstancesDir = ""
+testInstancesFile = ""
+testInstances = NULL
+testNbElites = 1L
+testIterationElites = FALSE
+testType = "friedman"
+firstTest = 5L
+blockSize = 1L
+eachTest = 1L
+targetRunner = "/home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/target-runner_testpc"
+targetRunnerLauncher = ""
+targetCmdline = "{configurationID} {instanceID} {seed} {instance} {bound} {targetRunnerArgs}"
+targetRunnerRetries = 0L
+targetRunnerTimeout = 0L
+targetRunnerData = ""
+targetRunnerParallel = NULL
+targetEvaluator = NULL
+deterministic = FALSE
+maxExperiments = 15000L
+minExperiments = NA_character_
+maxTime = 0L
+budgetEstimation = 0.05
+minMeasurableTime = 0.01
+parallel = 6L
+loadBalancing = TRUE
+mpi = FALSE
+batchmode = "0"
+quiet = FALSE
+debugLevel = 1L
+seed = NA_character_
+softRestart = TRUE
+softRestartThreshold = 1e-04
+elitist = TRUE
+elitistNewInstances = 1L
+elitistLimit = 2L
+repairConfiguration = NULL
+capping = FALSE
+cappingAfterFirstTest = FALSE
+cappingType = "median"
+boundType = "candidate"
+boundMax = NULL
+boundDigits = 0L
+boundPar = 1L
+boundAsTimeout = TRUE
+postselection = TRUE
+aclib = FALSE
+nbIterations = 0L
+nbExperimentsPerIteration = 0L
+minNbSurvival = 0L
+nbConfigurations = 0L
+mu = 5L
+confidence = 0.95
+## end of irace scenario
+# 2026-08-14 17:17:47 AWST: Initialization
+# Elitist race
+# Elitist new instances: 1
+# Elitist limit: 2
+# nbIterations: 5
+# minNbSurvival: 5
+# nbParameters: 10
+# seed: 1672172415
+# confidence level: 0.95
+# budget: 15000
+# mu: 5
+# deterministic: FALSE
+
+# 2026-08-14 17:17:47 AWST: Iteration 1 of 5
+# experimentsUsed: 0
+# remainingBudget: 15000
+# currentBudget: 3000
+# nbConfigurations: 500
+# 2026-08-14 17:17:47 AWST: Sample 500 configurations from Sobol distribution
+# 2026-08-14 17:17:47 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          1|        500|        499|     1.829860000|        500|00:06:17|   NA|  NA|    NA|
+|x|          2|        500|        499|     2.123450000|       1000|00:00:39|+0.00|0.50|0.4990|
+|x|          3|        500|        499|     1.935140000|       1500|00:11:17|+0.11|0.41|0.5886|
+|x|          4|        500|        499|     2.204992500|       2000|00:02:21|+0.13|0.35|0.6245|
+|-|          5|        158|        418|     1.853126000|       2500|01:32:09|-0.07|0.14|0.8527|
+|=|          6|        158|        418|     1.662629833|       2658|00:18:11|-0.01|0.16|0.8308|
+|=|          7|        158|        418|     1.538115571|       2816|00:12:13|+0.03|0.17|0.8179|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:         418    mean value:      1.538115571
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA
+
+# 2026-08-14 19:40:57 AWST: Extracting elites
+# 2026-08-14 19:40:57 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA  261.5 0.3333333333333333
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA  291.5 0.2666666666666667
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA  305.5 0.2000000000000000
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA  310.0 0.1333333333333333
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA  318.0 0.0666666666666667
+# 2026-08-14 19:40:57 AWST: Initialise model
+# 2026-08-14 19:40:57 AWST: End of iteration 1
+# 2026-08-14 19:40:57 AWST: Iteration 2 of 5
+# experimentsUsed: 2816
+# remainingBudget: 12184
+# currentBudget: 3046
+# nbConfigurations: 385
+# 2026-08-14 19:40:57 AWST: Update model
+# 2026-08-14 19:40:57 AWST: Sample 380 configurations from model
+# 2026-08-14 19:40:57 AWST: Computing similarity of configurations ............................................................................................................................................................................................................................................................................................................................................................................................... DONE
+# 2026-08-14 19:40:57 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          8|        385|        188|    0.7431280000|        385|00:55:25|   NA|  NA|    NA|
+|x|          3|        385|        499|     1.154564000|        765|00:09:31|-0.04|0.48|1.0613|
+|x|          4|        385|        499|     1.774559333|       1145|00:01:27|+0.01|0.34|0.9673|
+|x|          7|        385|        499|     1.529284750|       1525|00:31:29|+0.02|0.27|0.9500|
+|=|          5|        385|        418|     1.312299800|       1905|01:10:05|+0.03|0.22|0.9456|
+|-|          6|         35|        418|     1.211941333|       2285|00:44:12|+0.06|0.22|0.9126|
+|-|          1|          5|        418|     1.301319714|       2315|00:00:24|-0.10|0.05|0.8853|
+|.|          2|          5|        418|     1.440784750|       2315|00:00:00|-0.09|0.05|0.7640|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because number of alive configurations (5) <= minimum number of configurations (5)
+Best configuration for the instances in this race: 418
+Best-so-far configuration:         499    mean value:      1.439950250
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA
+
+# 2026-08-14 23:13:33 AWST: Extracting elites
+# 2026-08-14 23:13:33 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   22.0 0.3333333333333333
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   22.5 0.2666666666666667
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   23.0 0.2000000000000000
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   24.5 0.1333333333333333
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   28.0 0.0666666666666667
+# 2026-08-14 23:13:33 AWST: End of iteration 2
+# 2026-08-14 23:13:33 AWST: Iteration 3 of 5
+# experimentsUsed: 5131
+# remainingBudget: 9869
+# currentBudget: 3289
+# nbConfigurations: 369
+# 2026-08-14 23:13:33 AWST: Update model
+# 2026-08-14 23:13:33 AWST: Sample 364 configurations from model
+# 2026-08-14 23:13:33 AWST: Computing similarity of configurations ............................................................................................................................................................................................................................................................................................................................................................................... DONE
+# 2026-08-14 23:13:34 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          9|        369|       1222|    0.3907750000|        369|01:10:50|   NA|  NA|    NA|
+|x|          6|        369|        937|    0.5513285000|        733|00:37:46|-0.03|0.48|0.9922|
+|x|          7|        369|       1026|    0.6389100000|       1097|00:25:08|-0.02|0.32|1.0034|
+|x|          8|        369|        937|    0.6684527500|       1461|00:48:43|+0.01|0.26|0.9846|
+|=|          2|        369|        937|     1.018170200|       1825|00:00:22|+0.01|0.21|0.7902|
+|=|          4|        369|        499|     1.351474500|       2189|00:01:10|+0.01|0.18|0.8094|
+|=|          1|        369|        499|     1.419815286|       2553|00:04:07|+0.01|0.15|0.8354|
+|-|          5|         38|        499|     1.297782125|       2917|01:06:35|+0.04|0.16|0.8181|
+|-|          3|          6|        499|     1.326753000|       2950|00:00:42|-0.01|0.10|0.7750|
+|=|         10|          6|        499|     1.259857400|       2956|00:00:38|+0.04|0.13|0.7443|
+|=|         11|          6|        499|     1.238244909|       2962|00:01:04|+0.07|0.15|0.7265|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:         499    mean value:      1.238244909
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA
+
+# 2026-08-15 03:30:45 AWST: Extracting elites
+# 2026-08-15 03:30:45 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   30.0 0.3333333333333333
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   32.5 0.2666666666666667
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   35.5 0.2000000000000000
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   40.0 0.1333333333333333
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   42.5 0.0666666666666667
+# 2026-08-15 03:30:45 AWST: End of iteration 3
+# 2026-08-15 03:30:45 AWST: Iteration 4 of 5
+# experimentsUsed: 8093
+# remainingBudget: 6907
+# currentBudget: 3453
+# nbConfigurations: 292
+# 2026-08-15 03:30:45 AWST: Update model
+# 2026-08-15 03:30:45 AWST: Sample 287 configurations from model
+# 2026-08-15 03:30:45 AWST: Computing similarity of configurations .................................................................................................................................................................................................................................................................................................. DONE
+# 2026-08-15 03:30:45 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         12|        292|        188|     2.250000000|        292|00:00:47|   NA|  NA|    NA|
+|x|          4|        292|        188|     2.635740000|        579|00:00:57|+0.00|0.50|0.8895|
+|x|          8|        292|        188|     2.004869333|        866|00:39:17|+0.04|0.36|0.9144|
+|x|         10|        292|        188|     1.667551750|       1153|00:28:48|+0.04|0.28|0.9333|
+|=|          3|        292|        418|     1.649161600|       1440|00:06:24|+0.03|0.22|0.9301|
+|=|          9|        292|        188|     1.443639167|       1727|00:55:04|+0.02|0.18|0.9537|
+|-|         11|         68|        499|     1.388241429|       2014|00:52:00|-0.06|0.09|1.0174|
+|=|          1|         68|        499|     1.443443750|       2077|00:00:50|-0.03|0.10|0.9904|
+|=|          5|         68|        499|     1.332344444|       2140|00:12:01|-0.00|0.11|0.9610|
+|=|          7|         68|        499|     1.278456100|       2203|00:05:25|+0.02|0.12|0.9415|
+|-|          6|          9|        499|     1.226961273|       2266|00:07:51|+0.06|0.14|0.8275|
+|=|          2|          9|        499|     1.326134500|       2270|00:00:00|+0.05|0.13|0.7637|
+|=|         13|          9|        188|     1.308705462|       2279|00:02:09|+0.05|0.13|0.7674|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:         188    mean value:      1.308705462
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA
+
+# 2026-08-15 07:02:26 AWST: Extracting elites
+# 2026-08-15 07:02:26 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   49.5 0.3333333333333333
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   51.5 0.2666666666666667
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   52.0 0.2000000000000000
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   64.5 0.1333333333333333
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   65.5 0.0666666666666667
+# 2026-08-15 07:02:26 AWST: End of iteration 4
+# 2026-08-15 07:02:26 AWST: Iteration 5 of 5
+# experimentsUsed: 10372
+# remainingBudget: 4628
+# currentBudget: 4628
+# nbConfigurations: 335
+# 2026-08-15 07:02:26 AWST: Update model
+# 2026-08-15 07:02:26 AWST: Sample 330 configurations from model
+# 2026-08-15 07:02:26 AWST: Computing similarity of configurations ............................................................................................................................................................................................................................................................................................................................................. DONE
+# 2026-08-15 07:02:26 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         14|        335|        188|     1.553030000|        335|00:02:53|   NA|  NA|    NA|
+|x|          9|        335|       1648|    0.9802580000|        665|01:03:11|+0.29|0.64|0.7608|
+|x|          5|        335|       1549|    0.8033533333|        995|01:00:12|+0.15|0.43|0.8817|
+|x|         13|        335|       1549|    0.8822950000|       1325|00:59:34|+0.08|0.31|0.9528|
+|-|          3|        157|        418|     1.017615000|       1655|00:07:08|-0.09|0.13|1.0783|
+|=|          8|        157|        418|    0.9745906667|       1807|00:23:02|-0.05|0.12|1.0449|
+|=|         12|        157|        418|     1.156792000|       1959|00:00:22|-0.04|0.11|1.0124|
+|=|         11|        157|        418|     1.142423000|       2111|00:28:09|-0.02|0.10|1.0086|
+|=|          1|        157|        418|     1.219663778|       2263|00:01:45|+0.00|0.11|0.9805|
+|=|          4|        157|        418|     1.399845400|       2415|00:00:30|+0.01|0.11|0.9506|
+|=|          7|        157|        418|     1.344498545|       2567|00:10:10|+0.02|0.11|0.9435|
+|-|          6|          8|        418|     1.291636083|       2719|00:16:56|+0.11|0.18|0.7443|
+|=|         10|          8|        188|     1.242243154|       2722|00:00:34|+0.08|0.15|0.7334|
+|=|          2|          8|        188|     1.326157214|       2725|00:00:00|+0.08|0.14|0.6911|
+|=|         15|          8|        188|     1.314799400|       2733|00:00:52|+0.07|0.13|0.7217|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:         188    mean value:      1.314799400
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA
+
+# 2026-08-15 11:37:52 AWST: Extracting elites
+# 2026-08-15 11:37:52 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   50.5 0.3333333333333333
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   53.0 0.2666666666666667
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   60.5 0.2000000000000000
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   66.0 0.1333333333333333
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   68.0 0.0666666666666667
+# 2026-08-15 11:37:52 AWST: End of iteration 5
+# 2026-08-15 11:37:52 AWST: Iteration 6 of 6
+# experimentsUsed: 13105
+# remainingBudget: 1895
+# currentBudget: 1895
+# nbConfigurations: 123
+# 2026-08-15 11:37:52 AWST: Update model
+# 2026-08-15 11:37:52 AWST: Sample 118 configurations from model
+# 2026-08-15 11:37:52 AWST: Computing similarity of configurations ......................................................................................................................... DONE
+# 2026-08-15 11:37:53 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         16|        123|       1862|     1.822450000|        123|00:01:47|   NA|  NA|    NA|
+|x|         14|        123|       1862|     1.688015000|        241|00:01:03|+0.07|0.54|0.9280|
+|x|         10|        123|        418|     1.344846333|        359|00:12:17|+0.04|0.36|0.9822|
+|x|          1|        123|        418|     1.468032250|        477|00:01:22|+0.04|0.28|0.9846|
+|=|          3|        123|        418|     1.486129800|        595|00:02:41|+0.04|0.23|0.9720|
+|=|          6|        123|        418|     1.356799667|        713|00:13:00|+0.02|0.19|0.9749|
+|=|         15|        123|        296|     1.331105143|        831|00:11:41|+0.03|0.17|0.9719|
+|-|          5|         18|        296|     1.217993250|        949|00:21:54|+0.06|0.18|0.9275|
+|-|          4|          6|        188|     1.418230778|        962|00:00:03|+0.04|0.15|0.7415|
+|=|         12|          6|        188|     1.501407700|        963|00:00:00|+0.05|0.15|0.7342|
+|=|         11|          6|        499|     1.461777273|        964|00:01:05|+0.08|0.16|0.7270|
+|=|          7|          6|        499|     1.406084250|        965|00:00:23|+0.01|0.09|0.7882|
+|=|          2|          6|        499|     1.483850077|        966|00:00:00|+0.01|0.09|0.7310|
+|=|          8|          6|        499|     1.431475643|        967|00:00:59|+0.04|0.11|0.7047|
+|=|         13|          6|        499|     1.412221267|        968|00:01:04|+0.04|0.11|0.6928|
+|=|          9|          6|        499|     1.350280875|        969|00:01:07|+0.07|0.13|0.6721|
+|=|         17|          6|        499|     1.581034941|        975|00:00:00|+0.07|0.12|0.6390|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:         499    mean value:      1.581034941
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA
+
+# 2026-08-15 12:48:26 AWST: Extracting elites
+# 2026-08-15 12:48:26 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA     50 0.3333333333333333
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA     52 0.2666666666666667
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA     55 0.2000000000000000
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA     61 0.1333333333333333
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA     61 0.0666666666666667
+# 2026-08-15 12:48:26 AWST: End of iteration 6
+# 2026-08-15 12:48:26 AWST: Iteration 7 of 7
+# experimentsUsed: 14080
+# remainingBudget: 920
+# currentBudget: 920
+# nbConfigurations: 55
+# 2026-08-15 12:48:26 AWST: Update model
+# 2026-08-15 12:48:26 AWST: Sample 50 configurations from model
+# 2026-08-15 12:48:26 AWST: Computing similarity of configurations ..................................................... DONE
+# 2026-08-15 12:48:27 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         18|         55|       2022|     2.025450000|         55|00:00:28|   NA|  NA|    NA|
+|x|         13|         55|        196|     1.603190000|        105|00:09:44|+0.06|0.53|1.0928|
+|x|         16|         55|       2006|     1.677920000|        155|00:00:46|+0.22|0.48|0.9141|
+|x|         15|         55|       2007|     1.550552500|        205|00:05:18|+0.05|0.29|0.9741|
+|=|         10|         55|        418|     1.374305800|        255|00:05:38|+0.04|0.24|0.9677|
+|-|          7|         26|        418|     1.277093167|        305|00:03:51|-0.06|0.12|1.0510|
+|=|          6|         26|        418|     1.196101143|        326|00:02:23|-0.03|0.12|1.0136|
+|=|          2|         26|        418|     1.348718500|        347|00:00:01|-0.02|0.11|0.8804|
+|=|          9|         26|        418|     1.247054778|        368|00:04:32|-0.02|0.10|0.8836|
+|=|         12|         26|        418|     1.347349300|        389|00:00:03|+0.00|0.10|0.8659|
+|=|          3|         26|        418|     1.366546636|        410|00:00:27|+0.01|0.10|0.8533|
+|=|         11|         26|        418|     1.339487750|        431|00:04:20|+0.03|0.11|0.8575|
+|-|         14|          7|        418|     1.355956385|        452|00:00:10|+0.00|0.08|0.7916|
+|=|          1|          7|        499|     1.392805429|        454|00:00:01|+0.03|0.10|0.7714|
+|=|          4|          7|        499|     1.500921733|        456|00:00:00|+0.05|0.12|0.7474|
+|=|          5|          7|        499|     1.434836000|        458|00:01:04|+0.04|0.10|0.7566|
+|=|          8|          7|        499|     1.394587294|        460|00:00:23|+0.02|0.08|0.7799|
+|=|         17|          7|        499|     1.610060222|        462|00:00:00|+0.02|0.08|0.7381|
+|=|         19|          7|        418|     1.551002053|        469|00:02:10|+0.02|0.08|0.7431|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:         418    mean value:      1.551002053
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA
+
+# 2026-08-15 13:29:53 AWST: Extracting elites
+# 2026-08-15 13:29:53 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   65.0 0.3333333333333333
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   65.5 0.2666666666666667
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   67.5 0.2000000000000000
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   78.0 0.1333333333333333
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   79.0 0.0666666666666667
+# 2026-08-15 13:29:53 AWST: End of iteration 7
+# 2026-08-15 13:29:53 AWST: Iteration 8 of 8
+# experimentsUsed: 14549
+# remainingBudget: 451
+# currentBudget: 451
+# nbConfigurations: 27
+# 2026-08-15 13:29:53 AWST: Update model
+# 2026-08-15 13:29:53 AWST: Sample 22 configurations from model
+# 2026-08-15 13:29:53 AWST: Computing similarity of configurations ......................... DONE
+# 2026-08-15 13:29:53 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         20|         27|       2046|     1.074070000|         27|00:03:42|   NA|  NA|    NA|
+|x|         17|         27|       2046|     3.173585000|         49|00:00:02|+0.00|0.50|0.4815|
+|x|         12|         27|        418|     2.867133333|         71|00:00:04|+0.04|0.36|0.6071|
+|x|         19|         27|        418|     2.280091750|         93|00:04:23|+0.08|0.31|0.6239|
+|-|         11|         12|        418|     2.032441400|        115|00:04:20|+0.02|0.22|0.7170|
+|=|          5|         12|        418|     1.765534500|        122|00:02:10|+0.10|0.25|0.6849|
+|=|          9|         12|        418|     1.575278857|        129|00:02:17|-0.04|0.11|0.8140|
+|=|         13|         12|        418|     1.517272750|        136|00:02:09|+0.01|0.14|0.7820|
+|=|          6|         12|        418|     1.427592333|        143|00:01:20|+0.06|0.16|0.7482|
+|-|          3|          6|        418|     1.440685100|        150|00:00:14|-0.01|0.09|0.7425|
+|=|          1|          6|        418|     1.476767364|        151|00:00:03|+0.01|0.10|0.7141|
+|=|          2|          6|        418|     1.555123417|        152|00:00:00|+0.01|0.09|0.6582|
+|=|         14|          6|        418|     1.555004692|        153|00:00:03|+0.02|0.10|0.6374|
+|=|          7|          6|        418|     1.500435071|        154|00:00:19|+0.05|0.12|0.6170|
+|=|         16|          6|        418|     1.522047400|        155|00:00:05|+0.07|0.14|0.6059|
+|-|         15|          5|        418|     1.500410063|        156|00:00:35|-0.03|0.04|0.7401|
+|.|          8|          5|        418|     1.456825294|        156|00:00:00|-0.02|0.04|0.7386|
+|.|         18|          5|        418|     1.492751111|        156|00:00:00|-0.00|0.05|0.7388|
+|.|          4|          5|        418|     1.573210526|        156|00:00:00|-0.01|0.04|0.7416|
+|.|         10|          5|        418|     1.527366950|        156|00:00:00|+0.00|0.05|0.7375|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because number of alive configurations (5) <= minimum number of configurations (5)
+Best-so-far configuration:         418    mean value:      1.527366950
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA
+
+# 2026-08-15 13:51:47 AWST: Extracting elites
+# 2026-08-15 13:51:47 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   54.0 0.3333333333333333
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   55.0 0.2666666666666667
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   57.5 0.2000000000000000
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   64.5 0.1333333333333333
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   69.0 0.0666666666666667
+# 2026-08-15 13:51:47 AWST: End of iteration 8
+# 2026-08-15 13:51:47 AWST: Iteration 9 of 9
+# experimentsUsed: 14705
+# remainingBudget: 295
+# currentBudget: 295
+# nbConfigurations: 18
+# 2026-08-15 13:51:47 AWST: Update model
+# 2026-08-15 13:51:47 AWST: Sample 13 configurations from model
+# 2026-08-15 13:51:47 AWST: Computing similarity of configurations ................ DONE
+# 2026-08-15 13:51:47 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         21|         18|        418|     1.746020000|         18|00:00:09|   NA|  NA|    NA|
+|x|         15|         18|        499|     1.491775000|         31|00:01:52|-0.13|0.43|1.0347|
+|x|          9|         18|        499|     1.134908333|         44|00:03:18|+0.07|0.38|0.9066|
+|x|         17|         18|        499|     2.169456250|         57|00:00:01|+0.05|0.29|0.6894|
+|-|         20|         11|        499|     1.954463000|         70|00:02:07|-0.03|0.18|0.7846|
+|=|         12|         11|        499|     2.010872500|         76|00:00:01|+0.02|0.18|0.7291|
+|=|          2|         11|        499|     2.068896429|         82|00:00:00|+0.02|0.16|0.6290|
+|=|         13|         11|        418|     1.935660625|         88|00:01:05|-0.01|0.11|0.6596|
+|=|          5|         11|        418|     1.768476111|         94|00:01:06|+0.02|0.13|0.6613|
+|=|          1|         11|        418|     1.775387500|        100|00:00:06|+0.07|0.16|0.6646|
+|-|         16|          5|        418|     1.779863182|        106|00:00:07|+0.01|0.10|0.6665|
+|.|          4|          5|        418|     1.883331250|        106|00:00:00|+0.01|0.09|0.6615|
+|.|         10|          5|        418|     1.788947231|        106|00:00:00|+0.04|0.11|0.6436|
+|.|          7|          5|        418|     1.717667429|        106|00:00:00|+0.03|0.10|0.6737|
+|.|         19|          5|        418|     1.637754067|        106|00:00:00|+0.04|0.10|0.6842|
+|.|          3|          5|        418|     1.632801938|        106|00:00:00|+0.07|0.13|0.6769|
+|.|         14|          5|        418|     1.628141824|        106|00:00:00|+0.04|0.09|0.7084|
+|.|         11|          5|        418|     1.595569500|        106|00:00:00|+0.03|0.08|0.7116|
+|.|          8|          5|        418|     1.551564211|        106|00:00:00|+0.04|0.09|0.7145|
+|.|          6|          5|        418|     1.509493450|        106|00:00:00|+0.02|0.07|0.7272|
+|.|         18|          5|        418|     1.537779000|        106|00:00:00|+0.02|0.07|0.7324|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because number of alive configurations (5) <= minimum number of configurations (5)
+Best-so-far configuration:         418    mean value:      1.537779000
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA
+
+# 2026-08-15 14:01:45 AWST: Extracting elites
+# 2026-08-15 14:01:45 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   55.0 0.3333333333333333
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   58.0 0.2666666666666667
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   59.5 0.2000000000000000
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   68.5 0.1333333333333333
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   74.0 0.0666666666666667
+# 2026-08-15 14:01:45 AWST: End of iteration 9
+# 2026-08-15 14:01:45 AWST: Iteration 10 of 10
+# experimentsUsed: 14811
+# remainingBudget: 189
+# currentBudget: 189
+# nbConfigurations: 13
+# 2026-08-15 14:01:45 AWST: Update model
+# 2026-08-15 14:01:45 AWST: Sample 8 configurations from model
+# 2026-08-15 14:01:45 AWST: Computing similarity of configurations ........... DONE
+# 2026-08-15 14:01:45 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         22|         13|        296|    0.4360530000|         13|00:03:16|   NA|  NA|    NA|
+|x|         14|         13|        296|    0.9945415000|         21|00:00:06|-0.01|0.49|0.9700|
+|x|          2|         13|        296|     1.468707667|         29|00:00:00|-0.01|0.33|0.6310|
+|x|          1|         13|        296|     1.560928250|         37|00:00:07|+0.22|0.41|0.5532|
+|-|         13|          5|        296|     1.471494600|         45|00:02:09|-0.13|0.10|0.7409|
+|.|         10|          5|        296|     1.335964500|         45|00:00:00|-0.18|0.01|0.7746|
+|.|          5|          5|        296|     1.205999571|         45|00:00:00|-0.10|0.06|0.7506|
+|.|         11|          5|        296|     1.183224625|         45|00:00:00|-0.11|0.03|0.7468|
+|.|          6|          5|        296|     1.129913222|         45|00:00:00|-0.08|0.04|0.7511|
+|.|         21|          5|        296|     1.200573900|         45|00:00:00|-0.09|0.02|0.7686|
+|.|         18|          5|        296|     1.283659000|         45|00:00:00|-0.09|0.01|0.7902|
+|.|         12|          5|        296|     1.367764083|         45|00:00:00|-0.06|0.02|0.7850|
+|.|          7|          5|        296|     1.324395154|         45|00:00:00|-0.05|0.03|0.7885|
+|.|         16|          5|        296|     1.360468357|         45|00:00:00|-0.04|0.04|0.7786|
+|.|         17|          5|        296|     1.621310467|         45|00:00:00|-0.03|0.04|0.7243|
+|.|         20|          5|        296|     1.589206687|         45|00:00:00|-0.02|0.04|0.7214|
+|.|          9|          5|        296|     1.521376824|         45|00:00:00|-0.02|0.04|0.7318|
+|.|          3|          5|        296|     1.524407000|         45|00:00:00|+0.00|0.06|0.7287|
+|.|          8|          5|        296|     1.484185000|         45|00:00:00|+0.01|0.06|0.7341|
+|.|          4|          5|        296|     1.560703250|         45|00:00:00|-0.00|0.05|0.7340|
+|.|         15|          5|        296|     1.541624048|         45|00:00:00|+0.00|0.05|0.7348|
+|.|         19|          5|        296|     1.496030455|         45|00:00:00|+0.01|0.05|0.7401|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because number of alive configurations (5) <= minimum number of configurations (5)
+Best configuration for the instances in this race: 296
+Best-so-far configuration:         418    mean value:      1.487957909
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA
+
+# 2026-08-15 14:07:27 AWST: Extracting elites
+# 2026-08-15 14:07:27 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   57.0 0.3333333333333333
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   63.0 0.2666666666666667
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   63.5 0.2000000000000000
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   71.5 0.1333333333333333
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   75.0 0.0666666666666667
+# 2026-08-15 14:07:27 AWST: End of iteration 10
+# 2026-08-15 14:07:27 AWST: Iteration 11 of 11
+# experimentsUsed: 14856
+# remainingBudget: 144
+# currentBudget: 144
+# nbConfigurations: 11
+# 2026-08-15 14:07:27 AWST: Update model
+# 2026-08-15 14:07:27 AWST: Sample 6 configurations from model
+# 2026-08-15 14:07:27 AWST: Computing similarity of configurations ......... DONE
+# 2026-08-15 14:07:27 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         23|         11|        418|    0.8918620000|         11|00:02:04|   NA|  NA|    NA|
+|x|          8|         11|        499|    0.8283250000|         17|00:01:05|+0.48|0.74|0.5902|
+|x|         18|         11|        499|     1.253380000|         23|00:00:05|+0.01|0.34|1.0778|
+|x|          9|         11|        499|     1.045328750|         29|00:01:11|+0.00|0.25|1.0159|
+|=|         10|         11|        499|    0.9678224000|         35|00:00:59|+0.16|0.33|0.8557|
+|=|         22|         11|        418|    0.8811033333|         41|00:01:06|+0.11|0.26|0.8490|
+|-|          4|          6|        418|     1.186871429|         47|00:00:01|+0.06|0.19|0.7955|
+|=|          6|          6|        418|     1.127281125|         48|00:01:01|+0.04|0.16|0.8440|
+|=|         11|          6|        499|     1.118847444|         49|00:01:04|+0.05|0.16|0.8134|
+|=|          3|          6|        499|     1.162814700|         50|00:00:11|+0.11|0.20|0.7821|
+|=|         13|          6|        418|     1.157258091|         51|00:01:04|+0.07|0.15|0.8047|
+|=|          5|          6|        418|     1.096736583|         52|00:01:06|+0.06|0.14|0.7832|
+|=|          2|          6|        418|     1.198298385|         53|00:00:00|+0.05|0.13|0.7268|
+|=|         17|          6|        418|     1.489355643|         54|00:00:00|+0.05|0.12|0.6779|
+|-|         21|          5|        418|     1.506466600|         55|00:00:03|-0.01|0.06|0.7051|
+|.|         19|          5|        418|     1.444747875|         55|00:00:00|+0.00|0.06|0.7110|
+|.|         12|          5|        418|     1.492115647|         55|00:00:00|+0.02|0.08|0.6980|
+|.|         14|          5|        418|     1.495530333|         55|00:00:00|+0.00|0.06|0.7200|
+|.|         15|          5|        418|     1.478705053|         55|00:00:00|+0.01|0.06|0.7213|
+|.|         20|          5|        418|     1.458684800|         55|00:00:00|+0.03|0.08|0.7129|
+|.|          1|          5|        418|     1.476727905|         55|00:00:00|+0.03|0.08|0.7177|
+|.|         16|          5|        418|     1.492541182|         55|00:00:00|+0.03|0.07|0.7210|
+|.|          7|          5|        418|     1.462040696|         55|00:00:00|+0.03|0.07|0.7316|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because number of alive configurations (5) <= minimum number of configurations (5)
+Best-so-far configuration:         418    mean value:      1.462040696
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA
+
+# 2026-08-15 14:18:34 AWST: Extracting elites
+# 2026-08-15 14:18:34 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   58.0 0.3333333333333333
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   65.0 0.2666666666666667
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   66.5 0.2000000000000000
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   76.5 0.1333333333333333
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   79.0 0.0666666666666667
+# 2026-08-15 14:18:34 AWST: End of iteration 11
+# 2026-08-15 14:18:34 AWST: Iteration 12 of 12
+# experimentsUsed: 14911
+# remainingBudget: 89
+# currentBudget: 89
+# nbConfigurations: 8
+# 2026-08-15 14:18:34 AWST: Update model
+# 2026-08-15 14:18:34 AWST: Sample 3 configurations from model
+# 2026-08-15 14:18:34 AWST: Computing similarity of configurations ...... DONE
+# 2026-08-15 14:18:34 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         24|          8|        418|     1.602620000|          8|00:00:07|   NA|  NA|    NA|
+|x|         22|          8|        296|     1.019336500|         11|00:01:06|+0.39|0.70|0.6041|
+|x|         11|          8|        296|     1.020824333|         14|00:01:04|+0.16|0.44|0.7199|
+|x|         19|          8|        418|    0.9012855000|         17|00:01:06|+0.03|0.27|0.8639|
+|=|         20|          8|        418|    0.9366884000|         20|00:00:59|+0.18|0.35|0.7813|
+|=|         15|          8|        418|    0.9765486667|         23|00:00:48|+0.08|0.24|0.8721|
+|-|          8|          5|        418|    0.9455372857|         26|00:01:04|-0.06|0.09|0.7395|
+|.|          2|          5|        418|     1.129475125|         26|00:00:00|-0.05|0.08|0.6403|
+|.|          1|          5|        418|     1.208154556|         26|00:00:00|-0.02|0.09|0.6539|
+|.|         23|          5|        418|     1.176525300|         26|00:00:00|+0.04|0.14|0.6338|
+|.|         10|          5|        418|     1.129235636|         26|00:00:00|+0.09|0.17|0.6085|
+|.|         18|          5|        418|     1.210423500|         26|00:00:00|+0.07|0.15|0.6406|
+|.|          4|          5|        418|     1.349735538|         26|00:00:00|+0.09|0.16|0.6243|
+|.|         21|          5|        418|     1.378041571|         26|00:00:00|+0.11|0.18|0.6231|
+|.|          5|          5|        418|     1.314905467|         26|00:00:00|+0.04|0.11|0.6669|
+|.|          7|          5|        418|     1.282163250|         26|00:00:00|+0.03|0.09|0.6916|
+|.|         17|          5|        418|     1.516924235|         26|00:00:00|+0.03|0.09|0.6514|
+|.|         16|          5|        418|     1.534018444|         26|00:00:00|+0.03|0.09|0.6521|
+|.|         14|          5|        418|     1.535048000|         26|00:00:00|+0.01|0.06|0.6763|
+|.|          9|          5|        418|     1.479982850|         26|00:00:00|+0.03|0.08|0.6756|
+|.|          6|          5|        418|     1.443324095|         26|00:00:00|+0.01|0.05|0.6943|
+|.|         13|          5|        418|     1.428228909|         26|00:00:00|-0.01|0.04|0.7071|
+|.|          3|          5|        418|     1.433893739|         26|00:00:00|+0.01|0.06|0.7047|
+|.|         12|          5|        418|     1.467898167|         26|00:00:00|+0.02|0.06|0.7011|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because number of alive configurations (5) <= minimum number of configurations (5)
+Best-so-far configuration:         418    mean value:      1.467898167
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA
+
+# 2026-08-15 14:24:52 AWST: Extracting elites
+# 2026-08-15 14:24:52 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   61.0 0.3333333333333333
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   68.0 0.2666666666666667
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   69.5 0.2000000000000000
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   79.5 0.1333333333333333
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   82.0 0.0666666666666667
+# 2026-08-15 14:24:52 AWST: End of iteration 12
+# 2026-08-15 14:24:52 AWST: Iteration 13 of 13
+# experimentsUsed: 14937
+# remainingBudget: 63
+# currentBudget: 63
+# nbConfigurations: 7
+# 2026-08-15 14:24:52 AWST: Update model
+# 2026-08-15 14:24:52 AWST: Sample 2 configurations from model
+# 2026-08-15 14:24:52 AWST: Computing similarity of configurations ..... DONE
+# 2026-08-15 14:24:52 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         25|          7|        499|     1.853810000|          7|00:00:12|   NA|  NA|    NA|
+|x|         20|          7|        499|     1.474150000|          9|00:00:52|+0.68|0.84|0.1907|
+|x|         19|          7|        418|     1.153059000|         11|00:01:05|+0.23|0.48|0.5227|
+|x|          2|          7|        418|     1.469054250|         13|00:00:00|+0.15|0.36|0.4757|
+|-|          3|          6|        418|     1.486947400|         15|00:00:07|+0.12|0.29|0.6018|
+|=|         10|          6|        418|     1.348512667|         16|00:00:32|+0.16|0.30|0.6008|
+|=|         17|          6|        418|     1.909168000|         17|00:00:00|+0.14|0.26|0.5283|
+|=|         18|          6|        418|     1.933458250|         18|00:00:02|+0.15|0.26|0.5583|
+|=|          8|          6|        418|     1.803015000|         19|00:00:53|+0.15|0.25|0.5774|
+|-|          4|          5|        418|     1.924861500|         20|00:00:00|+0.12|0.21|0.5642|
+|.|         15|          5|        418|     1.856769545|         20|00:00:00|+0.14|0.22|0.5716|
+|.|         13|          5|        418|     1.794641250|         20|00:00:00|+0.06|0.14|0.6384|
+|.|         24|          5|        418|     1.779870385|         20|00:00:00|+0.05|0.13|0.5914|
+|.|          9|          5|        418|     1.683718571|         20|00:00:00|+0.09|0.16|0.5910|
+|.|         16|          5|        418|     1.693112000|         20|00:00:00|+0.08|0.14|0.6072|
+|.|         23|          5|        418|     1.643033875|         20|00:00:00|+0.12|0.17|0.5916|
+|.|          5|          5|        418|     1.571737765|         20|00:00:00|+0.06|0.11|0.6303|
+|.|         11|          5|        418|     1.542299000|         20|00:00:00|+0.06|0.11|0.6322|
+|.|          7|          5|        418|     1.502758526|         20|00:00:00|+0.06|0.11|0.6534|
+|.|         21|          5|        418|     1.514921600|         20|00:00:00|+0.08|0.12|0.6495|
+|.|         14|          5|        418|     1.516762476|         20|00:00:00|+0.05|0.10|0.6725|
+|.|         22|          5|        418|     1.467896682|         20|00:00:00|+0.03|0.08|0.6825|
+|.|         12|          5|        418|     1.501901174|         20|00:00:00|+0.04|0.08|0.6788|
+|.|          6|          5|        418|     1.468911500|         20|00:00:00|+0.02|0.06|0.6935|
+|.|          1|          5|        418|     1.483658640|         20|00:00:00|+0.03|0.07|0.6975|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because number of alive configurations (5) <= minimum number of configurations (5)
+Best-so-far configuration:         418    mean value:      1.483658640
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA
+
+# 2026-08-15 14:28:40 AWST: Extracting elites
+# 2026-08-15 14:28:40 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   64.0 0.3333333333333333
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   69.0 0.2666666666666667
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   73.5 0.2000000000000000
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   84.0 0.1333333333333333
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   84.5 0.0666666666666667
+# 2026-08-15 14:28:40 AWST: End of iteration 13
+# 2026-08-15 14:28:40 AWST: Iteration 14 of 14
+# experimentsUsed: 14957
+# remainingBudget: 43
+# currentBudget: 43
+# nbConfigurations: 6
+# 2026-08-15 14:28:40 AWST: Update model
+# 2026-08-15 14:28:40 AWST: Sample 1 configurations from model
+# 2026-08-15 14:28:40 AWST: Computing similarity of configurations .... DONE
+# 2026-08-15 14:28:40 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         26|          6|       2084|    0.8127160000|          6|00:00:43|   NA|  NA|    NA|
+|x|         15|          6|        499|    0.9827270000|          7|00:00:13|+0.43|0.71|0.5669|
+|x|         13|          6|       2084|     1.030462000|          8|00:01:04|-0.22|0.19|1.1126|
+|x|          9|          6|       2084|    0.8755455000|          9|00:01:05|+0.02|0.26|0.8479|
+|=|         22|          6|       2084|    0.7955782000|         10|00:01:04|-0.14|0.09|0.9442|
+|=|         17|          6|       2084|     1.541831833|         11|00:00:00|-0.11|0.08|0.7684|
+|=|         24|          6|        418|     1.550899571|         12|00:00:01|-0.13|0.03|0.8180|
+|=|         19|          6|        418|     1.421908000|         13|00:01:05|-0.10|0.04|0.8165|
+|=|         11|          6|        418|     1.379678222|         14|00:01:04|-0.10|0.02|0.8212|
+|=|          5|          6|        418|     1.284810400|         15|00:01:05|-0.08|0.03|0.8029|
+|=|          8|          6|        418|     1.237052091|         16|00:00:23|-0.07|0.03|0.8133|
+|=|          1|          6|        418|     1.287096917|         17|00:00:02|-0.05|0.04|0.7932|
+|=|         20|          6|        418|     1.271035615|         18|00:00:17|-0.02|0.06|0.7853|
+|=|          7|          6|        418|     1.236749500|         19|00:00:10|+0.01|0.08|0.7705|
+|=|          3|          6|        418|     1.258200867|         20|00:00:02|+0.04|0.10|0.7473|
+|=|          4|          6|        418|     1.368405813|         21|00:00:00|+0.05|0.11|0.7372|
+|=|         14|          6|        499|     1.382412706|         22|00:00:00|+0.06|0.12|0.7143|
+|=|         12|          6|        418|     1.427670722|         23|00:00:00|+0.07|0.12|0.7107|
+|=|         16|          6|        418|     1.448562789|         24|00:00:01|+0.06|0.11|0.7219|
+|-|         25|          5|        418|     1.469230150|         25|00:00:04|+0.01|0.06|0.7292|
+|.|         23|          5|        418|     1.441736429|         25|00:00:00|+0.03|0.08|0.7191|
+|.|         21|          5|        418|     1.455567500|         25|00:00:00|+0.04|0.09|0.7157|
+|.|         18|          5|        418|     1.483738043|         25|00:00:00|+0.05|0.09|0.7178|
+|.|         10|          5|        418|     1.449263083|         25|00:00:00|+0.06|0.10|0.7102|
+|.|          6|          5|        418|     1.419698520|         25|00:00:00|+0.04|0.07|0.7267|
+|.|          2|          5|        418|     1.458057808|         25|00:00:00|+0.03|0.07|0.6991|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because number of alive configurations (5) <= minimum number of configurations (5)
+Best-so-far configuration:         418    mean value:      1.458057808
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA
+
+# 2026-08-15 14:37:12 AWST: Extracting elites
+# 2026-08-15 14:37:12 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   66.0 0.3333333333333333
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   70.0 0.2666666666666667
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   78.5 0.2000000000000000
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   87.5 0.1333333333333333
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   88.0 0.0666666666666667
+# 2026-08-15 14:37:12 AWST: End of iteration 14
+# 2026-08-15 14:37:12 AWST: Stopped because there is not enough budget left to race more than the minimum (5).
+# You may either increase the budget or set 'minNbSurvival' to a lower value.
+# Iteration: 15
+# nbIterations: 15
+# experimentsUsed: 14982
+# timeUsed: 0
+# remainingBudget: 18
+# currentBudget: 18
+# number of elites: 5
+# nbConfigurations: 5
+# Total CPU user time: 428725.7, CPU sys time: 6566.251, Wall-clock time: 76765.39
+# 2026-08-15 14:37:12 AWST: Starting post-selection:
+# Configurations selected: 418, 499, 188, 196, 296.
+# Pending instances: 1, 1, 1, 1, 1.
+# 2026-08-15 14:37:13 AWST: seed: 1672172415
+# Configurations: 5
+# Available experiments: 18
+# minSurvival: 1
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|.|          3|          5|        418|     1.558520000|          0|00:00:00|   NA|  NA|    NA|
+|.|          2|          5|        418|     1.987780000|          0|00:00:00|+0.00|0.50|0.4000|
+|.|         10|          5|        418|     1.543966333|          0|00:00:00|+0.28|0.52|0.4244|
+|.|          7|          5|        418|     1.355732250|          0|00:00:00|+0.14|0.35|0.6177|
+|.|         19|          5|        418|     1.188379200|          0|00:00:00|+0.18|0.34|0.6476|
+|.|         23|          5|        418|     1.138959667|          0|00:00:00|+0.25|0.37|0.6243|
+|.|         24|          5|        418|     1.205196857|          0|00:00:00|+0.21|0.32|0.5411|
+|.|          4|          5|        418|     1.432232250|          0|00:00:00|+0.10|0.21|0.5698|
+|.|         17|          5|        418|     1.858995333|          0|00:00:00|+0.09|0.19|0.5098|
+|.|         25|          5|        418|     1.859286800|          0|00:00:00|+0.09|0.18|0.5134|
+|.|         21|          5|        418|     1.848989818|          0|00:00:00|+0.14|0.22|0.5074|
+|.|         26|          5|        418|     1.763077083|          0|00:00:00|+0.16|0.23|0.5286|
+|.|         16|          5|        418|     1.767811154|          0|00:00:00|+0.16|0.22|0.5419|
+|.|         20|          5|        418|     1.718560357|          0|00:00:00|+0.21|0.26|0.5232|
+|.|          1|          5|        418|     1.726495667|          0|00:00:00|+0.20|0.26|0.5378|
+|.|         11|          5|        418|     1.683704687|          0|00:00:00|+0.19|0.24|0.5493|
+|.|         14|          5|        418|     1.676050294|          0|00:00:00|+0.14|0.19|0.5933|
+|.|         12|          5|        418|     1.707936389|          0|00:00:00|+0.14|0.19|0.5961|
+|.|         22|          5|        418|     1.641293158|          0|00:00:00|+0.11|0.16|0.6173|
+|.|          5|          5|        418|     1.580778500|          0|00:00:00|+0.07|0.11|0.6450|
+|.|          9|          5|        418|     1.526157857|          0|00:00:00|+0.08|0.12|0.6464|
+|.|         13|          5|        418|     1.507297500|          0|00:00:00|+0.06|0.10|0.6660|
+|.|          8|          5|        418|     1.474783217|          0|00:00:00|+0.05|0.09|0.6758|
+|.|         18|          5|        418|     1.500979333|          0|00:00:00|+0.06|0.10|0.6797|
+|.|         15|          5|        418|     1.487974160|          0|00:00:00|+0.06|0.10|0.6827|
+|.|          6|          5|        418|     1.458057808|          0|00:00:00|+0.03|0.07|0.6991|
+|=|         27|          5|        418|     1.443798259|          5|00:00:17|+0.04|0.08|0.6953|
+|=|         28|          5|        418|     1.426313107|         10|00:00:27|+0.03|0.06|0.7086|
+|=|         29|          5|        418|     1.417017138|         15|00:01:05|+0.03|0.06|0.7100|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because experiments for next test (20) > max experiments (18)
+Best-so-far configuration:         418    mean value:      1.417017138
+Description of the best-so-far configuration:
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA
+
+# 2026-08-15 14:39:03 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi .PARENT. .RANK.           .WEIGHT.
+418  418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3       NA   72.0 0.3333333333333333
+499  499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8       NA   82.0 0.2666666666666667
+188  188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3       NA   87.5 0.2000000000000000
+196  196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8       NA   96.5 0.1333333333333333
+296  296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11       NA   97.0 0.0666666666666667
+# Total CPU user time: 429181.2, CPU sys time: 6571.181, Wall-clock time: 76876.01
+# Best configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    NumberOfInitialSolutions AllowLagrangianRelaxation           TypeOfRebalance InitialLagrangianScalar ToAdjustLagrangianScalar ToTriggerAdjustment GridResolution theta sigma phi
+418                        8                       YES NOT_GUARANTEE_FEASIBILITY                 54.5936                   0.7725                  10              6     3    15   3
+499                        5                       YES NOT_GUARANTEE_FEASIBILITY                 99.1249                   0.7538                  18              3     2     4   8
+188                        2                       YES NOT_GUARANTEE_FEASIBILITY                 41.1171                   0.8491                  14              5     1    14   3
+196                        2                       YES     GUARANTEE_FEASIBILITY                 26.2733                   0.8929                   9              6     1     3   8
+296                        5                       YES NOT_GUARANTEE_FEASIBILITY                 24.5155                   0.8882                   4              2     3     1  11
+# Best configurations as commandlines (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+418 --NumberOfInitialSolutions 8 --AllowLagrangianRelaxation YES --TypeOfRebalance NOT_GUARANTEE_FEASIBILITY --InitialLagrangianScalar 54.5936 --ToAdjustLagrangianScalar 0.7725 --ToTriggerAdjustment 10 --GridResolution 6 --theta 3 --sigma 15 --phi 3
+499 --NumberOfInitialSolutions 5 --AllowLagrangianRelaxation YES --TypeOfRebalance NOT_GUARANTEE_FEASIBILITY --InitialLagrangianScalar 99.1249 --ToAdjustLagrangianScalar 0.7538 --ToTriggerAdjustment 18 --GridResolution 3 --theta 2 --sigma 4 --phi 8
+188 --NumberOfInitialSolutions 2 --AllowLagrangianRelaxation YES --TypeOfRebalance NOT_GUARANTEE_FEASIBILITY --InitialLagrangianScalar 41.1171 --ToAdjustLagrangianScalar 0.8491 --ToTriggerAdjustment 14 --GridResolution 5 --theta 1 --sigma 14 --phi 3
+196 --NumberOfInitialSolutions 2 --AllowLagrangianRelaxation YES --TypeOfRebalance GUARANTEE_FEASIBILITY --InitialLagrangianScalar 26.2733 --ToAdjustLagrangianScalar 0.8929 --ToTriggerAdjustment 9 --GridResolution 6 --theta 1 --sigma 3 --phi 8
+296 --NumberOfInitialSolutions 5 --AllowLagrangianRelaxation YES --TypeOfRebalance NOT_GUARANTEE_FEASIBILITY --InitialLagrangianScalar 24.5155 --ToAdjustLagrangianScalar 0.8882 --ToTriggerAdjustment 4 --GridResolution 2 --theta 3 --sigma 1 --phi 11
+
+
+# Testing of elite configurations: 1 
+# Testing iteration configurations: FALSE 
+# 2026-08-15 14:39:03 AWST: No test instances, skip testing

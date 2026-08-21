@@ -1,7 +1,7 @@
 printout input data
 0
 printout initial schedule
-0
+1
 printout initial output CVRP
 0
 printout initial routing
@@ -14,21 +14,3 @@ Output results as table
 1
 Output solution as JSON
 NO
-NumberOfInitialSolution
-50
-NumberOfExperiments
-1
-AllowLagrangianRelaxation
-YES
-TypeOfRebalance
-NOT_GUARANTEE_FEASIBILITY
-InitialLagrangianScalar
-10
-ToAdjustLagrangianScalar
-0.5
-ToTriggerAdjustment
-20
-Grid_resolution_in_initial_solution_construction
-4
-Activate HGS
-YES

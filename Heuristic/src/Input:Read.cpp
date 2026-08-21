@@ -3,6 +3,9 @@
 void input::ReadIRPInstance(string &InstanceSource, string &InstanceType, string &InstanceDirectories)
 {
     // cout << "Read instance data" << endl;
+    cout<< "InstanceSource: " << InstanceSource << endl;
+    cout<< "InstanceType: " << InstanceType << endl;
+    cout<< "InstanceDirectories: " << InstanceDirectories << endl;
     Retailers.clear();
     Distance.clear();
     InstanceName.clear();

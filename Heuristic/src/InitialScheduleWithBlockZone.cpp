@@ -29,7 +29,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
 
     // Initialize solution arrays and structures
     IRPSolution.Initialization(IRPLR);
-    
+
     if (printout_initialSchedule == 1)
     {
         IRPSolution.print_solution(IRPLR);
@@ -51,7 +51,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
     for (int i = 0; i < IRPLR.Retailers.size(); i++)
     {
         int checkNextStockOutPeriod = IRPSolution.CheckStockOut(IRPLR, i);
-        assert(checkNextStockOutPeriod < IRPLR.TimeHorizon);// Sanity check: stock-out period should be within the time horizon
+        assert(checkNextStockOutPeriod < IRPLR.TimeHorizon); // Sanity check: stock-out period should be within the time horizon
         double ratio_capacity_vs_demand = IRPLR.Retailers[i].InventoryMax / IRPLR.Retailers[i].Demand;
         if (printout_initialSchedule == 1)
         {
@@ -114,29 +114,37 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
     }
 
     // Number of divisions per dimension for block partitioning (e.g., 4x4 grid)
-    double NumberOfDivision = GridResolution; // This can be set as a parameter (e.g., 4 for 4x4 grid)
+    int numDivisions = max(1, GridResolution); // ensure at least one division
 
-    // Compute block size in x and y (ceil to ensure coverage)
-    double xDivision = (MaxXCoord - MinXCoord) / NumberOfDivision;
-    double yDivision = (MaxYCoord - MinYCoord) / NumberOfDivision;
+    // Compute block size in x and y
+    double xDivision = 0.0;
+    double yDivision = 0.0;
+    if (numDivisions > 0)
+    {
+        xDivision = (MaxXCoord - MinXCoord) / static_cast<double>(numDivisions);
+        yDivision = (MaxYCoord - MinYCoord) / static_cast<double>(numDivisions);
+    }
+    // If all coordinates are identical (zero range), create a single block that covers that point
+    if (fabs(xDivision) < 1e-12) xDivision = 0.0;
+    if (fabs(yDivision) < 1e-12) yDivision = 0.0;
     vector<vector<double>> BlockCoord; // Each entry: {LeftX, RightX, BottomY, TopY}
 
     if (printout_initialSchedule == 1)
     {
-        cout  << xDivision << "," << yDivision << endl;
+        cout << xDivision << "," << yDivision << endl;
     }
 
     // Build block coordinates by iterating grid cells
     double tempLeftXCoord = MinXCoord;
     double tempRightXCoord = MinXCoord;
-    for (int i = 0; i < NumberOfDivision; i++)
+    for (int i = 0; i < numDivisions; i++)
     {
         tempLeftXCoord = tempRightXCoord;
         tempRightXCoord = tempRightXCoord + xDivision;
 
         double tempBottomYCoord = MinYCoord;
         double tempTopYCoord = MinYCoord;
-        for (int j = 0; j < NumberOfDivision; j++)
+        for (int j = 0; j < numDivisions; j++)
         {
             tempBottomYCoord = tempTopYCoord;
             tempTopYCoord = tempTopYCoord + yDivision;
@@ -147,6 +155,30 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
             tempBlockCoord.push_back(tempBottomYCoord);
             tempBlockCoord.push_back(tempTopYCoord);
             BlockCoord.push_back(tempBlockCoord);
+        }
+    }
+
+    // Ensure numerical coverage: explicitly set the right boundary of the last column to MaxXCoord
+    // and the top boundary of the last row to MaxYCoord to avoid missing retailers due to rounding.
+    if (BlockCoord.size() > 0)
+    {
+        // Blocks are appended in order: for each x (i) then for each y (j): index = i * numDivisions + j
+        for (int i = 0; i < numDivisions; i++)
+        {
+            int topIndex = i * numDivisions + (numDivisions - 1);
+            int rightColumnIndexBase = (numDivisions - 1) * numDivisions; // starting index of last x-column
+            if (topIndex >= 0 && topIndex < (int)BlockCoord.size())
+            {
+                BlockCoord[topIndex][3] = MaxYCoord; // top
+            }
+            for (int j = 0; j < numDivisions; j++)
+            {
+                int idx = rightColumnIndexBase + j;
+                if (idx >= 0 && idx < (int)BlockCoord.size())
+                {
+                    BlockCoord[idx][1] = MaxXCoord; // right
+                }
+            }
         }
     }
 
@@ -235,9 +267,16 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         for (int j = 0; j < GroupOfRetailers[i].size(); j++)
         {
             bool assignedBlock = false;
+            double eps = 1e-9;
             for (int k = 0; k < SortedBlockCoord.size(); k++)
             {
-                if (IRPLR.Retailers[GroupOfRetailers[i][j]].xCoord >= SortedBlockCoord[k][0] && IRPLR.Retailers[GroupOfRetailers[i][j]].xCoord <= SortedBlockCoord[k][1] && IRPLR.Retailers[GroupOfRetailers[i][j]].yCoord >= SortedBlockCoord[k][2] && IRPLR.Retailers[GroupOfRetailers[i][j]].yCoord <= SortedBlockCoord[k][3])
+                double left = SortedBlockCoord[k][0];
+                double right = SortedBlockCoord[k][1];
+                double bottom = SortedBlockCoord[k][2];
+                double top = SortedBlockCoord[k][3];
+                double rx = IRPLR.Retailers[GroupOfRetailers[i][j]].xCoord;
+                double ry = IRPLR.Retailers[GroupOfRetailers[i][j]].yCoord;
+                if (rx >= left - eps && rx <= right + eps && ry >= bottom - eps && ry <= top + eps)
                 {
                     TempCompleteGroupOfRetailers[k].push_back(GroupOfRetailers[i][j]);
                     assignedBlock = true;
@@ -418,14 +457,14 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                     for (int i = 0; i < IRPLR.NumberOfVehicles; i++)
                                     {
                                         Load = min(IRPLR.Vehicle.capacity - IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][i], IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax - IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1]);
-                                        Load = min(Load, max(IRPSolution.InventoryLevelSupplier[RandomPickANonStockOutPeriod], 0.0)); // also cannot exceed supplier inventory for that period 
+                                        Load = min(Load, max(IRPSolution.InventoryLevelSupplier[RandomPickANonStockOutPeriod], 0.0)); // also cannot exceed supplier inventory for that period
                                         if (IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod] < Load)
                                         {
                                             IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod] = Load;
                                             vehicle_index = i;
                                         }
                                     }
-                                    if(vehicle_index == IRPLR.NumberOfVehicles)
+                                    if (vehicle_index == IRPLR.NumberOfVehicles)
                                     {
                                         cout << "Error: No vehicle found with available capacity for retailer " << CandidateRetailers[RandomPickARetailer] << " in period " << RandomPickANonStockOutPeriod << endl;
                                     }
@@ -456,7 +495,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                             vehicle_index = i;
                                         }
                                     }
-                                    if(vehicle_index == IRPLR.NumberOfVehicles)
+                                    if (vehicle_index == IRPLR.NumberOfVehicles)
                                     {
                                         cout << "Error: No vehicle found with available capacity for retailer " << CandidateRetailers[RandomPickARetailer] << " in period " << RandomPickANonStockOutPeriod << endl;
                                     }
@@ -500,7 +539,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                         else
                         {
                             // If CurrentPeriod > NextStockOutPeriod we must search backwards to find an earlier feasible period
-                            
+
                             if (printout_initialSchedule == 1)
                             {
                                 cout << "Going backward" << endl;
@@ -563,7 +602,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 IRPSolution.VehicleLoad[LookBackwardPeriod][vehicle_index] += IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod];
                                 IRPSolution.TotalDeliveryPerDay[LookBackwardPeriod] += IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod];
                                 IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = vehicle_index;
-                                IRPSolution.VisitOrder[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = IRPSolution.Route[LookBackwardPeriod][vehicle_index].size()-1;
+                                IRPSolution.VisitOrder[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = IRPSolution.Route[LookBackwardPeriod][vehicle_index].size() - 1;
                             }
                             else
                             {
@@ -585,7 +624,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 IRPSolution.VehicleLoad[LookBackwardPeriod][vehicle_index] += IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod];
                                 IRPSolution.TotalDeliveryPerDay[LookBackwardPeriod] += IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod];
                                 IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = vehicle_index;
-                                IRPSolution.VisitOrder[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = IRPSolution.Route[LookBackwardPeriod][vehicle_index].size()-1; 
+                                IRPSolution.VisitOrder[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = IRPSolution.Route[LookBackwardPeriod][vehicle_index].size() - 1;
                             }
 
                             // Update inventory timeline after assignment
@@ -601,7 +640,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 tempInventorySupplier = tempInventorySupplier + IRPLR.Supplier.QuantityProduced - IRPSolution.TotalDeliveryPerDay[i];
                                 IRPSolution.InventoryLevelSupplier[i] = tempInventorySupplier;
                             }
-                            
+
                             CurrentPeriod = LookBackwardPeriod + 1;
                             if (printout_initialSchedule == 1)
                             {
