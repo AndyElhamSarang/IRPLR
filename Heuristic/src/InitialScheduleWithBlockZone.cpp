@@ -114,6 +114,11 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
     }
 
     // Number of divisions per dimension for block partitioning (e.g., 4x4 grid)
+    // GridResolution = max(1, GridResolution); // Ensure at least one division
+    GridResolution = RandomInitial.random_number_generator(10, 20, generator);
+    // GridResolution = 4;
+    cout << "GridResolution:" << GridResolution << endl;
+    assert(GridResolution > 0); // Ensure positive grid resolution
     int numDivisions = max(1, GridResolution); // ensure at least one division
 
     // Compute block size in x and y
@@ -158,6 +163,14 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         }
     }
 
+    // Debug print of generated blocks
+    if (printout_initialSchedule == 1)
+    {
+        for (int i = 0; i < BlockCoord.size(); i++)
+        {
+            cout << "LeftXCoord:" << BlockCoord[i][0] << ", RightXCoord:" << BlockCoord[i][1] << ", TopYCoord:" << BlockCoord[i][2] << ", BottomYCoord:" << BlockCoord[i][3] << endl;
+        }
+    }
     // Ensure numerical coverage: explicitly set the right boundary of the last column to MaxXCoord
     // and the top boundary of the last row to MaxYCoord to avoid missing retailers due to rounding.
     if (BlockCoord.size() > 0)

@@ -158,12 +158,6 @@ void file::ReadGlobalParameter()
 
     getline(ifGlobal, dummyline);
     getline(ifGlobal, TakeParameter);
-    stringstream ss_TakeGridResolution(TakeParameter);
-    ss_TakeGridResolution >> GridResolution;
-    cout << dummyline << ":" << GridResolution << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
     stringstream ss_ActivateHGS(TakeParameter);
     ss_ActivateHGS >> ActivateHGS;
     cout << dummyline << ":" << ActivateHGS << endl;
@@ -232,11 +226,6 @@ void file::ReadGlobalParameter()
     if (ToTriggerAdjustment <= 0)
     {
         cout << "Error: ToTriggerAdjustment should be a positive integer." << endl;
-        valid_input = false;
-    }
-    if (GridResolution <= 0)
-    {
-        cout << "Error: GridResolution should be a positive integer." << endl;
         valid_input = false;
     }
     if (ActivateHGS != "YES" && ActivateHGS != "NO")

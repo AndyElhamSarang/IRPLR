@@ -5,6 +5,7 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
     {
         cout << "Construct initial solution using INITIAL ZONE" << endl;
     }
+    // assert(GridResolution > 0);
     // Initial_CircleZone_Schedule(IRPLR, IRPSolution);
     Initial_BlockZone_Schedule(IRPLR, IRPSolution);
     time(&end_time);
