@@ -1,5 +1,5 @@
 NumberOfInitialSolution
-50
+10
 NumberOfExperiments
 5
 AllowLagrangianRelaxation
@@ -9,13 +9,13 @@ NOT_GUARANTEE_FEASIBILITY
 InitialLagrangianScalar
 10
 ToAdjustLagrangianScalar
-0.5
+1
 ToTriggerAdjustment
 20
 Activate HGS
 NO
 theta
-30
+3
 sigma
 10
 phi

@@ -15,7 +15,7 @@ double solution_improvement::Calculate_la_relax_objv(double &logistic_ratio, dou
     return la_relax_objv;
 }
 
-void solution_improvement::InitialiseUpdateLagrangianMultipler(solution &IRPSolution, double &PenaltyForStockOut, solution &GlobalBest, double &ScalarLagrangianRelaxation)
+void solution_improvement::InitialiseUpdateLagrangianMultipler(solution &IRPSolution, double &PenaltyForStockOut, solution &GlobalBest, double &ScalarLagrangianRelaxation, int &true_local)
 {
     double norm_2 = IRPSolution.ViolationStockOut * IRPSolution.ViolationStockOut;
     double objv_LR = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
@@ -29,9 +29,20 @@ void solution_improvement::InitialiseUpdateLagrangianMultipler(solution &IRPSolu
     {
         tau = (0.1 * ScalarLagrangianRelaxation * GlobalBest.LogisticRatio) / (norm_2 + 0.00001);
     }
-    cout<<"ScalarLagrangianRelaxation: "<<ScalarLagrangianRelaxation<<", norm_2: "<<norm_2<<", GlobalBest.LogisticRatio: "<<GlobalBest.LogisticRatio<<", objv_LR: "<<objv_LR<<",GlobalBest.LogisticRatio - objv_LR: "<<GlobalBest.LogisticRatio - objv_LR<<", tau: "<<tau<<endl;
-    cout<<"ViolationStockOut: "<<IRPSolution.ViolationStockOut<<", (IRPSolution.ViolationStockOut + 0.00001) * tau: "<<(IRPSolution.ViolationStockOut + 0.00001) * tau<<", PenaltyForStockOut: "<<PenaltyForStockOut<<", PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.00001) * tau:"<<PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.00001) * tau<<endl;
+
     PenaltyForStockOut = PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.001) * tau;
+
+    // if(true_local == 0)
+    // {
+    //     PenaltyForStockOut = PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.001) * tau;
+    // }
+    // else if(true_local == 1)
+    // {
+    //     PenaltyForStockOut = PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.001) * tau + 100000;
+    // }
+    cout << "ScalarLagrangianRelaxation: " << ScalarLagrangianRelaxation << ", norm_2: " << norm_2 << ", GlobalBest.LogisticRatio: " << GlobalBest.LogisticRatio << ", objv_LR: " << objv_LR << ",GlobalBest.LogisticRatio - objv_LR: " << GlobalBest.LogisticRatio - objv_LR << ", tau: " << tau << endl;
+    cout << "ViolationStockOut: " << IRPSolution.ViolationStockOut << ", (IRPSolution.ViolationStockOut + 0.00001) * tau: " << (IRPSolution.ViolationStockOut + 0.00001) * tau << ", PenaltyForStockOut: " << PenaltyForStockOut << ", PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.00001) * tau:" << PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.00001) * tau << endl;
+    cout << "true_local: " << true_local << endl;
 }
 void solution_improvement::AdjustQuantityAndInventoryLevel(
     double &previous_inventory_level,

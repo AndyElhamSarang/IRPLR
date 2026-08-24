@@ -115,9 +115,28 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
 
     // Number of divisions per dimension for block partitioning (e.g., 4x4 grid)
     // GridResolution = max(1, GridResolution); // Ensure at least one division
-    GridResolution = RandomInitial.random_number_generator(10, 20, generator);
+    vector<int> CollectionOfGridResolution;
+
+    int tempGridResolution = 4;
+    for(int i=0;i<5;i++)
+    {
+        CollectionOfGridResolution.push_back(tempGridResolution);
+        tempGridResolution+=2;
+    }
+    if (printout_initialSchedule == 1)
+    {
+        for (int i = 0; i < CollectionOfGridResolution.size(); i++)
+        {
+            cout << CollectionOfGridResolution[i] << ",";
+        }
+        cout << endl;
+    }
+    GridResolution = CollectionOfGridResolution[RandomInitial.random_number_generator(0, CollectionOfGridResolution.size()-1, generator)];
     // GridResolution = 4;
-    cout << "GridResolution:" << GridResolution << endl;
+    if (printout_initialSchedule == 1)
+    {
+        cout << "GridResolution:" << GridResolution << endl;
+    }
     assert(GridResolution > 0); // Ensure positive grid resolution
     int numDivisions = max(1, GridResolution); // ensure at least one division
 
