@@ -3,18 +3,18 @@
 void input::ReadIRPInstance(string &InstanceSource, string &InstanceType, string &InstanceDirectories)
 {
     // cout << "Read instance data" << endl;
-    cout<< "InstanceSource: " << InstanceSource << endl;
-    cout<< "InstanceType: " << InstanceType << endl;
-    cout<< "InstanceDirectories: " << InstanceDirectories << endl;
+    cout << "InstanceSource: " << InstanceSource << endl;
+    cout << "InstanceType: " << InstanceType << endl;
+    cout << "InstanceDirectories: " << InstanceDirectories << endl;
     Retailers.clear();
     Distance.clear();
     InstanceName.clear();
     if (InstanceType == "Single vehicle IRP")
     {
         NumberOfVehicles = 1;
-        InstanceName  = InstanceSource.substr(MachineDirectory.size() + InstanceDirectories.size(), InstanceSource.size());
+        InstanceName = InstanceSource.substr(MachineDirectory.size() + InstanceDirectories.size(), InstanceSource.size());
         InstanceName = InstanceName.erase(InstanceName.size() - 4);
-        cout << "Instance's name: " << InstanceName << endl;        
+        cout << "Instance's name: " << InstanceName << endl;
     }
     else if (InstanceType == "Multiple vehicles IRP")
     {
@@ -111,24 +111,28 @@ void input::ReadIRPInstance(string &InstanceSource, string &InstanceType, string
             int travel = 0;
             if (i != j)
             {
-                 // double diff_X = AllCoord[i][0] - AllCoord[j][0];
+                // double diff_X = AllCoord[i][0] - AllCoord[j][0];
                 // double diff_Y = AllCoord[i][1] - AllCoord[j][1];
                 // double float_travel = sqrt(pow(diff_X, power) + pow(diff_Y, power));
                 // double fractional_part = float_travel - floor(float_travel);
-                // if (fractional_part >= 0.5) 
+                // if (fractional_part >= 0.5)
                 // {
                 //     travel = ceil(float_travel);
-                // } 
-                // else 
+                // }
+                // else
                 // {
                 //     travel = floor(float_travel);
-                // } 
+                // }
 
+                // double diff_X = AllCoord[i][0] - AllCoord[j][0];
+                // double diff_Y = AllCoord[i][1] - AllCoord[j][1];
+                // double float_travel = sqrt(pow(diff_X, power) + pow(diff_Y, power));
+                // travel = floor(float_travel);
 
                 double diff_X = AllCoord[i][0] - AllCoord[j][0];
                 double diff_Y = AllCoord[i][1] - AllCoord[j][1];
                 double float_travel = sqrt(pow(diff_X, power) + pow(diff_Y, power));
-                travel = floor(float_travel); 
+                travel = static_cast<int>(round(float_travel));
             }
             temp_distance.push_back(travel);
         }
@@ -188,10 +192,10 @@ void input::ReadIRPInstance(string &InstanceSource, string &InstanceType, string
         }
     }
 
-    for(int i=0;i<Retailers.size();i++)
+    for (int i = 0; i < Retailers.size(); i++)
     {
         vector<int> DayVisitOrNot;
-        for(int j=0;j<TimeHorizon;j++)
+        for (int j = 0; j < TimeHorizon; j++)
         {
             DayVisitOrNot.push_back(0);
         }
@@ -221,7 +225,6 @@ void input::ReadIRPInstance(string &InstanceSource, string &InstanceType, string
     for (int i = 0; i < Retailers.size(); i++)
     {
         int MinimumVisit = ceil((Retailers[i].Demand * TimeHorizon - Retailers[i].InventoryBegin) / Retailers[i].InventoryMax);
-        MinimumVisitDemand .push_back(MinimumVisit);
-        
+        MinimumVisitDemand.push_back(MinimumVisit);
     }
 }

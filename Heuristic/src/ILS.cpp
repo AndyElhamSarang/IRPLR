@@ -40,7 +40,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     bool run_disturb_rebalance = false;
     // assert(UseSwapRemoveInsert!=UseSwapRemoveInsertRebalance);
     int LocalSearchCounter = 0;
-    int MaxDisturbance = 3 * (IRPLR.NumberOfRetailers + 10 * IRPLR.TimeHorizon + 10 * IRPLR.NumberOfVehicles);
+    int MaxDisturbance = theta * (IRPLR.NumberOfRetailers + sigma * IRPLR.TimeHorizon + phi * IRPLR.NumberOfVehicles);
     try
     {
         while (DisturbanceCounter < MaxDisturbance)

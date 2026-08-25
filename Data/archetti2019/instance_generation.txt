@@ -1,0 +1,7 @@
+#change vehicle capacity
+for file in *_3.dat; do read -r n t cap < "$file"; newcap=$(awk -v c="$cap" 'BEGIN{print int(c/3)}'); echo "$n $t $newcap" > "${file}.tmp"; tail -n +2 "$file" >> "${file}.tmp"; mv "${file}.tmp" "$file"; done
+#change number of vehicle
+for f in *_1.dat; do     mv "$f" "${f%_1.dat}_3.dat"; done
+#change time horizon
+for file in abs*.dat; do read -r n t cap < "$file"; echo "$n 4 $cap" > "${file}.tmp"; tail -n +2 "$file" >> "${file}.tmp"; mv "${file}.tmp" "$file"; done
+
