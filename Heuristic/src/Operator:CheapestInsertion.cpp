@@ -1,5 +1,5 @@
 #include "lib.h"
-int solution_improvement::OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &day, int &vehicle, int &CustomerToReinsert,  double &PenaltyForStockOut, double &CurrentTransportationCost, preprocessing &memory)
+int solution_improvement::OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &day, int &vehicle, int &CustomerToReinsert,  double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, double &CurrentTransportationCost, preprocessing &memory)
 {
 	//Given a customer (CustomerToReinsert) in route, find the cheapest insertion position for this customer
 	

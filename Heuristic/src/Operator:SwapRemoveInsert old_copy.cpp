@@ -1,5 +1,5 @@
 #include "lib.h"
-int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, preprocessing &memory,
+int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory,
                                                    int &min_remove_length, int &max_remove_length,
                                                    int &min_insert_length, int &max_insert_length)
 {
@@ -14,7 +14,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
     IRPSolution.GetLogisticRatio(IRPLR);
     // IRPSolution.print_solution(IRPLR);
     // cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << endl;
-    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
+    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut, PenaltyMoreThanCapacity, IRPSolution.ViolationMoreThanCapacity);
     // cout << "LR objv:" << LR_objv << endl;
 
     vector<vector<vector<int>>> ImpRoute(IRPSolution.Route);
@@ -74,6 +74,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
 
                                             double ChangeInTotalQuantity = 0;
                                             double NewStockOut = IRPSolution.ViolationStockOut;
+                                            double NewVehicleOverload = IRPSolution.ViolationMoreThanCapacity;
                                             // cout << "solution: " << solutionCounter << endl;
                                             vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
                                             vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
@@ -418,7 +419,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
 
                                                 double NewLogisticRatio = NewTransportationCost / NewTotalDelivery;
 
-                                                double temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut);
+                                                double temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut, PenaltyMoreThanCapacity, NewVehicleOverload);
 
                                                 assert(fabs(efficient_LR_Objv - temp_LR_objv) < 0.00001);
 

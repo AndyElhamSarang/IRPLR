@@ -1,6 +1,6 @@
 #include "lib.h"
 
-int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory, set<vector<int>> &SwapTwoRoutesOnSingleDayPair, set<vector<int>> SwapTwoRoutesOnSingleDayPairToReconsider,
+int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory, set<vector<int>> &SwapTwoRoutesOnSingleDayPair, set<vector<int>> SwapTwoRoutesOnSingleDayPairToReconsider,
                                                            int &min_Swap_length1, int &max_Swap_length1,
                                                            int &min_Swap_length2, int &max_Swap_length2)
 {
@@ -10,7 +10,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
     time_t accumulate_end_time;
     double LR_objv = numeric_limits<double>::max();
     IRPSolution.GetLogisticRatio(IRPLR);
-    cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut: " << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut: " << PenaltyForStockOut << endl;
+    cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut: " << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut: " << PenaltyForStockOut << "\t PenaltyMoreThanCapacity: " << PenaltyMoreThanCapacity << endl;
 
     // IRPSolution.print_solution(IRPLR);
     // for (int i = 0; i < IRPSolution.TransportationCostPerRoute.size(); i++)
@@ -21,7 +21,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
     //     }
     //     cout << endl;
     // }
-    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
+    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut, PenaltyMoreThanCapacity, IRPSolution.ViolationMoreThanCapacity);
     double objv_begin = LR_objv;
     // cout << "IRPSolution.TotalTransportationCost:" << IRPSolution.TotalTransportationCost << ", IRPSolution.TotalDelivery:" << IRPSolution.TotalDelivery << ", LR objv:" << LR_objv << endl;
     vector<int> move;
@@ -116,6 +116,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                         assert(NewInventoryLevelRoute2.size() == Swap_length2);
 
                                         double NewStockOut = IRPSolution.ViolationStockOut;
+                                        double NewVehicleOverload = IRPSolution.ViolationMoreThanCapacity;
                                         double ChangeInTotalQuantity = 0;
                                         vector<vector<double>> CopyVehicleLoad = IRPSolution.VehicleLoad;
 
@@ -483,7 +484,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
 
                                             double NewTotalDelivery = IRPSolution.TotalDelivery + ChangeInTotalQuantity;
                                             double NewLogisticRatio = NewTotalTransportationCost / NewTotalDelivery;
-                                            double temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut);
+                                            double temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut, PenaltyMoreThanCapacity, NewVehicleOverload);
                                             //  cout<<"objv_begin:"<<objv_begin<<" temp_LR_objv:" << temp_LR_objv << endl;
                                             if (objv_begin - temp_LR_objv > 0.00001)
                                             {

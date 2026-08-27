@@ -1,5 +1,5 @@
 #include "lib.h"
-int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory,solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s)
+int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory,solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s)
 {
     int whether_improved_via_local_search = 0;
     memory.PopulatePrefixAndSuffix(IRPLR, IRPSolution);
@@ -53,6 +53,7 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
                 IRPLR,
                 IRPSolution,
                 PenaltyForStockOut,
+                PenaltyMoreThanCapacity,
                 memory,
                 SwapTwoRoutesOnSingleDayPair,
                 SwapTwoRoutesOnSingleDayPairToReconsider,
@@ -92,7 +93,7 @@ int solution_improvement::LocalSearch(input &IRPLR, solution &IRPSolution, doubl
         while (whether_improved == 1)
         {
 
-            whether_improved = OperatorSwapRemoveInsert(IRPLR, IRPSolution, PenaltyForStockOut, memory, SwapRemoveInsertPair, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
+            whether_improved = OperatorSwapRemoveInsert(IRPLR, IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, memory, SwapRemoveInsertPair, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
             if (whether_improved == 1)
             {
                 whether_improved_via_SwapRemoveInsertPair = true;

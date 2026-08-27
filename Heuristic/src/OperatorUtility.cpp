@@ -7,27 +7,27 @@ double solution_improvement::DeliveryMax(double &VehicleCapacity, double &Vehicl
     // cout<<"VehicleCapacity: "<<VehicleCapacity<<", VehicleLoad: "<<VehicleLoad<<", InventoryMax: "<<InventoryMax<<", CustomerDemand: "<<CustomerDemand<<", PreviousInventoryLevel: "<<PreviousInventoryLevel<<endl;
     return max(0.0, min<double>(VehicleCapacity - VehicleLoad, InventoryMax - PreviousInventoryLevel));
 }
-double solution_improvement::Calculate_la_relax_objv(double &logistic_ratio, double &stockout_penalty, double &stockout)
+double solution_improvement::Calculate_la_relax_objv(double &logistic_ratio, double &stockout_penalty, double &stockout, double &more_than_capacity_penalty, double &violation_more_than_capacity)
 {
     double la_relax_objv = 0.0;
     // cout<<"logistic_ratio: "<<logistic_ratio<<", stockout_penalty: "<<stockout_penalty<<", stockout: "<<stockout<<endl;
-    la_relax_objv = logistic_ratio + stockout_penalty * stockout;
+    la_relax_objv = logistic_ratio + stockout_penalty * stockout + more_than_capacity_penalty * violation_more_than_capacity;
     return la_relax_objv;
 }
 
-void solution_improvement::InitialiseUpdateLagrangianMultipler(solution &IRPSolution, double &PenaltyForStockOut, solution &GlobalBest, double &ScalarLagrangianRelaxation, int &true_local)
+void solution_improvement::InitialiseUpdateLagrangianMultipler(solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, double &temp_global_best_logistic_ratio, double &ScalarLagrangianRelaxation, int &true_local)
 {
     double norm_2 = IRPSolution.ViolationStockOut * IRPSolution.ViolationStockOut;
-    double objv_LR = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
+    double objv_LR = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut, PenaltyMoreThanCapacity, IRPSolution.ViolationMoreThanCapacity);
     double tau = 0;
-    if (GlobalBest.LogisticRatio - objv_LR > 0.00001)
+    if (temp_global_best_logistic_ratio - objv_LR > 0.00001)
     {
 
-        tau = (ScalarLagrangianRelaxation * (GlobalBest.LogisticRatio - objv_LR)) / (norm_2 + 0.00001);
+        tau = (ScalarLagrangianRelaxation * (temp_global_best_logistic_ratio - objv_LR)) / (norm_2 + 0.00001);
     }
     else
     {
-        tau = (0.1 * ScalarLagrangianRelaxation * GlobalBest.LogisticRatio) / (norm_2 + 0.00001);
+        tau = (0.1 * ScalarLagrangianRelaxation * temp_global_best_logistic_ratio) / (norm_2 + 0.00001);
     }
 
     PenaltyForStockOut = PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.001) * tau;
@@ -40,7 +40,7 @@ void solution_improvement::InitialiseUpdateLagrangianMultipler(solution &IRPSolu
     // {
     //     PenaltyForStockOut = PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.001) * tau + 100000;
     // }
-    cout << "ScalarLagrangianRelaxation: " << ScalarLagrangianRelaxation << ", norm_2: " << norm_2 << ", GlobalBest.LogisticRatio: " << GlobalBest.LogisticRatio << ", objv_LR: " << objv_LR << ",GlobalBest.LogisticRatio - objv_LR: " << GlobalBest.LogisticRatio - objv_LR << ", tau: " << tau << endl;
+    cout << "ScalarLagrangianRelaxation: " << ScalarLagrangianRelaxation << ", norm_2: " << norm_2 << ", temp_global_best_logistic_ratio: " << temp_global_best_logistic_ratio << ", objv_LR: " << objv_LR << ",temp_global_best_logistic_ratio - objv_LR: " << temp_global_best_logistic_ratio - objv_LR << ", tau: " << tau << endl;
     cout << "ViolationStockOut: " << IRPSolution.ViolationStockOut << ", (IRPSolution.ViolationStockOut + 0.00001) * tau: " << (IRPSolution.ViolationStockOut + 0.00001) * tau << ", PenaltyForStockOut: " << PenaltyForStockOut << ", PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.00001) * tau:" << PenaltyForStockOut + (IRPSolution.ViolationStockOut + 0.00001) * tau << endl;
     cout << "true_local: " << true_local << endl;
 }

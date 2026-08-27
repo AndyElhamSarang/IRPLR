@@ -17,9 +17,11 @@ double DeliveryMax(
 double Calculate_la_relax_objv(
     double &logistic_ratio, 
     double &stockout_penalty, 
-    double &stockout
+    double &stockout,
+    double &more_than_capacity_penalty,
+    double &violation_more_than_capacity
 );
-void InitialiseUpdateLagrangianMultipler(solution &IRPSolution, double &PenaltyForStockOut, solution &GlobalBest, double &ScalarLagrangianRelaxation, int &true_local);
+void InitialiseUpdateLagrangianMultipler(solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, double &global_best_logistic_ratio, double &ScalarLagrangianRelaxation, int &true_local);
 void AdjustQuantityAndInventoryLevel(
     double &begining_inventory, 
     int &day, 
@@ -32,12 +34,13 @@ void AdjustQuantityAndInventoryLevel(
     double &NewStockOut, 
     int &customer_index, 
     input &IRPLR);
-int OperatorPureSwap(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut,preprocessing &memory);
+int OperatorPureSwap(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut,double &PenaltyMoreThanCapacity,preprocessing &memory);
 
 int OperatorSwapRemoveInsert(
     input &IRPLR, 
     solution &IRPSolution, 
     double &PenaltyForStockOut,
+    double &PenaltyMoreThanCapacity,
     preprocessing &memory,
     set<vector<int>> &SwapRemoveInsertPair,
     int &min_remove_length, 
@@ -50,6 +53,7 @@ int OperatorSwapTwoRoutesOnSingleDay(
     input &IRPLR, 
     solution &IRPSolution, 
     double &PenaltyForStockOut, 
+    double &PenaltyMoreThanCapacity,
     preprocessing &memory,
     set<vector<int>> &SwapTwoRoutesOnSingleDayPair,
     set<vector<int>> SwapTwoRoutesOnSingleDayPairToReconsider,
@@ -59,15 +63,15 @@ int OperatorSwapTwoRoutesOnSingleDay(
     int &max_insert_length
 );
 
-int OperatorSwapRemoveInsertWithBalancing(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut,preprocessing &memory, 
+int OperatorSwapRemoveInsertWithBalancing(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory, 
                               int &min_remove_length, int &max_remove_length, int &min_insert_length, int &max_insert_length);
 
-int OperatorInterSwap(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory,
+int OperatorInterSwap(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory,
                  int &min_remove_length, int &max_remove_length, int &min_insert_length, int &max_insert_length);
 
-int OperatorInsert(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory);
+int OperatorInsert(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory);
 
-int OperatorRemove(input &IRPLR, solution &IRPSolution,  double &PenaltyForStockOut, preprocessing &memory);
+int OperatorRemove(input &IRPLR, solution &IRPSolution,  double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory);
 
 double OperatorBalancing(input &IRPLR, preprocessing &memory,
 vector<vector<vector<int>>> &Route, 
@@ -95,18 +99,19 @@ int OperatorIntra(input &IRPLR, vector<int> &route, int &day, int &vehicle, int 
 
 void OperatorDisturb(input &IRPLR, solution &GlobalBest, solution &IRPSolution, int &DisturbanceCounter, int &MaxDisturbance);
 
-int OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &day, int &vehicle, int &CustomerToReinsert, double &PenaltyForStockOut, double &CurrentTransportationCost,preprocessing &memory);
+int OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &day, int &vehicle, int &CustomerToReinsert, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, double &CurrentTransportationCost, preprocessing &memory);
 
-int OperatorRepair(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut);
+int OperatorRepair(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory, int &min_remove_length, int &max_remove_length, int &min_insert_length, int &max_insert_length);
 
 int OperatorTransfer(
     input &IRPLR,
     solution &IRPSolution,
     double &PenaltyForStockOut,
+    double &PenaltyMoreThanCapacity,
     vector<vector<int>> &TransferDetails,
     preprocessing &memory);
 
-int LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory,solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s);
+int LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory,solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s);
 
 
 int ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &ScalarLagrangianRelaxation, preprocessing &memory,solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s,solution &IRPSolution60s, int &DisturbanceCounter, bool &RunHGSAtEnd);

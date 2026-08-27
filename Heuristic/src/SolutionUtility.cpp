@@ -635,6 +635,7 @@ void solution::print_solution(input &IRPLR)
         }
         cout << endl;
     }
+    cout<<"Logistic Ratio:"<<LogisticRatio<<",Total Transportation Cost:"<<TotalTransportationCost<<",Total Delivery:"<<TotalDelivery<<",Violation Stock Out:"<<ViolationStockOut<<",Violation More Than Capacity:"<<ViolationMoreThanCapacity<<endl;
 }
 
 void solution::GetLogisticRatio(input &IRPLR)
@@ -644,6 +645,7 @@ void solution::GetLogisticRatio(input &IRPLR)
     TotalDelivery = 0;
     LogisticRatio = 0;
     ViolationStockOut = 0;
+    ViolationMoreThanCapacity = 0;
     TransportationCostPerRoute.clear();
     //  for (int i = 0; i < VisitOrder.size(); i++)
     // {
@@ -718,6 +720,16 @@ void solution::GetLogisticRatio(input &IRPLR)
             }
         }
         StockOutPerCustomer.push_back(StockOutOfThisCustomer);
+    }
+    for(int i = 0; i < VehicleLoad.size(); i++)
+    {
+        for (int j = 0; j < VehicleLoad[i].size(); j++)
+        {
+            if (VehicleLoad[i][j] > IRPLR.Vehicle.capacity)
+            {
+                ViolationMoreThanCapacity += VehicleLoad[i][j] - IRPLR.Vehicle.capacity;
+            }
+        }
     }
     // Validation(IRPLR);
 }

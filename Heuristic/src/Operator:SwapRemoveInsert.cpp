@@ -1,6 +1,6 @@
 #include "lib.h"
 
-int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, preprocessing &memory, set<vector<int>> &SwapRemoveInsertPair,
+int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory, set<vector<int>> &SwapRemoveInsertPair,
                                                    int &min_remove_length, int &max_remove_length,
                                                    int &min_insert_length, int &max_insert_length)
 {
@@ -21,7 +21,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
     //     }
     //     cout << endl;
     // }
-    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
+    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut, PenaltyMoreThanCapacity, IRPSolution.ViolationMoreThanCapacity);
     // cout << "IRPSolution.TotalTransportationCost:"<<IRPSolution.TotalTransportationCost<<", IRPSolution.TotalDelivery:"<<IRPSolution.TotalDelivery<<", LR objv:" << LR_objv << endl;
     vector<int> move;
     for (int i = 0; i < 7; i++)
@@ -116,6 +116,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                             assert(NewInventoryLevelCustomerInsert.size() == insert_length);
 
                                             double NewStockOut = IRPSolution.ViolationStockOut;
+                                            double NewVehicleOverload = IRPSolution.ViolationMoreThanCapacity;
                                             double ChangeInTotalQuantity = 0;
                                             vector<vector<double>> CopyVehicleLoad = IRPSolution.VehicleLoad;
                                             // cout << "Selected Vehicle load for picked day " << SelectedVehicleLoad << endl;
@@ -320,7 +321,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                 double NewTotalTransportationCost = IRPSolution.TotalTransportationCost - IRPSolution.TransportationCostPerRoute[pick_day][pick_vehicle] + NewRouteCost;
                                                 double NewTotalDelivery = IRPSolution.TotalDelivery + ChangeInTotalQuantity;
                                                 double NewLogisticRatio = NewTotalTransportationCost / NewTotalDelivery;
-                                                double temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut);
+                                                double temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut, PenaltyMoreThanCapacity, NewVehicleOverload);
 
                                                 if (LR_objv - temp_LR_objv > 0.00001)
                                                 {

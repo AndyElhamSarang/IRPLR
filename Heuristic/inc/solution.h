@@ -6,6 +6,7 @@ public:
   double LogisticRatio;
   double TotalDelivery;
   double ViolationStockOut;
+  double ViolationMoreThanCapacity;
   double solution_time;
 
   vector<vector<vector<int>>> Route; //Main decision

@@ -4,6 +4,7 @@ int solution_improvement::OperatorTransfer(
     input &IRPLR,
     solution &IRPSolution,
     double &PenaltyForStockOut,
+    double &PenaltyMoreThanCapacity,
     vector<vector<int>> &TransferDetails,
     preprocessing &memory)
 { // Current implementation only permits at most one customer therefore
@@ -19,8 +20,8 @@ int solution_improvement::OperatorTransfer(
     double LR_objv = numeric_limits<double>::max();
     IRPSolution.GetLogisticRatio(IRPLR);
     // IRPSolution.print_solution(IRPLR);
-    cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << endl;
-    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
+    cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << "\t PenaltyMoreThanCapacity:" << PenaltyMoreThanCapacity << endl;
+    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut, PenaltyMoreThanCapacity, IRPSolution.ViolationMoreThanCapacity);
     // cout << "LR objv:" << LR_objv << endl;
     double objv_begin = LR_objv;
     vector<double> ImpDeliveryQuantityCustomerTransfer;
@@ -78,6 +79,7 @@ int solution_improvement::OperatorTransfer(
             vector<double> NewDeliveryQuantityCustomerTransfer(IRPSolution.DeliveryQuantity[TransferDetails[i][0]]);
             vector<double> NewInventoryLevelCustomerTransfer(IRPSolution.InventoryLevel[TransferDetails[i][0]]);
             double NewStockOut = IRPSolution.ViolationStockOut;
+            double NewVehicleOverload = IRPSolution.ViolationMoreThanCapacity;
             double ChangeInTotalQuantity = 0;
             vector<vector<double>> CopyVehicleLoad = IRPSolution.VehicleLoad;
             // cout << "================================================================" << endl;
@@ -294,7 +296,7 @@ int solution_improvement::OperatorTransfer(
 
                 double NewTotalDelivery = IRPSolution.TotalDelivery + ChangeInTotalQuantity;
                 double NewLogisticRatio = NewTotalTransportationCost / NewTotalDelivery;
-                double temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut);
+                double temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut, PenaltyMoreThanCapacity, NewVehicleOverload);
 
                 if (objv_begin - temp_LR_objv > 0.00001)
                 {

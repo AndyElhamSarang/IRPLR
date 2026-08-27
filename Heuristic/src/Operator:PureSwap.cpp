@@ -1,5 +1,5 @@
 #include "lib.h"
-int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, preprocessing &memory)
+int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory)
 {
     cout << "Swap starting solution" << endl;
     int whether_improved_or_not = 0;
@@ -7,7 +7,7 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
     IRPSolution.GetLogisticRatio(IRPLR);
     // IRPSolution.print_solution(IRPLR);
     // cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut" << IRPSolution.ViolationStockOut << endl;
-    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut);
+    LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut, PenaltyMoreThanCapacity, IRPSolution.ViolationMoreThanCapacity);
     // cout << "LR objv:" << LR_objv << endl;
 
     vector<vector<vector<int>>> ImpRoute(IRPSolution.Route);
@@ -30,6 +30,7 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
                     double ChangeInTransportationCost = 0;
                     double ChangeInTotalQuantity = 0;
                     double NewStockOut = IRPSolution.ViolationStockOut;
+                    double NewVehicleOverload = IRPSolution.ViolationMoreThanCapacity;
                     // cout << "solution: " << solutionCounter << endl;
                     vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
                     vector<vector<int>> TempUnallocatedCustomers(IRPSolution.UnallocatedCustomers);
@@ -386,7 +387,7 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
                     // assert(fabs(testEndTransportationCost - CurrentTransportationCost) < 0.00001);
                     memory.PopulateSingleRouteSubpath(IRPLR, TempRoute[i][j]);
                     double ImprovedTransportationCost = CurrentTransportationCost;
-                    int FindingCheapestInsertion = OperatorCheapestInsertion(IRPLR, TempRoute[i][j], i, j, k, PenaltyForStockOut, ImprovedTransportationCost, memory); // Finding cheapest insertion
+                    int FindingCheapestInsertion = OperatorCheapestInsertion(IRPLR, TempRoute[i][j], i, j, k, PenaltyForStockOut, PenaltyMoreThanCapacity, ImprovedTransportationCost, memory); // Finding cheapest insertion
                                                                                                                                                                  // cout << CurrentTransportationCost << "," << ImprovedTransportationCost << "," << CurrentTransportationCost - ImprovedTransportationCost << endl;
                     ChangeInTransportationCost += ImprovedTransportationCost - CurrentTransportationCost;
                     // cout << ChangeInTransportationCost << endl;
@@ -402,7 +403,7 @@ int solution_improvement::OperatorPureSwap(input &IRPLR, solution &IRPSolution, 
 
                     double NewLogisticRatio = NewTransportationCost / NewTotalDelivery;
 
-                    double temp_LR_obvj = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut);
+                    double temp_LR_obvj = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut, PenaltyMoreThanCapacity, NewVehicleOverload);
 
                     // double TempTransportationCost = 0;
                     // double TempTotalDelivery = 0;
