@@ -5,3 +5,8 @@ for f in *_1.dat; do     mv "$f" "${f%_1.dat}_3.dat"; done
 #change time horizon
 for file in abs*.dat; do read -r n t cap < "$file"; echo "$n 4 $cap" > "${file}.tmp"; tail -n +2 "$file" >> "${file}.tmp"; mv "${file}.tmp" "$file"; done
 
+
+
+for f in *.dat; do     mv "$f" "${f%.dat}_1.dat"; done
+for f in *_1.dat; do base="${f%_1.dat}"; for k in 2 3 4 5; do cp "$f" "${base}_${k}.dat"; done; done
+for k in 2 3 4 5; do for file in *_${k}.dat; do read -r n t cap < "$file"; newcap=$(awk -v c="$cap" -v k="$k" 'BEGIN{print int(c/k)}'); echo "$n $t $newcap" > "${file}.tmp"; tail -n +2 "$file" >> "${file}.tmp"; mv "${file}.tmp" "$file"; done; done
