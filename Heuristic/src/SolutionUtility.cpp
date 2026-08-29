@@ -284,10 +284,11 @@ void Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(input &IRPLR, solu
                 double TotalDeliveryQuantityRoute = 0;
                 for (int k = 0; k < IRPSolution.Route[i][j].size(); k++)
                 {
-                    assert(IRPSolution.DeliveryQuantity[IRPSolution.Route[i][j][k]][i] >= -0.00001 && "Delivery quantity is non-negative");
+                    assert(IRPSolution.DeliveryQuantity[IRPSolution.Route[i][j][k]][i] >= 0.00001 && "Delivery quantity is non-negative");
                     TotalDeliveryQuantityRoute += IRPSolution.DeliveryQuantity[IRPSolution.Route[i][j][k]][i];
                 }
                 // cout<<"TotalDeliveryQuantityRoute for day "<<i<<", vehicle "<<j<<": "<<TotalDeliveryQuantityRoute<<" versus "<<IRPLR.Vehicle.capacity<<", "<<IRPSolution.VehicleLoad[i][j]<<endl;
+                assert(fabs(TotalDeliveryQuantityRoute - IRPSolution.VehicleLoad[i][j]) < 0.00001 && "Total delivery quantity does not match vehicle load");
                 assert(TotalDeliveryQuantityRoute <= IRPLR.Vehicle.capacity + 0.00001 && "Total delivery quantity exceeds vehicle capacity");
             }
         }
