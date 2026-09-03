@@ -7,6 +7,76 @@ andy_lenovo = /home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/inc
 andy_lenovo_boost = /home/andy/Desktop/c++_boost/boost_1_83_0
 andy_testpc = /home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Heuristic/inc
 andy_testpc_boost = /home/andytestpc/Desktop/c++_boost/boost_1_83_0
+
+clean:
+	rm -f *.txt *.csv *.o *.lp *.mps *.out *.json
+andy_desktop:
+	$(CC) main_testing.cpp file:Read_andy_desktop.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
+	Input:Read.cpp \
+	PrintData.cpp random.cpp \
+	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
+	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
+	DataStructure:Local.cpp \
+	DataStructure:Subpath.cpp \
+	DataStructure:Concatenation.cpp \
+	DataStructure:ConcatenationInterSwap.cpp \
+	DataStructure:ConcatenationSwapTwoRoutesSingleDay.cpp \
+	DataStructure:ConcatenationSwapInsertRemove.cpp \
+	DataStructure:ConcatenationChepestInsertion.cpp \
+	DataStructure:Print.cpp \
+	HGS:ReadParameter.cpp HGS:Call.cpp \
+	SolutionUtility.cpp \
+	solution.cpp solution:initialize.cpp   \
+	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
+	solution:GetTransCostSingleRoute.cpp \
+	CheckStockOut.cpp \
+	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
+	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
+	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
+	OperatorUtility.cpp \
+	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
+	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
+	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
+	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
+	Operator:Repair.cpp Operator:Intra.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
+	Operator:Disturb.cpp \
+	-I $(andy_desktop) -I $(andy_desktop_boost) \
+	-o test.out
+andy_desktop_DISABLE_COUT:
+	$(CC) main_testing.cpp file:Read_andy_desktop.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
+	Input:Read.cpp \
+	PrintData.cpp random.cpp \
+	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
+	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
+	DataStructure:Local.cpp \
+	DataStructure:Subpath.cpp \
+	DataStructure:Concatenation.cpp \
+	DataStructure:ConcatenationInterSwap.cpp \
+	DataStructure:ConcatenationSwapTwoRoutesSingleDay.cpp \
+	DataStructure:ConcatenationSwapInsertRemove.cpp \
+	DataStructure:ConcatenationChepestInsertion.cpp \
+	DataStructure:Print.cpp \
+	HGS:ReadParameter.cpp HGS:Call.cpp \
+	SolutionUtility.cpp \
+	solution.cpp solution:initialize.cpp   \
+	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
+	solution:GetTransCostSingleRoute.cpp \
+	CheckStockOut.cpp \
+	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
+	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
+	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
+	OperatorUtility.cpp \
+	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
+	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
+	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
+	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
+	Operator:Repair.cpp Operator:Intra.cpp \
+	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
+	Operator:Disturb.cpp \
+	-I $(andy_desktop) -I $(andy_desktop_boost) \
+	-DDISABLE_COUT \
+	-o test_DISABLE_COUT.out
 parameter_tuning:
 	$(CC) main_parameter_tuning.cpp file:Read_andy.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
@@ -140,39 +210,6 @@ andy_lenovo:
 	Operator:Disturb.cpp \
 	-I $(andy_lenovo) -I $(andy_lenovo_boost) \
 	-o irplr.out -O3
-andy_desktop:
-	$(CC) main.cpp file:Read_andy_desktop.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
-	Input:Read.cpp \
-	PrintData.cpp random.cpp \
-	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
-	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
-	DataStructure:Local.cpp \
-	DataStructure:Subpath.cpp \
-	DataStructure:Concatenation.cpp \
-	DataStructure:ConcatenationInterSwap.cpp \
-	DataStructure:ConcatenationSwapTwoRoutesSingleDay.cpp \
-	DataStructure:ConcatenationSwapInsertRemove.cpp \
-	DataStructure:ConcatenationChepestInsertion.cpp \
-	DataStructure:Print.cpp \
-	HGS:ReadParameter.cpp HGS:Call.cpp \
-	SolutionUtility.cpp \
-	solution.cpp solution:initialize.cpp   \
-	solution:OutputCVRP.cpp solution:ReadCVRP_Solution.cpp \
-	solution:GetTransCostSingleRoute.cpp \
-	CheckStockOut.cpp \
-	Initial:SingleVehicle.cpp Initial.cpp Initial:Scheduling.cpp \
-	InitialWithZone.cpp InitialScheduleWithCircleZone.cpp InitialScheduleWithBlockZone.cpp \
-	ILS.cpp LocalSearch.cpp LocalSearchImproved.cpp \
-	OperatorUtility.cpp \
-	Operator:PrintTempSolution.cpp Operator:GetTempLogisticRatio.cpp \
-	Operator:InterSwap.cpp Operator:SwapTwoRoutesSingleDay.cpp \
-	Operator:CheapestInsertion.cpp Operator:PureSwap.cpp \
-	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
-	Operator:Repair.cpp Operator:Intra.cpp \
-	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
-	Operator:Disturb.cpp \
-	-I $(andy_desktop) -I $(andy_desktop_boost) \
-	-o test.out
 andy_testpc:
 	$(CC) main.cpp file:Read_andy_testpc.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
@@ -273,8 +310,11 @@ andy_testpc_DISABLE_COUT:
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-DDISABLE_COUT \
 	-o irplr.out -O3
-clean:
-	rm -f *.txt *.csv *.o *.lp *.mps *.out *.json
+	
+	
 # For running multiple executables:
 # run:
 # ./irplr.out && ./irplr_no_rebalance.out
+
+
+./default_DISABLE_COUT.out && ./no_rebalance_DISABLE_COUT.out && ./no_disturb_DISABLE_COUT.out && ./rebalance_guarantee_feasibility_DISABLE_COUT.out && ./no_lr_DISABLE_COUT.out && ./with_hgs_DISABLE_COUT.out
