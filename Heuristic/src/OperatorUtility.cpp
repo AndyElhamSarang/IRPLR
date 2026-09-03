@@ -24,6 +24,9 @@ double solution_improvement::Calculate_la_relax_objv(double &logistic_ratio, dou
 
 void solution_improvement::InitialiseUpdateLagrangianMultipler(solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, double &temp_global_best_logistic_ratio, double &ScalarLagrangianRelaxation, int &true_local)
 {
+    assert(PenaltyForStockOut >= 0);
+    assert(PenaltyMoreThanCapacity >= 0);
+    assert(ScalarLagrangianRelaxation > 0);
     double norm_2 = IRPSolution.ViolationStockOut * IRPSolution.ViolationStockOut + IRPSolution.ViolationMoreThanCapacity * IRPSolution.ViolationMoreThanCapacity;
     double objv_LR = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut, PenaltyMoreThanCapacity, IRPSolution.ViolationMoreThanCapacity);
     double tau = 0;
@@ -63,6 +66,7 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
     vector<vector<int>> &VehicleAllocation,
     double &ChangeInTotalQuantity,
     double &NewStockOut,
+    double &NewVehicleOverload,
     int &customer_index,
     input &IRPLR)
 {
@@ -82,7 +86,10 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
         VehicleLoad[day][vehicle] = VehicleLoad[day][vehicle] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
         CurrentInventoryLevel = CurrentInventoryLevel - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
     }
-
+    if (VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity > 0.00001)
+    {
+        NewVehicleOverload += VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity;
+    }
     if (fabs(InventoryLevel[day] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
     {
         if (InventoryLevel[day] >= 0.0 && CurrentInventoryLevel < -0.00001)
@@ -147,7 +154,10 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
             VehicleLoad[y][allocVeh] -= delta;
             CurrentInventoryLevel -= delta;
         }
-
+        if (VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity > 0.00001)
+        {
+            NewVehicleOverload += VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity;
+        }
         if (fabs(InventoryLevel[y] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
         {
             if (InventoryLevel[y] >= 0.0 && CurrentInventoryLevel < -0.00001)
@@ -363,7 +373,10 @@ void solution_improvement::AdjustQuantityAndInventoryLevelAllowingCapacityViolat
         VehicleLoad[day][vehicle] = VehicleLoad[day][vehicle] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
         CurrentInventoryLevel = CurrentInventoryLevel - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
     }
-
+    if (VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity > 0.00001)
+    {
+        NewVehicleOverload += VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity;
+    }
     if (fabs(InventoryLevel[day] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
     {
         if (InventoryLevel[day] >= 0.0 && CurrentInventoryLevel < -0.00001)
@@ -428,7 +441,10 @@ void solution_improvement::AdjustQuantityAndInventoryLevelAllowingCapacityViolat
             VehicleLoad[y][allocVeh] -= delta;
             CurrentInventoryLevel -= delta;
         }
-
+        if (VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity > 0.00001)
+        {
+            NewVehicleOverload += VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity;
+        }
         if (fabs(InventoryLevel[y] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
         {
             if (InventoryLevel[y] >= 0.0 && CurrentInventoryLevel < -0.00001)

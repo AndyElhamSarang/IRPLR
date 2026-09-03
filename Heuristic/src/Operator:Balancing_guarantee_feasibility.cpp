@@ -282,7 +282,7 @@ double solution_improvement::OperatorBalancing_guarantee_feasibility(input &IRPL
             double CumulativeWeight = 0;
             while (CustomerWeight.size() != 0)
             {
-                cout << "---------" << endl;
+                // cout << "---------" << endl;
 
                 // PrintTempSolution(IRPLR, Route, UnallocatedCustomers, VehicleLoad, DeliveryQuantity, InventoryLevel, VehicleAllocation, VisitOrder);
                 vector<vector<int>> CumulativeCustomerWeight(CustomerWeight);
@@ -356,6 +356,7 @@ double solution_improvement::OperatorBalancing_guarantee_feasibility(input &IRPL
                 assert(DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][time] >= 0);
                 double ChangeInTotalQuantity = 0;
                 double NewStockOut = 0;
+                double NewVehicleOverload = 0;
                 if (time == 0)
                 {
                     AdjustQuantityAndInventoryLevel(
@@ -368,6 +369,7 @@ double solution_improvement::OperatorBalancing_guarantee_feasibility(input &IRPL
                         VehicleAllocation,
                         ChangeInTotalQuantity,
                         NewStockOut,
+                        NewVehicleOverload,
                         CumulativeCustomerWeight[RandomCustomer][0],
                         IRPLR);
                 }
@@ -383,6 +385,7 @@ double solution_improvement::OperatorBalancing_guarantee_feasibility(input &IRPL
                         VehicleAllocation,
                         ChangeInTotalQuantity,
                         NewStockOut,
+                        NewVehicleOverload,
                         CumulativeCustomerWeight[RandomCustomer][0],
                         IRPLR);
                 }

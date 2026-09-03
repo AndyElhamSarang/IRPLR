@@ -32,6 +32,7 @@ public:
         vector<vector<int>> &VehicleAllocation,
         double &ChangeInTotalQuantity,
         double &NewStockOut,
+        double &NewVehicleOverload,
         int &customer_index,
         input &IRPLR);
     void AdjustQuantityAndInventoryLevelAllowingCapacityViolation(

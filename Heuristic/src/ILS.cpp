@@ -19,10 +19,10 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     double TimeForHGS = 0;
     double total_rebalance_time = 0;
     IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
-    
+
     time(&start_time);
     int DisturbanceCounter = 0;
-    int AdjustPenalty= 0;
+    int AdjustPenalty = 0;
     double ScalarLagrangianRelaxation = InitialLagrangianScalar;
     int ToAdjustPenalty = ToTriggerAdjustment;
     int NumberOfInfeasibleSolution = 0;
@@ -47,7 +47,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
         {
             time(&total_end_time);
             double total_ls_time = difftime(total_end_time, total_start_time);
-            cout<< "Total time for local search so far:" << total_ls_time << "s, AccumulatedTimeHGS:" << AccumulatedTimeHGS << "s, MainAlgorithmTimeLimit:" << MainAlgorithmTimeLimit << "s." << endl;
+            cout << "Total time for local search so far:" << total_ls_time << "s, AccumulatedTimeHGS:" << AccumulatedTimeHGS << "s, MainAlgorithmTimeLimit:" << MainAlgorithmTimeLimit << "s." << endl;
             assert(total_ls_time - AccumulatedTimeHGS >= 0);
             if (total_ls_time - MainAlgorithmTimeLimit - AccumulatedTimeHGS > -0.01)
             {
@@ -81,7 +81,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             // IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
             // IRPSolution.print_solution(IRPLR);
             cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
-            cout << "ViolationStockOut" << IRPSolution.ViolationStockOut << "\t ScalarLagrangianRelaxation:" << ScalarLagrangianRelaxation << endl;
+            cout << "ViolationStockOut" << IRPSolution.ViolationStockOut << "\t ViolationMoreThanCapacity:" << IRPSolution.ViolationMoreThanCapacity << "\t ScalarLagrangianRelaxation:" << ScalarLagrangianRelaxation << endl;
 
             cout << "---------------------------------------------" << endl;
 
@@ -91,12 +91,13 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             // }
             // violation = OperatorRemove(IRPLR, IRPSolution,  ScalarLagrangianRelaxation, memory);
 
-            if (IRPSolution.ViolationStockOut - 0 > 0.00001)
+            if (IRPSolution.ViolationStockOut - 0 > 0.00001 || IRPSolution.ViolationMoreThanCapacity - 0 > 0.00001)
             {
                 CountInFeasibleLocalSearchOut++;
             }
             else
             {
+                cout << "IRPSolution.ViolationStockOut: " << IRPSolution.ViolationStockOut << "\t ViolationMoreThanCapacity: " << IRPSolution.ViolationMoreThanCapacity << endl;
                 CountFeasibleLocalSearchOut++;
                 NumberOfFeasibleSolution++;
                 FeasibleSolutionCounter++;
@@ -143,7 +144,8 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 IRPSolution.GetLogisticRatio(IRPLR);
                 cout << "Solution after removing customer with 0 delivery " << endl;
                 cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
-
+                IRPSolution.print_solution(IRPLR);
+                IRPSolution.Validation(IRPLR);
                 ///////////////////////////////////////////////////////////////////////////////
 
                 if (IncumbentSolution.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
@@ -157,16 +159,17 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
 
                 if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
                 {
-
+                    assert(IRPSolution.ViolationStockOut < 0.00001);
+                    assert(IRPSolution.ViolationMoreThanCapacity < 0.00001);
                     GlobalBest = IRPSolution;
                     GlobalBest.LogisticRatio = IRPSolution.LogisticRatio;
                     time(&end_time_to_best);
                     GlobalBest.solution_time = difftime(end_time_to_best, start_time_to_best);
                     cout << "$GlobalBest solution is updated at time:" << GlobalBest.solution_time << " s,\t with " << "TotalTransportationCost:" << GlobalBest.TotalTransportationCost << ",\t TotalDelivery:" << GlobalBest.TotalDelivery << ",\t LogisticRatio:" << GlobalBest.LogisticRatio << ",\t at local search iteration:" << LocalSearchCounter << endl;
-                    
+
                     RunHGSAtEnd = true;
                 }
-                
+
                 bool Activate_rebalance = false;
                 if (Activate_rebalance == true)
                 {
@@ -255,6 +258,8 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                             assert(fabs(IRPSolution.LogisticRatio - LogisctiRatioAfterRebalance) < 0.00001);
                             if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
                             {
+                                assert(IRPSolution.ViolationStockOut < 0.00001);
+                                assert(IRPSolution.ViolationMoreThanCapacity < 0.00001);
                                 GlobalBest = IRPSolution;
                                 GlobalBest.LogisticRatio = IRPSolution.LogisticRatio;
                                 run_disturb_rebalance = true;
@@ -264,7 +269,6 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                                 RunHGSAtEnd = true;
                                 DisturbanceCounter = 0; // Reset disturbance counter when a better solution is found
                             }
-                            
                         }
                     }
 
@@ -318,7 +322,6 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
 
                 cout << "After rebalance" << endl;
 
-
                 time(&rebalance_end_time);
                 total_rebalance_time += difftime(rebalance_end_time, rebalance_start_time);
                 NumberOfRebalance++;
@@ -363,7 +366,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                     }
                     if (GlobalBest.LogisticRatio - Disturb_LogisctiRatioAfterRebalance > 0.00001)
                     {
-                       
+
                         GlobalBest.Route = DisturbRoute;
                         GlobalBest.UnallocatedCustomers = DisturbUnallocatedCustomers;
                         GlobalBest.VehicleLoad = DisturbVehicleLoad;
@@ -384,7 +387,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
 
             cout << "------------------------------------------------" << endl;
             cout << "Before Disturbance Operator" << endl;
-           IncumbentSolution.print_solution(IRPLR);
+            IncumbentSolution.print_solution(IRPLR);
             cout << "------------------------------------------------" << endl;
 
             OperatorDisturb(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
@@ -504,10 +507,10 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     time(&end_time);
     double total_time = difftime(end_time, start_time);
-   
+
     if (OutputResults == 1)
     {
 
-         Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << TimeForHGS << "," << total_time << ",";
+        Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << TimeForHGS << "," << total_time << ",";
     }
 }

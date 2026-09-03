@@ -406,7 +406,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                                             VehicleLoad[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][1]][StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][2]] += AdjustQuantity;
                                             double ChangeInTotalQuantity = 0;
                                             double NewStockOut = 0;
-
+                                            double NewVehicleOverload = 0;
                                             if (StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][1] == 0)
                                             {
                                                 AdjustQuantityAndInventoryLevel(
@@ -419,6 +419,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                                                     VehicleAllocation,
                                                     ChangeInTotalQuantity,
                                                     NewStockOut,
+                                                    NewVehicleOverload,
                                                     StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0],
                                                     IRPLR);
                                             }
@@ -435,6 +436,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                                                     VehicleAllocation,
                                                     ChangeInTotalQuantity,
                                                     NewStockOut,
+                                                    NewVehicleOverload,
                                                     StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0],
                                                     IRPLR);
                                             }
@@ -540,6 +542,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                                             VehicleLoad[StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][1]][StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][2]] += AvailableSlack;
                                             double ChangeInTotalQuantity = 0;
                                             double NewStockOut = 0;
+                                            double NewVehicleOverload = 0;
                                             if (StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][1] == 0)
                                             {
 
@@ -553,6 +556,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                                                     VehicleAllocation,
                                                     ChangeInTotalQuantity,
                                                     NewStockOut,
+                                                    NewVehicleOverload,
                                                     StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0],
                                                     IRPLR);
                                             }
@@ -568,6 +572,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                                                     VehicleAllocation,
                                                     ChangeInTotalQuantity,
                                                     NewStockOut,
+                                                    NewVehicleOverload,
                                                     StockoutCustomerSchedule[StockoutCustomer][StockoutCustomerVisit][0],
                                                     IRPLR);
                                             }
@@ -852,6 +857,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                 assert(DeliveryQuantity[CumulativeCustomerWeight[RandomCustomer][0]][time] >= 0);
                 double ChangeInTotalQuantity = 0;
                 double NewStockOut = 0;
+                double NewVehicleOverload = 0;
                 if (time == 0)
                 {
                     AdjustQuantityAndInventoryLevel(
@@ -864,6 +870,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                         VehicleAllocation,
                         ChangeInTotalQuantity,
                         NewStockOut,
+                        NewVehicleOverload,
                         CumulativeCustomerWeight[RandomCustomer][0],
                         IRPLR);
                 }
@@ -879,6 +886,7 @@ double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memo
                         VehicleAllocation,
                         ChangeInTotalQuantity,
                         NewStockOut,
+                        NewVehicleOverload,
                         CumulativeCustomerWeight[RandomCustomer][0],
                         IRPLR);
                 }

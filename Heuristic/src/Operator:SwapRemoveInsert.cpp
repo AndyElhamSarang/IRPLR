@@ -142,6 +142,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                         IRPSolution.VehicleAllocation,
                                                         ChangeInTotalQuantity,
                                                         NewStockOut,
+                                                        NewVehicleOverload,
                                                         IRPSolution.Route[pick_day][pick_vehicle][pick_allocated_position + remove_index],
                                                         IRPLR);
                                                 }
@@ -157,6 +158,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                         IRPSolution.VehicleAllocation,
                                                         ChangeInTotalQuantity,
                                                         NewStockOut,
+                                                        NewVehicleOverload,
                                                         IRPSolution.Route[pick_day][pick_vehicle][pick_allocated_position + remove_index],
                                                         IRPLR);
                                                 }
@@ -249,6 +251,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                             IRPSolution.VehicleAllocation,
                                                             ChangeInTotalQuantity,
                                                             NewStockOut,
+                                                            NewVehicleOverload,
                                                             IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index],
                                                             IRPLR);
                                                     }
@@ -264,6 +267,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                             IRPSolution.VehicleAllocation,
                                                             ChangeInTotalQuantity,
                                                             NewStockOut,
+                                                            NewVehicleOverload,
                                                             IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index],
                                                             IRPLR);
                                                     }
