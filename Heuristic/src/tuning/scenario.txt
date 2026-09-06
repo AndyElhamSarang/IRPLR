@@ -1,9 +1,9 @@
 # Parameter space
 parameterFile = "./parameters.txt"
 # List of training instances
-trainInstancesFile = "./instances-list_testpc_training.txt"
+trainInstancesFile = "./instances-list_training.txt"
 # Target algorithm launcher
-targetRunner = "./target-runner_testpc"
+targetRunner = "./target-runner"
 # Directory from which the solver is executed
 execDir = "."
 # Stochastic algorithm

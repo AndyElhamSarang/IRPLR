@@ -111,7 +111,7 @@ parameter_tuning:
 	-I $(andy) -I $(andy_boost) \
 	-o MS_parameter_tuning.out -O3
 andy:
-	$(CC) main.cpp file:Read_andy.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
+	$(CC) main_testing.cpp file:Read_andy.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
 	PrintData.cpp random.cpp \
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
@@ -317,4 +317,4 @@ andy_testpc_DISABLE_COUT:
 # ./irplr.out && ./irplr_no_rebalance.out
 
 
-./default_DISABLE_COUT.out && ./no_rebalance_DISABLE_COUT.out && ./no_disturb_DISABLE_COUT.out && ./rebalance_guarantee_feasibility_DISABLE_COUT.out && ./no_lr_DISABLE_COUT.out && ./with_hgs_DISABLE_COUT.out
+#./default_DISABLE_COUT.out && ./no_rebalance_DISABLE_COUT.out && ./no_disturb_DISABLE_COUT.out && ./rebalance_guarantee_feasibility_DISABLE_COUT.out && ./no_lr_DISABLE_COUT.out && ./with_hgs_DISABLE_COUT.out

@@ -117,8 +117,8 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
     // GridResolution = max(1, GridResolution); // Ensure at least one division
     vector<int> CollectionOfGridResolution;
 
-    int tempGridResolution = 4;
-    for(int i=0;i<5;i++)
+    int tempGridResolution = min_grid_resolution;
+    for(int i=0;i<grid_resolution_increment;i++)
     {
         CollectionOfGridResolution.push_back(tempGridResolution);
         tempGridResolution+=2;
@@ -131,7 +131,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         }
         cout << endl;
     }
-    GridResolution = CollectionOfGridResolution[RandomInitial.random_number_generator(0, CollectionOfGridResolution.size()-1, generator)];
+    int GridResolution = CollectionOfGridResolution[RandomInitial.random_number_generator(0, CollectionOfGridResolution.size()-1, generator)];
     // GridResolution = 4;
     if (printout_initialSchedule == 1)
     {

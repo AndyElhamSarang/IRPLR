@@ -36,11 +36,12 @@ string TypeOfRebalance;
 double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
-int GridResolution = 0;
 string ActivateHGS;
 int theta = 0;
 int sigma = 0;
 int phi = 0;
+int min_grid_resolution = 0;
+int grid_resolution_increment = 0;
 int main()
 {
 	file read_file;
@@ -55,10 +56,16 @@ int main()
 	NumberOfExperiments = 1;
 	cout << "NumberOfExperiments:" << NumberOfExperiments << endl;
 
+	min_grid_resolution = 4;
+	cout << "min_grid_resolution:" << min_grid_resolution << endl;
+
+	grid_resolution_increment = 5;
+	cout << "grid_resolution_increment:" << grid_resolution_increment << endl;
+
 	AllowLagrangianRelaxation = "YES";
 	cout << "AllowLagrangianRelaxation:" << AllowLagrangianRelaxation << endl;
 
-	TypeOfRebalance = "NOT_GUARANTEE_FEASIBILITY";
+	TypeOfRebalance = "GUARANTEE_FEASIBILITY";
 	cout << "TypeOfRebalance:" << TypeOfRebalance << endl;
 
 	InitialLagrangianScalar = 10;

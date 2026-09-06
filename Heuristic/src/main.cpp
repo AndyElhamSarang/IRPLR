@@ -1,6 +1,6 @@
 #include "lib.h"
 int printout_inputdata = 0;
-int printout_initialSchedule =0;
+int printout_initialSchedule = 0;
 int printout_initialOutputCVRP = 0;
 int printout_initialRouting = 0;
 int printout_initialReadCVRP = 0;
@@ -28,19 +28,20 @@ bool whether_results_reported_30 = false;
 bool whether_results_reported_60 = false;
 bool whether_results_reported_first_improvement = false;
 string OutputSolutionJSON;
-//Parameters
-int NumberOfInitialSolutions=0;
-int NumberOfExperiments =0;
+// Parameters
+int NumberOfInitialSolutions = 0;
+int NumberOfExperiments = 0;
 string AllowLagrangianRelaxation;
 string TypeOfRebalance;
 double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
-int GridResolution = 0;
 string ActivateHGS;
-int theta=0;
-int sigma=0; 
-int phi=0;
+int theta = 0;
+int sigma = 0;
+int phi = 0;
+int min_grid_resolution = 0;
+int grid_resolution_increment = 0;
 int main()
 {
 	file read_file;
@@ -52,7 +53,7 @@ int main()
 	{
 		if (OutputResults == 1)
 		{
-			string experiment_str = to_string(experiment+1);
+			string experiment_str = to_string(experiment + 1);
 			string experiment_name = "MS";
 			string file_type = ".csv";
 			string file_name = experiment_name + "_exp" + experiment_str + file_type;
@@ -70,7 +71,7 @@ int main()
 		{
 			for (int j = 0; j < read_file.instances[i].size(); j++)
 			{
-			
+
 				cout << "@ ---------------------------------------------" << endl;
 				cout << "@ " << read_file.instances[i][j] << endl;
 				cout << "@ ---------------------------------------------" << endl;
@@ -91,7 +92,7 @@ int main()
 				AccumulatedTimeHGS = 0.0; // Reset accumulated time for HGS for each instance
 				if (OutputResults == 1)
 				{
-					Table << IRPLR.InstanceName  << "," << IRPLR.TimeHorizon << "," << IRPLR.NumberOfRetailers << "," << IRPLR.NumberOfVehicles << ","; // Print instance feastures in the table
+					Table << IRPLR.InstanceName << "," << IRPLR.TimeHorizon << "," << IRPLR.NumberOfRetailers << "," << IRPLR.NumberOfVehicles << ","; // Print instance feastures in the table
 				}
 				////////////////////////////////////////////////////////////////
 				//                                                            //
@@ -132,7 +133,7 @@ int main()
 					// initial_solution.INITIAL(IRPLR, IRPSolution, Routing);
 
 					generator.seed(12345 + j * 789); // Different seed for each initial solution
-					initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing, GlobalBest, read_file,j);
+					initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing, GlobalBest, read_file, j);
 					time(&end_time);
 					double total_time = difftime(end_time, start_time);
 					if (OutputResults == 1)
@@ -142,16 +143,14 @@ int main()
 					}
 					cout << "!Initial solution " << j + 1 << endl;
 					IRPSolution.print_solution(IRPLR);
-					
+
 					IRPSolution.GetLogisticRatio(IRPLR);
 					cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
 					IRPSolution.Validation(IRPLR);
 					generator.seed(static_cast<unsigned int>(time(0)));
 					solution_improvement Metaheuristic;
 					// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
-					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s,read_file, j);
-
-					
+					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, read_file, j);
 				}
 				time(&total_end_time);
 				double accum_time = difftime(total_end_time, total_start_time);
@@ -161,10 +160,10 @@ int main()
 				cout << "Global best" << endl;
 				GlobalBest.print_solution(IRPLR);
 				cout << "BestTransportationCost:" << GlobalBest.TotalTransportationCost << "\t TotalDelivery:" << GlobalBest.TotalDelivery << "\t LogistcRatio:" << GlobalBest.LogisticRatio << endl;
-			
-				if(OutputSolutionJSON == "YES")
+
+				if (OutputSolutionJSON == "YES")
 				{
-					GlobalBest.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName+ "_global_best.json");
+					GlobalBest.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName + "_global_best.json");
 				}
 				if (whether_results_reported_first_improvement == false)
 				{
