@@ -11,7 +11,7 @@ andy_testpc_boost = /home/andytestpc/Desktop/c++_boost/boost_1_83_0
 clean:
 	rm -f *.txt *.csv *.o *.lp *.mps *.out *.json
 andy_desktop:
-	$(CC) main_testing.cpp file:Read_andy_desktop.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
+	$(CC) main.cpp file:Read_andy_desktop.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
 	PrintData.cpp random.cpp \
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
@@ -44,7 +44,7 @@ andy_desktop:
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
 	-o test.out
 andy_desktop_DISABLE_COUT:
-	$(CC) main_testing.cpp file:Read_andy_desktop.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
+	$(CC) main.cpp file:Read_andy_desktop.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
 	PrintData.cpp random.cpp \
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \

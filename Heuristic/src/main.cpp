@@ -150,7 +150,7 @@ int main()
 					generator.seed(static_cast<unsigned int>(time(0)));
 					solution_improvement Metaheuristic;
 					// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
-					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, read_file, j);
+					// Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, read_file, j);
 				}
 				time(&total_end_time);
 				double accum_time = difftime(total_end_time, total_start_time);
