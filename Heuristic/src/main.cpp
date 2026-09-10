@@ -54,7 +54,7 @@ int main()
 		if (OutputResults == 1)
 		{
 			string experiment_str = to_string(experiment + 1);
-			string experiment_name = "MS";
+			string experiment_name = "best_initial_configuration2";
 			string file_type = ".csv";
 			string file_name = experiment_name + "_exp" + experiment_str + file_type;
 			Table.open(file_name);
@@ -132,7 +132,7 @@ int main()
 					time(&start_time);
 					// initial_solution.INITIAL(IRPLR, IRPSolution, Routing);
 
-					generator.seed(12345 + j * 789); // Different seed for each initial solution
+					// generator.seed(12345 + j * 789); // Different seed for each initial solution
 					initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing, GlobalBest, read_file, j);
 					time(&end_time);
 					double total_time = difftime(end_time, start_time);
@@ -147,10 +147,10 @@ int main()
 					IRPSolution.GetLogisticRatio(IRPLR);
 					cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
 					IRPSolution.Validation(IRPLR);
-					generator.seed(static_cast<unsigned int>(time(0)));
+					// generator.seed(static_cast<unsigned int>(time(0)));
 					solution_improvement Metaheuristic;
 					// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
-					// Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, read_file, j);
+					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, read_file, j);
 				}
 				time(&total_end_time);
 				double accum_time = difftime(total_end_time, total_start_time);

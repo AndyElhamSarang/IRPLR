@@ -23,11 +23,13 @@ $EXE \
     --ActivateHGS NO \
     --AllowLagrangianRelaxation YES \
     --TypeOfRebalance GUARANTEE_FEASIBILITY \
-    --MinGridResolution 4 \
-    --GridResolutionIncrement 5\
     --theta 3 \
     --sigma 10 \
     --phi 10 \
+    --InitialLagrangianScalar 10\
+    --ToTriggerAdjustment 20\
+    --MinGridResolution 3 \
+    --GridResolutionIncrement 1 \
     --MainAlgorithmTimeLimit 60 \
     "$@" \
     > "$OUTPUT" 2>&1

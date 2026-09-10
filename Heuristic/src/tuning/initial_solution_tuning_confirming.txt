@@ -1,0 +1,473 @@
+#------------------------------------------------------------------------------
+# irace: An implementation in R of (Elitist) Iterated Racing
+# Version: 4.4.3.dd8d85f
+# Copyright (C) 2010-2025
+# Manuel Lopez-Ibanez     <manuel.lopez-ibanez@manchester.ac.uk>
+# Jeremie Dubois-Lacoste
+# Leslie Perez Caceres    <leslie.perez.caceres@ulb.ac.be>
+#
+# This is free software, and you are welcome to redistribute it under certain
+# conditions.  See the GNU General Public License for details. There is NO
+# WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# irace builds upon previous code from the race package:
+#     race: Racing methods for the selection of the best
+#     Copyright (C) 2003 Mauro Birattari
+#------------------------------------------------------------------------------
+# installed at: /home/andy/R/x86_64-pc-linux-gnu-library/4.1/irace
+# called with: --scenario scenario.txt
+# 2026-09-10 03:24:19 AWST: Reading parameter file '/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/parameters.txt'.
+# --- Parameters Hierarchy ---
+                Parameter Level              Depends.on
+1       MinGridResolution     1       MinGridResolution
+2 GridResolutionIncrement     1 GridResolutionIncrement
+# ------------------------
+## irace scenario:
+scenarioFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/scenario.txt"
+execDir = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning"
+parameterFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/parameters.txt"
+parameters = <environment>
+initConfigurations = NULL
+configurationsFile = ""
+logFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/irace.Rdata"
+recoveryFile = ""
+instances = c("/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n200_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n200_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n200_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n100_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n100_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n100_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n50_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n50_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n50_5.dat")
+trainInstancesDir = ""
+trainInstancesFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/instances-list_training.txt"
+sampleInstances = TRUE
+testInstancesDir = ""
+testInstancesFile = ""
+testInstances = NULL
+testNbElites = 1L
+testIterationElites = FALSE
+testType = "friedman"
+firstTest = 5L
+blockSize = 1L
+eachTest = 1L
+targetRunner = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/target-runner"
+targetRunnerLauncher = ""
+targetCmdline = "{configurationID} {instanceID} {seed} {instance} {bound} {targetRunnerArgs}"
+targetRunnerRetries = 0L
+targetRunnerTimeout = 0L
+targetRunnerData = ""
+targetRunnerParallel = NULL
+targetEvaluator = NULL
+deterministic = FALSE
+maxExperiments = 3000L
+minExperiments = NA_character_
+maxTime = 0L
+budgetEstimation = 0.05
+minMeasurableTime = 0.01
+parallel = 1L
+loadBalancing = TRUE
+mpi = FALSE
+batchmode = "0"
+quiet = FALSE
+debugLevel = 1L
+seed = NA_character_
+softRestart = TRUE
+softRestartThreshold = 1e-04
+elitist = TRUE
+elitistNewInstances = 1L
+elitistLimit = 2L
+repairConfiguration = NULL
+capping = FALSE
+cappingAfterFirstTest = FALSE
+cappingType = "median"
+boundType = "candidate"
+boundMax = NULL
+boundDigits = 0L
+boundPar = 1L
+boundAsTimeout = TRUE
+postselection = TRUE
+aclib = FALSE
+nbIterations = 0L
+nbExperimentsPerIteration = 0L
+minNbSurvival = 0L
+nbConfigurations = 0L
+mu = 5L
+confidence = 0.95
+## end of irace scenario
+# 2026-09-10 03:24:19 AWST: Initialization
+# Elitist race
+# Elitist new instances: 1
+# Elitist limit: 2
+# nbIterations: 3
+# minNbSurvival: 3
+# nbParameters: 2
+# seed: 579810118
+# confidence level: 0.95
+# budget: 3000
+# mu: 5
+# deterministic: FALSE
+
+# 2026-09-10 03:24:19 AWST: Iteration 1 of 3
+# experimentsUsed: 0
+# remainingBudget: 3000
+# currentBudget: 1000
+# nbConfigurations: 166
+# 2026-09-10 03:24:19 AWST: Sample 166 configurations from Sobol distribution
+# 2026-09-10 03:24:19 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          1|         50|          3|     1.235550000|         50|00:04:59|   NA|  NA|    NA|
+|x|          2|         50|         50|     1.781795000|        100|00:00:23|+0.28|0.64|0.2015|
+|x|          3|         50|         38|     1.646713333|        150|00:04:33|+0.36|0.57|0.1666|
+|x|          4|         50|         50|     1.632325000|        200|00:01:04|+0.35|0.51|0.1959|
+|-|          5|         18|         38|     1.719468000|        250|00:00:18|+0.01|0.21|0.9375|
+|-|          6|          9|         38|     1.631118333|        268|00:01:32|+0.06|0.22|0.7939|
+|=|          7|          9|         38|     1.707342857|        277|00:00:03|+0.08|0.21|0.8218|
+|=|          8|          9|         38|     1.675922500|        286|00:00:14|+0.10|0.21|0.8158|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:          38    mean value:      1.675922500
+Description of the best-so-far configuration:
+   .ID. MinGridResolution GridResolutionIncrement .PARENT.
+38   38               3.0                     1.0       NA
+
+# 2026-09-10 03:37:28 AWST: Extracting elites
+# 2026-09-10 03:37:28 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   .ID. MinGridResolution GridResolutionIncrement .PARENT. .RANK.          .WEIGHT.
+38   38               3.0                     1.0       NA     23 0.500000000000000
+50   50               3.0                     2.0       NA     25 0.333333333333333
+16   16               3.0                     4.0       NA     35 0.166666666666667
+# 2026-09-10 03:37:28 AWST: Initialise model
+# 2026-09-10 03:37:28 AWST: End of iteration 1
+# 2026-09-10 03:37:28 AWST: Iteration 2 of 3
+# experimentsUsed: 286
+# remainingBudget: 2714
+# currentBudget: 1357
+# nbConfigurations: 153
+# 2026-09-10 03:37:28 AWST: Update model
+# 2026-09-10 03:37:28 AWST: Sample 150 configurations from model
+# 2026-09-10 03:37:28 AWST: Computing similarity of configurations . DONE
+# 2026-09-10 03:37:28 AWST: Soft restart: 51 53 54 56 61 63 66 67 70 73 80 88 91 102 107 109 113 119 122 124 135 148 152 157 166 169 173 176 179 182 183 187 195 60 64 82 94 98 99 101 108 112 125 134 141 155 162 165 174 178 186 190 193 65 72 74 86 114 121 128 133 136 138 156 158 81 118 144 168 172 199 38 55 57 59 68 69 71 77 79 84 85 89 90 96 97 104 106 111 115 116 117 123 127 129 131 132 137 139 142 143 145 146 147 150 151 153 154 160 161 163 167 171 175 177 181 184 188 191 196 197 198 200 50 52 83 87 92 103 105 126 140 159 164 58 62 75 110 120 149 170 192 194 16 78 93 95 100 130 180 185 189 !
+# 2026-09-10 03:37:28 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          9|        153|        105|     1.670100000|        153|00:03:36|   NA|  NA|    NA|
+|x|          7|        153|        138|     1.905875000|        303|00:00:56|+0.29|0.65|0.6867|
+|x|          4|        153|        138|     1.832030000|        453|00:03:18|+0.35|0.57|0.6384|
+|x|          2|        153|        138|     1.949870000|        603|00:01:01|+0.39|0.54|0.6101|
+|-|          1|         68|        148|     1.828926000|        753|00:14:07|-0.01|0.19|0.9884|
+|=|          6|         68|        148|     1.714235000|        818|00:05:55|+0.05|0.20|0.9302|
+|-|          5|         36|        148|     1.746180000|        883|00:00:22|-0.03|0.12|0.9988|
+|=|          8|         36|        148|     1.709775000|        916|00:00:41|-0.01|0.12|0.9814|
+|=|          3|         36|        148|     1.661653333|        949|00:02:54|+0.00|0.11|0.9617|
+|=|         10|         36|        148|     1.673371000|        985|00:00:49|+0.02|0.12|0.9479|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:         148    mean value:      1.673371000
+Description of the best-so-far configuration:
+    .ID. MinGridResolution GridResolutionIncrement .PARENT.
+148  148               3.0                     1.0       38
+
+# 2026-09-10 04:11:13 AWST: Extracting elites
+# 2026-09-10 04:11:13 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. MinGridResolution GridResolutionIncrement .PARENT. .RANK.          .WEIGHT.
+148  148               3.0                     1.0       38    116 0.500000000000000
+50    50               3.0                     2.0       NA    253 0.333333333333333
+16    16               3.0                     4.0       NA    276 0.166666666666667
+# 2026-09-10 04:11:13 AWST: End of iteration 2
+# 2026-09-10 04:11:13 AWST: Iteration 3 of 3
+# experimentsUsed: 1271
+# remainingBudget: 1729
+# currentBudget: 1729
+# nbConfigurations: 159
+# 2026-09-10 04:11:13 AWST: Update model
+# 2026-09-10 04:11:13 AWST: Sample 156 configurations from model
+# 2026-09-10 04:11:13 AWST: Computing similarity of configurations . DONE
+# 2026-09-10 04:11:13 AWST: Soft restart: 203 206 207 210 212 215 219 227 229 234 236 237 240 241 244 246 250 251 254 260 262 263 270 274 275 276 277 281 283 286 287 288 292 294 295 297 299 301 303 307 309 310 311 312 313 318 319 320 329 333 334 336 337 339 341 346 348 351 353 354 223 235 242 243 252 267 278 296 298 304 314 322 330 343 347 352 230 306 325 231 249 265 268 279 327 332 338 345 356 148 204 205 208 209 211 216 217 218 222 226 228 232 233 238 247 248 253 255 257 258 259 266 269 271 272 280 282 284 285 289 290 293 300 302 305 315 316 317 321 323 324 326 328 331 340 342 349 355 50 201 213 220 224 245 261 273 291 308 214 225 256 264 335 16 202 221 239 344 350 !
+# 2026-09-10 04:11:13 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         11|        159|        219|     1.236660000|        159|00:14:12|   NA|  NA|    NA|
+|x|          5|        159|        273|     1.581040000|        315|00:00:55|+0.44|0.72|0.4706|
+|x|          1|        159|        273|     1.477016667|        471|00:13:43|+0.53|0.69|0.3289|
+|x|          6|        159|        273|     1.402580000|        627|00:13:50|+0.59|0.69|0.2746|
+|-|          8|         50|        320|     1.420930000|        783|00:03:23|-0.04|0.17|1.0090|
+|=|          7|         50|        247|     1.546001667|        830|00:00:18|-0.01|0.16|0.9763|
+|=|          9|         50|        247|     1.574107143|        877|00:01:12|+0.01|0.15|0.9576|
+|=|          3|         50|        247|     1.537260000|        924|00:04:19|+0.03|0.15|0.9405|
+|=|         10|         50|        148|     1.559326667|        971|00:01:15|+0.04|0.14|0.9308|
+|-|          2|         32|        247|     1.632767000|       1018|00:00:18|+0.01|0.11|0.9623|
+|=|          4|         32|        324|     1.646331818|       1047|00:00:40|+0.00|0.10|0.9626|
+|=|         12|         32|        324|     1.606872500|       1079|00:03:13|+0.01|0.10|0.9550|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:         324    mean value:      1.606872500
+Description of the best-so-far configuration:
+    .ID. MinGridResolution GridResolutionIncrement .PARENT.
+324  324               3.0                     1.0       50
+
+# 2026-09-10 05:08:38 AWST: Extracting elites
+# 2026-09-10 05:08:38 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. MinGridResolution GridResolutionIncrement .PARENT. .RANK.          .WEIGHT.
+324  324               3.0                     1.0       50    125 0.500000000000000
+286  286               3.0                     2.0       50    219 0.333333333333333
+16    16               3.0                     4.0       NA    309 0.166666666666667
+# 2026-09-10 05:08:38 AWST: End of iteration 3
+# 2026-09-10 05:08:38 AWST: Iteration 4 of 4
+# experimentsUsed: 2350
+# remainingBudget: 650
+# currentBudget: 650
+# nbConfigurations: 52
+# 2026-09-10 05:08:38 AWST: Update model
+# 2026-09-10 05:08:38 AWST: Sample 49 configurations from model
+# 2026-09-10 05:08:38 AWST: Computing similarity of configurations . DONE
+# 2026-09-10 05:08:38 AWST: Soft restart: 360 362 363 367 370 372 378 387 400 403 405 357 368 369 391 392 399 358 382 384 390 394 381 398 324 361 364 366 371 373 374 379 380 383 386 389 393 397 401 402 404 286 377 388 395 16 359 365 375 376 385 396 !
+# 2026-09-10 05:08:38 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         13|         52|        388|     2.023890000|         52|00:00:21|   NA|  NA|    NA|
+|x|          5|         52|        369|     2.010830000|        101|00:00:18|+0.36|0.68|0.6095|
+|x|         12|         52|        388|     1.728186667|        150|00:04:25|+0.40|0.60|0.5712|
+|x|          8|         52|        358|     1.684727500|        199|00:01:04|+0.48|0.61|0.4995|
+|-|          2|         18|        286|     1.792378000|        248|00:00:20|+0.04|0.24|0.8401|
+|=|          4|         18|        388|     1.768223333|        263|00:00:20|+0.12|0.27|0.7866|
+|=|          9|         18|        286|     1.773370000|        278|00:00:22|+0.10|0.23|0.8125|
+|-|          6|         12|        367|     1.707906250|        293|00:01:22|+0.01|0.14|0.8777|
+|=|         11|         12|        367|     1.660005556|        302|00:00:52|+0.04|0.15|0.8532|
+|=|          7|         12|        367|     1.721421000|        311|00:00:06|+0.04|0.14|0.8661|
+|=|          3|         12|        324|     1.685590000|        320|00:01:03|+0.00|0.09|0.8999|
+|=|          1|         12|        324|     1.649481667|        329|00:00:53|+0.01|0.10|0.8900|
+|=|         10|         12|        324|     1.656346923|        338|00:00:14|+0.03|0.10|0.8762|
+|=|         14|         12|        324|     1.686050714|        350|00:00:04|+0.03|0.09|0.8797|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:         324    mean value:      1.686050714
+Description of the best-so-far configuration:
+    .ID. MinGridResolution GridResolutionIncrement .PARENT.
+324  324               3.0                     1.0       50
+
+# 2026-09-10 05:20:29 AWST: Extracting elites
+# 2026-09-10 05:20:29 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. MinGridResolution GridResolutionIncrement .PARENT. .RANK.          .WEIGHT.
+324  324               3.0                     1.0       50     70 0.500000000000000
+286  286               3.0                     2.0       50     87 0.333333333333333
+16    16               3.0                     4.0       NA    128 0.166666666666667
+# 2026-09-10 05:20:29 AWST: End of iteration 4
+# 2026-09-10 05:20:29 AWST: Iteration 5 of 5
+# experimentsUsed: 2700
+# remainingBudget: 300
+# currentBudget: 300
+# nbConfigurations: 22
+# 2026-09-10 05:20:29 AWST: Update model
+# 2026-09-10 05:20:29 AWST: Sample 19 configurations from model
+# 2026-09-10 05:20:29 AWST: Computing similarity of configurations . DONE
+# 2026-09-10 05:20:29 AWST: Soft restart: 406 410 411 324 407 408 409 412 413 414 415 416 417 422 286 419 421 424 16 423 !
+# 2026-09-10 05:20:29 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         15|         22|        413|     2.276070000|         22|00:00:09|   NA|  NA|    NA|
+|x|          5|         22|        413|     2.090885000|         41|00:00:07|+0.42|0.71|0.5131|
+|x|          4|         22|        413|     1.952036667|         60|00:00:27|+0.47|0.65|0.4886|
+|x|          6|         22|        413|     1.756812500|         79|00:01:50|+0.56|0.67|0.3916|
+|-|         10|          9|        413|     1.759204000|         98|00:00:34|+0.19|0.35|0.8357|
+|-|         14|          6|        413|     1.791911667|        104|00:00:03|+0.18|0.32|0.7292|
+|=|          7|          6|        413|     1.852352857|        107|00:00:01|+0.17|0.28|0.7390|
+|=|          2|          6|        413|     1.920430000|        110|00:00:01|+0.11|0.22|0.7460|
+|=|          9|          6|        413|     1.901901111|        113|00:00:04|+0.13|0.23|0.7139|
+|=|          1|          6|        324|     1.849461000|        116|00:00:20|+0.12|0.20|0.7249|
+|!|         12|          6|        324|     1.787948182|        119|00:00:19|+0.15|0.23|0.7060|
+|-|         11|          5|        324|     1.744107500|        122|00:00:18|+0.20|0.27|0.6151|
+|!|         13|          5|        324|     1.783025385|        124|00:00:00|+0.18|0.24|0.6481|
+|!|          8|          5|        407|     1.755667143|        126|00:00:02|+0.20|0.26|0.6213|
+|-|          3|          4|        407|     1.722910667|        128|00:00:11|-0.05|0.02|0.7877|
+|=|         16|          4|        324|     1.720745000|        132|00:00:06|-0.03|0.03|0.7727|
+|=|         17|          4|        324|     1.706248824|        136|00:00:05|-0.03|0.03|0.7687|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:         324    mean value:      1.706248824
+Description of the best-so-far configuration:
+    .ID. MinGridResolution GridResolutionIncrement .PARENT.
+324  324               3.0                     1.0       50
+
+# 2026-09-10 05:25:17 AWST: Extracting elites
+# 2026-09-10 05:25:17 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. MinGridResolution GridResolutionIncrement .PARENT. .RANK.          .WEIGHT.
+324  324               3.0                     1.0       50     39 0.666666666666667
+286  286               3.0                     2.0       50     47 0.333333333333333
+# 2026-09-10 05:25:17 AWST: End of iteration 5
+# 2026-09-10 05:25:17 AWST: Iteration 6 of 6
+# experimentsUsed: 2836
+# remainingBudget: 164
+# currentBudget: 164
+# nbConfigurations: 11
+# 2026-09-10 05:25:17 AWST: Update model
+# 2026-09-10 05:25:17 AWST: Sample 9 configurations from model
+# 2026-09-10 05:25:17 AWST: Computing similarity of configurations . DONE
+# 2026-09-10 05:25:17 AWST: Soft restart: 427 429 433 426 430 324 425 428 431 432 !
+# 2026-09-10 05:25:17 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         18|         11|        324|     1.284680000|         11|00:01:04|   NA|  NA|    NA|
+|x|          2|         11|        324|     1.796420000|         20|00:00:04|+0.77|0.89|0.3475|
+|x|          5|         11|        286|     1.844153333|         29|00:00:03|+0.61|0.74|0.3735|
+|x|         11|         11|        427|     1.705867500|         38|00:00:51|+0.54|0.65|0.3427|
+|-|         14|          7|        427|     1.756300000|         47|00:00:03|-0.07|0.14|0.8957|
+|=|         17|          7|        427|     1.718201667|         52|00:00:06|+0.01|0.18|0.8137|
+|=|          6|          7|        324|     1.663200000|         57|00:00:27|+0.10|0.23|0.7341|
+|=|          1|          7|        324|     1.611836250|         62|00:00:29|+0.11|0.22|0.7418|
+|-|          8|          5|        324|     1.595657778|         67|00:00:06|-0.03|0.08|0.7407|
+|=|         10|          5|        324|     1.609965000|         70|00:00:04|-0.02|0.08|0.7571|
+|=|          9|          5|        324|     1.623282727|         73|00:00:04|-0.03|0.07|0.7845|
+|=|         16|          5|        324|     1.623505000|         76|00:00:04|+0.02|0.10|0.7458|
+|=|         13|          5|        324|     1.671700000|         79|00:00:01|+0.02|0.09|0.7421|
+|=|          4|          5|        324|     1.672228571|         82|00:00:04|+0.03|0.10|0.7127|
+|=|          3|          5|        324|     1.644774000|         85|00:00:17|+0.06|0.12|0.6870|
+|=|          7|          5|        324|     1.676051875|         88|00:00:01|+0.06|0.12|0.6727|
+|-|         12|          4|        324|     1.646450000|         91|00:00:15|+0.00|0.06|0.7508|
+|=|         15|          4|        324|     1.682828333|         93|00:00:00|+0.00|0.06|0.7473|
+|=|         19|          4|        324|     1.716095263|         97|00:00:01|+0.02|0.07|0.7303|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:         324    mean value:      1.716095263
+Description of the best-so-far configuration:
+    .ID. MinGridResolution GridResolutionIncrement .PARENT.
+324  324               3.0                     1.0       50
+
+# 2026-09-10 05:29:32 AWST: Extracting elites
+# 2026-09-10 05:29:32 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. MinGridResolution GridResolutionIncrement .PARENT. .RANK.          .WEIGHT.
+324  324               3.0                     1.0       50     38 0.666666666666667
+286  286               3.0                     2.0       50     51 0.333333333333333
+# 2026-09-10 05:29:32 AWST: End of iteration 6
+# 2026-09-10 05:29:32 AWST: Iteration 7 of 7
+# experimentsUsed: 2933
+# remainingBudget: 67
+# currentBudget: 67
+# nbConfigurations: 5
+# 2026-09-10 05:29:32 AWST: Update model
+# 2026-09-10 05:29:32 AWST: Sample 3 configurations from model
+# 2026-09-10 05:29:32 AWST: Computing similarity of configurations . DONE
+# 2026-09-10 05:29:32 AWST: Soft restart: 324 434 435 286 436 !
+# 2026-09-10 05:29:32 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         20|          5|        435|     1.272920000|          5|00:00:29|   NA|  NA|    NA|
+|x|         14|          5|        435|     1.667565000|          8|00:00:01|-0.36|0.32|1.2460|
+|x|         15|          5|        434|     1.889366667|         11|00:00:01|-0.41|0.06|1.1497|
+|x|          2|          5|        286|     1.969952500|         14|00:00:02|-0.14|0.14|0.9412|
+|=|         19|          5|        324|     2.061448000|         17|00:00:01|-0.21|0.03|0.9706|
+|=|         10|          5|        324|     2.007661667|         20|00:00:04|-0.08|0.10|0.8786|
+|=|         16|          5|        324|     1.953131429|         23|00:00:04|-0.07|0.08|0.8548|
+|=|         12|          5|        324|     1.855592500|         26|00:00:18|+0.01|0.13|0.7839|
+|=|         13|          5|        324|     1.899420000|         29|00:00:01|-0.03|0.09|0.8421|
+|=|          5|          5|        324|     1.917204000|         32|00:00:01|-0.07|0.04|0.8684|
+|=|         11|          5|        324|     1.857627273|         35|00:00:17|-0.05|0.04|0.8520|
+|=|          9|          5|        324|     1.849196667|         38|00:00:04|-0.03|0.06|0.8461|
+|=|          4|          5|        324|     1.836112308|         41|00:00:04|-0.05|0.03|0.8494|
+|=|          3|          5|        324|     1.794990714|         44|00:00:17|-0.03|0.05|0.8304|
+|=|          6|          5|        324|     1.752920000|         47|00:00:16|-0.00|0.07|0.8159|
+|=|          7|          5|        324|     1.777438750|         50|00:00:01|+0.00|0.07|0.8182|
+|=|         17|          5|        324|     1.759607647|         53|00:00:04|-0.00|0.06|0.8101|
+|=|          8|          5|        324|     1.743308889|         56|00:00:04|+0.01|0.06|0.8084|
+|=|          1|          5|        324|     1.717465789|         59|00:00:17|+0.02|0.07|0.7911|
+|=|         18|          5|        324|     1.695826500|         62|00:00:17|+0.03|0.07|0.7853|
+|=|         21|          5|        324|     1.702892381|         67|00:00:09|+0.02|0.06|0.7882|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because experiments for next test (72) > max experiments (67)
+Best-so-far configuration:         324    mean value:      1.702892381
+Description of the best-so-far configuration:
+    .ID. MinGridResolution GridResolutionIncrement .PARENT.
+324  324               3.0                     1.0       50
+
+# 2026-09-10 05:32:33 AWST: Extracting elites
+# 2026-09-10 05:32:33 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    .ID. MinGridResolution GridResolutionIncrement .PARENT. .RANK.          .WEIGHT.
+324  324               3.0                     1.0       50     49 0.666666666666667
+286  286               3.0                     2.0       50     63 0.333333333333333
+# 2026-09-10 05:32:33 AWST: End of iteration 7
+# 2026-09-10 05:32:33 AWST: Stopped because budget is exhausted
+# Iteration: 8
+# nbIterations: 7
+# experimentsUsed: 3000
+# timeUsed: 0
+# remainingBudget: 0
+# currentBudget: 67
+# number of elites: 2
+# nbConfigurations: 5
+# Total CPU user time: 2530.724, CPU sys time: 4877.26, Wall-clock time: 7693.957
+# Best configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    MinGridResolution GridResolutionIncrement
+324               3.0                     1.0
+286               3.0                     2.0
+# Best configurations as commandlines (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+324 --MinGridResolution 3.0 --GridResolutionIncrement 1.0
+286 --MinGridResolution 3.0 --GridResolutionIncrement 2.0
+
+
+# Testing of elite configurations: 1 
+# Testing iteration configurations: FALSE 
+# 2026-09-10 05:32:33 AWST: No test instances, skip testing

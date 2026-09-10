@@ -225,7 +225,7 @@ int main()
 					time(&start_time);
 					// initial_solution.INITIAL(IRPLR, IRPSolution, Routing);
 
-					generator.seed(12345 + j * 789); // Different seed for each initial solution
+					// generator.seed(12345 + j * 789); // Different seed for each initial solution
 					initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing, GlobalBest, read_file, j);
 					time(&end_time);
 					double total_time = difftime(end_time, start_time);
@@ -240,7 +240,7 @@ int main()
 					IRPSolution.GetLogisticRatio(IRPLR);
 					cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
 					IRPSolution.Validation(IRPLR);
-					generator.seed(static_cast<unsigned int>(time(0)));
+					// generator.seed(static_cast<unsigned int>(time(0)));
 					solution_improvement Metaheuristic;
 					// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
 					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, read_file, j);

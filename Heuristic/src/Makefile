@@ -111,7 +111,7 @@ parameter_tuning:
 	-I $(andy) -I $(andy_boost) \
 	-o MS_parameter_tuning.out -O3
 andy:
-	$(CC) main_testing.cpp file:Read_andy.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
+	$(CC) main.cpp file:Read_andy.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
 	PrintData.cpp random.cpp \
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \

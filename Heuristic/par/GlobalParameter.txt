@@ -1,19 +1,19 @@
 NumberOfInitialSolution
 10
 MinGridResolution
-4
+3
 GridResolutionIncrement
-5
-NumberOfExperiments
 1
+NumberOfExperiments
+5
 AllowLagrangianRelaxation
 YES
 TypeOfRebalance
-NOT_GUARANTEE_FEASIBILITY
+GUARANTEE_FEASIBILITY
 InitialLagrangianScalar
 10
 ToAdjustLagrangianScalar
-1
+10
 ToTriggerAdjustment
 20
 Activate HGS
