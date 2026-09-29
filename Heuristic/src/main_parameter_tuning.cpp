@@ -210,7 +210,7 @@ int main(int argc, char* argv[])
 			Table << ",#TimePeriods,#Nodes,#Vehicle";
 			for (int i = 0; i < NumberOfInitialSolutions; i++)
 			{
-				Table << ",InitialCost,InitialQuantity,InitialLogisticRatio,T_InitialSchedule,InitialCostAfterHGS,InitialQuantityAfterHGS,InitialLogisticRatioAfterHGS,InitialTimeForHGS,T_InitialSolution,NumberOfRebalance,NumberOfFeasibleRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,RebalanceMaxPercentageImprovement,RebalanceMinPercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,BestCostAfterHGS,BestQuantityAfterHGS,BestLogisticRatioAfterHGS,TimeForHGS,Time";
+				Table << ",InitialCost,InitialQuantity,InitialLogisticRatio,T_InitialSchedule,InitialCostAfterNearestInsertion,InitialQuantityAfterNearestInsertion,InitialLogisticRatioAfterNearestInsertion,T_InitialScheduleAfterNearestInsertion,InitialCostAfterHGS,InitialQuantityAfterHGS,InitialLogisticRatioAfterHGS,InitialTimeForHGS,T_InitialSolution,NumberOfRebalance,NumberOfFeasibleRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,RebalanceMaxPercentageImprovement,RebalanceMinPercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,BestCostAfterHGS,BestQuantityAfterHGS,BestLogisticRatioAfterHGS,TimeForHGS,Time";
 			}
 
 			Table << ",FirstImpCost,FirstImpQuantity,FirstImpLogisticRatio,TimeAtFirstImprovement,BestCostAt30s,BestQuantityAt30s,BestLogisticRatioAt30s,TimeAt30s,BestCostAt60s,BestQuantityAt60s,BestLogisticRatioAt60s,TimeAt60s,GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_iteration,T_To_best,T_total_for_HGS,T_Total\n";

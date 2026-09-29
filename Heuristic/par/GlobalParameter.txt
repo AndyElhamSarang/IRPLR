@@ -3,13 +3,13 @@ NumberOfInitialSolution
 MinGridResolution
 3
 GridResolutionIncrement
-1
+2
 NumberOfExperiments
-5
+1
 AllowLagrangianRelaxation
 YES
 TypeOfRebalance
-GUARANTEE_FEASIBILITY
+NOT_GUARANTEE_FEASIBILITY
 InitialLagrangianScalar
 10
 ToAdjustLagrangianScalar

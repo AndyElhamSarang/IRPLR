@@ -26,7 +26,13 @@
 ##    condition is satisfied, FALSE otherwise.
 
 # 1:            2:                   3:     4:      5: 
-ToAdjustLagrangianScalar          "--ToAdjustLagrangianScalar "           o      (0.1,0.25,0.5,0.75,1.0,1.25,1.5,1.75,2.0,10.0,20.0,30.0,40.0,50.0) 
-
+AllowLagrangianRelaxation         "--AllowLagrangianRelaxation "          o      ("NO","YES")
+TypeOfRebalance                   "--TypeOfRebalance "                    o      ("NOT_GUARANTEE_FEASIBILITY", "GUARANTEE_FEASIBILITY")
+InitialLagrangianScalar           "--InitialLagrangianScalar "            o      (1, 5, 10, 20)
+ToTriggerAdjustment               "--ToTriggerAdjustment "                o      (10, 20, 30, 40, 50)
+ToAdjustLagrangianScalar          "--ToAdjustLagrangianScalar "           o      (0.1,0.5, 0.75, 1.0, 2.0, 5.0, 10.0) 
+MinGridResolution                 "--MinGridResolution "                  o      (2,3,4,5)
+GridResolutionIncrement           "--GridResolutionIncrement "            o      (1, 2, 3)
+NumberOfInitialSolutions          "--NumberOfInitialSolutions "           o      (5, 10, 20)
 [global]
 digits = 4 # Maximum number of decimal places that are significant for numerical (real) parameters.

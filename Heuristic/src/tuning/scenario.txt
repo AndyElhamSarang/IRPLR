@@ -9,9 +9,9 @@ execDir = "."
 # Stochastic algorithm
 deterministic = 0
 # Tuning budget
-maxExperiments = 3000
+maxExperiments = 5000
 # Parallel execution
-parallel = 1
+parallel = 4
 # Output
 logFile = "./irace.Rdata"
 # Optional

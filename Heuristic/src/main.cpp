@@ -61,7 +61,7 @@ int main()
 			Table << ",#TimePeriods,#Nodes,#Vehicle";
 			for (int i = 0; i < NumberOfInitialSolutions; i++)
 			{
-				Table << ",InitialCost,InitialQuantity,InitialLogisticRatio,T_InitialSchedule,InitialCostAfterHGS,InitialQuantityAfterHGS,InitialLogisticRatioAfterHGS,InitialTimeForHGS,T_InitialSolution,NumberOfRebalance,NumberOfFeasibleRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,RebalanceMaxPercentageImprovement,RebalanceMinPercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,BestCostAfterHGS,BestQuantityAfterHGS,BestLogisticRatioAfterHGS,TimeForHGS,Time";
+				Table << ",InitialCost,InitialQuantity,InitialLogisticRatio,T_InitialSchedule,InitialCostAfterNearestInsertion,InitialQuantityAfterNearestInsertion,InitialLogisticRatioAfterNearestInsertion,T_InitialScheduleAfterNearestInsertion,InitialCostAfterHGS,InitialQuantityAfterHGS,InitialLogisticRatioAfterHGS,InitialTimeForHGS,T_InitialSolution,NumberOfRebalance,NumberOfFeasibleRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,RebalanceMaxPercentageImprovement,RebalanceMinPercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,BestCostAfterHGS,BestQuantityAfterHGS,BestLogisticRatioAfterHGS,TimeForHGS,Time";
 			}
 
 			Table << ",FirstImpCost,FirstImpQuantity,FirstImpLogisticRatio,TimeAtFirstImprovement,BestCostAt30s,BestQuantityAt30s,BestLogisticRatioAt30s,TimeAt30s,BestCostAt60s,BestQuantityAt60s,BestLogisticRatioAt60s,TimeAt60s,GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_iteration,T_To_best,T_total_for_HGS,T_Total\n";
@@ -149,7 +149,6 @@ int main()
 					IRPSolution.Validation(IRPLR);
 					// generator.seed(static_cast<unsigned int>(time(0)));
 					solution_improvement Metaheuristic;
-					// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
 					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, read_file, j);
 				}
 				time(&total_end_time);
