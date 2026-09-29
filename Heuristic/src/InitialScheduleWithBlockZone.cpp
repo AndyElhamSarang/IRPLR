@@ -451,7 +451,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
     }
 
     // Sort retailers within each block by demand (descending) to prioritize high demand retailers first
-    cout << "Sorting by demand" << endl;
+    // cout << "Sorting by demand" << endl;
     for (int i = 0; i < CompleteGroupOfRetailers.size(); i++)
     {
         for (int j = 0; j < CompleteGroupOfRetailers[i].size(); j++)
@@ -477,7 +477,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         }
     }
 
-    cout << "Finished Sorting by demand" << endl;
+    // cout << "Finished Sorting by demand" << endl;
 
     // Verify every retailer is present in the complete grouping
     int counterNumberOfRetailers = 0;
@@ -617,7 +617,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                     {
                                         Load = InitialDeliveryMax(IRPLR.Vehicle.capacity, IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][i], IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax, IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1]);
 
-                                        cout << "Load: " << Load << ", IRPLR.Vehicle.capacity: " << IRPLR.Vehicle.capacity << ", IRPSolution.VehicleLoad: " << IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][i] << ", IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax: " << IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax << ", IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1]: " << IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1] << endl;
+                                        // cout << "Load: " << Load << ", IRPLR.Vehicle.capacity: " << IRPLR.Vehicle.capacity << ", IRPSolution.VehicleLoad: " << IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][i] << ", IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax: " << IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax << ", IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1]: " << IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1] << endl;
                                          if(Load + IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1] > IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax)
                                         {
                                             cout<< "Warning: Delivery quantity exceeds retailer's max inventory for retailer " << CandidateRetailers[RandomPickARetailer] << " in period " << RandomPickANonStockOutPeriod << endl;
