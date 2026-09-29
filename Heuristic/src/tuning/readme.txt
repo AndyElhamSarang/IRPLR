@@ -18,21 +18,7 @@ Sys.which("irace")
 irace 
    "" 
 //To execute the program, use the following command in the terminal:
-./MS_parameter_tuning.out \
---instance /home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/mvirp/Small_Instances/Istanze0105h6/abs4n15_4.dat \
---NumberOfInitialSolutions 5 \
---NumberOfExperiments 1 \
---AllowLagrangianRelaxation YES \
---TypeOfRebalance NOT_GUARANTEE_FEASIBILITY \
---InitialLagrangianScalar 10 \
---ToAdjustLagrangianScalar 0.5 \
---ToTriggerAdjustment 20 \
---GridResolution 4 \
---ActivateHGS NO \
---theta 3 \
---sigma 10 \
---phi 10 \
---MainAlgorithmTimeLimit 65
+./MS_parameter_tuning.out --instance /home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/archetti2019/H3/abs1n5_5.dat --NumberOfInitialSolutions 5 --NumberOfExperiments 1 --AllowLagrangianRelaxation YES --TypeOfRebalance NOT_GUARANTEE_FEASIBILITY --InitialLagrangianScalar 10 --ToAdjustLagrangianScalar 0.5 --ToTriggerAdjustment 20 --MinGridResolution 4 --GridResolutionIncrement 5 --ActivateHGS NO --theta 3 --sigma 10 --phi 10 --MainAlgorithmTimeLimit 60
 
 OR
 
@@ -54,3 +40,28 @@ $(head -n 1 instances-list.txt) \
 --sigma 10 \
 --phi 10 \
 --MainAlgorithmTimeLimit 65
+
+
+./MS_parameter_tuning.out --instance /home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/archetti2019/H3/abs1n5_5.dat --NumberOfInitialSolutions 5 --NumberOfExperiments 1 --AllowLagrangianRelaxation YES --TypeOfRebalance NOT_GUARANTEE_FEASIBILITY --InitialLagrangianScalar 10 --ToAdjustLagrangianScalar 0.5 --ToTriggerAdjustment 20 --MinGridResolution 4 --GridResolutionIncrement 5 --ActivateHGS NO --theta 3 --sigma 10 --phi 10 --MainAlgorithmTimeLimit 60
+
+./MS_parameter_tuning.out --instance /home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/archetti2019/H3/abs1n5_5.dat 
+--NumberOfInitialSolutions 5 \
+--NumberOfExperiments 1 \
+--AllowLagrangianRelaxation YES \
+--TypeOfRebalance NOT_GUARANTEE_FEASIBILITY \
+--InitialLagrangianScalar 10 \
+--ToAdjustLagrangianScalar 0.5 \
+--ToTriggerAdjustment 20 \
+--MinGridResolution 4 \
+--GridResolutionIncrement 5 \
+--ActivateHGS NO \
+--theta 3 \
+--sigma 10 \
+--phi 10 \
+--MainAlgorithmTimeLimit 60
+
+./MS_parameter_tuning.out --instance /home/andytestpc/Desktop/Curtin/IRPLR/IRPLR/Data/archetti2019/H3/abs1n5_5.dat --NumberOfInitialSolutions 5 --NumberOfExperiments 1 --AllowLagrangianRelaxation YES --TypeOfRebalance NOT_GUARANTEE_FEASIBILITY --InitialLagrangianScalar 10 --ToAdjustLagrangianScalar 0.5 --ToTriggerAdjustment 20 --MinGridResolution 4 --GridResolutionIncrement 5 --ActivateHGS NO --theta 3 --sigma 10 --phi 10 --MainAlgorithmTimeLimit 60
+
+
+irace --check
+irace --scenario scenario.txt

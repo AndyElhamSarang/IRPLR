@@ -19,8 +19,18 @@ OUTPUT=$(mktemp)
 $EXE \
     --instance "$INSTANCE" \
     --NumberOfExperiments 1 \
+    --NumberOfInitialSolutions 10 \
     --ActivateHGS NO \
-    --MainAlgorithmTimeLimit 65 \
+    --AllowLagrangianRelaxation YES \
+    --TypeOfRebalance GUARANTEE_FEASIBILITY \
+    --theta 3 \
+    --sigma 10 \
+    --phi 10 \
+    --InitialLagrangianScalar 10\
+    --ToTriggerAdjustment 20\
+    --MinGridResolution 3 \
+    --GridResolutionIncrement 1 \
+    --MainAlgorithmTimeLimit 60 \
     "$@" \
     > "$OUTPUT" 2>&1
 

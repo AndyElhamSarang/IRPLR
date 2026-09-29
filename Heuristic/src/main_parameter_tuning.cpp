@@ -36,11 +36,12 @@ string TypeOfRebalance;
 double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
-int GridResolution = 0;
 string ActivateHGS;
 int theta=0;
 int sigma=0; 
 int phi=0;
+int min_grid_resolution = 0;
+int grid_resolution_increment = 0;
 int main(int argc, char* argv[])
 {
 	// Support both original positional arguments and modern `--flag value` style.
@@ -93,7 +94,8 @@ int main(int argc, char* argv[])
 			else if (opt == "InitialLagrangianScalar") { InitialLagrangianScalar = atof(val.c_str()); }
 			else if (opt == "ToAdjustLagrangianScalar") { ToAdjustLagrangianScalar = atof(val.c_str()); }
 			else if (opt == "ToTriggerAdjustment") { ToTriggerAdjustment = atoi(val.c_str()); }
-			else if (opt == "GridResolution" || opt == "Grid_resolution_in_initial_solution_construction") { GridResolution = atoi(val.c_str()); }
+			else if (opt == "MinGridResolution") { min_grid_resolution = atoi(val.c_str()); }
+			else if (opt == "GridResolutionIncrement") { grid_resolution_increment = atoi(val.c_str()); }
 			else if (opt == "ActivateHGS" || opt == "Activate HGS") { ActivateHGS = val; }
 			else if (opt == "theta") { theta = atoi(val.c_str()); }
 			else if (opt == "sigma") { sigma = atoi(val.c_str()); }
@@ -115,7 +117,8 @@ int main(int argc, char* argv[])
 		cout << "Initial Lagrangian Scalar: " << InitialLagrangianScalar << endl;
 		cout << "To Adjust Lagrangian Scalar: " << ToAdjustLagrangianScalar << endl;
 		cout << "To Trigger Adjustment: " << ToTriggerAdjustment << endl;
-		cout << "Grid Resolution: " << GridResolution << endl;
+		cout << "Min Grid Resolution: " << min_grid_resolution << endl;
+		cout << "Grid Resolution Increment: " << grid_resolution_increment << endl;
 		cout << "Activate HGS: " << ActivateHGS << endl;
 		cout << "Theta: " << theta << endl;
 		cout << "Sigma: " << sigma << endl;
@@ -124,9 +127,9 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		if (argc < 15)
+		if (argc < 16)
 		{
-			cerr << "Usage: " << argv[0] << " <instance> <NumberOfInitialSolutions> <NumberOfExperiments> <AllowLagrangianRelaxation> <TypeOfRebalance> <InitialLagrangianScalar> <ToAdjustLagrangianScalar> <ToTriggerAdjustment> <GridResolution> <ActivateHGS> <theta> <sigma> <phi> <MainAlgorithmTimeLimit>\n";
+			cerr << "Usage: " << argv[0] << " <instance> <NumberOfInitialSolutions> <NumberOfExperiments> <AllowLagrangianRelaxation> <TypeOfRebalance> <InitialLagrangianScalar> <ToAdjustLagrangianScalar> <ToTriggerAdjustment> <MinGridResolution> <GridResolutionIncrement> <ActivateHGS> <theta> <sigma> <phi> <MainAlgorithmTimeLimit>\n";
 			return 1;
 		}
 
@@ -145,17 +148,19 @@ int main(int argc, char* argv[])
 		cout << "To Adjust Lagrangian Scalar: " << ToAdjustLagrangianScalar << endl;
 		ToTriggerAdjustment = atoi(argv[8]);
 		cout << "To Trigger Adjustment: " << ToTriggerAdjustment << endl;
-		GridResolution = atoi(argv[9]);
-		cout << "Grid Resolution: " << GridResolution << endl;
-		ActivateHGS = argv[10];
+		min_grid_resolution = atoi(argv[9]);
+		cout << "Min Grid Resolution: " << min_grid_resolution << endl;
+		grid_resolution_increment = atoi(argv[10]);
+		cout << "Grid Resolution Increment: " << grid_resolution_increment << endl;
+		ActivateHGS = argv[11];
 		cout << "Activate HGS: " << ActivateHGS << endl;
-		theta = atoi(argv[11]);
+		theta = atoi(argv[12]);
 		cout << "Theta: " << theta << endl;
-		sigma = atoi(argv[12]);
+		sigma = atoi(argv[13]);
 		cout << "Sigma: " << sigma << endl;
-		phi = atoi(argv[13]);
+		phi = atoi(argv[14]);
 		cout << "Phi: " << phi << endl;
-		MainAlgorithmTimeLimit = atof(argv[14]);
+		MainAlgorithmTimeLimit = atof(argv[15]);
 		cout << "Main Algorithm Time Limit: " << MainAlgorithmTimeLimit << endl;
 	}
 
@@ -276,7 +281,7 @@ int main(int argc, char* argv[])
 					time(&start_time);
 					// initial_solution.INITIAL(IRPLR, IRPSolution, Routing);
 
-					generator.seed(12345 + j * 789); // Different seed for each initial solution
+					// generator.seed(12345 + j * 789); // Different seed for each initial solution
 					initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing, GlobalBest, read_file,j);
 					time(&end_time);
 					double total_time = difftime(end_time, start_time);
@@ -291,7 +296,7 @@ int main(int argc, char* argv[])
 					IRPSolution.GetLogisticRatio(IRPLR);
 					cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
 					IRPSolution.Validation(IRPLR);
-					generator.seed(static_cast<unsigned int>(time(0)));
+					// generator.seed(static_cast<unsigned int>(time(0)));
 					solution_improvement Metaheuristic;
 					// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
 					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s,read_file, j);

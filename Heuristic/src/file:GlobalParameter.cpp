@@ -122,6 +122,18 @@ void file::ReadGlobalParameter()
 
     getline(ifGlobal, dummyline);
     getline(ifGlobal, TakeParameter);
+    stringstream ss_TakeMinGridResolution(TakeParameter);
+    ss_TakeMinGridResolution >> min_grid_resolution;
+    cout << dummyline << ":" << min_grid_resolution << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_TakeMaxGridResolution(TakeParameter);
+    ss_TakeMaxGridResolution >> grid_resolution_increment;
+    cout << dummyline << ":" << grid_resolution_increment << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
     stringstream ss_TakeNumberOfExperiments(TakeParameter);
     ss_TakeNumberOfExperiments >> NumberOfExperiments;
     cout << dummyline << ":" << NumberOfExperiments << endl;
@@ -196,6 +208,16 @@ void file::ReadGlobalParameter()
     if(NumberOfInitialSolutions <= 0)
     {
         cout << "Error: NumberOfInitialSolutions should be a positive integer." << endl;
+        valid_input = false;
+    }
+    if(min_grid_resolution <= 0)
+    {
+        cout << "Error: min_grid_resolution should be a positive integer." << endl;
+        valid_input = false;
+    }
+    if(grid_resolution_increment <= 0)
+    {
+        cout << "Error: grid_resolution_increment should be a positive integer." << endl;
         valid_input = false;
     }
     if(NumberOfExperiments <= 0)
