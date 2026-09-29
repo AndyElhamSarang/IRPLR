@@ -80,48 +80,12 @@ void solution_improvement::OperatorDisturb(input &IRPLR, solution &IncumbentSolu
             double NewStockOut = 0.0;           // Initialize appropriately
             double NewVehicleOverload = 0.0;    // Initialize appropriately
 
-            ////////////////////////////////////////////////////
-            //         Not AllowingCapacityViolation          //
-            ////////////////////////////////////////////////////
-            if (CandidateRoutesToRemove[SelectedDayVehicle][0] == 0)
-            {
-                AdjustQuantityAndInventoryLevel(
-                    IRPLR.Retailers[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]].InventoryBegin,
-                    CandidateRoutesToRemove[SelectedDayVehicle][0],
-                    CandidateRoutesToRemove[SelectedDayVehicle][1],
-                    IRPSolution.DeliveryQuantity[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]],
-                    IRPSolution.InventoryLevel[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]],
-                    IRPSolution.VehicleLoad,
-                    IRPSolution.VehicleAllocation,
-                    ChangeInTotalQuantity,
-                    NewStockOut,
-                    NewVehicleOverload,
-                    IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i],
-                    IRPLR);
-            }
-            else
-            {
-                AdjustQuantityAndInventoryLevel(
-                    IRPSolution.InventoryLevel[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]][CandidateRoutesToRemove[SelectedDayVehicle][0] - 1],
-                    CandidateRoutesToRemove[SelectedDayVehicle][0],
-                    CandidateRoutesToRemove[SelectedDayVehicle][1],
-                    IRPSolution.DeliveryQuantity[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]],
-                    IRPSolution.InventoryLevel[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]],
-                    IRPSolution.VehicleLoad,
-                    IRPSolution.VehicleAllocation,
-                    ChangeInTotalQuantity,
-                    NewStockOut,
-                    NewVehicleOverload,
-                    IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i],
-                    IRPLR);
-            }
             // ////////////////////////////////////////////////////
-            // //          AllowingCapacityViolation             //
+            // //         Not AllowingCapacityViolation          //
             // ////////////////////////////////////////////////////
-
             // if (CandidateRoutesToRemove[SelectedDayVehicle][0] == 0)
             // {
-            //     AdjustQuantityAndInventoryLevelAllowingCapacityViolation(
+            //     AdjustQuantityAndInventoryLevel(
             //         IRPLR.Retailers[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]].InventoryBegin,
             //         CandidateRoutesToRemove[SelectedDayVehicle][0],
             //         CandidateRoutesToRemove[SelectedDayVehicle][1],
@@ -137,7 +101,7 @@ void solution_improvement::OperatorDisturb(input &IRPLR, solution &IncumbentSolu
             // }
             // else
             // {
-            //     AdjustQuantityAndInventoryLevelAllowingCapacityViolation(
+            //     AdjustQuantityAndInventoryLevel(
             //         IRPSolution.InventoryLevel[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]][CandidateRoutesToRemove[SelectedDayVehicle][0] - 1],
             //         CandidateRoutesToRemove[SelectedDayVehicle][0],
             //         CandidateRoutesToRemove[SelectedDayVehicle][1],
@@ -151,6 +115,42 @@ void solution_improvement::OperatorDisturb(input &IRPLR, solution &IncumbentSolu
             //         IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i],
             //         IRPLR);
             // }
+            ////////////////////////////////////////////////////
+            //          AllowingCapacityViolation             //
+            ////////////////////////////////////////////////////
+
+            if (CandidateRoutesToRemove[SelectedDayVehicle][0] == 0)
+            {
+                AdjustQuantityAndInventoryLevelAllowingCapacityViolation(
+                    IRPLR.Retailers[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]].InventoryBegin,
+                    CandidateRoutesToRemove[SelectedDayVehicle][0],
+                    CandidateRoutesToRemove[SelectedDayVehicle][1],
+                    IRPSolution.DeliveryQuantity[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]],
+                    IRPSolution.InventoryLevel[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]],
+                    IRPSolution.VehicleLoad,
+                    IRPSolution.VehicleAllocation,
+                    ChangeInTotalQuantity,
+                    NewStockOut,
+                    NewVehicleOverload,
+                    IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i],
+                    IRPLR);
+            }
+            else
+            {
+                AdjustQuantityAndInventoryLevelAllowingCapacityViolation(
+                    IRPSolution.InventoryLevel[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]][CandidateRoutesToRemove[SelectedDayVehicle][0] - 1],
+                    CandidateRoutesToRemove[SelectedDayVehicle][0],
+                    CandidateRoutesToRemove[SelectedDayVehicle][1],
+                    IRPSolution.DeliveryQuantity[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]],
+                    IRPSolution.InventoryLevel[IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i]],
+                    IRPSolution.VehicleLoad,
+                    IRPSolution.VehicleAllocation,
+                    ChangeInTotalQuantity,
+                    NewStockOut,
+                    NewVehicleOverload,
+                    IRPSolution.Route[CandidateRoutesToRemove[SelectedDayVehicle][0]][CandidateRoutesToRemove[SelectedDayVehicle][1]][i],
+                    IRPLR);
+            }
 
             // Update Unallocated customers
 

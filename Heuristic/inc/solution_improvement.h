@@ -85,7 +85,7 @@ public:
 
     int OperatorRemove(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory);
 
-    double OperatorBalancing(input &IRPLR, preprocessing &memory,
+    double OperatorBalancing(input &IRPLR,
                              vector<vector<vector<int>>> &Route,
                              vector<vector<int>> &UnallocatedCustomers,
                              vector<vector<double>> &VehicleLoad,
@@ -96,7 +96,7 @@ public:
                              int &CountingInfeasibleCase,
                              int &FeasibleRebalanceOrNot);
 
-    double OperatorBalancing_guarantee_feasibility(input &IRPLR, preprocessing &memory,
+    double OperatorBalancing_guarantee_feasibility(input &IRPLR, 
                                                    vector<vector<vector<int>>> &Route,        // Stay fixed if no redundant visit
                                                    vector<vector<int>> &UnallocatedCustomers, // Stay fixed if no redundant visit
                                                    vector<vector<double>> &VehicleLoad,
@@ -113,7 +113,7 @@ public:
 
     int OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &day, int &vehicle, int &CustomerToReinsert, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, double &CurrentTransportationCost, preprocessing &memory);
 
-    int OperatorRepair(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory, int &min_remove_length, int &max_remove_length, int &min_insert_length, int &max_insert_length);
+    int OperatorRepair(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity);
 
     int OperatorTransfer(
         input &IRPLR,

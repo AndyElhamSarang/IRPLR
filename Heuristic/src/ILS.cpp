@@ -144,8 +144,8 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 IRPSolution.GetLogisticRatio(IRPLR);
                 cout << "Solution after removing customer with 0 delivery " << endl;
                 cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << endl;
-                IRPSolution.print_solution(IRPLR);
-                IRPSolution.Validation(IRPLR);
+                // IRPSolution.print_solution(IRPLR);
+                // IRPSolution.Validation(IRPLR);
                 ///////////////////////////////////////////////////////////////////////////////
 
                 if (IncumbentSolution.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
@@ -210,7 +210,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
 
                     time(&rebalance_start_time);
                     double LogisctiRatioAfterRebalance = numeric_limits<double>::max();
-                    LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers,
+                    LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR,  TempRoute, TempUnallocatedCustomers,
                                                                     TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel,
                                                                     TempVehicleAllocation, TempVisitOrder,
                                                                     counting_infeasible_case, is_Rebalace_infeasible);
@@ -307,14 +307,14 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 double Disturb_LogisctiRatioAfterRebalance = numeric_limits<double>::max();
                 if (TypeOfRebalance == "GUARANTEE_FEASIBILITY")
                 {
-                    Disturb_LogisctiRatioAfterRebalance = OperatorBalancing_guarantee_feasibility(IRPLR, memory, DisturbRoute, DisturbUnallocatedCustomers,
+                    Disturb_LogisctiRatioAfterRebalance = OperatorBalancing_guarantee_feasibility(IRPLR,  DisturbRoute, DisturbUnallocatedCustomers,
                                                                                                   DisturbVehicleLoad, DisturbDeliveryQuantity, DisturbInventoryLevel,
                                                                                                   DisturbVehicleAllocation, DisturbVisitOrder,
                                                                                                   Disturb_counting_infeasible_case, Disturb_is_Rebalace_infeasible);
                 }
                 else if (TypeOfRebalance == "NOT_GUARANTEE_FEASIBILITY")
                 {
-                    Disturb_LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, memory, DisturbRoute, DisturbUnallocatedCustomers,
+                    Disturb_LogisctiRatioAfterRebalance = OperatorBalancing(IRPLR, DisturbRoute, DisturbUnallocatedCustomers,
                                                                             DisturbVehicleLoad, DisturbDeliveryQuantity, DisturbInventoryLevel,
                                                                             DisturbVehicleAllocation, DisturbVisitOrder,
                                                                             Disturb_counting_infeasible_case, Disturb_is_Rebalace_infeasible);
@@ -385,18 +385,18 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
                 }
             }
 
-            cout << "------------------------------------------------" << endl;
-            cout << "Before Disturbance Operator" << endl;
-            IncumbentSolution.print_solution(IRPLR);
-            cout << "------------------------------------------------" << endl;
+            // cout << "------------------------------------------------" << endl;
+            // cout << "Before Disturbance Operator" << endl;
+            // IncumbentSolution.print_solution(IRPLR);
+            // cout << "------------------------------------------------" << endl;
 
             OperatorDisturb(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
             IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
-            IRPSolution.print_solution(IRPLR);
+            // IRPSolution.print_solution(IRPLR);
 
-            cout << "------------------------------------------------" << endl;
-            cout << "End Disturbance Operator" << endl;
-            cout << "------------------------------------------------" << endl;
+            // cout << "------------------------------------------------" << endl;
+            // cout << "End Disturbance Operator" << endl;
+            // cout << "------------------------------------------------" << endl;
             Global_total_iteration++;
             AdjustPenalty++;
             DisturbanceCounter++;

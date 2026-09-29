@@ -1,5 +1,5 @@
 #include "lib.h"
-double solution_improvement::OperatorBalancing(input &IRPLR, preprocessing &memory,
+double solution_improvement::OperatorBalancing(input &IRPLR,
                                                vector<vector<vector<int>>> &Route,        // Stay fixed if no redundant visit
                                                vector<vector<int>> &UnallocatedCustomers, // Stay fixed if no redundant visit
                                                vector<vector<double>> &VehicleLoad,

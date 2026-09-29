@@ -118,7 +118,7 @@ int solution_improvement::OperatorSwapRemoveInsertWithBalancing(input &IRPLR, so
                                             while (BalancingCounter < 1)
                                             {
                                                 // cout << "Balancing attempt:" << BalancingCounter << endl;
-                                                NewLogisticRatio = OperatorBalancing(IRPLR, memory, TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder, CountingInfeasibleCase, FeasibleRebalanceOrNot);
+                                                NewLogisticRatio = OperatorBalancing(IRPLR,  TempRoute, TempUnallocatedCustomers, TempVehicleLoad, TempDeliveryQuantity, TempInventoryLevel, TempVehicleAllocation, TempVisitOrder, CountingInfeasibleCase, FeasibleRebalanceOrNot);
                                                 BalancingCounter++;
                                             }
 
