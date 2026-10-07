@@ -1,8 +1,14 @@
 #include "irplr_model.h"
 #include <algorithm>
+#include <chrono>
+#include <cmath>
 #include <stdexcept>
 
 namespace {
+// Per-instance limits; tree memory bounds CPLEX's search tree, not total process RAM.
+constexpr double kTimeLimitSeconds = 3600.0;
+constexpr double kTreeMemoryLimitMB = 1024.0;
+
 int invIndex(int node, int day, int horizon) { return node * horizon + day; }
 int qIndex(int customer, int vehicle, int day, int vehicles, int horizon) {
   return (customer * vehicles + vehicle) * horizon + day;
@@ -194,9 +200,19 @@ IRPLRModel::Solution IRPLRModel::solve(bool minimize, double bound) {
     cost.end();
   }
 
-  Solution result = {0.0, 0.0, IloAlgorithm::Unknown};
+  Solution result{};
+  result.status = IloAlgorithm::Unknown;
   double ratio = 0.0;
+  // Share one time budget across the repeated solves used to refine the ratio.
+  const auto solveStart = std::chrono::steady_clock::now();
   for (int iteration = 0; !minimize || iteration < 50; ++iteration) {
+    const double elapsedSeconds =
+        std::chrono::duration<double>(std::chrono::steady_clock::now() -
+                                      solveStart)
+            .count();
+    const double remainingSeconds = kTimeLimitSeconds - elapsedSeconds;
+    if (remainingSeconds <= 0.0) break;
+
     IloExpr objective = minimize ? routingCost() - ratio * deliveredQuantity()
                                  : deliveredQuantity();
     IloObjective objectiveHandle = minimize ? IloMinimize(env_, objective)
@@ -204,6 +220,11 @@ IRPLRModel::Solution IRPLRModel::solve(bool minimize, double bound) {
     model_.add(objectiveHandle);
     objective.end();
     IloCplex cplex(model_);
+    // Give this iteration only the time remaining in the instance's budget.
+    cplex.setParam(IloCplex::Param::TimeLimit, remainingSeconds);
+    cplex.setParam(IloCplex::Param::MIP::Limits::TreeMemory,
+                   kTreeMemoryLimitMB);
+    cplex.setParam(IloCplex::Param::Emphasis::Memory, IloTrue);
     if (!cplex.solve()) {
       result.status = cplex.getStatus();
       model_.remove(objectiveHandle);
@@ -212,12 +233,42 @@ IRPLRModel::Solution IRPLRModel::solve(bool minimize, double bound) {
     }
 
     result.status = cplex.getStatus();
+    result.optimalityGap = cplex.getMIPRelativeGap();
     IloExpr cost = routingCost();
     IloExpr quantity = deliveredQuantity();
     result.routingCost = cplex.getValue(cost);
     result.deliveredQuantity = cplex.getValue(quantity);
     cost.end();
     quantity.end();
+
+    result.inventoryLevels.assign(
+        instance_.NumberOfRetailers + 1,
+        std::vector<double>(instance_.TimeHorizon, 0.0));
+    result.deliveries.clear();
+    result.routeEdges.clear();
+    for (int node = 0; node <= instance_.NumberOfRetailers; ++node)
+      for (int day = 0; day < instance_.TimeHorizon; ++day)
+        result.inventoryLevels[node][day] = cplex.getValue(inventory(node, day));
+    for (int customer = 0; customer < instance_.NumberOfRetailers; ++customer)
+      for (int vehicle = 0; vehicle < instance_.NumberOfVehicles; ++vehicle)
+        for (int day = 0; day < instance_.TimeHorizon; ++day) {
+          const double deliveredAmount =
+              cplex.getValue(delivered(customer, vehicle, day));
+          if (deliveredAmount > 1e-6)
+            result.deliveries.push_back(
+                {customer, vehicle, day, deliveredAmount});
+        }
+    for (int from = 0; from <= instance_.NumberOfRetailers; ++from)
+      for (int to = from + 1; to <= instance_.NumberOfRetailers; ++to)
+        for (int vehicle = 0; vehicle < instance_.NumberOfVehicles; ++vehicle)
+          for (int day = 0; day < instance_.TimeHorizon; ++day) {
+            const int multiplicity = static_cast<int>(
+                std::round(cplex.getValue(edge(from, to, vehicle, day))));
+            if (multiplicity > 0)
+              result.routeEdges.push_back(
+                  {from, to, vehicle, day, multiplicity});
+          }
+
     model_.remove(objectiveHandle);
     objectiveHandle.end();
 
