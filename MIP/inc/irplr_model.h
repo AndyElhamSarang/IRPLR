@@ -3,16 +3,36 @@
 
 #include <ilcplex/ilocplex.h>
 #include "input.h"
+#include <vector>
 
 ILOSTLBEGIN
 
 class IRPLRModel {
 public:
   struct Solution {
+    struct Delivery {
+      int customer;
+      int vehicle;
+      int day;
+      double quantity;
+    };
+
+    struct RouteEdge {
+      int from;
+      int to;
+      int vehicle;
+      int day;
+      int multiplicity;
+    };
+
     double routingCost;
     double deliveredQuantity;
     double logisticRatio;
+    double optimalityGap;
     IloAlgorithm::Status status;
+    std::vector<std::vector<double>> inventoryLevels;
+    std::vector<Delivery> deliveries;
+    std::vector<RouteEdge> routeEdges;
   };
 
   IRPLRModel(IloEnv env, const input &instance);
