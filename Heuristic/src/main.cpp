@@ -54,7 +54,7 @@ int main()
 		if (OutputResults == 1)
 		{
 			string experiment_str = to_string(experiment + 1);
-			string experiment_name = "best_initial_configuration2";
+			string experiment_name = "test";
 			string file_type = ".csv";
 			string file_name = experiment_name + "_exp" + experiment_str + file_type;
 			Table.open(file_name);

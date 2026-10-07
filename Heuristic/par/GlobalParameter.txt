@@ -9,7 +9,7 @@ NumberOfExperiments
 AllowLagrangianRelaxation
 YES
 TypeOfRebalance
-NOT_GUARANTEE_FEASIBILITY
+GUARANTEE_FEASIBILITY
 InitialLagrangianScalar
 10
 ToAdjustLagrangianScalar
@@ -17,7 +17,7 @@ ToAdjustLagrangianScalar
 ToTriggerAdjustment
 20
 Activate HGS
-YES
+NO
 theta
 3
 sigma

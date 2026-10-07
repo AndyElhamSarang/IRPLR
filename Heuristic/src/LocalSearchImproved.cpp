@@ -125,6 +125,9 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
     if (AllowLagrangianRelaxation == "YES")
     {
         InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, GlobalBest.LogisticRatio, ScalarLagrangianRelaxation, true_local);
+
+        // PenaltyForStockOut = 100000;      // A very large penalty for stockout to discourage any infeasible moves.
+        // PenaltyMoreThanCapacity = 100000; // A very large penalty for exceeding capacity to discourage any infeasible moves.
     }
     else if (AllowLagrangianRelaxation == "NO")
     {
