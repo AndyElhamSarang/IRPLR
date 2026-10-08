@@ -135,6 +135,7 @@ int main()
 					// generator.seed(12345 + j * 789); // Different seed for each initial solution
 					initial_solution.INITIAL_ZONE(IRPLR, IRPSolution, Routing, GlobalBest, read_file, j);
 					time(&end_time);
+					memory.PopulateQuantityStructure(IRPLR, IRPSolution);
 					double total_time = difftime(end_time, start_time);
 					if (OutputResults == 1)
 					{

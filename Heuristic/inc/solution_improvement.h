@@ -74,6 +74,9 @@ public:
         int &max_remove_length,
         int &min_insert_length,
         int &max_insert_length);
+    int OperatorSwapTwoRoutesOnSingleDayWithoutQuantityBalancing(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory, set<vector<int>> &SwapTwoRoutesOnSingleDayPair, set<vector<int>> &SwapTwoRoutesOnSingleDayPairToReconsider,
+                                                                 int &min_Swap_length1, int &max_Swap_length1,
+                                                                 int &min_Swap_length2, int &max_Swap_length2);
 
     int OperatorSwapRemoveInsertWithBalancing(input &IRPLR, solution &IRPSolution, HGS &Routing, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory,
                                               int &min_remove_length, int &max_remove_length, int &min_insert_length, int &max_insert_length);
@@ -111,6 +114,7 @@ public:
 
     void OperatorDisturb(input &IRPLR, solution &GlobalBest, solution &IRPSolution, int &DisturbanceCounter, int &MaxDisturbance);
 
+    void OperatorDisturbAppendToAnotherDay(input &IRPLR, solution &IncumbentSolution, solution &IRPSolution, int &DisturbanceCounter, int &MaxDisturbance);
     int OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &day, int &vehicle, int &CustomerToReinsert, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, double &CurrentTransportationCost, preprocessing &memory);
 
     int OperatorRepair(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity);

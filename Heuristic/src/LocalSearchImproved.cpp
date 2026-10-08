@@ -138,7 +138,10 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
     bool whether_improved_via_SwapTwoRoutesOnSingleDay = true;
     bool whether_improved_via_InterSwap = true;
     bool whether_improved_via_Repair = true;
+    bool QuantityBalancing = false;
     int Abnormal_true_local_counter = 0;
+    boost_random_mechanism NeighbourhoodRandomness;
+   
     try
     {
         while (true_local == 0 || (IRPSolution.ViolationStockOut > 0.00001 || IRPSolution.ViolationMoreThanCapacity > 0.00001))
@@ -158,6 +161,17 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             int min_shift2 = 0;
             int max_shift2 = 0;
 
+            // int temp= NeighbourhoodRandomness.random_number_generator(0, 1, generator);
+            // if(temp==0)
+            // {
+            //     QuantityBalancing = true;
+            // }
+            // else
+            // {
+            //     QuantityBalancing = false;
+            // }
+
+            QuantityBalancing = true;
             set<vector<int>> ShiftTwoRoutesOnSingleDayPair; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
             for (int day = 0; day < IRPSolution.Route.size(); day++)
             {
@@ -188,7 +202,10 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 }
                 ShiftTwoRoutesOnSingleDayPairToReconsider.clear();
                 // cout << "InitialSizeOfShiftTwoRoutesOnSingleDayPair: " << InitialSizeOfShiftTwoRoutesOnSingleDayPair <<", ShiftTwoRoutesOnSingleDayPairToReconsider: "<< ShiftTwoRoutesOnSingleDayPairToReconsider.size()<<", Size of reduced ShiftTwoRoutesOnSingleDayPair: " << ShiftTwoRoutesOnSingleDayPair.size() << endl;
-                whether_improved = OperatorSwapTwoRoutesOnSingleDay(
+                
+                if(QuantityBalancing == true)
+                {
+                    whether_improved = OperatorSwapTwoRoutesOnSingleDay(
                     IRPLR,
                     IRPSolution,
                     PenaltyForStockOut,
@@ -200,6 +217,22 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     max_shift1,
                     min_shift2,
                     max_shift2);
+                }
+                else
+                {
+                    whether_improved = OperatorSwapTwoRoutesOnSingleDayWithoutQuantityBalancing(
+                    IRPLR,
+                    IRPSolution,
+                    PenaltyForStockOut,
+                    PenaltyMoreThanCapacity,
+                    memory,
+                    ShiftTwoRoutesOnSingleDayPair,
+                    ShiftTwoRoutesOnSingleDayPairToReconsider,
+                    min_shift1,
+                    max_shift1,
+                    min_shift2,
+                    max_shift2);
+                }
                 // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, temp_global_best_logistic_ratio, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
@@ -234,6 +267,16 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             int min_swap2 = 1;
             int max_swap2 = 2;
 
+            // temp= NeighbourhoodRandomness.random_number_generator(0, 1, generator);
+            // if(temp==0)
+            // {
+            //     QuantityBalancing = true;
+            // }
+            // else
+            // {
+            //     QuantityBalancing = false;
+            // }
+            QuantityBalancing = true;
             set<vector<int>> SwapTwoRoutesOnSingleDayPair; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
             for (int day = 0; day < IRPSolution.Route.size(); day++)
             {
@@ -264,18 +307,40 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 }
                 SwapTwoRoutesOnSingleDayPairToReconsider.clear();
                 // cout << "InitialSizeOfSwapTwoRoutesOnSingleDayPair: " << InitialSizeOfSwapTwoRoutesOnSingleDayPair <<", SwapTwoRoutesOnSingleDayPairToReconsider: "<< SwapTwoRoutesOnSingleDayPairToReconsider.size()<<", Size of reduced SwapTwoRoutesOnSingleDayPair: " << SwapTwoRoutesOnSingleDayPair.size() << endl;
-                whether_improved = OperatorSwapTwoRoutesOnSingleDay(
+                
+                
+                if(QuantityBalancing == true)
+                {
+                    whether_improved = OperatorSwapTwoRoutesOnSingleDay(
                     IRPLR,
                     IRPSolution,
                     PenaltyForStockOut,
                     PenaltyMoreThanCapacity,
                     memory,
-                    SwapTwoRoutesOnSingleDayPair,
-                    SwapTwoRoutesOnSingleDayPairToReconsider,
-                    min_swap1,
-                    max_swap1,
-                    min_swap2,
-                    max_swap2);
+                    ShiftTwoRoutesOnSingleDayPair,
+                    ShiftTwoRoutesOnSingleDayPairToReconsider,
+                    min_shift1,
+                    max_shift1,
+                    min_shift2,
+                    max_shift2);
+                }
+                else
+                {
+                    whether_improved = OperatorSwapTwoRoutesOnSingleDayWithoutQuantityBalancing(
+                    IRPLR,
+                    IRPSolution,
+                    PenaltyForStockOut,
+                    PenaltyMoreThanCapacity,
+                    memory,
+                    ShiftTwoRoutesOnSingleDayPair,
+                    ShiftTwoRoutesOnSingleDayPairToReconsider,
+                    min_shift1,
+                    max_shift1,
+                    min_shift2,
+                    max_shift2);
+                }
+                
+                
                 // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, temp_global_best_logistic_ratio, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {

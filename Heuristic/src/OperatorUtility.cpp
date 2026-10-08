@@ -88,7 +88,7 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
     }
     if (VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity > 0.00001)
     {
-        NewVehicleOverload += VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity;
+        NewVehicleOverload += max(0.0, VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity);
     }
     if (fabs(InventoryLevel[day] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
     {
@@ -156,7 +156,7 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
         }
         if (VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity > 0.00001)
         {
-            NewVehicleOverload += VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity;
+            NewVehicleOverload += max(0.0, VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity);
         }
         if (fabs(InventoryLevel[y] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
         {
@@ -375,7 +375,7 @@ void solution_improvement::AdjustQuantityAndInventoryLevelAllowingCapacityViolat
     }
     if (VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity > 0.00001)
     {
-        NewVehicleOverload += VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity;
+        NewVehicleOverload += max(0.0, VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity);
     }
     if (fabs(InventoryLevel[day] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
     {
@@ -443,7 +443,7 @@ void solution_improvement::AdjustQuantityAndInventoryLevelAllowingCapacityViolat
         }
         if (VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity > 0.00001)
         {
-            NewVehicleOverload += VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity;
+            NewVehicleOverload += max(0.0, VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity);
         }
         if (fabs(InventoryLevel[y] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
         {

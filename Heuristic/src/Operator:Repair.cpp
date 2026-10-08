@@ -21,7 +21,7 @@ int solution_improvement::OperatorRepair(input &IRPLR, solution &IRPSolution, do
             if (IRPSolution.VehicleLoad[time][vehicle] > IRPLR.Vehicle.capacity)
             {
                 repair_triggered = true;
-                double VehicleOverload = IRPSolution.VehicleLoad[time][vehicle] - IRPLR.Vehicle.capacity;
+                double VehicleOverload = max(0.0, IRPSolution.VehicleLoad[time][vehicle] - IRPLR.Vehicle.capacity);
                 IRPSolution.print_solution(IRPLR);
                 cout << "Vehicle " << vehicle << " at time " << time << " is overloaded. VehicleLoad:" << IRPSolution.VehicleLoad[time][vehicle] << ", capacity:" << IRPLR.Vehicle.capacity << endl;
 

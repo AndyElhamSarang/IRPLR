@@ -17,6 +17,7 @@ andy_desktop:
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
 	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
 	DataStructure:Local.cpp \
+	DataStructure:Quantity.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:ConcatenationInterSwap.cpp \
@@ -40,7 +41,8 @@ andy_desktop:
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
-	Operator:Disturb.cpp \
+	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
+	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
 	-o test.out
 andy_desktop_DISABLE_COUT:
@@ -50,6 +52,7 @@ andy_desktop_DISABLE_COUT:
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
 	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
 	DataStructure:Local.cpp \
+	DataStructure:Quantity.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:ConcatenationInterSwap.cpp \
@@ -73,7 +76,8 @@ andy_desktop_DISABLE_COUT:
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
-	Operator:Disturb.cpp \
+	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
+	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
 	-DDISABLE_COUT \
 	-o test_DISABLE_COUT.out
@@ -84,6 +88,7 @@ parameter_tuning_desktop:
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
 	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
 	DataStructure:Local.cpp \
+	DataStructure:Quantity.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:ConcatenationInterSwap.cpp \
@@ -107,7 +112,8 @@ parameter_tuning_desktop:
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
-	Operator:Disturb.cpp \
+	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
+	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
 	-o MS_parameter_tuning.out -O3
 parameter_tuning:
@@ -117,6 +123,7 @@ parameter_tuning:
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
 	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
 	DataStructure:Local.cpp \
+	DataStructure:Quantity.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:ConcatenationInterSwap.cpp \
@@ -140,7 +147,8 @@ parameter_tuning:
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
-	Operator:Disturb.cpp \
+	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
+	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-o MS_parameter_tuning.out -O3
 andy:
@@ -150,6 +158,7 @@ andy:
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
 	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
 	DataStructure:Local.cpp \
+	DataStructure:Quantity.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:ConcatenationInterSwap.cpp \
@@ -173,7 +182,8 @@ andy:
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
-	Operator:Disturb.cpp \
+	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
+	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-o MS.out -O3
 andy_DISABLE_COUT:
@@ -183,6 +193,7 @@ andy_DISABLE_COUT:
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
 	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
 	DataStructure:Local.cpp \
+	DataStructure:Quantity.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:ConcatenationInterSwap.cpp \
@@ -206,7 +217,8 @@ andy_DISABLE_COUT:
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
-	Operator:Disturb.cpp \
+	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
+	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-DDISABLE_COUT \
 	-o RandomGridResolution.out -O3
@@ -217,6 +229,7 @@ andy_lenovo:
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
 	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
 	DataStructure:Local.cpp \
+	DataStructure:Quantity.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:ConcatenationInterSwap.cpp \
@@ -240,7 +253,8 @@ andy_lenovo:
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
-	Operator:Disturb.cpp \
+	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
+	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	-I $(andy_lenovo) -I $(andy_lenovo_boost) \
 	-o irplr.out -O3
 andy_testpc:
@@ -250,6 +264,7 @@ andy_testpc:
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
 	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
 	DataStructure:Local.cpp \
+	DataStructure:Quantity.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:ConcatenationInterSwap.cpp \
@@ -273,7 +288,8 @@ andy_testpc:
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
-	Operator:Disturb.cpp \
+	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
+	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-o irplr.out -O3
 testpc_parameter_tuning:
@@ -283,6 +299,7 @@ testpc_parameter_tuning:
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
 	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
 	DataStructure:Local.cpp \
+	DataStructure:Quantity.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:ConcatenationInterSwap.cpp \
@@ -306,7 +323,8 @@ testpc_parameter_tuning:
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
-	Operator:Disturb.cpp \
+	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
+	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-o MS_parameter_tuning.out -O3
 andy_testpc_DISABLE_COUT:
@@ -316,6 +334,7 @@ andy_testpc_DISABLE_COUT:
 	DataStructure:Global.cpp DataStructure:CustomerInfo.cpp \
 	DataStructure:PrefixAndSuffix.cpp DataStructure:UpdatePrefixAndSuffix.cpp \
 	DataStructure:Local.cpp \
+	DataStructure:Quantity.cpp \
 	DataStructure:Subpath.cpp \
 	DataStructure:Concatenation.cpp \
 	DataStructure:ConcatenationInterSwap.cpp \
@@ -339,7 +358,8 @@ andy_testpc_DISABLE_COUT:
 	Operator:SwapRemoveInsert.cpp Operator:SwapRemoveInsertWithBalancing.cpp \
 	Operator:Repair.cpp Operator:Intra.cpp \
 	Operator:Insert.cpp Operator:Remove.cpp Operator:Balancing.cpp Operator:Balancing_guarantee_feasibility.cpp Operator:Transfer.cpp \
-	Operator:Disturb.cpp \
+	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
+	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-DDISABLE_COUT \
 	-o irplr.out -O3

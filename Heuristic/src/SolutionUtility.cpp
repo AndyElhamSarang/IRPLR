@@ -728,7 +728,7 @@ void solution::GetLogisticRatio(input &IRPLR)
         {
             if (VehicleLoad[i][j] > IRPLR.Vehicle.capacity)
             {
-                ViolationMoreThanCapacity += VehicleLoad[i][j] - IRPLR.Vehicle.capacity;
+                ViolationMoreThanCapacity += max(0.0, VehicleLoad[i][j] - IRPLR.Vehicle.capacity);
             }
         }
     }
