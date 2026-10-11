@@ -392,17 +392,20 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             IncumbentSolution.print_solution(IRPLR);
             cout << "------------------------------------------------" << endl;
 
-            boost_random_mechanism PickRandomDisturbance;
-            int DisturbanceToRun = PickRandomDisturbance.random_number_generator(0, 1, generator);
-            if (DisturbanceToRun == 0)
-            {
-                OperatorDisturb(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
-            }
-            else
-            {
-                OperatorDisturbAppendToAnotherDay(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
-            }
-             IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
+            OperatorDisturb(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
+
+            // boost_random_mechanism PickRandomDisturbance;
+            // int DisturbanceToRun = PickRandomDisturbance.random_number_generator(0, 1, generator);
+            // if (DisturbanceToRun == 0)
+            // {
+            //     OperatorDisturb(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
+            // }
+            // else
+            // {
+            //     OperatorDisturbAppendToAnotherDay(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
+            // }
+
+            IRPSolution.UpdateVehicleAllocationVisitOrder(IRPLR);
             IRPSolution.print_solution(IRPLR);
 
             cout << "------------------------------------------------" << endl;

@@ -147,7 +147,7 @@ void solution_improvement::OperatorDisturbAppendToAnotherDay(
                 ? IRPLR.Retailers[retailer].InventoryBegin
                 : IRPSolution.InventoryLevel[retailer][move.source_day - 1];
 
-            AdjustQuantityAndInventoryLevelAllowingCapacityViolation(
+            AdjustQuantityAndInventoryLevel(
                 previous_source_inventory,
                 move.source_day,
                 move.source_vehicle,
@@ -173,7 +173,7 @@ void solution_improvement::OperatorDisturbAppendToAnotherDay(
             IRPSolution.VehicleLoad[move.destination_day][destination_vehicle] += destination_delivery;
             change_in_total_quantity = destination_delivery;
 
-            AdjustQuantityAndInventoryLevelAllowingCapacityViolation(
+            AdjustQuantityAndInventoryLevel(
                 previous_destination_inventory,
                 move.destination_day,
                 destination_vehicle,

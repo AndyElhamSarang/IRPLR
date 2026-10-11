@@ -11,6 +11,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
     time_t accumulate_end_time;
     double LR_objv = numeric_limits<double>::max();
     IRPSolution.GetLogisticRatio(IRPLR);
+    memory.PopulateQuantityStructure(IRPLR, IRPSolution);
     IRPSolution.print_solution(IRPLR);
     LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut, PenaltyMoreThanCapacity, IRPSolution.ViolationMoreThanCapacity);
     cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut: " << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut: " << PenaltyForStockOut << "\t ViolationMoreThanCapacity: " << IRPSolution.ViolationMoreThanCapacity << "\t PenaltyMoreThanCapacity: " << PenaltyMoreThanCapacity << "\t LR_objv:" << LR_objv << endl;
@@ -51,10 +52,12 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
     double ImpLogisticRatio = 0;
     double ImpTotalTransportationCost = 0;
     double ImpTotalDelivery = 0;
+    double ImpTotalSlackPerDay = 0;
     int solutionCounter = 0;
     int working_solutionCounter = 0;
     int not_working_solutionCounter = 0;
     int naive_implementation = 0;
+    bool SpecialProcedureTrigger = false;
     set<vector<int>>::iterator select_pair;
     time(&accumulate_start_time);
     try
@@ -130,6 +133,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                         double NewVehicleOverload = IRPSolution.ViolationMoreThanCapacity;
                                         double ChangeInTotalQuantity = 0;
                                         vector<vector<double>> CopyVehicleLoad = IRPSolution.VehicleLoad;
+                                        double CopyTotalSlackPerDay = memory.TotalSlackPerDay[pick_day];
 
                                         // cout << "intialize all data needed to capture the improving solution" << endl;
                                         // cout << "SelectedVehicleLoad1: " << CopyVehicleLoad[pick_day][pick_vehicle1] << endl;
@@ -242,6 +246,8 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                         // Update delivery quantity and inventory level for inserted customers from route 2 to route 1 and inserted customers from route 1 to route 2
                                         for (int route1_index = 0; route1_index < Swap_length1; route1_index++)
                                         {
+
+                                            SpecialProcedureTrigger = false;
                                             // Add delivery quantity for inserted customers from route 2 to route 1
                                             if (pick_day == 0)
                                             {
@@ -262,16 +268,47 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                                     IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].Demand,
                                                     IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]][pick_day - 1]);
                                             }
+                                            // //Seek delivery quantity from possible quantity to remove from the existing visits,
+                                            // if (NewDeliveryQuantityRoute1[route1_index][pick_day] < 0.00001)
+                                            // {
+                                            //     SpecialProcedureTrigger = true;
 
-                                            if (NewDeliveryQuantityRoute1[route1_index][pick_day] < 0.001)
+                                            //     if (pick_day == 0)
+                                            //     {
+                                            //         NewDeliveryQuantityRoute1[route1_index][pick_day] = DeliveryMaxAllowingCapacityViolation(
+                                            //             IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryMax,
+                                            //             IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].Demand,
+                                            //             IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryBegin);
+                                            //     }
+                                            //     else
+                                            //     {
+
+                                            //         NewDeliveryQuantityRoute1[route1_index][pick_day] = DeliveryMaxAllowingCapacityViolation(
+                                            //             IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryMax,
+                                            //             IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].Demand,
+                                            //             IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]][pick_day - 1]);
+                                            //     }
+
+                                            //     cout << "Customer:" << IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].ID << " to day " << pick_day << ": Delivery Max Allowing Capacity Violation: " << NewDeliveryQuantityRoute1[route1_index][pick_day] << ", TotalSlackPerDay[pick_day]: " << CopyTotalSlackPerDay << ", Delivery Quantity can be added:" << min(NewDeliveryQuantityRoute1[route1_index][pick_day], CopyTotalSlackPerDay) <<"Slack available after adjustment:"<<CopyTotalSlackPerDay -min(NewDeliveryQuantityRoute1[route1_index][pick_day], CopyTotalSlackPerDay) << endl;
+
+                                            //     NewDeliveryQuantityRoute1[route1_index][pick_day] = min(NewDeliveryQuantityRoute1[route1_index][pick_day], CopyTotalSlackPerDay);
+                                            //     CopyTotalSlackPerDay = CopyTotalSlackPerDay - NewDeliveryQuantityRoute1[route1_index][pick_day];
+
+                                            //     // bool flag = false;
+                                            //     // assert(flag);
+                                            // }
+
+                                            if (NewDeliveryQuantityRoute1[route1_index][pick_day] < 0.00001)
                                             {
                                                 Whether_normal_insert_fail = true;
                                             }
                                             else
                                             {
-                                                ChangeInTotalQuantity += NewDeliveryQuantityRoute1[route1_index][pick_day];
-                                                CopyVehicleLoad[pick_day][pick_vehicle2] = CopyVehicleLoad[pick_day][pick_vehicle2] + NewDeliveryQuantityRoute1[route1_index][pick_day];
-
+                                                if (SpecialProcedureTrigger == false)
+                                                {
+                                                    ChangeInTotalQuantity += NewDeliveryQuantityRoute1[route1_index][pick_day];
+                                                    CopyVehicleLoad[pick_day][pick_vehicle2] = CopyVehicleLoad[pick_day][pick_vehicle2] + NewDeliveryQuantityRoute1[route1_index][pick_day];
+                                                }
                                                 // cout << "Add new delivery quantity" << endl;
                                                 // cout << "CopyVehicleLoad[pick_day][pick_vehicle1]: " << CopyVehicleLoad[pick_day][pick_vehicle1] << endl;
                                                 // cout << "CopyVehicleLoad[pick_day][pick_vehicle2]: " << CopyVehicleLoad[pick_day][pick_vehicle2] << endl;
@@ -353,8 +390,10 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                                 }
                                             }
                                         }
+
                                         for (int route2_index = 0; route2_index < Swap_length2; route2_index++)
                                         {
+                                            SpecialProcedureTrigger = false;
                                             if (pick_day == 0)
                                             {
 
@@ -375,8 +414,37 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                                     IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].Demand,
                                                     IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]][pick_day - 1]);
                                             }
+                                            // // Seek delivery quantity from possible quantity to remove from the existing visits,
+                                            // if (NewDeliveryQuantityRoute2[route2_index][pick_day] < 0.00001)
+                                            // {
+                                            //     SpecialProcedureTrigger = true;
 
-                                            if (NewDeliveryQuantityRoute2[route2_index][pick_day] < 0.001)
+                                            //     if (pick_day == 0)
+                                            //     {
+                                            //         NewDeliveryQuantityRoute2[route2_index][pick_day] = DeliveryMaxAllowingCapacityViolation(
+                                            //             IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryMax,
+                                            //             IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].Demand,
+                                            //             IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryBegin);
+                                            //     }
+                                            //     else
+                                            //     {
+
+                                            //         NewDeliveryQuantityRoute2[route2_index][pick_day] = DeliveryMaxAllowingCapacityViolation(
+                                            //             IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryMax,
+                                            //             IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].Demand,
+                                            //             IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]][pick_day - 1]);
+                                            //     }
+
+                                            //     cout << "Customer:" << IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].ID << " to day " << pick_day << ": Delivery Max Allowing Capacity Violation: " << NewDeliveryQuantityRoute2[route2_index][pick_day] << ", TotalSlackPerDay[pick_day]: " << CopyTotalSlackPerDay << ", Delivery Quantity can be added:" << min(NewDeliveryQuantityRoute2[route2_index][pick_day], CopyTotalSlackPerDay) << "Slack available after adjustment:" << CopyTotalSlackPerDay - min(NewDeliveryQuantityRoute2[route2_index][pick_day], CopyTotalSlackPerDay) << endl;
+
+                                            //     NewDeliveryQuantityRoute2[route2_index][pick_day] = min(NewDeliveryQuantityRoute2[route2_index][pick_day], CopyTotalSlackPerDay);
+                                            //     CopyTotalSlackPerDay = CopyTotalSlackPerDay - NewDeliveryQuantityRoute2[route2_index][pick_day];
+
+                                            //     // bool flag = false;
+                                            //     // assert(flag);
+                                            // }
+
+                                            if (NewDeliveryQuantityRoute2[route2_index][pick_day] < 0.00001)
                                             {
                                                 Whether_normal_insert_fail = true;
                                             }
@@ -467,7 +535,9 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                         // }
                                         // cout << endl;
                                         // assert(pick_day ==0);
-
+                                        // bool flag = false;
+                                        // assert(flag);
+                                        
                                         if (Whether_normal_insert_fail == false)
                                         {
                                             working_solutionCounter++;
@@ -682,8 +752,8 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                         //      Naive implementation of evaluating the swap remove insert move        //
                                         //                                                                            //
                                         ////////////////////////////////////////////////////////////////////////////////
-                                        assert(Swap_length1 > 3 && "Current code path not supported yet with Swap_length1 > 2");
-                                        assert(Swap_length2 > 3 && "Current code path not supported yet with Swap_length2 > 2");
+                                        assert(Swap_length1 <=3 && "Current code path not supported yet with Swap_length1 > 3");
+                                        assert(Swap_length2 <=3 && "Current code path not supported yet with Swap_length2 > 3");
                                     }
                                 }
                             }

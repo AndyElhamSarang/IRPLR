@@ -116,6 +116,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
     int whether_improved_via_local_search = 0;
     memory.PopulatePrefixAndSuffix(IRPLR, IRPSolution);
     IRPSolution.GetLogisticRatio(IRPLR);
+    memory.PopulateQuantityStructure(IRPLR, IRPSolution);
     // Initialise penalty for stockout
     int true_local = 0;
     double PenaltyForStockOut = 0;

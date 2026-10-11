@@ -35,6 +35,7 @@ int solution_improvement::OperatorTransfer(
     double ImpTotalTransportationCost = 0;
     double ImpTotalDelivery = 0;
 
+    memory.PopulateQuantityStructure(IRPLR, IRPSolution);
     vector<int> move;
     for (int i = 0; i < 9; i++)
     {
@@ -55,6 +56,7 @@ int solution_improvement::OperatorTransfer(
     int not_working_solutionCounter = 0;
     int naive_implementation = 0;
 
+    bool SpecialProcedureTrigger = false;
     time(&accumulate_start_time);
     try
     {
@@ -200,6 +202,34 @@ int solution_improvement::OperatorTransfer(
                     VehicleIndexInserted = VehicleIndexNewDay;
                 }
             }
+
+            // if (NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]] < 0.001)
+            // {
+
+            //     SpecialProcedureTrigger = true;
+            //     if (TransferDetails[i][2] == 0)
+            //     {
+            //         NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]] = DeliveryMaxAllowingCapacityViolation(
+            //             IRPLR.Retailers[TransferDetails[i][0]].InventoryMax,
+            //             IRPLR.Retailers[TransferDetails[i][0]].Demand,
+            //             IRPLR.Retailers[TransferDetails[i][0]].InventoryBegin);
+            //     }
+            //     else
+            //     {
+            //         NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]] = DeliveryMaxAllowingCapacityViolation(
+            //             IRPLR.Retailers[TransferDetails[i][0]].InventoryMax,
+            //             IRPLR.Retailers[TransferDetails[i][0]].Demand,
+            //             NewInventoryLevelCustomerTransfer[TransferDetails[i][2] - 1]);
+            //     }
+
+            //     cout << "Customer:" << IRPLR.Retailers[TransferDetails[i][0]].ID << " to day " << TransferDetails[i][2] << "Delivery Max Allowing Capacity Violation: " << NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]] << ", TotalSlackPerDay[TransferDetails[i][2]]: " << memory.TotalSlackPerDay[TransferDetails[i][2]] << ", Delivery Quantity can be added:" << min(NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]], memory.TotalSlackPerDay[TransferDetails[i][2]]) << endl;
+
+            //     NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]] = min(NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]], memory.TotalSlackPerDay[TransferDetails[i][2]]);
+
+            //     bool flag = false;
+            //     assert(flag);
+            // }
+
             if (NewDeliveryQuantityCustomerTransfer[TransferDetails[i][2]] < 0.001)
             {
                 Whether_normal_insert_fail = true;
@@ -457,7 +487,7 @@ int solution_improvement::OperatorTransfer(
         IRPSolution.VehicleLoad = ImpVehicleLoad;
         IRPSolution.LogisticRatio = ImpLogisticRatio;
         IRPSolution.ViolationStockOut = ImpStockOut;
-IRPSolution.ViolationMoreThanCapacity = ImpVehicleOverload;
+        IRPSolution.ViolationMoreThanCapacity = ImpVehicleOverload;
         IRPSolution.TotalTransportationCost = ImpTotalTransportationCost;
         IRPSolution.TotalDelivery = ImpTotalDelivery;
         IRPSolution.DeliveryQuantity[move[8]] = ImpDeliveryQuantityCustomerTransfer;
