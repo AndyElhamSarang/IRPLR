@@ -31,6 +31,7 @@ public:
   int CheckStockOut(input &IRPLR, int &RetailerIndex);
 
   void UpdateVehicleAllocationVisitOrder(input &IRPLR);
+  void UpdateVehicleAllocationVisitOrderForRemoval(input &IRPLR, int &day, int &vehicle);
   void print_solution(input &IRPLR);
   void GetLogisticRatio(input &IRPLR);
   double GetTransCostSingleRoute(/*int route, int head, int tail, int insert_length, vector<int> &Input_route, data &wsrp, proprecessing &memory*/);

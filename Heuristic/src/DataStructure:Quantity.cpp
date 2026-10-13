@@ -58,13 +58,13 @@ void preprocessing::PopulateQuantityStructure(input &IRPLR, solution &IRPSolutio
         TotalSlackPerVehicle.push_back(TempTotalSlackPerVehicle);
     }
 
-    for (int time = 0; time < IRPLR.TimeHorizon; time++)
-    {
-        for (int customer = 0; customer < IRPLR.Retailers.size(); customer++)
-        {
-            cout << "Vehicle " << IRPSolution.VehicleAllocation[customer][time] << " for customer " << customer << " at time " << time << ": QuantityStructure: " << QuantityStructure[customer][time] << endl;
-        }
-    }
+    // for (int time = 0; time < IRPLR.TimeHorizon; time++)
+    // {
+    //     for (int customer = 0; customer < IRPLR.Retailers.size(); customer++)
+    //     {
+    //         cout << "Vehicle " << IRPSolution.VehicleAllocation[customer][time] << " for customer " << customer << " at time " << time << ": QuantityStructure: " << QuantityStructure[customer][time] << endl;
+    //     }
+    // }
 
     for (int time = 0; time < IRPLR.TimeHorizon; time++)
     {
@@ -80,27 +80,27 @@ void preprocessing::PopulateQuantityStructure(input &IRPLR, solution &IRPSolutio
         }
         TotalSlackPerDay.push_back(TempTotalSlackPerDay);
     }
-    for (int i = 0; i < TotalSlackPerVehicle.size(); i++)
-    {
-        for (int j = 0; j < TotalSlackPerVehicle[i].size(); j++)
-        {
-            cout << "Total slack for vehicle " << j << " on day " << i << ": " << TotalSlackPerVehicle[i][j] << endl;
-        }
-    }
+    // for (int i = 0; i < TotalSlackPerVehicle.size(); i++)
+    // {
+    //     for (int j = 0; j < TotalSlackPerVehicle[i].size(); j++)
+    //     {
+    //         cout << "Total slack for vehicle " << j << " on day " << i << ": " << TotalSlackPerVehicle[i][j] << endl;
+    //     }
+    // }
 
-    cout << "Status of QuantityStructure(Slack):" << endl;
-    for (int i = 0; i < QuantityStructure.size(); i++)
-    {
-        for (int j = 0; j < QuantityStructure[i].size(); j++)
-        {
-            cout << QuantityStructure[i][j] << ",";
-        }
-        cout << endl;
-    }
-    for (int i = 0; i < TotalSlackPerDay.size(); i++)
-    {
-        cout << "Total slack for day " << i << ": " << TotalSlackPerDay[i] << endl;
-    }
+    // cout << "Status of QuantityStructure(Slack):" << endl;
+    // for (int i = 0; i < QuantityStructure.size(); i++)
+    // {
+    //     for (int j = 0; j < QuantityStructure[i].size(); j++)
+    //     {
+    //         cout << QuantityStructure[i][j] << ",";
+    //     }
+    //     cout << endl;
+    // }
+    // for (int i = 0; i < TotalSlackPerDay.size(); i++)
+    // {
+    //     cout << "Total slack for day " << i << ": " << TotalSlackPerDay[i] << endl;
+    // }
 }
 
 void preprocessing::UpdateQuantityStructure(input &IRPLR, solution &IRPSolution, int &customer, int &time, int &vehicle)

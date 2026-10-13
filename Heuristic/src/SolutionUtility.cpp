@@ -487,6 +487,32 @@ void solution::UpdateVehicleAllocationVisitOrder(input &IRPLR)
     }
 }
 
+void solution::UpdateVehicleAllocationVisitOrderForRemoval(input &IRPLR, int &day, int &vehicle)
+{
+    ///////////////////////////////////////////////////////////////////////
+    //                                                                   //
+    //     Update vehicle allocation and visit order  for removal        //
+    //                                                                   //
+    ///////////////////////////////////////////////////////////////////////
+    int order = 0;
+    for (int customer = 0; customer < Route[day][vehicle].size(); customer++)
+    {
+        if (DeliveryQuantity[Route[day][vehicle][customer]][day] < 0.0001)
+        {
+
+            VisitOrder[Route[day][vehicle][customer]][day] = IRPLR.Retailers.size() + 1;
+            VehicleAllocation[Route[day][vehicle][customer]][day] = IRPLR.NumberOfVehicles + 1;
+        }
+        else
+        {
+
+            VisitOrder[Route[day][vehicle][customer]][day] = order;
+            VehicleAllocation[Route[day][vehicle][customer]][day] = vehicle;
+            order++;
+        }
+    }
+}
+
 void solution::print_solution(input &IRPLR)
 {
 
