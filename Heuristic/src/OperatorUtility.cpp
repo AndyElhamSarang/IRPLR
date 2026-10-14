@@ -17,6 +17,8 @@ double solution_improvement::DeliveryMaxAllowingCapacityViolation(double &Invent
 double solution_improvement::Calculate_la_relax_objv(double &logistic_ratio, double &stockout_penalty, double &stockout, double &more_than_capacity_penalty, double &violation_more_than_capacity)
 {
     double la_relax_objv = 0.0;
+    cout << "logistic_ratio: " << logistic_ratio << ", stockout_penalty: " << stockout_penalty << ", stockout: " << stockout << ", more_than_capacity_penalty:" << more_than_capacity_penalty << ", violation_more_than_capacity:" << violation_more_than_capacity << endl;
+    assert(violation_more_than_capacity < 1);
     // cout<<"logistic_ratio: "<<logistic_ratio<<", stockout_penalty: "<<stockout_penalty<<", stockout: "<<stockout<<endl;
     la_relax_objv = logistic_ratio + stockout_penalty * stockout + more_than_capacity_penalty * violation_more_than_capacity;
     return la_relax_objv;
@@ -90,6 +92,8 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
     {
         NewVehicleOverload += max(0.0, VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity);
     }
+    // cout << customer_index << "," << day << "," << vehicle << endl;
+    // cout << "VehicleLoad[day][vehicle]:" << VehicleLoad[day][vehicle] << ", NewVehicleOverload:" << NewVehicleOverload << endl;
     if (fabs(InventoryLevel[day] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
     {
         if (InventoryLevel[day] >= 0.0 && CurrentInventoryLevel < -0.00001)
@@ -129,6 +133,7 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
         // cout<<"y:"<<y<<","<<DeliveryQuantity.size()<<endl;
         if (DeliveryQuantity[y] != 0) // If true means I am visiting. The algorithm assume if it is visited the delilivery quantity is positive
         {
+            assert(VehicleAllocation[customer_index][y] < IRPLR.NumberOfVehicles);
             double DeltaQ = DeliveryMax(IRPLR.Vehicle.capacity, VehicleLoad[y][VehicleAllocation[customer_index][y]], IRPLR.Retailers[customer_index].InventoryMax, IRPLR.Retailers[customer_index].Demand, CurrentInventoryLevel);
             if (DeltaQ > 0)
             {
@@ -142,9 +147,11 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
         double PreviousInventoryLevel = CurrentInventoryLevel;
         CurrentInventoryLevel = PreviousInventoryLevel - IRPLR.Retailers[customer_index].Demand + DeliveryQuantity[y];
 
-        // cout<<"PreviousInventoryLevel: "<<PreviousInventoryLevel<<", CurrentInventoryLevel: "<<CurrentInventoryLevel<<", DeliveryQuantity[y]: "<<DeliveryQuantity[y]<<", InventoryMax: "<<IRPLR.Retailers[customer_index].InventoryMax<<endl;
-        if (PreviousInventoryLevel + DeliveryQuantity[y] > IRPLR.Retailers[customer_index].InventoryMax)
+        // cout << "PreviousInventoryLevel: " << PreviousInventoryLevel << ", CurrentInventoryLevel: " << CurrentInventoryLevel << ", DeliveryQuantity[y]: " << DeliveryQuantity[y] << ", InventoryMax: " << IRPLR.Retailers[customer_index].InventoryMax << endl;
+
+        if (PreviousInventoryLevel + DeliveryQuantity[y] > IRPLR.Retailers[customer_index].InventoryMax && DeliveryQuantity[y] > 0)
         {
+            assert(VehicleAllocation[customer_index][y] < IRPLR.NumberOfVehicles);
             // cout<<"& "<<PreviousInventoryLevel<<","<<DeliveryQuantity[y]<<","<<IRPLR.Retailers[customer_index].InventoryMax<<endl;
             double delta = (PreviousInventoryLevel + DeliveryQuantity[y] - IRPLR.Retailers[customer_index].InventoryMax);
             DeliveryQuantity[y] -= delta;
@@ -153,11 +160,14 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
             assert(allocVeh >= 0 && allocVeh < (int)VehicleLoad[y].size());
             VehicleLoad[y][allocVeh] -= delta;
             CurrentInventoryLevel -= delta;
+            if (VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity > 0.00001)
+            {
+                NewVehicleOverload += max(0.0, VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity);
+            }
+
+            // cout << "VehicleLoad[day][vehicle]:" << VehicleLoad[day][vehicle] << ", VehicleLoad[y][VehicleAllocation[customer_index][y]]:" << VehicleLoad[y][VehicleAllocation[customer_index][y]] << ", VehicleAllocation[customer_index][y]:" << VehicleAllocation[customer_index][y] << ", NewVehicleOverload:" << NewVehicleOverload << endl;
         }
-        if (VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity > 0.00001)
-        {
-            NewVehicleOverload += max(0.0, VehicleLoad[y][VehicleAllocation[customer_index][y]] - IRPLR.Vehicle.capacity);
-        }
+
         if (fabs(InventoryLevel[y] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
         {
             if (InventoryLevel[y] >= 0.0 && CurrentInventoryLevel < -0.00001)

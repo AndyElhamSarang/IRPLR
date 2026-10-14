@@ -286,7 +286,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                         ChangeInTotalQuantity += NewDeliveryQuantityCustomerInsert[insert_index][pick_day] - IRPSolution.DeliveryQuantity[IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index]][pick_day];
                                                         CopyVehicleLoad[pick_day][pick_vehicle] = CopyVehicleLoad[pick_day][pick_vehicle] + NewDeliveryQuantityCustomerInsert[insert_index][pick_day];
                                                     }
-
+                                                    // cout<<"before update CopyVehicleLoad[pick_day][pick_vehicle]:"<<CopyVehicleLoad[pick_day][pick_vehicle]<<", NewVehicleOverload"<<NewVehicleOverload<<endl;
                                                     assert(NewDeliveryQuantityCustomerInsert[insert_index][pick_day] != 0);
                                                     double checkNewDeliveryQuantityCustomerInsert = NewDeliveryQuantityCustomerInsert[insert_index][pick_day];
                                                     if (pick_day == 0)
@@ -321,6 +321,8 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                             IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index],
                                                             IRPLR);
                                                     }
+
+                                                    // cout<<"after update CopyVehicleLoad[pick_day][pick_vehicle]:"<<CopyVehicleLoad[pick_day][pick_vehicle]<<", NewVehicleOverload"<<NewVehicleOverload<<endl;
                                                     assert(fabs(checkNewDeliveryQuantityCustomerInsert - NewDeliveryQuantityCustomerInsert[insert_index][pick_day]) < 1e-6);
                                                     // cout << "Finally.." << endl;
                                                     // cout << "NewDeliveryQuantityCustomerRemove" << endl;

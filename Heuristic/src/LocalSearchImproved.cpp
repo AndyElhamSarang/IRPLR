@@ -437,7 +437,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 // assert(counter < 1);
             }
 
-            // cout << "Iteration applied for Operator Transfer:" << counter << endl;
+            cout << "Iteration applied for Operator Transfer:" << counter << endl;
 
             //////////////////////////////////////////////////////////////////////
             //                                                                  //
@@ -488,34 +488,34 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             }
             cout << "Iteration applied for Operator: SwapRemoveInsert:" << counter << endl;
 
-             //////////////////////////////////////////////////////////////////////
-            //                                                                  //
-            //                            Repair operator                       //
-            //                                                                  //
-            //////////////////////////////////////////////////////////////////////
+            //  //////////////////////////////////////////////////////////////////////
+            // //                                                                  //
+            // //                            Repair operator                       //
+            // //                                                                  //
+            // //////////////////////////////////////////////////////////////////////
 
-            whether_improved = 1;
-            while (whether_improved == 1)
-            {
-                ThrowIfLocalSearchTimeLimitReached();
-                whether_improved = OperatorRepair(IRPLR, IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity);
-                if (whether_improved == 1)
-                {
-                    whether_improved_via_Repair = true;
-                    true_local = 0;
-                }
-                RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+            // whether_improved = 1;
+            // while (whether_improved == 1)
+            // {
+            //     ThrowIfLocalSearchTimeLimitReached();
+            //     whether_improved = OperatorRepair(IRPLR, IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity);
+            //     if (whether_improved == 1)
+            //     {
+            //         whether_improved_via_Repair = true;
+            //         true_local = 0;
+            //     }
+            //     RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
 
-                // IRPSolution.Validation(IRPLR);
-                if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
-                {
-                    if (temp_global_best_logistic_ratio - IRPSolution.LogisticRatio > 0.00001)
-                    {
-                        cout << "temp_global_best_logistic_ratio: " << temp_global_best_logistic_ratio << endl;
-                        temp_global_best_logistic_ratio = IRPSolution.LogisticRatio;
-                    }
-                }
-            }
+            //     // IRPSolution.Validation(IRPLR);
+            //     if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
+            //     {
+            //         if (temp_global_best_logistic_ratio - IRPSolution.LogisticRatio > 0.00001)
+            //         {
+            //             cout << "temp_global_best_logistic_ratio: " << temp_global_best_logistic_ratio << endl;
+            //             temp_global_best_logistic_ratio = IRPSolution.LogisticRatio;
+            //         }
+            //     }
+            // }
             //////////////////////////////////////////////////////////////////////
             //                                                                  //
             //                       Adjust multiplier                          //
