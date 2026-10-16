@@ -392,7 +392,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             IncumbentSolution.print_solution(IRPLR);
             cout << "------------------------------------------------" << endl;
 
-            OperatorDisturb(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
+            // OperatorDisturb(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
 
             // boost_random_mechanism PickRandomDisturbance;
             // int DisturbanceToRun = PickRandomDisturbance.random_number_generator(0, 1, generator);

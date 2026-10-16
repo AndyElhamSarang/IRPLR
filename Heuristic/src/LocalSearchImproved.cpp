@@ -384,7 +384,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     {
                         if (IRPSolution.VehicleAllocation[i][j] < IRPLR.NumberOfVehicles + 1) // If customer i is visited at day j,
                         {
-                            for (int k = 0; k < IRPSolution.VehicleAllocation[i].size(); k++)
+                            for (int k = 0; k < IRPSolution.VehicleAllocation[i].size(); k++) //For a different day k
                             {
                                 if (IRPSolution.VehicleAllocation[i][k] >= IRPLR.NumberOfVehicles && k != j)
                                 {

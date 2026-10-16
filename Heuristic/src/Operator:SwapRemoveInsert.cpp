@@ -13,7 +13,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
     double LR_objv = numeric_limits<double>::max();
     IRPSolution.GetLogisticRatio(IRPLR);
 
-    memory.PopulateQuantityStructure(IRPLR, IRPSolution);
+    // memory.PopulateQuantityStructure(IRPLR, IRPSolution);
     IRPSolution.print_solution(IRPLR);
     LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut, PenaltyMoreThanCapacity, IRPSolution.ViolationMoreThanCapacity);
     cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut: " << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << "\t ViolationMoreThanCapacity:" << IRPSolution.ViolationMoreThanCapacity << "\t PenaltyMoreThanCapacity:" << PenaltyMoreThanCapacity << "\t LR_objv:" << LR_objv << endl;
@@ -484,7 +484,6 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                     ImpTotalTransportationCost = NewTotalTransportationCost;
                                                     ImpTotalDelivery = NewTotalDelivery;
                                                     ImpVehicleOverload = NewVehicleOverload;
-                                                    IntroduceNewQuantityOrNotInsert = NewIntroduceNewQuantityOrNotInsert;
                                                     ImpTotalSlackPerVehicle = CopyTotalSlackPerVehicle;
                                                     // cout << "!Improving solution found" << endl;
                                                 }
@@ -670,10 +669,10 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                         {
                             bool AddCandidate = true;
                             // cout << "Customer inserted:";
-                            for (int insert_index = 0; insert_index < move[5]; insert_index++)
+                            for (int except_index = 0; except_index < move[5]; except_index++)
                             {
-                                // cout << IRPSolution.Route[move[0]][move[1]][move[2] + insert_index] << ",";
-                                if (customer == IRPSolution.Route[move[0]][move[1]][move[2] + insert_index])
+                                // cout << IRPSolution.Route[move[0]][move[1]][move[2] +  except_index] << ",";
+                                if (customer == IRPSolution.Route[move[0]][move[1]][move[2] +  except_index])
                                 {
                                     AddCandidate = false;
                                 }
@@ -751,45 +750,11 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                     }
                     IRPSolution.VisitOrder[customer_candidate][move[0]] = IRPLR.Retailers.size() + 1;
                     IRPSolution.VehicleAllocation[customer_candidate][move[0]] = IRPLR.NumberOfVehicles + 1;
-                    // See a customer actually got removed
-                    //  IRPSolution.print_solution(IRPLR);
-                    //  bool flag = false;
-                    //  assert(flag);
-                    // for (int temp = 0; temp < IRPSolution.DeliveryQuantity.size(); temp++)
-                    // {
-                    //     cout << "temp" << temp << ", " << IRPSolution.DeliveryQuantity[temp][move[0]] << ",IRPSolution.VehicleAllocation[temp][move[0]]" << IRPSolution.VehicleAllocation[temp][move[0]] << ", IRPSolution.VisitOrder[temp][move[0]]:" << IRPSolution.VisitOrder[temp][move[0]] << endl;
-                    // }
-                    IRPSolution.print_solution(IRPLR);
                     break;
                 }
             }
         }
-        IRPSolution.print_solution(IRPLR);
-        // cout << "After remove quantity on existing visits" << endl;
-        // for (int i = 0; i < memory.QuantityStructure.size(); i++)
-        // {
-        //     cout << "Retailer " << i << ";";
-        //     for (int j = 0; j < memory.QuantityStructure[i].size(); j++)
-        //     {
-        //         cout << memory.QuantityStructure[i][j] << ",";
-        //     }
-        //     cout << endl;
-        // }
-
-        IRPSolution.print_solution(IRPLR);
-        // for (int i = 0; i < memory.QuantityStructure.size(); i++)
-        // {
-        //     for (int j = 0; j < memory.QuantityStructure[i].size(); j++)
-        //     {
-        //         cout << "QuantityStructure[" << i << "][" << j << "]:" << memory.QuantityStructure[i][j] << endl;
-        //     }
-        // }
-        // // IRPSolution.Validation(IRPLR);
-        // for (int i = 0; i < IntroduceNewQuantityOrNotInsert.size(); i++)
-        // {
-        //     cout << "IntroduceNewQuantityOrNotInsert[" << i << "]:" << IntroduceNewQuantityOrNotInsert[i] << endl;
-        //     assert(IntroduceNewQuantityOrNotInsert[i] == false && "Relocate exisiting quantity, need to check the code");
-        // }
+        
         ////////////////////////////////////////////////////////////////////////
         //                                                                    //
         //             Verify the correctness of the output                   //

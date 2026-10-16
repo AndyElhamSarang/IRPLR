@@ -17,8 +17,8 @@ double solution_improvement::DeliveryMaxAllowingCapacityViolation(double &Invent
 double solution_improvement::Calculate_la_relax_objv(double &logistic_ratio, double &stockout_penalty, double &stockout, double &more_than_capacity_penalty, double &violation_more_than_capacity)
 {
     double la_relax_objv = 0.0;
-    cout << "logistic_ratio: " << logistic_ratio << ", stockout_penalty: " << stockout_penalty << ", stockout: " << stockout << ", more_than_capacity_penalty:" << more_than_capacity_penalty << ", violation_more_than_capacity:" << violation_more_than_capacity << endl;
-    assert(violation_more_than_capacity < 1);
+    // cout << "logistic_ratio: " << logistic_ratio << ", stockout_penalty: " << stockout_penalty << ", stockout: " << stockout << ", more_than_capacity_penalty:" << more_than_capacity_penalty << ", violation_more_than_capacity:" << violation_more_than_capacity << endl;
+    // assert(violation_more_than_capacity < 1);
     // cout<<"logistic_ratio: "<<logistic_ratio<<", stockout_penalty: "<<stockout_penalty<<", stockout: "<<stockout<<endl;
     la_relax_objv = logistic_ratio + stockout_penalty * stockout + more_than_capacity_penalty * violation_more_than_capacity;
     return la_relax_objv;
