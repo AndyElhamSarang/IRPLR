@@ -350,7 +350,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 // IRPSolution.Validation(IRPLR);
                 memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
                 RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
-                cout << "Logistic Ratio: " << IRPSolution.LogisticRatio << endl;
+                // cout << "Logistic Ratio: " << IRPSolution.LogisticRatio << endl;
                 if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
                 {
                     if (temp_global_best_logistic_ratio - IRPSolution.LogisticRatio > 0.00001)
@@ -368,7 +368,6 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             //                                            //
             ////////////////////////////////////////////////
 
-            cout << "Start Operator: Transfer:" << counter << endl;
             true_local = 1;
             whether_improved = 1;
             counter = 0;
@@ -521,7 +520,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             //                       Adjust multiplier                          //
             //                                                                  //
             //////////////////////////////////////////////////////////////////////
-
+            cout << "================================" << endl;
             InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, temp_global_best_logistic_ratio, ScalarLagrangianRelaxation, true_local);
             if (true_local == 1)
             {

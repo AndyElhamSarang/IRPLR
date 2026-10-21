@@ -140,14 +140,11 @@ void preprocessing::UpdateQuantityStructure(input &IRPLR, solution &IRPSolution,
     possible_quantity_removal = max(0.0, possible_quantity_removal - LargestStockout);
     quantity_removal = possible_quantity_removal;
 
-    // cout << "Customer " << customer << " at time " << time << ": possible quantity removal: " << possible_quantity_removal << "; quantity to remove:" << quantity_removal << endl;
+    // cout << "Before update Customer " << customer << " at time " << time << ": QuantityStructure[customer][time]: " << QuantityStructure[customer][time] << "; quantity to remove:" << quantity_removal << ", TotalSlackPerVehicle[time][vehicle]:" << TotalSlackPerVehicle[time][vehicle] << ", TotalSlackPerDay[time]" << TotalSlackPerDay[time] << endl;
 
-    TotalSlackPerDay[time] -= QuantityStructure[customer][time];                                                    // Update the total slack for the day
-    TotalSlackPerVehicle[time][vehicle] -= QuantityStructure[customer][time]; // Update the total slack for the vehicle
     QuantityStructure[customer][time] = quantity_removal;
-    TotalSlackPerDay[time] += QuantityStructure[customer][time];                                                    // Update the total slack for the day
-    TotalSlackPerVehicle[time][vehicle] += QuantityStructure[customer][time]; // Update the total slack for the vehicle
-
+  
+    // cout << "After update Customer " << customer << " at time " << time << ": QuantityStructure[customer][time]: " << QuantityStructure[customer][time] << "; quantity to remove:" << quantity_removal << ", TotalSlackPerVehicle[time][vehicle]:" << TotalSlackPerVehicle[time][vehicle] << ", TotalSlackPerDay[time]" << TotalSlackPerDay[time] << endl;
     //    for(int i=0;i<TotalSlackPerVehicle.size();i++)
     //     {
     //         for(int j=0;j<TotalSlackPerVehicle[i].size();j++)

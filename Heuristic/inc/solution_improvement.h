@@ -15,6 +15,7 @@ public:
         double &InventoryMax,
         double &CustomerDemand,
         double &PreviousInventoryLevel);
+    double DeliverDemand(double &InventoryMax, double &CustomerDemand, double &PreviousInventoryLevel);
     double Calculate_la_relax_objv(
         double &logistic_ratio,
         double &stockout_penalty,
