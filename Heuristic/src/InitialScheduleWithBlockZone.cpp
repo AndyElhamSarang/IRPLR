@@ -248,7 +248,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
     for(int i=0;i<grid_resolution_increment;i++)
     {
         CollectionOfGridResolution.push_back(tempGridResolution);
-        tempGridResolution+=2;
+        tempGridResolution++;
     }
     if (printout_initialSchedule == 1)
     {
@@ -508,7 +508,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
         }
     }
 
-    cout << IRPLR.Retailers.size() << "," << counterNumberOfRetailers << endl;
+    // cout << IRPLR.Retailers.size() << "," << counterNumberOfRetailers << endl;
     assert(IRPLR.Retailers.size() == counterNumberOfRetailers);
 
     // Main assignment loop:

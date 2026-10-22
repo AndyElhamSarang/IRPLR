@@ -2,17 +2,17 @@
 
 namespace
 {
-void ThrowIfLocalSearchTimeLimitReached()
-{
-    time(&total_end_time);
-    double total_ls_time = difftime(total_end_time, total_start_time);
-    assert(total_ls_time - AccumulatedTimeHGS >= 0);
-    if (total_ls_time - AccumulatedTimeHGS >= MainAlgorithmTimeLimit - 0.01)
+    void ThrowIfLocalSearchTimeLimitReached()
     {
-        int time_limit_reached = static_cast<int>(total_ls_time);
-        throw time_limit_reached;
+        time(&total_end_time);
+        double total_ls_time = difftime(total_end_time, total_start_time);
+        assert(total_ls_time - AccumulatedTimeHGS >= 0);
+        if (total_ls_time - AccumulatedTimeHGS >= MainAlgorithmTimeLimit - 0.01)
+        {
+            int time_limit_reached = static_cast<int>(total_ls_time);
+            throw time_limit_reached;
+        }
     }
-}
 }
 
 void RecordSolution(solution &IRPSolution, solution &SolutionToRecord, double &time_stamp)
@@ -39,14 +39,18 @@ void RecordSolution_First_30s_60s(input &IRPLR, solution &IRPSolution, solution 
     {
         cout << "30s time point reached." << endl;
         IRPSolution.GetLogisticRatio(IRPLR);
-        assert(IRPSolution.ViolationStockOut >= -0.00001);
-        if (fabs(IRPSolution.ViolationStockOut - 0) < 0.001)
+        if (fabs(IRPSolution.ViolationStockOut - 0) < 0.00001)
         {
-            if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
+            if (fabs(IRPSolution.ViolationMoreThanCapacity - 0) < 0.00001)
             {
-                RecordSolution(GlobalBest, IRPSolution, accum_time);
-                RunHGSAtEnd = true;
-                DisturbanceCounter = 0;
+                if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
+                {
+                    assert(IRPSolution.ViolationStockOut >= -0.00001);
+                    assert(IRPSolution.ViolationMoreThanCapacity >= -0.00001);
+                    RecordSolution(GlobalBest, IRPSolution, accum_time);
+                    RunHGSAtEnd = true;
+                    DisturbanceCounter = 0;
+                }
             }
         }
         whether_results_reported_30 = true;
@@ -63,15 +67,19 @@ void RecordSolution_First_30s_60s(input &IRPLR, solution &IRPSolution, solution 
         cout << "60s time point reached." << endl;
         IRPSolution.GetLogisticRatio(IRPLR);
 
-        assert(IRPSolution.ViolationStockOut >= -0.00001);
-        if (fabs(IRPSolution.ViolationStockOut - 0) < 0.001)
+        if (fabs(IRPSolution.ViolationStockOut - 0) < 0.00001)
         {
-            if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
+            if (fabs(IRPSolution.ViolationMoreThanCapacity - 0) < 0.00001)
             {
+                assert(IRPSolution.ViolationStockOut >= -0.00001);
+                assert(IRPSolution.ViolationMoreThanCapacity >= -0.00001);
+                if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
+                {
 
-                RecordSolution(GlobalBest, IRPSolution, accum_time);
-                RunHGSAtEnd = true;
-                DisturbanceCounter = 0;
+                    RecordSolution(GlobalBest, IRPSolution, accum_time);
+                    RunHGSAtEnd = true;
+                    DisturbanceCounter = 0;
+                }
             }
         }
 
@@ -83,14 +91,18 @@ void RecordSolution_First_30s_60s(input &IRPLR, solution &IRPSolution, solution 
     {
         cout << "First improvement time point reached." << endl;
         IRPSolution.GetLogisticRatio(IRPLR);
-        assert(IRPSolution.ViolationStockOut >= -0.00001);
-        if (fabs(IRPSolution.ViolationStockOut - 0) < 0.001)
+        if (fabs(IRPSolution.ViolationStockOut - 0) < 0.00001)
         {
-            if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
+            if(fabs(IRPSolution.ViolationMoreThanCapacity - 0) < 0.00001)
             {
-                RecordSolution(GlobalBest, IRPSolution, accum_time);
-                RunHGSAtEnd = true;
-                DisturbanceCounter = 0;
+                assert(IRPSolution.ViolationStockOut >= -0.00001);
+                assert(IRPSolution.ViolationMoreThanCapacity >= -0.00001);
+                if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
+                {
+                    RecordSolution(GlobalBest, IRPSolution, accum_time);
+                    RunHGSAtEnd = true;
+                    DisturbanceCounter = 0;
+                }
             }
         }
 
@@ -104,30 +116,38 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
     int whether_improved_via_local_search = 0;
     memory.PopulatePrefixAndSuffix(IRPLR, IRPSolution);
     IRPSolution.GetLogisticRatio(IRPLR);
+    memory.PopulateQuantityStructure(IRPLR, IRPSolution);
     // Initialise penalty for stockout
     int true_local = 0;
     double PenaltyForStockOut = 0;
     double PenaltyMoreThanCapacity = 0;
 
     double temp_global_best_logistic_ratio = GlobalBest.LogisticRatio;
-    if(AllowLagrangianRelaxation == "YES")
+    if (AllowLagrangianRelaxation == "YES")
     {
         InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, GlobalBest.LogisticRatio, ScalarLagrangianRelaxation, true_local);
+
+        // PenaltyForStockOut = 100000;      // A very large penalty for stockout to discourage any infeasible moves.
+        // PenaltyMoreThanCapacity = 100000; // A very large penalty for exceeding capacity to discourage any infeasible moves.
     }
-    else if(AllowLagrangianRelaxation == "NO")
+    else if (AllowLagrangianRelaxation == "NO")
     {
-        PenaltyForStockOut = 100000; // A very large penalty for stockout to discourage any infeasible moves.
+        PenaltyForStockOut = 100000;      // A very large penalty for stockout to discourage any infeasible moves.
         PenaltyMoreThanCapacity = 100000; // A very large penalty for exceeding capacity to discourage any infeasible moves.
     }
     bool whether_improved_via_SwapRemoveInsertPair = true;
     bool whether_improved_via_SwapTwoRoutesOnSingleDay = true;
     bool whether_improved_via_InterSwap = true;
-
+    bool whether_improved_via_Repair = true;
+    bool QuantityBalancing = false;
     int Abnormal_true_local_counter = 0;
+    boost_random_mechanism NeighbourhoodRandomness;
+   
     try
     {
-        while (true_local == 0 || IRPSolution.ViolationStockOut > 0.00001)
+        while (true_local == 0 || (IRPSolution.ViolationStockOut > 0.00001 || IRPSolution.ViolationMoreThanCapacity > 0.00001))
         {
+
             true_local = 1;
             int whether_improved = 1;
             int counter = 0;
@@ -142,6 +162,17 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             int min_shift2 = 0;
             int max_shift2 = 0;
 
+            // int temp= NeighbourhoodRandomness.random_number_generator(0, 1, generator);
+            // if(temp==0)
+            // {
+            //     QuantityBalancing = true;
+            // }
+            // else
+            // {
+            //     QuantityBalancing = false;
+            // }
+
+            QuantityBalancing = true;
             set<vector<int>> ShiftTwoRoutesOnSingleDayPair; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
             for (int day = 0; day < IRPSolution.Route.size(); day++)
             {
@@ -172,7 +203,10 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 }
                 ShiftTwoRoutesOnSingleDayPairToReconsider.clear();
                 // cout << "InitialSizeOfShiftTwoRoutesOnSingleDayPair: " << InitialSizeOfShiftTwoRoutesOnSingleDayPair <<", ShiftTwoRoutesOnSingleDayPairToReconsider: "<< ShiftTwoRoutesOnSingleDayPairToReconsider.size()<<", Size of reduced ShiftTwoRoutesOnSingleDayPair: " << ShiftTwoRoutesOnSingleDayPair.size() << endl;
-                whether_improved = OperatorSwapTwoRoutesOnSingleDay(
+                
+                if(QuantityBalancing == true)
+                {
+                    whether_improved = OperatorSwapTwoRoutesOnSingleDay(
                     IRPLR,
                     IRPSolution,
                     PenaltyForStockOut,
@@ -184,6 +218,22 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     max_shift1,
                     min_shift2,
                     max_shift2);
+                }
+                else
+                {
+                    whether_improved = OperatorSwapTwoRoutesOnSingleDayWithoutQuantityBalancing(
+                    IRPLR,
+                    IRPSolution,
+                    PenaltyForStockOut,
+                    PenaltyMoreThanCapacity,
+                    memory,
+                    ShiftTwoRoutesOnSingleDayPair,
+                    ShiftTwoRoutesOnSingleDayPairToReconsider,
+                    min_shift1,
+                    max_shift1,
+                    min_shift2,
+                    max_shift2);
+                }
                 // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, temp_global_best_logistic_ratio, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
@@ -192,8 +242,8 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 // IRPSolution.Validation(IRPLR);
                 memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
                 RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
-                
-                if(IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
+
+                if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
                 {
                     if (temp_global_best_logistic_ratio - IRPSolution.LogisticRatio > 0.00001)
                     {
@@ -218,6 +268,16 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             int min_swap2 = 1;
             int max_swap2 = 2;
 
+            // temp= NeighbourhoodRandomness.random_number_generator(0, 1, generator);
+            // if(temp==0)
+            // {
+            //     QuantityBalancing = true;
+            // }
+            // else
+            // {
+            //     QuantityBalancing = false;
+            // }
+            QuantityBalancing = true;
             set<vector<int>> SwapTwoRoutesOnSingleDayPair; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
             for (int day = 0; day < IRPSolution.Route.size(); day++)
             {
@@ -248,18 +308,40 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 }
                 SwapTwoRoutesOnSingleDayPairToReconsider.clear();
                 // cout << "InitialSizeOfSwapTwoRoutesOnSingleDayPair: " << InitialSizeOfSwapTwoRoutesOnSingleDayPair <<", SwapTwoRoutesOnSingleDayPairToReconsider: "<< SwapTwoRoutesOnSingleDayPairToReconsider.size()<<", Size of reduced SwapTwoRoutesOnSingleDayPair: " << SwapTwoRoutesOnSingleDayPair.size() << endl;
-                whether_improved = OperatorSwapTwoRoutesOnSingleDay(
+                
+                
+                if(QuantityBalancing == true)
+                {
+                    whether_improved = OperatorSwapTwoRoutesOnSingleDay(
                     IRPLR,
                     IRPSolution,
                     PenaltyForStockOut,
                     PenaltyMoreThanCapacity,
                     memory,
-                    SwapTwoRoutesOnSingleDayPair,
-                    SwapTwoRoutesOnSingleDayPairToReconsider,
-                    min_swap1,
-                    max_swap1,
-                    min_swap2,
-                    max_swap2);
+                    ShiftTwoRoutesOnSingleDayPair,
+                    ShiftTwoRoutesOnSingleDayPairToReconsider,
+                    min_shift1,
+                    max_shift1,
+                    min_shift2,
+                    max_shift2);
+                }
+                else
+                {
+                    whether_improved = OperatorSwapTwoRoutesOnSingleDayWithoutQuantityBalancing(
+                    IRPLR,
+                    IRPSolution,
+                    PenaltyForStockOut,
+                    PenaltyMoreThanCapacity,
+                    memory,
+                    ShiftTwoRoutesOnSingleDayPair,
+                    ShiftTwoRoutesOnSingleDayPairToReconsider,
+                    min_shift1,
+                    max_shift1,
+                    min_shift2,
+                    max_shift2);
+                }
+                
+                
                 // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, temp_global_best_logistic_ratio, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
@@ -268,8 +350,8 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 // IRPSolution.Validation(IRPLR);
                 memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
                 RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
-                
-                if(IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
+                // cout << "Logistic Ratio: " << IRPSolution.LogisticRatio << endl;
+                if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
                 {
                     if (temp_global_best_logistic_ratio - IRPSolution.LogisticRatio > 0.00001)
                     {
@@ -286,7 +368,6 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             //                                            //
             ////////////////////////////////////////////////
 
-            cout << "Start Operator: Transfer:" << counter << endl;
             true_local = 1;
             whether_improved = 1;
             counter = 0;
@@ -302,7 +383,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     {
                         if (IRPSolution.VehicleAllocation[i][j] < IRPLR.NumberOfVehicles + 1) // If customer i is visited at day j,
                         {
-                            for (int k = 0; k < IRPSolution.VehicleAllocation[i].size(); k++)
+                            for (int k = 0; k < IRPSolution.VehicleAllocation[i].size(); k++) //For a different day k
                             {
                                 if (IRPSolution.VehicleAllocation[i][k] >= IRPLR.NumberOfVehicles && k != j)
                                 {
@@ -343,8 +424,8 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
 
                 memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
                 RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
-                
-                if(IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
+
+                if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
                 {
                     if (temp_global_best_logistic_ratio - IRPSolution.LogisticRatio > 0.00001)
                     {
@@ -384,11 +465,10 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             while (whether_improved == 1)
             {
                 ThrowIfLocalSearchTimeLimitReached();
-
                 whether_improved = OperatorSwapRemoveInsert(IRPLR, IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, memory, SwapRemoveInsertPair, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
                 // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, temp_global_best_logistic_ratio, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
-                {  
+                {
                     whether_improved_via_SwapRemoveInsertPair = true;
                     true_local = 0;
                 }
@@ -396,7 +476,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
 
                 // IRPSolution.Validation(IRPLR);
-                if(IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
+                if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
                 {
                     if (temp_global_best_logistic_ratio - IRPSolution.LogisticRatio > 0.00001)
                     {
@@ -407,24 +487,53 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             }
             cout << "Iteration applied for Operator: SwapRemoveInsert:" << counter << endl;
 
+            //  //////////////////////////////////////////////////////////////////////
+            // //                                                                  //
+            // //                            Repair operator                       //
+            // //                                                                  //
+            // //////////////////////////////////////////////////////////////////////
+
+            // whether_improved = 1;
+            // while (whether_improved == 1)
+            // {
+            //     ThrowIfLocalSearchTimeLimitReached();
+            //     whether_improved = OperatorRepair(IRPLR, IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity);
+            //     if (whether_improved == 1)
+            //     {
+            //         whether_improved_via_Repair = true;
+            //         true_local = 0;
+            //     }
+            //     RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+
+            //     // IRPSolution.Validation(IRPLR);
+            //     if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
+            //     {
+            //         if (temp_global_best_logistic_ratio - IRPSolution.LogisticRatio > 0.00001)
+            //         {
+            //             cout << "temp_global_best_logistic_ratio: " << temp_global_best_logistic_ratio << endl;
+            //             temp_global_best_logistic_ratio = IRPSolution.LogisticRatio;
+            //         }
+            //     }
+            // }
             //////////////////////////////////////////////////////////////////////
             //                                                                  //
             //                       Adjust multiplier                          //
             //                                                                  //
             //////////////////////////////////////////////////////////////////////
-
-            InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, temp_global_best_logistic_ratio, ScalarLagrangianRelaxation,true_local);
-            if(true_local ==1 )
+            cout << "================================" << endl;
+            InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, temp_global_best_logistic_ratio, ScalarLagrangianRelaxation, true_local);
+            if (true_local == 1)
             {
-                cout << "Abnormal true_local counter: " << Abnormal_true_local_counter << endl;
-                cout << "PenaltyForStockOut: " << PenaltyForStockOut << endl;
-                cout << "PenaltyMoreThanCapacity: " << PenaltyMoreThanCapacity << endl;
-                cout << "ScalarLagrangianRelaxation: " << ScalarLagrangianRelaxation << endl;
-                cout << "IRPSolution.ViolationStockOut: " << IRPSolution.ViolationStockOut << endl;
-                cout << "temp_global_best_logistic_ratio: " << temp_global_best_logistic_ratio << endl;
-                cout << "IRPSolution.LogisticRatio: " << IRPSolution.LogisticRatio << endl;
-                cout << "IRPSolution.TotalTransportationCost: " << IRPSolution.TotalTransportationCost << endl;
-                cout << "GlobalBest.TotalTransportationCost: " << GlobalBest.TotalTransportationCost << endl;
+                cout << "Abnormal true_local counter: " << Abnormal_true_local_counter << ";";
+                cout << "PenaltyForStockOut: " << PenaltyForStockOut << ";";
+                cout << "PenaltyMoreThanCapacity: " << PenaltyMoreThanCapacity << ";";
+                cout << "ScalarLagrangianRelaxation: " << ScalarLagrangianRelaxation << ";";
+                cout << "IRPSolution.ViolationStockOut: " << IRPSolution.ViolationStockOut << ";";
+                cout << "IRPSolution.ViolationMoreThanCapacity: " << IRPSolution.ViolationMoreThanCapacity << ";";
+                cout << "temp_global_best_logistic_ratio: " << temp_global_best_logistic_ratio << ";";
+                cout << "IRPSolution.LogisticRatio: " << IRPSolution.LogisticRatio << ";";
+                cout << "IRPSolution.TotalTransportationCost: " << IRPSolution.TotalTransportationCost << ";";
+                cout << "GlobalBest.TotalTransportationCost: " << GlobalBest.TotalTransportationCost << ";";
                 // if(Abnormal_true_local_counter ==1)
                 // {
                 //     cout<<"Abnormal true_local counter: "<<Abnormal_true_local_counter<<endl;

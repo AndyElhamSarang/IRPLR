@@ -54,7 +54,7 @@ int main()
 		if (OutputResults == 1)
 		{
 			string experiment_str = to_string(experiment + 1);
-			string experiment_name = "best_initial_configuration2";
+			string experiment_name = "test";
 			string file_type = ".csv";
 			string file_name = experiment_name + "_exp" + experiment_str + file_type;
 			Table.open(file_name);
@@ -153,11 +153,11 @@ int main()
 				}
 				time(&total_end_time);
 				double accum_time = difftime(total_end_time, total_start_time);
+				cout << "Global best" << endl;
+				GlobalBest.print_solution(IRPLR);
 				GlobalBest.Validation(IRPLR);
 				cout << "whether_results_reported at 30s: " << whether_results_reported_30 << ", whether_results_reported at 60s: " << whether_results_reported_60 << ", whether_results_reported at first improvement: " << whether_results_reported_first_improvement << endl;
 
-				cout << "Global best" << endl;
-				GlobalBest.print_solution(IRPLR);
 				cout << "BestTransportationCost:" << GlobalBest.TotalTransportationCost << "\t TotalDelivery:" << GlobalBest.TotalDelivery << "\t LogistcRatio:" << GlobalBest.LogisticRatio << endl;
 
 				if (OutputSolutionJSON == "YES")

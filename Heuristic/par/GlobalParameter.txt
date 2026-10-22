@@ -9,7 +9,7 @@ NumberOfExperiments
 AllowLagrangianRelaxation
 YES
 TypeOfRebalance
-NOT_GUARANTEE_FEASIBILITY
+GUARANTEE_FEASIBILITY
 InitialLagrangianScalar
 10
 ToAdjustLagrangianScalar
@@ -25,4 +25,4 @@ sigma
 phi
 10
 MainAlgorithmTimeLimit
-60
+30

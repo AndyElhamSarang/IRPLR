@@ -19,6 +19,9 @@ public:
    vector<vector<vector<double>>> Prefix; // Subpathes begin with head, this is a local structure, keep it updated all time
    vector<vector<vector<double>>> Suffix; // Subpathes begin with tail, this is a local structure, keep it updated all time
 
+   vector<vector<double>> QuantityStructure; // This is a local structure, keep it updated all time
+   vector<vector<double>> TotalSlackPerVehicle; // This is a local structure, keep it updated all time
+   vector<double> TotalSlackPerDay; // This is a local structure, keep it updated all time
 
    vector<double> SingleRoutePrefix; // For a single route, Subpathes begin with head, this is a local structure, keep it updated all time
    vector<double> SingleRouteSuffix; // For a single route, Subpathes begin with tail, this is a local structure, keep it updated all time
@@ -27,6 +30,8 @@ public:
 
    vector<vector<vector<double>>> StructureForSingleRoute; // This is a local structure design for single route optimisation, keep it updated locally
    void PopulateGlobalDataStructure(input &IRPLR);
+   void PopulateQuantityStructure(input &IRPLR, solution &IRPSolution);
+   void UpdateQuantityStructure(input &IRPLR, solution &IRPSolution, int &customer, int &time, int &vehicle  );
    void CustomerInfo(input &IRPLR);
    void PopulatePrefixAndSuffix(input &IRPLR, solution &IRPSolution);
    void UpdatePrefixAndSuffix(input &IRPLR, solution &IRPSolution);

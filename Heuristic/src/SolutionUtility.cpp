@@ -284,10 +284,11 @@ void Total_Delivery_Quantity_Per_Route_Cannot_Exceed_Capacity(input &IRPLR, solu
                 double TotalDeliveryQuantityRoute = 0;
                 for (int k = 0; k < IRPSolution.Route[i][j].size(); k++)
                 {
-                    assert(IRPSolution.DeliveryQuantity[IRPSolution.Route[i][j][k]][i] >= -0.00001 && "Delivery quantity is non-negative");
+                    assert(IRPSolution.DeliveryQuantity[IRPSolution.Route[i][j][k]][i] >= 0.00001 && "Delivery quantity is non-negative");
                     TotalDeliveryQuantityRoute += IRPSolution.DeliveryQuantity[IRPSolution.Route[i][j][k]][i];
                 }
                 // cout<<"TotalDeliveryQuantityRoute for day "<<i<<", vehicle "<<j<<": "<<TotalDeliveryQuantityRoute<<" versus "<<IRPLR.Vehicle.capacity<<", "<<IRPSolution.VehicleLoad[i][j]<<endl;
+                assert(fabs(TotalDeliveryQuantityRoute - IRPSolution.VehicleLoad[i][j]) < 0.00001 && "Total delivery quantity does not match vehicle load");
                 assert(TotalDeliveryQuantityRoute <= IRPLR.Vehicle.capacity + 0.00001 && "Total delivery quantity exceeds vehicle capacity");
             }
         }
@@ -482,6 +483,32 @@ void solution::UpdateVehicleAllocationVisitOrder(input &IRPLR)
                 VisitOrder[x][i] = IRPLR.Retailers.size() + 1;
                 VehicleAllocation[x][i] = IRPLR.NumberOfVehicles + 1;
             }
+        }
+    }
+}
+
+void solution::UpdateVehicleAllocationVisitOrderForRemoval(input &IRPLR, int &day, int &vehicle)
+{
+    ///////////////////////////////////////////////////////////////////////
+    //                                                                   //
+    //     Update vehicle allocation and visit order  for removal        //
+    //                                                                   //
+    ///////////////////////////////////////////////////////////////////////
+    int order = 0;
+    for (int customer = 0; customer < Route[day][vehicle].size(); customer++)
+    {
+        if (DeliveryQuantity[Route[day][vehicle][customer]][day] < 0.0001)
+        {
+
+            VisitOrder[Route[day][vehicle][customer]][day] = IRPLR.Retailers.size() + 1;
+            VehicleAllocation[Route[day][vehicle][customer]][day] = IRPLR.NumberOfVehicles + 1;
+        }
+        else
+        {
+
+            VisitOrder[Route[day][vehicle][customer]][day] = order;
+            VehicleAllocation[Route[day][vehicle][customer]][day] = vehicle;
+            order++;
         }
     }
 }
@@ -727,7 +754,7 @@ void solution::GetLogisticRatio(input &IRPLR)
         {
             if (VehicleLoad[i][j] > IRPLR.Vehicle.capacity)
             {
-                ViolationMoreThanCapacity += VehicleLoad[i][j] - IRPLR.Vehicle.capacity;
+                ViolationMoreThanCapacity += max(0.0, VehicleLoad[i][j] - IRPLR.Vehicle.capacity);
             }
         }
     }
