@@ -96,15 +96,27 @@ static void printSolutionDetails(const input &instance,
   }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+  bool maximizeDelivery = false;
+  if (argc == 2 && string(argv[1]) == "--maximize-delivered") {
+    maximizeDelivery = true;
+  } else if (argc > 1 &&
+             !(argc == 2 && string(argv[1]) == "--minimize-logistic-ratio")) {
+    cerr << "Usage: " << argv[0]
+         << " [--minimize-logistic-ratio|--maximize-delivered]" << endl;
+    return 1;
+  }
+
   file read_file;
   read_file.ReadDirectory();
   read_file.ReadIRPInstanceName();
   read_file.ReadGlobalParameter();
 
-  ofstream resultsFile("results.csv");
+  const string resultsPath = maximizeDelivery ? "results_max_delivery.csv"
+                                              : "results.csv";
+  ofstream resultsFile(resultsPath);
   if (!resultsFile.is_open()) {
-    cerr << "Unable to open results.csv for writing" << endl;
+    cerr << "Unable to open " << resultsPath << " for writing" << endl;
     return 1;
   }
   resultsFile << "instance,number_of_retailers,number_of_vehicles,time_horizon,"
@@ -120,7 +132,9 @@ int main() {
                                  read_file.InstanceDirectories[i]);
         instance.PrintData();
         IRPLRModel model(env, instance);
-        IRPLRModel::Solution solution = model.minimizeRouting();
+        IRPLRModel::Solution solution =
+            maximizeDelivery ? model.maximizeDelivered()
+                             : model.minimizeRouting();
         cout << "instance: " << instance.InstanceName
              << ", retailers: " << instance.NumberOfRetailers
              << ", vehicles: " << instance.NumberOfVehicles
@@ -128,6 +142,9 @@ int main() {
              << ", routing cost: " << solution.routingCost
              << ", delivered quantity: " << solution.deliveredQuantity
              << ", logistic ratio: " << solution.logisticRatio
+             << ", objective: "
+             << (maximizeDelivery ? "maximum delivered quantity"
+                                  : "minimum logistic ratio")
              << ", optimality gap: " << solution.optimalityGap << endl;
         printSolutionDetails(instance, solution);
         resultsFile << csvField(instance.InstanceName) << ','

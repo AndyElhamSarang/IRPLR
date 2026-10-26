@@ -1,0 +1,1153 @@
+{
+  "metadata": {
+    "num_retailers": 21,
+    "time_horizon": 5,
+    "num_vehicles": 2,
+    "vehicle_capacity": 768,
+    "depot_x": 339,
+    "depot_y": 285
+  },
+  "metrics": {
+    "total_transportation_cost": 9777.00,
+    "logistic_ratio": 2.3759,
+    "total_delivery": 4115.00,
+    "violation_stock_out": 0.00,
+    "solution_time_seconds": 0.0000
+  },
+  "retailers": [
+    {
+      "id": 0,
+      "x_coord": 300.0000,
+      "y_coord": 299.0000,
+      "inventory_begin": 32.0000,
+      "inventory_max": 48.0000,
+      "inventory_min": 0.0000,
+      "demand": 16.0000,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 1
+    },
+    {
+      "id": 1,
+      "x_coord": 272.00,
+      "y_coord": 409.00,
+      "inventory_begin": 138.00,
+      "inventory_max": 207.00,
+      "inventory_min": 0.00,
+      "demand": 69.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 1
+    },
+    {
+      "id": 2,
+      "x_coord": 90.00,
+      "y_coord": 492.00,
+      "inventory_begin": 78.00,
+      "inventory_max": 156.00,
+      "inventory_min": 0.00,
+      "demand": 78.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 2
+    },
+    {
+      "id": 3,
+      "x_coord": 474.00,
+      "y_coord": 360.00,
+      "inventory_begin": 196.00,
+      "inventory_max": 294.00,
+      "inventory_min": 0.00,
+      "demand": 98.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 1
+    },
+    {
+      "id": 4,
+      "x_coord": 270.00,
+      "y_coord": 216.00,
+      "inventory_begin": 138.00,
+      "inventory_max": 207.00,
+      "inventory_min": 0.00,
+      "demand": 69.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 1
+    },
+    {
+      "id": 5,
+      "x_coord": 90.00,
+      "y_coord": 106.00,
+      "inventory_begin": 198.00,
+      "inventory_max": 297.00,
+      "inventory_min": 0.00,
+      "demand": 99.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 1
+    },
+    {
+      "id": 6,
+      "x_coord": 46.00,
+      "y_coord": 10.00,
+      "inventory_begin": 27.00,
+      "inventory_max": 54.00,
+      "inventory_min": 0.00,
+      "demand": 27.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 2
+    },
+    {
+      "id": 7,
+      "x_coord": 497.00,
+      "y_coord": 262.00,
+      "inventory_begin": 57.00,
+      "inventory_max": 114.00,
+      "inventory_min": 0.00,
+      "demand": 57.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 2
+    },
+    {
+      "id": 8,
+      "x_coord": 165.00,
+      "y_coord": 156.00,
+      "inventory_begin": 45.00,
+      "inventory_max": 90.00,
+      "inventory_min": 0.00,
+      "demand": 45.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 2
+    },
+    {
+      "id": 9,
+      "x_coord": 66.00,
+      "y_coord": 207.00,
+      "inventory_begin": 152.00,
+      "inventory_max": 228.00,
+      "inventory_min": 0.00,
+      "demand": 76.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 1
+    },
+    {
+      "id": 10,
+      "x_coord": 123.00,
+      "y_coord": 446.00,
+      "inventory_begin": 88.00,
+      "inventory_max": 132.00,
+      "inventory_min": 0.00,
+      "demand": 44.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 1
+    },
+    {
+      "id": 11,
+      "x_coord": 388.00,
+      "y_coord": 466.00,
+      "inventory_begin": 42.00,
+      "inventory_max": 84.00,
+      "inventory_min": 0.00,
+      "demand": 42.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 2
+    },
+    {
+      "id": 12,
+      "x_coord": 497.00,
+      "y_coord": 114.00,
+      "inventory_begin": 32.00,
+      "inventory_max": 64.00,
+      "inventory_min": 0.00,
+      "demand": 32.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 2
+    },
+    {
+      "id": 13,
+      "x_coord": 297.00,
+      "y_coord": 251.00,
+      "inventory_begin": 34.00,
+      "inventory_max": 51.00,
+      "inventory_min": 0.00,
+      "demand": 17.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 1
+    },
+    {
+      "id": 14,
+      "x_coord": 464.00,
+      "y_coord": 422.00,
+      "inventory_begin": 102.00,
+      "inventory_max": 153.00,
+      "inventory_min": 0.00,
+      "demand": 51.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 1
+    },
+    {
+      "id": 15,
+      "x_coord": 138.00,
+      "y_coord": 53.00,
+      "inventory_begin": 40.00,
+      "inventory_max": 60.00,
+      "inventory_min": 0.00,
+      "demand": 20.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 1
+    },
+    {
+      "id": 16,
+      "x_coord": 408.00,
+      "y_coord": 417.00,
+      "inventory_begin": 26.00,
+      "inventory_max": 39.00,
+      "inventory_min": 0.00,
+      "demand": 13.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 1
+    },
+    {
+      "id": 17,
+      "x_coord": 69.00,
+      "y_coord": 380.00,
+      "inventory_begin": 130.00,
+      "inventory_max": 195.00,
+      "inventory_min": 0.00,
+      "demand": 65.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 1
+    },
+    {
+      "id": 18,
+      "x_coord": 67.00,
+      "y_coord": 238.00,
+      "inventory_begin": 41.00,
+      "inventory_max": 82.00,
+      "inventory_min": 0.00,
+      "demand": 41.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 2
+    },
+    {
+      "id": 19,
+      "x_coord": 244.00,
+      "y_coord": 326.00,
+      "inventory_begin": 65.00,
+      "inventory_max": 130.00,
+      "inventory_min": 0.00,
+      "demand": 65.00,
+      "stock_out_penalty": 0.00,
+      "min_visit_demand": 2
+    }
+  ],
+  "schedule": [
+    {
+      "time_period": 0,
+      "vehicles": [
+        {
+          "vehicle_id": 0,
+          "route": [14, 7, 13, 6, 18, 19, 1, 0],
+          "load": 343.00,
+          "deliveries": [51.00, 57.00, 17.00, 27.00, 41.00, 65.00, 69.00, 16.00]
+        },
+        {
+          "vehicle_id": 1,
+          "route": [],
+          "load": 0.00,
+          "deliveries": []
+        }
+      ],
+      "unallocated_customers": []
+    },
+    {
+      "time_period": 1,
+      "vehicles": [
+        {
+          "vehicle_id": 0,
+          "route": [11, 7, 12, 15, 6, 8, 17, 2, 10, 13],
+          "load": 753.00,
+          "deliveries": [84.00, 57.00, 64.00, 40.00, 27.00, 90.00, 130.00, 156.00, 88.00, 17.00]
+        },
+        {
+          "vehicle_id": 1,
+          "route": [14, 1, 9, 4],
+          "load": 410.00,
+          "deliveries": [51.00, 69.00, 152.00, 138.00]
+        }
+      ],
+      "unallocated_customers": []
+    },
+    {
+      "time_period": 2,
+      "vehicles": [
+        {
+          "vehicle_id": 0,
+          "route": [7, 14, 16, 19, 2, 18, 6, 5],
+          "load": 761.00,
+          "deliveries": [57.00, 51.00, 39.00, 130.00, 78.00, 82.00, 27.00, 297.00]
+        },
+        {
+          "vehicle_id": 1,
+          "route": [3, 13],
+          "load": 311.00,
+          "deliveries": [294.00, 17.00]
+        }
+      ],
+      "unallocated_customers": []
+    },
+    {
+      "time_period": 3,
+      "vehicles": [
+        {
+          "vehicle_id": 0,
+          "route": [11, 7, 12, 8, 6, 9, 18, 10, 0],
+          "load": 651.00,
+          "deliveries": [84.00, 57.00, 64.00, 90.00, 27.00, 152.00, 41.00, 88.00, 48.00]
+        },
+        {
+          "vehicle_id": 1,
+          "route": [4],
+          "load": 138.00,
+          "deliveries": [138.00]
+        }
+      ],
+      "unallocated_customers": []
+    },
+    {
+      "time_period": 4,
+      "vehicles": [
+        {
+          "vehicle_id": 0,
+          "route": [1, 2, 17, 15, 19],
+          "load": 748.00,
+          "deliveries": [207.00, 156.00, 195.00, 60.00, 130.00]
+        },
+        {
+          "vehicle_id": 1,
+          "route": [],
+          "load": 0.00,
+          "deliveries": []
+        }
+      ],
+      "unallocated_customers": []
+    }
+  ],
+  "inventory_and_delivery": [
+    {
+      "retailer_id": 0,
+      "inventory_begin": 32.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 32.00,
+          "delivery_quantity": 16.00,
+          "vehicle_allocated": 0,
+          "visit_order": 7
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 16.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 32.00,
+          "delivery_quantity": 48.00,
+          "vehicle_allocated": 0,
+          "visit_order": 8
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 16.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 1,
+      "inventory_begin": 138.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 138.00,
+          "delivery_quantity": 69.00,
+          "vehicle_allocated": 0,
+          "visit_order": 6
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 138.00,
+          "delivery_quantity": 69.00,
+          "vehicle_allocated": 1,
+          "visit_order": 1
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 69.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 138.00,
+          "delivery_quantity": 207.00,
+          "vehicle_allocated": 0,
+          "visit_order": 0
+        }
+      ]
+    },
+    {
+      "retailer_id": 2,
+      "inventory_begin": 78.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 78.00,
+          "delivery_quantity": 156.00,
+          "vehicle_allocated": 0,
+          "visit_order": 7
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 78.00,
+          "delivery_quantity": 78.00,
+          "vehicle_allocated": 0,
+          "visit_order": 4
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 78.00,
+          "delivery_quantity": 156.00,
+          "vehicle_allocated": 0,
+          "visit_order": 1
+        }
+      ]
+    },
+    {
+      "retailer_id": 3,
+      "inventory_begin": 196.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 98.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 196.00,
+          "delivery_quantity": 294.00,
+          "vehicle_allocated": 1,
+          "visit_order": 0
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 98.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 4,
+      "inventory_begin": 138.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 69.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 138.00,
+          "delivery_quantity": 138.00,
+          "vehicle_allocated": 1,
+          "visit_order": 3
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 69.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 138.00,
+          "delivery_quantity": 138.00,
+          "vehicle_allocated": 1,
+          "visit_order": 0
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 69.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 5,
+      "inventory_begin": 198.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 99.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 198.00,
+          "delivery_quantity": 297.00,
+          "vehicle_allocated": 0,
+          "visit_order": 7
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 99.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 6,
+      "inventory_begin": 27.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 27.00,
+          "delivery_quantity": 27.00,
+          "vehicle_allocated": 0,
+          "visit_order": 3
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 27.00,
+          "delivery_quantity": 27.00,
+          "vehicle_allocated": 0,
+          "visit_order": 4
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 27.00,
+          "delivery_quantity": 27.00,
+          "vehicle_allocated": 0,
+          "visit_order": 6
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 27.00,
+          "delivery_quantity": 27.00,
+          "vehicle_allocated": 0,
+          "visit_order": 4
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 7,
+      "inventory_begin": 57.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 57.00,
+          "delivery_quantity": 57.00,
+          "vehicle_allocated": 0,
+          "visit_order": 1
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 57.00,
+          "delivery_quantity": 57.00,
+          "vehicle_allocated": 0,
+          "visit_order": 1
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 57.00,
+          "delivery_quantity": 57.00,
+          "vehicle_allocated": 0,
+          "visit_order": 0
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 57.00,
+          "delivery_quantity": 57.00,
+          "vehicle_allocated": 0,
+          "visit_order": 1
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 8,
+      "inventory_begin": 45.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 45.00,
+          "delivery_quantity": 90.00,
+          "vehicle_allocated": 0,
+          "visit_order": 5
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 45.00,
+          "delivery_quantity": 90.00,
+          "vehicle_allocated": 0,
+          "visit_order": 3
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 9,
+      "inventory_begin": 152.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 76.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 152.00,
+          "delivery_quantity": 152.00,
+          "vehicle_allocated": 1,
+          "visit_order": 2
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 76.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 152.00,
+          "delivery_quantity": 152.00,
+          "vehicle_allocated": 0,
+          "visit_order": 5
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 76.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 10,
+      "inventory_begin": 88.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 44.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 88.00,
+          "delivery_quantity": 88.00,
+          "vehicle_allocated": 0,
+          "visit_order": 8
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 44.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 88.00,
+          "delivery_quantity": 88.00,
+          "vehicle_allocated": 0,
+          "visit_order": 7
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 44.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 11,
+      "inventory_begin": 42.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 42.00,
+          "delivery_quantity": 84.00,
+          "vehicle_allocated": 0,
+          "visit_order": 0
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 42.00,
+          "delivery_quantity": 84.00,
+          "vehicle_allocated": 0,
+          "visit_order": 0
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 12,
+      "inventory_begin": 32.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 32.00,
+          "delivery_quantity": 64.00,
+          "vehicle_allocated": 0,
+          "visit_order": 2
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 32.00,
+          "delivery_quantity": 64.00,
+          "vehicle_allocated": 0,
+          "visit_order": 2
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 13,
+      "inventory_begin": 34.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 34.00,
+          "delivery_quantity": 17.00,
+          "vehicle_allocated": 0,
+          "visit_order": 2
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 34.00,
+          "delivery_quantity": 17.00,
+          "vehicle_allocated": 0,
+          "visit_order": 9
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 34.00,
+          "delivery_quantity": 17.00,
+          "vehicle_allocated": 1,
+          "visit_order": 1
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 17.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 14,
+      "inventory_begin": 102.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 102.00,
+          "delivery_quantity": 51.00,
+          "vehicle_allocated": 0,
+          "visit_order": 0
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 102.00,
+          "delivery_quantity": 51.00,
+          "vehicle_allocated": 1,
+          "visit_order": 0
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 102.00,
+          "delivery_quantity": 51.00,
+          "vehicle_allocated": 0,
+          "visit_order": 1
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 51.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 15,
+      "inventory_begin": 40.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 20.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 40.00,
+          "delivery_quantity": 40.00,
+          "vehicle_allocated": 0,
+          "visit_order": 3
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 20.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 40.00,
+          "delivery_quantity": 60.00,
+          "vehicle_allocated": 0,
+          "visit_order": 3
+        }
+      ]
+    },
+    {
+      "retailer_id": 16,
+      "inventory_begin": 26.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 13.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 26.00,
+          "delivery_quantity": 39.00,
+          "vehicle_allocated": 0,
+          "visit_order": 2
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 13.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 17,
+      "inventory_begin": 130.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 65.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 130.00,
+          "delivery_quantity": 130.00,
+          "vehicle_allocated": 0,
+          "visit_order": 6
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 65.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 130.00,
+          "delivery_quantity": 195.00,
+          "vehicle_allocated": 0,
+          "visit_order": 2
+        }
+      ]
+    },
+    {
+      "retailer_id": 18,
+      "inventory_begin": 41.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 41.00,
+          "delivery_quantity": 41.00,
+          "vehicle_allocated": 0,
+          "visit_order": 4
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 41.00,
+          "delivery_quantity": 82.00,
+          "vehicle_allocated": 0,
+          "visit_order": 5
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 41.00,
+          "delivery_quantity": 41.00,
+          "vehicle_allocated": 0,
+          "visit_order": 6
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        }
+      ]
+    },
+    {
+      "retailer_id": 19,
+      "inventory_begin": 65.00,
+      "timeline": [
+        {
+          "time_period": 0,
+          "inventory_level": 65.00,
+          "delivery_quantity": 65.00,
+          "vehicle_allocated": 0,
+          "visit_order": 5
+        },
+        {
+          "time_period": 1,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 2,
+          "inventory_level": 65.00,
+          "delivery_quantity": 130.00,
+          "vehicle_allocated": 0,
+          "visit_order": 3
+        },
+        {
+          "time_period": 3,
+          "inventory_level": 0.00,
+          "delivery_quantity": 0.00,
+          "vehicle_allocated": null,
+          "visit_order": null
+        },
+        {
+          "time_period": 4,
+          "inventory_level": 65.00,
+          "delivery_quantity": 130.00,
+          "vehicle_allocated": 0,
+          "visit_order": 4
+        }
+      ]
+    }
+  ]
+}

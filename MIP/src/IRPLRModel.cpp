@@ -189,12 +189,13 @@ void IRPLRModel::addSubsetConstraints() {
           }
 }
 
-IRPLRModel::Solution IRPLRModel::solve(bool minimize, double bound) {
+IRPLRModel::Solution IRPLRModel::solve(bool minimize, double bound,
+                                      bool constrainRoutingCost) {
   if (minimize) {
     IloExpr quantity = deliveredQuantity();
     model_.add(quantity >= (bound > 0 ? bound : 1.0));
     quantity.end();
-  } else {
+  } else if (constrainRoutingCost) {
     IloExpr cost = routingCost();
     model_.add(cost <= bound);
     cost.end();
@@ -272,7 +273,10 @@ IRPLRModel::Solution IRPLRModel::solve(bool minimize, double bound) {
     model_.remove(objectiveHandle);
     objectiveHandle.end();
 
-    result.logisticRatio = result.routingCost / result.deliveredQuantity;
+    result.logisticRatio =
+        result.deliveredQuantity > 1e-9
+            ? result.routingCost / result.deliveredQuantity
+            : 0.0;
     if (!minimize ||
         std::abs(result.routingCost - ratio * result.deliveredQuantity) < 1e-6)
       break;
@@ -282,9 +286,13 @@ IRPLRModel::Solution IRPLRModel::solve(bool minimize, double bound) {
 }
 
 IRPLRModel::Solution IRPLRModel::minimizeRouting(double minimumDelivered) {
-  return solve(true, minimumDelivered);
+  return solve(true, minimumDelivered, false);
+}
+
+IRPLRModel::Solution IRPLRModel::maximizeDelivered() {
+  return solve(false, 0.0, false);
 }
 
 IRPLRModel::Solution IRPLRModel::maximizeDelivered(double maximumRoutingCost) {
-  return solve(false, maximumRoutingCost);
+  return solve(false, maximumRoutingCost, true);
 }

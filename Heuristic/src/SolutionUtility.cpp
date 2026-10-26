@@ -764,12 +764,18 @@ void solution::GetLogisticRatio(input &IRPLR)
 
 void solution::OutputJSON(input &IRPLR, const string &OutputFileName)
 {
-    cout << "Outputting solution to JSON file: " << OutputFileName << endl;
+    string outputPath = OutputFileName;
+    if (!IRPLR.InstanceDirectoryName.empty())
+    {
+        const size_t filenameStart = outputPath.find_last_of("/\\");
+        outputPath.insert(filenameStart == string::npos ? 0 : filenameStart + 1, IRPLR.InstanceDirectoryName + "_");
+    }
+    cout << "Outputting solution to JSON file: " << outputPath << endl;
     
-    ofstream jsonFile(OutputFileName);
+    ofstream jsonFile(outputPath);
     if (!jsonFile.is_open())
     {
-        cerr << "Error: Cannot open file " << OutputFileName << " for writing." << endl;
+        cerr << "Error: Cannot open file " << outputPath << " for writing." << endl;
         return;
     }
     
@@ -910,5 +916,5 @@ void solution::OutputJSON(input &IRPLR, const string &OutputFileName)
     jsonFile << "}\n";
     jsonFile.close();
     
-    cout << "JSON output successfully written to " << OutputFileName << endl;
+    cout << "JSON output successfully written to " << outputPath << endl;
 }

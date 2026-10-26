@@ -41,12 +41,10 @@ void input::ReadIRPInstance(string &InstanceSource, string &InstanceType, string
     stringstream ss_take_line(takeline);
     int numberOfNodes;
 
-    while (ss_take_line >> numberOfNodes >> TimeHorizon >> Vehicle.capacity)
+    if (!(ss_take_line >> numberOfNodes >> TimeHorizon >> Vehicle.capacity))
     {
-        if (ss_take_line.peek() == '\t')
-        {
-            ss_take_line.ignore();
-        }
+        cerr << "Error: Invalid instance header in " << InstanceSource << endl;
+        exit(EXIT_FAILURE);
     }
     NumberOfRetailers = numberOfNodes - 1;
     // cout << NumberOfRetailers << '\t' << TimeHorizon << '\t' << Vehicle.capacity << endl;

@@ -30,6 +30,7 @@ private:
 
 public:
   string InstanceName;
+  string InstanceDirectoryName;
   int NumberOfRetailers;
   int TimeHorizon;
   int NumberOfVehicles;

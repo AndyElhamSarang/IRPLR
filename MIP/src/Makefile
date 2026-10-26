@@ -31,3 +31,10 @@ cplex:
 	file:GlobalParameter.cpp Input:Read.cpp PrintData.cpp $(CPLEX_INC) \
 	-I ../inc -I $(andy) -I /usr/include \
 	-DIL_STD -o MIP_CPLEX.out -O2 $(CPLEX_LIB) $(CPLEX_LIBS)
+
+cplex-feasibility-check:
+	$(CC) main_cplex_feasibility_check.cpp IRPMODEL.cpp file:Read_andy.cpp \
+	file:ReadInstanceName.cpp file:GlobalParameter.cpp Input:Read.cpp \
+	PrintData.cpp $(CPLEX_INC) -I ../inc -I $(andy) -I $(andy_boost) \
+	-I /usr/include \
+	-DIL_STD -o MIP_CPLEX_feasibility_check.out -O2 $(CPLEX_LIB) $(CPLEX_LIBS)

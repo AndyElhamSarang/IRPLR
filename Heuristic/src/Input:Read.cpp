@@ -9,6 +9,14 @@ void input::ReadIRPInstance(string &InstanceSource, string &InstanceType, string
     Retailers.clear();
     Distance.clear();
     InstanceName.clear();
+    string normalizedInstanceDirectory = InstanceDirectories;
+    while (!normalizedInstanceDirectory.empty() &&
+           (normalizedInstanceDirectory.back() == '/' || normalizedInstanceDirectory.back() == '\\'))
+    {
+        normalizedInstanceDirectory.pop_back();
+    }
+    const size_t directorySeparator = normalizedInstanceDirectory.find_last_of("/\\");
+    InstanceDirectoryName = normalizedInstanceDirectory.substr(directorySeparator == string::npos ? 0 : directorySeparator + 1);
     if (InstanceType == "Single vehicle IRP")
     {
         NumberOfVehicles = 1;
@@ -43,12 +51,10 @@ void input::ReadIRPInstance(string &InstanceSource, string &InstanceType, string
 
     stringstream ss_take_line(takeline);
 
-    while (ss_take_line >> NumberOfRetailers >> TimeHorizon >> Vehicle.capacity)
+    if (!(ss_take_line >> NumberOfRetailers >> TimeHorizon >> Vehicle.capacity))
     {
-        if (ss_take_line.peek() == '\t')
-        {
-            ss_take_line.ignore();
-        }
+        cerr << "Error: Invalid instance header in " << InstanceSource << endl;
+        exit(EXIT_FAILURE);
     }
     // cout << NumberOfRetailers << '\t' << TimeHorizon << '\t' << Vehicle.capacity << endl;
 

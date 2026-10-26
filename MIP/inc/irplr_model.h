@@ -37,6 +37,7 @@ public:
 
   IRPLRModel(IloEnv env, const input &instance);
   Solution minimizeRouting(double minimumDelivered = 0.0);
+  Solution maximizeDelivered();
   Solution maximizeDelivered(double maximumRoutingCost);
 
 private:
@@ -57,7 +58,7 @@ private:
   void buildVariables();
   void buildConstraints();
   void addSubsetConstraints();
-  Solution solve(bool minimizeRouting, double bound);
+  Solution solve(bool minimizeRouting, double bound, bool constrainRoutingCost);
 };
 
 #endif

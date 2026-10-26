@@ -54,10 +54,15 @@ public:
 
   void ReadIRPInstance(string &InstanceName, string &InstanceType, string &InstanceDirectories);
   void PrintData();
+  double SupplierXCoordinate() const { return Supplier.xCoord; }
+  double SupplierYCoordinate() const { return Supplier.yCoord; }
   double SupplierInitialInventory() const { return Supplier.InventoryBegin; }
   double SupplierProduction() const { return Supplier.QuantityProduced; }
+  double CustomerXCoordinate(int customer) const { return Retailers[customer].xCoord; }
+  double CustomerYCoordinate(int customer) const { return Retailers[customer].yCoord; }
   double CustomerInitialInventory(int customer) const { return Retailers[customer].InventoryBegin; }
   double CustomerMaximumInventory(int customer) const { return Retailers[customer].InventoryMax; }
+  double CustomerMinimumInventory(int customer) const { return Retailers[customer].InventoryMin; }
   double CustomerDemand(int customer) const { return Retailers[customer].Demand; }
 };
 
