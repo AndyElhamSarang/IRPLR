@@ -42,8 +42,29 @@ int sigma=0;
 int phi=0;
 int min_grid_resolution = 0;
 int grid_resolution_increment = 0;
+int DisturbStrength = 0;
 int main(int argc, char* argv[])
 {
+	const set<string> required_options = {
+		"instance",
+		"NumberOfInitialSolutions",
+		"NumberOfExperiments",
+		"AllowLagrangianRelaxation",
+		"TypeOfRebalance",
+		"InitialLagrangianScalar",
+		"ToAdjustLagrangianScalar",
+		"ToTriggerAdjustment",
+		"MinGridResolution",
+		"GridResolutionIncrement",
+		"ActivateHGS",
+		"theta",
+		"sigma",
+		"phi",
+		"DisturbStrength",
+		"MainAlgorithmTimeLimit"
+	};
+	set<string> provided_options;
+
 	// Support both original positional arguments and modern `--flag value` style.
 	if (argc < 2)
 	{
@@ -56,6 +77,7 @@ int main(int argc, char* argv[])
 	if (argc > 1 && strncmp(argv[1], "--", 2) != 0)
 	{
 		instance = argv[1];
+		provided_options.insert("instance");
 	}
 
 	// Detect whether any long-style flags are present among the arguments
@@ -86,27 +108,42 @@ int main(int argc, char* argv[])
 			}
 			string val = argv[++i];
 
-			if (opt == "instance") instance = val;
-			else if (opt == "NumberOfInitialSolutions" || opt == "NumberOfInitialSolution") { NumberOfInitialSolutions = atoi(val.c_str()); }
-			else if (opt == "NumberOfExperiments") { NumberOfExperiments = atoi(val.c_str()); }
-			else if (opt == "AllowLagrangianRelaxation") { AllowLagrangianRelaxation = val; }
-			else if (opt == "TypeOfRebalance") { TypeOfRebalance = val; }
-			else if (opt == "InitialLagrangianScalar") { InitialLagrangianScalar = atof(val.c_str()); }
-			else if (opt == "ToAdjustLagrangianScalar") { ToAdjustLagrangianScalar = atof(val.c_str()); }
-			else if (opt == "ToTriggerAdjustment") { ToTriggerAdjustment = atoi(val.c_str()); }
-			else if (opt == "MinGridResolution") { min_grid_resolution = atoi(val.c_str()); }
-			else if (opt == "GridResolutionIncrement") { grid_resolution_increment = atoi(val.c_str()); }
-			else if (opt == "ActivateHGS" || opt == "Activate HGS") { ActivateHGS = val; }
-			else if (opt == "theta") { theta = atoi(val.c_str()); }
-			else if (opt == "sigma") { sigma = atoi(val.c_str()); }
-			else if (opt == "phi") { phi = atoi(val.c_str()); }
-			else if (opt == "MainAlgorithmTimeLimit") { MainAlgorithmTimeLimit = atof(val.c_str()); }
+			if (opt == "instance") { instance = val; provided_options.insert("instance"); }
+			else if (opt == "NumberOfInitialSolutions" || opt == "NumberOfInitialSolution") { NumberOfInitialSolutions = atoi(val.c_str()); provided_options.insert("NumberOfInitialSolutions"); }
+			else if (opt == "NumberOfExperiments") { NumberOfExperiments = atoi(val.c_str()); provided_options.insert("NumberOfExperiments"); }
+			else if (opt == "AllowLagrangianRelaxation") { AllowLagrangianRelaxation = val; provided_options.insert("AllowLagrangianRelaxation"); }
+			else if (opt == "TypeOfRebalance") { TypeOfRebalance = val; provided_options.insert("TypeOfRebalance"); }
+			else if (opt == "InitialLagrangianScalar") { InitialLagrangianScalar = atof(val.c_str()); provided_options.insert("InitialLagrangianScalar"); }
+			else if (opt == "ToAdjustLagrangianScalar") { ToAdjustLagrangianScalar = atof(val.c_str()); provided_options.insert("ToAdjustLagrangianScalar"); }
+			else if (opt == "ToTriggerAdjustment") { ToTriggerAdjustment = atoi(val.c_str()); provided_options.insert("ToTriggerAdjustment"); }
+			else if (opt == "MinGridResolution") { min_grid_resolution = atoi(val.c_str()); provided_options.insert("MinGridResolution"); }
+			else if (opt == "GridResolutionIncrement") { grid_resolution_increment = atoi(val.c_str()); provided_options.insert("GridResolutionIncrement"); }
+			else if (opt == "ActivateHGS" || opt == "Activate HGS") { ActivateHGS = val; provided_options.insert("ActivateHGS"); }
+			else if (opt == "theta") { theta = atoi(val.c_str()); provided_options.insert("theta"); }
+			else if (opt == "sigma") { sigma = atoi(val.c_str()); provided_options.insert("sigma"); }
+			else if (opt == "phi") { phi = atoi(val.c_str()); provided_options.insert("phi"); }
+			else if (opt == "DisturbStrength") { DisturbStrength = atoi(val.c_str()); provided_options.insert("DisturbStrength"); }
+			else if (opt == "MainAlgorithmTimeLimit") { MainAlgorithmTimeLimit = atof(val.c_str()); provided_options.insert("MainAlgorithmTimeLimit"); }
 			else if (opt == "OutputResults") { OutputResults = atoi(val.c_str()); }
 			else if (opt == "OutputSolutionJSON") { OutputSolutionJSON = val; }
 			else
 			{
 				cerr << "Warning: unknown option --" << opt << " (ignored)" << endl;
 			}
+		}
+
+		bool missing_required_option = false;
+		for (set<string>::const_iterator option = required_options.begin(); option != required_options.end(); ++option)
+		{
+			if (provided_options.find(*option) == provided_options.end())
+			{
+				cerr << "Missing required parameter: --" << *option << endl;
+				missing_required_option = true;
+			}
+		}
+		if (missing_required_option)
+		{
+			return 1;
 		}
 
 		cout << "Instance: " << instance << endl;
@@ -123,13 +160,14 @@ int main(int argc, char* argv[])
 		cout << "Theta: " << theta << endl;
 		cout << "Sigma: " << sigma << endl;
 		cout << "Phi: " << phi << endl;
+		cout << "Disturb Strength: " << DisturbStrength << endl;
 		cout << "Main Algorithm Time Limit: " << MainAlgorithmTimeLimit << endl;
 	}
 	else
 	{
-		if (argc < 16)
+		if (argc < 17)
 		{
-			cerr << "Usage: " << argv[0] << " <instance> <NumberOfInitialSolutions> <NumberOfExperiments> <AllowLagrangianRelaxation> <TypeOfRebalance> <InitialLagrangianScalar> <ToAdjustLagrangianScalar> <ToTriggerAdjustment> <MinGridResolution> <GridResolutionIncrement> <ActivateHGS> <theta> <sigma> <phi> <MainAlgorithmTimeLimit>\n";
+			cerr << "Usage: " << argv[0] << " <instance> <NumberOfInitialSolutions> <NumberOfExperiments> <AllowLagrangianRelaxation> <TypeOfRebalance> <InitialLagrangianScalar> <ToAdjustLagrangianScalar> <ToTriggerAdjustment> <MinGridResolution> <GridResolutionIncrement> <ActivateHGS> <theta> <sigma> <phi> <DisturbStrength> <MainAlgorithmTimeLimit>\n";
 			return 1;
 		}
 
@@ -160,7 +198,9 @@ int main(int argc, char* argv[])
 		cout << "Sigma: " << sigma << endl;
 		phi = atoi(argv[14]);
 		cout << "Phi: " << phi << endl;
-		MainAlgorithmTimeLimit = atof(argv[15]);
+		DisturbStrength = atoi(argv[15]);
+		cout << "Disturb Strength: " << DisturbStrength << endl;
+		MainAlgorithmTimeLimit = atof(argv[16]);
 		cout << "Main Algorithm Time Limit: " << MainAlgorithmTimeLimit << endl;
 	}
 

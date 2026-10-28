@@ -24,6 +24,7 @@ $EXE \
     --sigma 10 \
     --phi 10 \
     --MainAlgorithmTimeLimit 30 \
+    --DisturbStrength 5 \
     "$@" \
     > "$OUTPUT" 2>&1
 

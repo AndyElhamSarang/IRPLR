@@ -9,13 +9,13 @@ void solution_improvement::OperatorDisturb(input &IRPLR, solution &IncumbentSolu
     boost_random_mechanism RandomnessInDisturb;
 
     int MaxDisturbanceToApply = IRPLR.NumberOfVehicles; // This is a parameter that can be tuned. It determines the maximum number of routes that can be disturbed in one iteration. Setting it to the number of vehicles allows for a significant level of disturbance, but it can be adjusted based on the desired balance between exploration and exploitation in the search process.
-    int DisturbanceStrength = 5;
+    int DisturbanceStrength = DisturbStrength;
     int DisturbanceToApply = 1 + (DisturbanceStrength * DisturbanceCounter) / MaxDisturbance;
     DisturbanceToApply = min(DisturbanceToApply, MaxDisturbanceToApply);
-    // cout << "Disturbance to apply: " << DisturbanceToApply
-    //      << ", MaxDisturbanceToApply: " << MaxDisturbanceToApply
-    //      << ", DisturbanceStrength: " << DisturbanceStrength
-    //      << ", DisturbanceCounter: " << DisturbanceCounter << endl;
+    cout << "Disturbance to apply: " << DisturbanceToApply
+         << ", MaxDisturbanceToApply: " << MaxDisturbanceToApply
+         << ", DisturbanceStrength: " << DisturbanceStrength
+         << ", DisturbanceCounter: " << DisturbanceCounter << endl;
     int DisturbanceApplied = 0;
     while (DisturbanceApplied < DisturbanceToApply)
     {

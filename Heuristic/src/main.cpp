@@ -42,6 +42,7 @@ int sigma = 0;
 int phi = 0;
 int min_grid_resolution = 0;
 int grid_resolution_increment = 0;
+int DisturbStrength = 0;
 int main()
 {
 	file read_file;

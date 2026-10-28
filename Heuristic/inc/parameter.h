@@ -17,6 +17,7 @@ extern double InitialLagrangianScalar;
 extern double ToAdjustLagrangianScalar;
 extern int ToTriggerAdjustment;
 extern double power;
+extern int DisturbStrength;
 extern double MainAlgorithmTimeLimit;
 extern double AccumulatedTimeHGS;
 

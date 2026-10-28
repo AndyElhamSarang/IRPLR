@@ -192,6 +192,13 @@ void file::ReadGlobalParameter()
     ss_Phi >> phi;
     cout << dummyline << ":" << phi << endl;
 
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_DisturbStrength(TakeParameter);
+    ss_DisturbStrength >> DisturbStrength;
+    cout << dummyline << ":" << DisturbStrength << endl;
+
     getline(ifGlobal, dummyline);
     getline(ifGlobal, TakeParameter);
     stringstream ss_MainAlgorithmTimeLimit(TakeParameter);
