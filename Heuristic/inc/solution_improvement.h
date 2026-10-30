@@ -115,6 +115,12 @@ public:
 
     void OperatorDisturb(input &IRPLR, solution &GlobalBest, solution &IRPSolution, int &DisturbanceCounter, int &MaxDisturbance);
 
+    void OperatorDisturb_Shaw1998_Pisinger2007(
+        input &IRPLR,
+        solution &IncumbentSolution,
+        solution &IRPSolution,
+        int &DisturbanceCounter,
+        int &MaxDisturbance);
     void OperatorDisturbAppendToAnotherDay(input &IRPLR, solution &IncumbentSolution, solution &IRPSolution, int &DisturbanceCounter, int &MaxDisturbance);
     int OperatorCheapestInsertion(input &IRPLR, vector<int> &route, int &day, int &vehicle, int &CustomerToReinsert, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, double &CurrentTransportationCost, preprocessing &memory);
 
