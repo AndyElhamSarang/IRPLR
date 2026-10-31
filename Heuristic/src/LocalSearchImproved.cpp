@@ -379,22 +379,31 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
 
                 for (int i = 0; i < IRPSolution.VehicleAllocation.size(); i++) // For customer i
                 {
-                    for (int j = 0; j < IRPSolution.VehicleAllocation[i].size(); j++) // For day j
+                    vector<int> visitedDays;
+                    vector<int> unallocatedDays;
+                    for (int day = 0; day < IRPSolution.VehicleAllocation[i].size(); day++)
                     {
-                        if (IRPSolution.VehicleAllocation[i][j] < IRPLR.NumberOfVehicles + 1) // If customer i is visited at day j,
+                        const int vehicle = IRPSolution.VehicleAllocation[i][day];
+                        if (vehicle < IRPLR.NumberOfVehicles + 1)
                         {
-                            for (int k = 0; k < IRPSolution.VehicleAllocation[i].size(); k++) //For a different day k
+                            assert(vehicle < IRPLR.NumberOfVehicles);
+                            visitedDays.push_back(day);
+                        }
+                        if (vehicle >= IRPLR.NumberOfVehicles)
+                        {
+                            unallocatedDays.push_back(day);
+                        }
+                    }
+
+                    for (int visitedDay : visitedDays)
+                    {
+                        for (int unallocatedDay : unallocatedDays)
+                        {
+                            if (unallocatedDay == visitedDay)
                             {
-                                if (IRPSolution.VehicleAllocation[i][k] >= IRPLR.NumberOfVehicles && k != j)
-                                {
-                                    vector<int> temp_transfer_detail;
-                                    temp_transfer_detail.push_back(i);                                    // Retailer index
-                                    temp_transfer_detail.push_back(j);                                    // Day index visited
-                                    temp_transfer_detail.push_back(k);                                    // Day index unvisited
-                                    assert(IRPSolution.VehicleAllocation[i][j] < IRPLR.NumberOfVehicles); // The vehicle index should be less than the number of vehicles, otherwise, it means this customer is not actually visited on day j, which is wrong.
-                                    TransferDetails.push_back(temp_transfer_detail);
-                                }
+                                continue;
                             }
+                            TransferDetails.push_back({i, visitedDay, unallocatedDay});
                         }
                     }
                 }
