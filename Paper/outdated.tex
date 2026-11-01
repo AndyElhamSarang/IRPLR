@@ -1,0 +1,552 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{booktabs}
+\title{Inventory Routing}
+\date{March 2024}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+It is well-known that the vehicle routing problem (VRP) is NP-hard in the strong sense.
+Since part of the inventory routing problem (IRP) involves routing, the IRPLR is also NP-hard. What is more challenging compared to the VRP is that (As mentioned in \cite{kheiri2020heuristic}, the vendor coordinates the inventories of the customers forecasting each customer's future consumption over coming hours and days, and deciding how much and when inventories should be replenished by routing vehicles). 
+
+The IRP with logistic ratio (IRP-LR) is first mentioned in \textcolor{red}{give citation}. Then in Roadef's 2016 challenge ...
+
+The main contributions of this work are as follows.
+
+\begin{itemize}
+    \item This work introduces a novel metaheuristic for the inventory routing problem with the logistic ratio (IRP-LR).
+    \item The presented metaheuristic uses a new constructive heuristic that maximises the load quantity of each visit thereby reducing the total number of visits across the time horizon. We believe this will generate an initial feasible solution with a good logistic ratio.
+    \item The presented metaheuristic employs local search which permits infeasible solutions. Its performance is compared with the most recent metaheuristic application for the IRP-LR.
+    \item 
+\end{itemize}
+
+
+\subsection{Motivation}
+As stated in \cite{alvarez2018iterated}, ``The logistic ratio can be of great value in practical contexts, as it can better reflect the efficiency of the distribution process. Despite its practical motivation, only a few studies have dealt with this kind of objective function in the context of IRPs (\cite{benoist2011randomized};\cite{singh2015incremental}; \cite{archetti2017minimizing}). The logistic ratio imposes challenges to integer programming formulations and exact methods, as it corresponds to a nonlinear function."
+
+
+\subsection{Random things}
+
+
+\cite{archetti2012hybrid}, HAIR permits violations of vehicle capacity and supplier capacity.
+
+\cite{skaalnes2023branch} states, ``The IRP arises within the business practice of vendor-managed inventory, and the proposed algorithm is tailored to tackle the single depot multi-vehicle IRP version. In this problem, a single depot has to manage the inventory of a set of customers so that each customer can meet its demand for a single product over a set of discrete time periods. A fleet of vehicles is used to deliver products to the customers. The decision maker must simultaneously decide (1) when to visit each customer, (2) how much to deliver to each customer with each vehicle, and (3) how to route the available vehicles to minimize the sum of the transportation cost and the inventory holding cost."
+
+\begin{itemize}
+    \item It has been mentioned in many publications (for example, \cite{alvarez2018iterated}, \cite{skaalnes2023branch}), that the publication \cite{bell1983improving} was the first that describes the IRP when studying it in the context of industrial gas distribution.
+    \item There are many existing exact methods such as a branch-and-cut (B$\&$C) framework (\textcolor{red}{provide citations}), or a branch-price-and-cut (BP$\&$C) framework(\textcolor{red}{provide citations}).
+    \item In terms of heuristics, there are only a few applications of metaheuristics. The number of applications for metaheuristics is incomparable to the large number of applications for matheuristic. This can be observed from the statement in \cite{skaalnes2023branch} that ``The heuristic methods for the IRP can mainly be divided into matheuristics (Archetti et al., 2012; Adulyasak et al., 2014; Archetti et al., 2017; Chitsaz et al., 2019; Diniz et al., 2020; Alvarez et al., 2020; Archetti et al., 2021; Vadseth et al., 2021; Solyalı and Süral, 2022; Achamrah et al., 2022; Vadseth et al., 2023) or metaheuristics (Alvarez et al., 2018; Sakhri et al., 2022).
+    \item As stated in \cite{skaalnes2023branch}, ``For the IRP, matheuristics have been prevalent in recent years, while for the SDVRP, the recent approaches are mainly based on evolutionary algorithms, inspired by those used for the CVRP. A possible explanation is that changes to an IRP solution are seldom local, but may include changing the decisions in many time periods. This makes the evaluation of a local search operator very complex and time-consuming, which discourages the use of local-search based methods for the IRP."
+\end{itemize}
+A range of publications including \cite{skaalnes2023branch} considers minimisation of the total cost of travelling the inventory holding.
+
+
+\begin{itemize}
+    \item Comparison with existing IRP (or IRP-LR) heuristic
+    \item Is there any case to consider backorders? Practical application or existing literature? Backordering for Vendor-manged inventory.
+    \item Priority of objectives.
+    \item Different formulations. Can we adapt any of the existing formulations and compare the results with path-flow formulation?
+    \item Scalibility
+    \item Adding more attributes (hetergeneous vehicle, time window).
+\end{itemize}
+
+
+
+\noindent Why inventory routing? \cite{archetti2016inventory}
+
+\noindent Why inventory routing with a logistic ratio? \cite{archetti2017minimizing}
+
+
+Points to consider:
+1. Heuristics for IRP-LR.  
+2. Comparison with existing IRP heuristics - (IRP-LR) 
+3. Is there any case to consider backorders? IRP-backorders (with or without LR)
+4. What about quantity first and distance after (more traditional approach)?
+5. What are different formulations of IRP (not IRP-LR)? Can we adapt any of the existing formulations and compare the results with path-flow formulation? 
+6. What should be target instance size we are aiming at? The exact method solves 5 vehicles 15 customers problem? Which is difficult, number of vehicles or customers?
+7. A case of Heterogeneous vehicle?
+
+
+Discussion: 
+Which one is preferred: 
+ 1. Work on heuristics for IRP-LR: 
+    1a. Develop an entire new heuristic approach for IRP-LR
+    1b. Extend the current solution framework
+ 2. Extensions of IRP-LR:
+    1a. Backorders
+    2b. Heterogeneous 
+
+
+
+
+Points to consider:
+1. Heuristics for IRP-LR.  
+2. Comparison with existing IRP heuristics - (IRP-LR) 
+3. Is there any case to consider backorders? IRP-backorders (with or without LR)
+4. What about quantity first and distance after (more traditional approach)?
+5. What are different formulations of IRP (not IRP-LR)? Can we adapt any of the existing formulations and compare the results with path-flow formulation? 
+6. What should be target instance size we are aiming at? The exact method solves 5 vehicles 15 customers problem? Which is difficult, number of vehicles or customers?
+7. A case of Heterogeneous vehicle?
+
+
+Discussion: 
+Which one is preferred: 
+ 1. Work on heuristics for IRP-LR: 
+    1a. Develop an entirely new heuristic approach for IRP-LR
+    1b. Extend the current solution framework
+ 2. Extensions of IRP-LR:
+    1a. Backorders
+    2b. Heterogeneous 
+
+Organize meeting with Claudia 9, 10, 11, 12 of April around 4-5pm.
+
+Heuristic
+
+Maximum inventory constraints
+
+Routing constraints such as capacity constraints. 
+
+Main matheuristic, time consuming rely on math models. mainly because of the loading quantity. 
+
+Time limit is not that stricted. 
+
+Design operators for 
+
+A matheuristic that removes CPLEX independence. For LRP lr, in all matheuristic, it is easy because the objective function is linear. What about nonlinear logistic ratio. Give thought about how to make it linear. When the route is fixed, deliver as much as you can. Holding cost, no good estimation That's why it is not considered. 
+
+Solve the standard IRP to minimise the distance. 
+
+Build a heuristic that uses standard operators then use mathematical model to decided the loading quantity. Making a good method is on how routes are decided. 
+
+Think about how initial feasible solutions are obtained. 
+
+Extension to the IRP with LR. Keep in mind the back order. A few studies investigated IRP with back order. Diffcult to set the cost of back ordering. Adding hetergenous fleet, the problem can be challenge. No publication on IRP with hetergenous fleet of vehicles. Therefore, back ordering has higher priority. 
+
+
+
+
+
+
+Heuristic with column generation... 
+
+As stated in \cite{skaalnes2023branch}, ``\cite{vadseth2023multi} introduced a matheuristic that iteratively solves a route-based MILP, where the set of routes is altered between each iteration. The initial route set is created from a giant tour using a split algorithm. This is currently the solution method with the best average performance on the set of large benchmark instances, which are the set of instances where heuristics outperform exact methods."
+
+In \cite{alvarez2018iterated}, a construction heuristic that at each iteration separates the decisions of the problem into two phases. In the first phase, the heuristic decides which customers to visit and how much to deliver to them. Then, the second phase consists in designing feasible delivery routes to visit the customers selected in the first phase.
+
+\subsection{Why logistic ratio is challenging?}
+
+Comparing with an IRP that minimises the inventory cost, an IRP that maximises the logistic ratio tends to deliver as much as possible if a customer is visited. Then, it is more restrictive, since some customers may require visiting more frequently due to less storage capacity and large demand. If the solution decides to go to other customers, the vehicle capacity runs out for these customers who should have higher priority.
+
+\section{Literature review}
+
+
+\section{Problem description}
+
+Let $N=\{0, 1,\dots,c\}$ be a set of nodes where the node $0$ represents the depot and nodes $\{1,\dots,c\}$ represent a set of customers $N'$. Furthermore, let $T =\{1,\dots,H\}$ be a set of time periods and $K$ be a set of vehicles.
+
+
+
+\begin{table}[ht]\caption{Set}
+\begin{tabular}{ p{3cm}p{9cm}}
+\toprule% 
+$N$ & A set of nodes comprised of the depot and customers\tabularnewline 
+$N'$ & A set of customers \tabularnewline 
+$T$ & A set of time periods\tabularnewline 
+$K$ & A set of vehicles\tabularnewline 
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]\caption{Input}
+\begin{tabular}{ p{3cm}p{9cm}}
+\toprule% 
+$U_i$ & The maximum inventory level of customer $i\in N'$ \tabularnewline
+\hline
+\end{tabular}
+\end{table}
+
+\newpage
+
+%\paragraph{Decision variables:}
+\begin{table}[ht]\caption{Decision variables}
+\begin{tabular}{p{3cm}p{12cm}}
+\toprule%
+$q^k_{it}$ & The delivery quantity for customer $i\in N'$ at time period $t\in T$ visited by vehicle $k\in K$. \tabularnewline
+\hline
+\end{tabular}
+\end{table}
+
+
+\section{Description of the Algorithm}
+\subsection{Initial feasible solution}
+
+Consistent with the notation used in \cite{archetti2017minimizing}.
+
+%The initial inventory level at time $t$ is calculated by $I_{i,t}=I_{i,0}-\sum^t_{h=1}d_{i,h}+\sum^{t-1}_{h=1}q_{i,h}$
+
+%\begin{algorithm}[H]
+%\renewcommand{\thealgorithm}{}
+%\floatname{algorithm}{}
+%\caption{\textbf{Construct initial feasible solution}}
+%\begin{algorithmic}[1]
+%\STATE Solve a TSP for all customers
+%\FOR{$t\gets 1;t \leq|T|; t \gets t+1$}
+%\FOR{$i\gets 1;i \leq|N'|; i \gets i+1$}
+%\STATE Allocate delivery quantity for customer $i$ in time $t$ to $\min\{U_i-I_{i,t-1},Q|K|-\sum^{i-1}_{j=1} q_{j,t}\}$\
+%\ENDFOR
+%\STATE Split the TSP solution into routes with respect to delivery quantity for each customer and vehicle capacity.
+%\ENDFOR
+%\end{algorithmic}
+%\end{algorithm}
+
+%The goal of this procedure is to construct a feasible solution. Although we expect this procedure does not produce a solution with a good logistic ratio, this procedure can help the heuristic to set the initial upper bound. 
+
+
+Our heuristic is not required to start from a feasible solution since we plan to have a local search procedure that permits infeasible solutions. An infeasible starting solution can be repaired during the local search procedure. Thus, we use the following procedure to construct infeasible starting solutions. This procedure generates an infeasible solution allowing violation of the vehicle capacity. Thus, the routing part is always feasible. The solutions must respect all other constraints including:
+\begin{itemize}
+    \item customers can be visited at most once per time period;
+    \item no stock out can occur for all time periods;
+    \item the delivery quantity must not exceed the customer's inventory capacity.
+\end{itemize}
+
+
+
+Minimum total delivery quantity for customer $i\in N'$ $= \sum^{T}_{t=1}d_{i,t}-I_{i,0}$
+
+Approximate number of visits $v_i= \frac{\sum^T_{t=1}d_{i,t}-I_{i,0}}{U_i}$, $v_i= \frac{\sum^T_{t=1}d_{i,t}-I_{i,0}}{\min{I_{i,t}|}}$
+
+Minimum delivery quantity per visit $=\frac{\sum^T_{t=1}d_{i,t}-I_{i,0}}{v_i}$
+
+
+
+
+
+Let $C_t$ be a set of customers who have stock-out at period $t\in T$. Let $R$ be a set of non-overlapping grids. Each grid is defined by four numbers, $Minimum_xCoord + \frac{Maximum_xCoord-MinimumxCoord}{D_v}$, $Minimum_yCoord +\frac{Maximum_yCoord-Minimum_yCoord}{D_h}$.
+
+
+Let $B_{t,r}$ be sets of customers who have first stock-out at time $t$ and have the location within grid $r$. For each $t\in T$, $B_{t,r}$ are sorted by the distance between the centre point of grid $r$ to the depot. For each $t\in T$ and $r\in R$, customers in $B_{t,r}$ is sorted by a decreasing order with respect to the demand.
+
+\begin{algorithm}[H]
+\caption{\textbf{Construct initial schedule}}
+\begin{algorithmic}[1]
+\STATE Initialize $s$ to empty solution
+\REPEAT
+\STATE Randomly choose customer $i$ in $B_{t,r}$
+\STATE $t_{current}\gets 1$ 
+\STATE $t_{stock\_out} \gets$ Next stock out period
+\REPEAT
+\STATE $s\gets $Assign a visit to customer $i$ at a random time period $t$ between $t_{current}$ and $t_{stock\_out}$
+\STATE $s\gets $ Assign a vehicle to this visit with the maximum possible delivery quantity
+\STATE Update inventory level  
+\STATE $t_{stock\_out}\gets$ Next stock out period
+\STATE $t_{current}\gets t$
+\IF{ $t_{current}$ = $t_{stock\_out}$ \AND stock out remains}
+    \IF{Customer $i$ is visited at every time period up to $t_{stock\_out}$ \AND stock out remains}
+        \STATE Restart the procedure from line 1
+    \ELSE
+        \STATE $t_{current}\gets$ Time period before $t$ with no visit to customer $i$ 
+        \STATE $s\gets$ Assign a visit at $t_{current}$
+        \STATE $s\gets $ Assign a vehicle to this visit with the maximum possible delivery quantity
+        \STATE Update inventory level  
+        \STATE $t_{stock\_out}\gets$ Next stock out period
+    \ENDIF
+\ENDIF
+\UNTIL{No stock out for customer $i$}
+\UNTIL{No stock out for all customers}
+\RETURN solution $s$
+\end{algorithmic}
+\end{algorithm}
+
+
+%\subsection{Ideas to test}
+%\begin{itemize}
+    %\item Grouping the customers into different groups based on the location to the depot. Let set $G_{x,y,s}$ be a set of groups. Index $x$ indicate how many groups are splited based the difference on the x-coordinate between the customer and the depot, similarly, index $y$ indicate how many groups are splited based the difference on the y-coordinate between the customer and the depot. Index $s$ indicate the number of groups splited via the stock out period. Taking the minimum and maximum difference of x-coordinate or y-coordinate, based on this range and split the customers into some number of groups. In each group, customers are partitioned based the first stock out period. Then the initial procedure randomly pick one customer from the first partition and repeat until all customers are considered.
+%\end{itemize}
+
+\subsection{Operators}
+
+Let $\hat{N'_t}$ be the set of customers who are not visited at time $t$ and let $N'_{tk}$ be the set of customers who are visited at time $t$ using vehicle $k$. 
+
+\paragraph{Swap operator} 
+
+ For a time period $t$, swap customer $i$ in $\hat{N'_t}$ with customer $j$ in $N'_{tk}$ visited by vehicle $k$. This means that customer $j$ is removed from vehicle $k$ and the delivery quantity $q^k_{jt}$ becomes zero. Then, customer $i$ is inserted into vehicle $k$ at the position that gives the smallest increase in travel distance and delivers as much as possible with respect to the vehicle capacity and maximum inventory level. Since $q^k_{it}$ and $q^k_{jt}$ are changed, the delivery quantities for customers $i$ and $j$  in the subsequent time periods are adjusted. The adjustments can have two cases.
+
+ \begin{itemize}
+     \item [Case 1] The delivery quantity is reduced if the inventory level exceeds the maximum permitted due to an increase in the delivery quantity from the previous time periods. It is worth pointing out here that if the delivery quantity is reduced for a given time period, then a slack on the vehicle is created. This allows an increase in the delivery quantity of other customers in this vehicle. This slack is addressed in the balancing operator discussed below. 
+    \item [Case 2] The delivery quantity is increased if the vehicle can load more and the inventory level does not exceed the maximum permitted. Such an increase is possible due to a removal of delivery quantity from the previous time periods.  
+ \end{itemize} 
+ Please note that the adjustments of a single customer can have different cases across different time periods.
+ 
+
+\paragraph{Balancing operator} 
+
+ Take any schedule, and redistribute the delivery quantity. The operator's input can be the entire schedule or just a subset of the schedule. 
+
+ Redistribute in a random sequence. So certain customers will always delivery as much as possible while certain customers will never delivery as much as possible. 
+
+ Test: Take a schedule and try a simulation of redistribution to see if any behaviour can be learned.
+ 
+\paragraph{Other operators}
+
+\begin{enumerate}
+   
+    \item  For a time period $t$, insert a customer from $\hat{N_t}$. 
+    
+    
+    \item  For a time period $t$, delete the existing schedule and run a construction heuristic with a given delivery quantity for each customer in $N'$.
+    
+    \item Reschedule two or more customers.
+    
+    \item Through a backward scan, check for each customer, the quantity can be removed without stock out and quantity can be added by taking into account the vehicle capacity and maximum inventory level.
+
+    Random sequence, remove a quantity only if this customer can be removed.
+
+
+    \item Remove a visit:
+    \item Insert a visit: Choose a customer $i$ and 
+    \item Move a visit: Choose a customer and a visit at time $t$, remove it and add a new visit at a different time.
+    \item Swap two visits: Choose two customers and choose two visits at different times, one for each customer, Swap the visits.
+     
+\end{enumerate}
+\subsection{Local search}
+
+While exploring the neighbourhoods of the current solution, recording infeasible solutions that have the lowest value on the logistic ratio plus violation on the stock out. the highest delivery quantity, lowest transportation cost, and lowest violation on stock out, respectively. Then, apply different strategies during the repair mechanism.
+
+$f_{P}(s) = f(s) + \alpha \times Violation_{stock\_out}$
+
+
+
+\subsection{Destroy mechanism}
+
+It can be a local search algorithm that permit violation on the stock out constraints. The output of this procedure is a set of solutions meeting different criterias. 
+
+\subsection{Repair mechanism}
+
+\begin{itemize}
+    \item With the cost of increasing the transportation cost, adding a visit to a customer before the stock out can repair the infeasibility caused by the stock out.
+    \item Without changing the schedule and routes,
+    \item Remove the schedule of a random customer and a customer that has stock out, reschedule both customers.
+    \item 
+    
+\end{itemize}
+
+
+\begin{algorithm}[H]
+\caption{\textbf{Main algorithm}}
+\begin{algorithmic}[1]
+\STATE $i\gets 1$
+\WHILE{$i\leq 5$} 
+\STATE $s\gets$ Construct initial schedule \COMMENT{Multi-start with 5 Initial solutions}
+\STATE $s\gets$ Hybrid\_Genetic\_Search$(s)$
+\IF{$f(s)<f(s^*)$}
+    \STATE $s^*\gets s$
+\ENDIF
+\STATE Local\_Search\_Counter $\gets 1$
+\WHILE{Local\_Search\_Counter $\leq 50$}
+    \STATE $s\gets$ Local\_Search$(s)$
+    \STATE Local\_Search\_Counter $\gets$ Local\_Search\_Counter$+1$
+    \IF{$(s)<f(s^*)$}
+        \STATE $s^*\gets s$
+    \ENDIF
+    \STATE Update penalty for stock out
+    
+\ENDWHILE
+\STATE $s\gets$ Hybrid\_Genetic\_Search$(s)$
+\STATE $i\gets i+1$
+\ENDWHILE
+\RETURN solution $s^*$
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+\begin{algorithm}[H]
+\caption{\textbf{Local Search(s)}}
+\begin{algorithmic}[1]
+\STATE $s^*\gets s$
+\STATE $i\gets 0$
+\STATE $\alpha \gets 0$
+\WHILE{$i<1000$}
+    \WHILE{Moves are not all evaluated}
+    \STATE Choose a time period
+    \STATE Choose two customers with at least one allocated.
+    \STATE Remove the allocated customer
+    \STATE Insert the unallocated customer at the position of the removed customer
+    \STATE Evaluate the inventory feasibility
+      \IF{$f_{P}(s)<f_{P}(s^*)$}
+        \STATE $s^*\gets s$
+    \ENDIF
+    \ENDWHILE
+    \STATE Update penalty for stock out
+  
+    \STATE $i\gets i+1$
+\ENDWHILE
+\RETURN solution $s$
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\begin{algorithm}[H]
+\caption{\textbf{Neighbourhood operator without rebalance}}
+\begin{algorithmic}[1]
+\STATE $s^*\gets s$
+\RETURN solution $s$
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{\textbf{Neighbourhood operator with rebalance}}
+\begin{algorithmic}[1]
+\STATE $s^*\gets s$
+\RETURN solution $s$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{itemize}
+    \item Enumerate all possible schedules. For each schedule, compute the maximum and minimum delivery quantities without stocking them out.
+    \item If the schedule violates vehicle capacity, see whether reducing some quantity is possible.
+    \item 
+\end{itemize}
+
+\subsection{Things can be extracted from a solution}
+\begin{itemize}
+    \item Number of days a customer is not visited, it is not feasible if it is not visited for certain days consecutively.
+    \item Number of visits 
+    \item During some iterations, record the time horizons where a retailer is frequently visiting.
+    \item In each time period, the slack capacity of a vehicle
+    \item In each time period, a set of customers are not visited.
+    \item Set of customers that visited a minimum number.
+    \item Set of customers that visited every time period.
+    \item Set of customers not in both sets.
+    
+    
+\end{itemize}
+
+
+\subsection{Things can be extracted from the data}
+\begin{itemize}
+    \item Minimum number of visits
+    \item 
+\end{itemize}
+
+\subsection{Possible constraints to be violated}
+
+\begin{itemize}
+    \item Maximum inventory level
+    \item Stockout
+    \item Vehicle capacity
+\end{itemize}
+\subsection{Repair mechanism for each type of constraints violation}
+
+It is not difficult to obtain a feasible solution to this problem. So, the repair mechanism would be good if it can obtain feasible solutions without making the objective value worse.
+
+\begin{itemize}
+    \item 
+\end{itemize}
+
+\newpage
+
+Take any schedule, the rebalance operator does the following things.
+\begin{itemize} 
+    \item [Step 1] Reset the delivery quantity and inventory level.
+    \item [Step 2] For each visit in each time period, assign the minimum quantity to avoid stock out before the next visit. 
+                   \begin{itemize}
+                        \item If feasible for vehicle capacity, go to \textbf{Step 3};
+                        \item Otherwise, \textbf{STOP}.
+                   \end{itemize}
+    \item [Step 3] For time period $t$, starting from the first time period.
+            \begin{itemize}
+            \item Compute 
+            
+            $Priority_{i,t} = \frac{I_{i,t-1}}{Demand_i(t_{next} - t)\times (\#\mbox{ of consecutive days not visited})}$ for customer $i$
+            
+        \end{itemize} 
+    \item [Step 4] Starting from a customer with the highest priority. If more than one has the same priority, randomly pick one.
+    \item [Step 5] Increase its delivery quantity to the maximum with respect to the vehicle capacity and maximum inventory level.
+    \item [Step 6] Update the inventory level for the subsequent time periods.
+    \item [Step 7] Go to \textbf{Step 4} until no customer to pick in time period $t$.
+    \item [Step 8] $t\gets t+1$ and go to \textbf{Step 2} until $t$= last time period.
+\end{itemize} 
+
+
+\newpage 
+
+
+
+Take any schedule, the rebalance operator does the following things.
+\begin{itemize} 
+    \item [Step 1] Reset the delivery quantity and inventory level.
+    \item [Step 2] For each visit in each time period, assign the minimum quantity to avoid stock out before the next visit. 
+                   \begin{itemize}
+                        \item If feasible for vehicle capacity, go to \textbf{Step 3};
+                        \item Otherwise, \textbf{STOP}.
+                   \end{itemize}
+    \item [Step 3] For time period $t$, starting from the first time period.
+            \begin{itemize}
+            \item Compute 
+            
+            \[
+                Priority_{i,t}= \left\{ 
+                \begin{array}{ll}
+  		        \frac{I_{i,0}}  {Demand_i\times(t_{next} - t)\times (\#\mbox{ of consecutive days not visited}+1)} & \mbox{ $t =0$};\vspace{0.5cm}\\
+            
+		          \frac{I_{i,t-1}+1}  {Demand_i\times(t_{next} - t)\times (Max\#\mbox{ of consecutive days not visited}+1)} & \mbox{ $t\geq 1$}. 
+  		    \end{array}\right. \\ 
+            \]
+            
+          
+        
+            
+        \end{itemize} 
+    \item [Step 4] Starting from a customer with the highest priority. If more than one has the same priority, randomly pick one.
+    \item [Step 5] Increase its delivery quantity to the maximum with respect to the vehicle capacity and maximum inventory level.
+    \item [Step 6] Update the inventory level for the subsequent time periods.
+    \item [Step 7] Go to \textbf{Step 4} until no customer to pick in time period $t$.
+    \item [Step 8] $t\gets t+1$ and go to \textbf{Step 2} until $t$= last time period.
+\end{itemize}
+
+
+% $\begin{cases}
+% \frac{I_{i,t-1}+1} {Demand_i(t_{next} - t) }, & \text{} \\
+% \frac{I_{i,t-1}+1}{Demand_i(t_{next} - t) }, & \text{}
+% \end{cases}$
+
+
+%   $Priority_{i,t} =\begin{cases}
+%          \frac{I_{i,t-1}+1}
+%          {Demand_i(t_{next} - t)\times (\#\mbox{ of consecutive days not visited}+1)}, & \text{} \\
+%         \frac{I_{i,t-1}+1}{Demand_i(t_{next} - t)\times (\#\mbox{ of consecutive days not visited}+1)}, & \text{}
+%         \end{cases}$
+\newpage 
+\subsection{Escaping local optimal}
+
+In \cite{archetti2012hybrid}, a jump procedure that consists in moving customers from time periods where they are typically visited to time periods where they are typically not visited.
+
+\section{Computational results}
+
+Things to validate
+\begin{itemize}
+    \item Vehicle capacity and vehicle number
+\item Stock out
+\item Max inventory level
+\item inventory balance
+\item Transportation cost
+\end{itemize}
+
+Test on the standard IRP.
+
+
+
+\bibliographystyle{elsarticle-harv} 
+\bibliography{reference}
+\end{document}

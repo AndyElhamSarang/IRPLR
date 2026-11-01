@@ -1,0 +1,100 @@
+ \documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{complexity}
+\usepackage{url}
+\usepackage{tikz}
+\usepackage{complexity}
+\usepackage{hyperref}
+\usepackage{subcaption}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{authblk}
+
+
+\newtheorem{definition}{Definition}
+
+
+\title{A heuristic algorithm for the inventory routing problem with logistic ratio}
+\small\author[1]{Claudia Archetti}
+\author[2]{Andy Zhang}
+\author[2]{Elham Mardaneh}
+\author[2]{Sarang Kulkarni}
+\affil[1]{\small Department of Economics and Management, University of Brescia, Brescia (Italy)}
+\affil[2]{\small Faculty of Science and Engineering,
+Curtin University, Perth (Australia)}
+\date{}
+
+\allowdisplaybreaks
+
+\begin{document}
+
+\maketitle
+
+
+\section*{Introduction}
+
+The Inventory Routing Problem (IRP) is an extremely challenging optimization problem where the goal is to determine the replenishment and distribution plan for a supply chain network where there is a single supplier and multiple retailers who need to be replenished with the community produced and distributed by the supplier. A planning horizon is defined over which the replenishment activities should take place. Each retailers faces a per period demand over the horizon and has a maximum inventory capacity. The supplier has a fleet of capacitated vehicles which are used for distribution operations. The goal is to define the plan that optimizes a given objective function in such a way that each retailer has a sufficient quantity to satisfy the demand in all periods and the vehicle capacity is not exceeded in any route. More in detail, the plan consists in defining, for each period, which retailers are visited, what is the quantity delivered to each retailer and what are the routes of the vehicles that has to distribute those quantities. 
+
+The objective function which is commonly used in the classical IRP consists of the total cost, to be minimized, which is given by the sum of routing cost plus the inventory cost at the supplier and at the retailers \cite{archetti2012hybrid,archetti2016inventory}. However, it often happens that the inventory cost is hard to define or it is negligible with respect to the routing cost. In this case, other objective functions could be used instead of the total cost. Indeed, a KPI which is often used in practice is the so called \textit{Logistic Ratio} (LR) which consists in the ratio between the routing cost and the total quantity delivered. In this case, we obtain the IRP with LR (IRP-LR). 
+
+The IRP-LR finds relevant applications in practice, especially when the transportation cost is the main component of the total cost. In fact, it was first introduced in the 2016 ROADEF Challenge by Air Liquide. It then gained success and attracted relevant research attention \cite{archetti2017minimizing,archetti2019exact,alvarez2018iterated}. The problem proved to be much more challenging than IRP when it comes to finding effective solution approaches. The goal of the current work is to propose a new heuristic algorithm for the IRP-LR, namely an Iterated Local Search (ILS).
+
+\section{Problem description}
+
+The IRP-LR is defined on a complete directed graph $\mathcal{G} = (\mathcal{N}, \mathcal{A})$, where the node set $\mathcal{N} = \{0\} \cup \mathcal{N}'$ includes the  depot at node $0$ (which also corresponds to the supplier) and the retailer nodes $\mathcal{N}' = \{1, \ldots, n\}$. Each arc  $(i, j) \in \mathcal{A}$ is associated with a cost $c_{i,j}$, representing the routing cost of traversing the arc. The planning horizon is composed by $H$ periods, denoted by $\mathcal{T} = \{1, \ldots ,H\}$. Each retailer $i \in \mathcal{N}'$ has an initial inventory level $I_i^0$ and a maximum inventory level $U_i$. 
+Each day $t \in \mathcal{T}$, $d_{0}^t$ units of product are made available at the supplier, and $d_i^t$ units are consumed by retailer $i \in \mathcal{N}'$. A fleet $\mathcal{K}$ of $K$ identical vehicles, each with capacity $Q$, provides the delivery service. The goal of IRP-LR is creating a distribution plan that minimizes the ratio between the total routing cost and the total quantity delivered over the planning horizon. The definition of the plan involves the following decisions to be taken in each period $t \in \mathcal{T}$:
+
+\begin{itemize}
+    \item which is the subset of retailers served;
+    \item what is the quantity delivered to each visited retailer;
+    \item what are the vehicle routes to deliver the quantities defined above.
+\end{itemize}
+
+
+\section{Iterated Local Search}
+
+ILS is a simple but powerful metaheuristic algorithm which proved to be effective is solving many complex combinatorial optimization problems \cite{lourencco2018iterated}. Its core benefits are based on the simplicity of the scheme and on the flexibility of its adaptation. The main idea of ILS is to iteratively generate an initial feasible solution and then apply a local search to improve it. The algorithm returns the best solution found over all iterations.
+
+For the IRP-LS, each iteration of the ILS proposed in this work is composed by the following phases:
+
+\begin{enumerate}
+    \item \textit{Construction of an initial solution}: the initial solution is constructed by first determining a replenishment schedule for each customer. Customers are served as soon as they face stock-out and the quantity delivered is the maximum one which does not violate vehicle capacity and maximum inventory level. Once all customers are assigned with a replenishment schedule, the Hybrid Genetic Search (HGS) algorithm by \cite{vidal2022hybrid} is run for each period $t \in \mathcal{T}$ to improve the routing cost.
+    \item \textit{Local search phase}: a local search is then run to improve the initial solution. It uses three classical operators from routing (swap, insertion, removal) as well as an ad-hoc operators (rebalance operator) which optimizes quantities without modifying schedules and routes.
+    \item \textit{Intensification phase}: once the local search terminates (maximum number of iterations) the HGS by \cite{vidal2022hybrid} is run to possibly improve the routing cost.
+\end{enumerate}
+
+The ILS allows violation of the stock-out constraint which is penalized through an adaptive penalty approach. The algorithm finally returns the best feasible solution found over all iterations.
+
+\section{Preliminary results}
+
+The ILS described above has been compared with the only heuristic algorhtm for the IRP-LR available in the literature which was proposed by \cite{alvarez2018iterated}. The stopping criterion was set to 5 iterations. Preliminary tests have been run on benchmark instances for the IRP with $H=6$, $K2,...,5$ and $n=50,100,200$. Ten instances are available for each combination of the former parameters, thus obtaining  120 instances overall.
+
+A summary of the results is presented in Table \ref{tab:prel_res} where AMM refers to the heuristic algorithm by \cite{alvarez2018iterated}. Specifically, in the table we report the average gap between the solution provided by AMM and the one by the proposed ILS. A negative value indicate that ILS provides a better solution. Each cell reports the average value of the gap over all instances with the number of customers reported in the row and number of vehicles reported in the corresponding column. We point out that AMM was capped to a time limit of 60 seconds while ILS has an average time of 278 seconds and it exceeds 10 minutes in one instance only where the run time is 628 seconds. 
+
+The results show the ILS clearly outperforms AMM, especially when the number of customers $n$ increases. In fact, when $n=200$, the average improvement is 22.05\%. Detailed results show that ILS improved AMM over all instances and that the maximum improvement reached 28.79\%.
+
+\begin{table}
+\centering
+\caption{\textcolor{black}{Comparison with AMM}}
+\label{tab:prel_res}
+\begin{tabular}{c||c|c|c|c||c} 
+	&	$k=2$	&	$k=3$	&	$k=4$	&	$k=5$	&	\textbf{Average}	\\
+\hline											
+\hline											
+$n=50$	&	-7.74	&	-6.81	&	-5.31	&	-5.35	&	-6.30	\\
+\hline											
+$n=100$	&	-12.38	&	-10.62	&	-10.23	&	-8.21	&	-10.36	\\
+\hline											
+$n=200$	&	-24.33	&	-21.88	&	-20.83	&	-21.14	&	-22.05	\\
+\hline											
+\hline											
+\textbf{Average}	&	-14.82	&	-13.10	&	-12.13	&	-11.57	&	\textbf{-12.90}	\\
+					
+\end{tabular}
+\end{table}
+
+\bibliographystyle{apalike} 
+\bibliography{reference}
+
+\end{document}
