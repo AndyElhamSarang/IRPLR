@@ -227,7 +227,7 @@ andy_DISABLE_COUT:
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-DDISABLE_COUT \
-	-o RandomGridResolution.out -O3
+	-o MSILS.out -O3
 andy_lenovo:
 	$(CC) main.cpp file:Read_andy_lenovo.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \

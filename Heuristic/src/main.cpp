@@ -13,7 +13,8 @@ double MainAlgorithmTimeLimit = 65.0; // Default local search time limit is 12 s
 double AccumulatedTimeHGS = 0.0;
 double power = 2.0;
 ofstream Table;
-base_generator_type generator(static_cast<unsigned int>(time(0)));
+const unsigned int RandomSeed = static_cast<unsigned int>(time(0));
+base_generator_type generator(RandomSeed);
 string MachineDirectory;
 int OutputResults;
 time_t start_time;
@@ -59,6 +60,23 @@ int main()
 			string file_type = ".csv";
 			string file_name = experiment_name + "_exp" + experiment_str + file_type;
 			Table.open(file_name);
+			Table << "Seed," << RandomSeed << "\n";
+			Table << "Global Parameters"
+				  << ",NumberOfInitialSolutions," << NumberOfInitialSolutions
+				  << ",MinGridResolution," << min_grid_resolution
+				  << ",GridResolutionIncrement," << grid_resolution_increment
+				  << ",NumberOfExperiments," << NumberOfExperiments
+				  << ",AllowLagrangianRelaxation," << AllowLagrangianRelaxation
+				  << ",TypeOfRebalance," << TypeOfRebalance
+				  << ",InitialLagrangianScalar," << InitialLagrangianScalar
+				  << ",ToAdjustLagrangianScalar," << ToAdjustLagrangianScalar
+				  << ",ToTriggerAdjustment," << ToTriggerAdjustment
+				  << ",ActivateHGS," << ActivateHGS
+				  << ",theta," << theta
+				  << ",sigma," << sigma
+				  << ",phi," << phi
+				  << ",DisturbStrength," << DisturbStrength
+				  << ",MainAlgorithmTimeLimit," << MainAlgorithmTimeLimit << "\n";
 			Table << ",#TimePeriods,#Nodes,#Vehicle";
 			for (int i = 0; i < NumberOfInitialSolutions; i++)
 			{
@@ -112,6 +130,7 @@ int main()
 				//                                                            //
 				////////////////////////////////////////////////////////////////
 				solution GlobalBest;
+				Global_total_iteration = 0;
 				GlobalBest.LogisticRatio = numeric_limits<double>::max(); // Set a large value
 				solution FirstImprovementSolution;
 				solution IRPSolution30s;
