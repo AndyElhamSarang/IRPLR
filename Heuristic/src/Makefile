@@ -45,7 +45,7 @@ andy_desktop:
 	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
-	-o test.out
+	-o test.out -O3
 andy_desktop_DISABLE_COUT:
 	$(CC) main.cpp file:Read_andy_desktop.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
@@ -82,7 +82,7 @@ andy_desktop_DISABLE_COUT:
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
 	-DDISABLE_COUT \
-	-o test_DISABLE_COUT.out
+	-o test_DISABLE_COUT.out -O3
 parameter_tuning_desktop:
 	$(CC) main_parameter_tuning.cpp file:Read_andy.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \
 	Input:Read.cpp \
