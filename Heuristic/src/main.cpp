@@ -13,7 +13,7 @@ double MainAlgorithmTimeLimit = 65.0; // Default local search time limit is 12 s
 double AccumulatedTimeHGS = 0.0;
 double power = 2.0;
 ofstream Table;
-const unsigned int RandomSeed = static_cast<unsigned int>(time(0));
+unsigned int RandomSeed = 0;
 base_generator_type generator(RandomSeed);
 string MachineDirectory;
 int OutputResults;
@@ -53,6 +53,9 @@ int main()
 	read_file.ReadGlobalParameter();
 	for (int experiment = 0; experiment < NumberOfExperiments; experiment++)
 	{
+		RandomSeed = static_cast<unsigned int>(time(0));
+		generator.seed(RandomSeed);
+
 		if (OutputResults == 1)
 		{
 			string experiment_str = to_string(experiment + 1);
