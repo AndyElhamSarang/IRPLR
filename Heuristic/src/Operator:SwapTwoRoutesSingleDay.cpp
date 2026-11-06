@@ -139,6 +139,22 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                         // cout << "SlackDeductRoute2:" << SlackDeductRoute2 << endl;
                                         assert(NewDeliveryQuantityRoute2.size() == Swap_length2);
                                         assert(NewInventoryLevelRoute2.size() == Swap_length2);
+                                        vector<int> SupplierCandidateCustomers;
+                                        vector<vector<double>> SupplierCandidateDeliveryQuantity;
+                                        for (int route1_index = 0; route1_index < Swap_length1; ++route1_index)
+                                        {
+                                            const int customer = IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index];
+                                            SupplierCandidateCustomers.push_back(customer);
+                                            NewDeliveryQuantityRoute1[route1_index][pick_day] = 0.0;
+                                            SupplierCandidateDeliveryQuantity.push_back(NewDeliveryQuantityRoute1[route1_index]);
+                                        }
+                                        for (int route2_index = 0; route2_index < Swap_length2; ++route2_index)
+                                        {
+                                            const int customer = IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index];
+                                            SupplierCandidateCustomers.push_back(customer);
+                                            NewDeliveryQuantityRoute2[route2_index][pick_day] = 0.0;
+                                            SupplierCandidateDeliveryQuantity.push_back(NewDeliveryQuantityRoute2[route2_index]);
+                                        }
 
                                         double NewStockOut = IRPSolution.ViolationStockOut;
                                         double NewVehicleOverload = IRPSolution.ViolationMoreThanCapacity;
@@ -321,6 +337,22 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                                 NewIntroduceNewQuantityOrNotRoute1[route1_index] = true;
                                             }
 
+                                            const double quantityBeforeSupplierLimit = NewDeliveryQuantityRoute1[route1_index][pick_day];
+                                            NewDeliveryQuantityRoute1[route1_index][pick_day] = min(
+                                                quantityBeforeSupplierLimit,
+                                                max(0.0, SupplierAvailabilityForCandidateDay(
+                                                             IRPLR,
+                                                             IRPSolution,
+                                                             pick_day,
+                                                             SupplierCandidateCustomers,
+                                                             SupplierCandidateDeliveryQuantity)));
+                                            if (NewIntroduceNewQuantityOrNotRoute1[route1_index])
+                                            {
+                                                CopyTotalSlackPerVehicle[pick_vehicle2] +=
+                                                    quantityBeforeSupplierLimit - NewDeliveryQuantityRoute1[route1_index][pick_day];
+                                            }
+                                            SupplierCandidateDeliveryQuantity[route1_index] = NewDeliveryQuantityRoute1[route1_index];
+
                                             if (NewDeliveryQuantityRoute1[route1_index][pick_day] < 0.00001)
                                             {
                                                 Whether_normal_insert_fail = true;
@@ -412,6 +444,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                                         IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index],
                                                         IRPLR);
                                                 }
+                                                SupplierCandidateDeliveryQuantity[route1_index] = NewDeliveryQuantityRoute1[route1_index];
                                             }
                                         }
 
@@ -483,6 +516,22 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                                 // assert(flag);
                                             }
 
+                                            const double quantityBeforeSupplierLimit = NewDeliveryQuantityRoute2[route2_index][pick_day];
+                                            NewDeliveryQuantityRoute2[route2_index][pick_day] = min(
+                                                quantityBeforeSupplierLimit,
+                                                max(0.0, SupplierAvailabilityForCandidateDay(
+                                                             IRPLR,
+                                                             IRPSolution,
+                                                             pick_day,
+                                                             SupplierCandidateCustomers,
+                                                             SupplierCandidateDeliveryQuantity)));
+                                            if (NewIntroduceNewQuantityOrNotRoute2[route2_index])
+                                            {
+                                                CopyTotalSlackPerVehicle[pick_vehicle1] +=
+                                                    quantityBeforeSupplierLimit - NewDeliveryQuantityRoute2[route2_index][pick_day];
+                                            }
+                                            SupplierCandidateDeliveryQuantity[Swap_length1 + route2_index] = NewDeliveryQuantityRoute2[route2_index];
+
                                             if (NewDeliveryQuantityRoute2[route2_index][pick_day] < 0.00001)
                                             {
                                                 Whether_normal_insert_fail = true;
@@ -528,6 +577,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                                         IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index],
                                                         IRPLR);
                                                 }
+                                                SupplierCandidateDeliveryQuantity[Swap_length1 + route2_index] = NewDeliveryQuantityRoute2[route2_index];
                                             }
                                         }
 
@@ -614,6 +664,23 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                             double NewLogisticRatio = std::numeric_limits<double>::max();
                                             double temp_LR_objv = std::numeric_limits<double>::max();
 
+                                            for (int route1_index = 0; route1_index < Swap_length1; ++route1_index)
+                                            {
+                                                SupplierCandidateDeliveryQuantity[route1_index] = NewDeliveryQuantityRoute1[route1_index];
+                                            }
+                                            for (int route2_index = 0; route2_index < Swap_length2; ++route2_index)
+                                            {
+                                                SupplierCandidateDeliveryQuantity[Swap_length1 + route2_index] = NewDeliveryQuantityRoute2[route2_index];
+                                            }
+                                            if (SupplierAvailabilityForCandidateDay(
+                                                    IRPLR,
+                                                    IRPSolution,
+                                                    pick_day,
+                                                    SupplierCandidateCustomers,
+                                                    SupplierCandidateDeliveryQuantity) < -0.00001)
+                                            {
+                                                Whether_normal_insert_fail = true;
+                                            }
                                             if (Whether_normal_insert_fail == false)
                                             {
                                                 NewTotalDelivery = IRPSolution.TotalDelivery + ChangeInTotalQuantity;

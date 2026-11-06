@@ -361,8 +361,7 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
     {
         cout << "Construct initial solution using INITIAL ZONE" << endl;
     }
-    int method = 1;
-    if (method == 0)
+    if (InitialSolutionMethod == "ConstructAMMInitialSolution")
     {
         if (!ConstructAMMInitialSolution(IRPLR, IRPSolution))
         {
@@ -390,7 +389,7 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
             IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName + "_initial_solution_from_AMM_" + to_string(MS_ITERATION) + ".json");
         }
     }
-    else
+    else if (InitialSolutionMethod == "Initial_BlockZone_Schedule")
     {
 
         // assert(GridResolution > 0);
@@ -448,6 +447,10 @@ void solution_construction::INITIAL_ZONE(input &IRPLR, solution &IRPSolution, HG
         {
             IRPSolution.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName + "_initial_solution_after_nearest_insertion_" + to_string(MS_ITERATION) + ".json");
         }
+    }
+    else
+    {
+        throw runtime_error("InitialSolutionMethod must be ConstructAMMInitialSolution or Initial_BlockZone_Schedule");
     }
 
     ///////////////////////////////////////////////

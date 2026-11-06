@@ -11,6 +11,7 @@ extern string MachineDirectory;
 extern int OutputResults;
 extern int NumberOfInitialSolutions;
 extern int NumberOfExperiments;
+extern string InitialSolutionMethod;
 extern string AllowLagrangianRelaxation;
 extern string TypeOfRebalance;
 extern double InitialLagrangianScalar;

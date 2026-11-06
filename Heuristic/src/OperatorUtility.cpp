@@ -15,6 +15,37 @@ double solution_improvement::DeliveryMaxAllowingCapacityViolation(double &Invent
     return max(0.0, InventoryMax - PreviousInventoryLevel);
 }
 
+double solution_improvement::SupplierAvailabilityForCandidateDay(
+    input &IRPLR,
+    solution &IRPSolution,
+    int day,
+    const vector<int> &CandidateCustomers,
+    const vector<vector<double>> &CandidateDeliveryQuantity)
+{
+    assert(day >= 0 && day < IRPLR.TimeHorizon);
+    assert(CandidateCustomers.size() == CandidateDeliveryQuantity.size());
+
+    double supplierAvailability = numeric_limits<double>::infinity();
+    double cumulativeDeliveryDelta = 0.0;
+    for (int futureDay = 0; futureDay < IRPLR.TimeHorizon; ++futureDay)
+    {
+        for (size_t candidateIndex = 0; candidateIndex < CandidateCustomers.size(); ++candidateIndex)
+        {
+            const int customer = CandidateCustomers[candidateIndex];
+            cumulativeDeliveryDelta += CandidateDeliveryQuantity[candidateIndex][futureDay] -
+                                       IRPSolution.DeliveryQuantity[customer][futureDay];
+        }
+        if (futureDay >= day)
+        {
+            supplierAvailability = min(
+                supplierAvailability,
+                IRPSolution.InventoryLevelSupplier[futureDay] - cumulativeDeliveryDelta);
+        }
+    }
+
+    return supplierAvailability;
+}
+
 double solution_improvement::DeliverDemand(double &InventoryMax, double &CustomerDemand, double &PreviousInventoryLevel)
 {
     // assert(VehicleCapacity - VehicleLoad > -0.00001);

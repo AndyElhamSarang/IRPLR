@@ -205,6 +205,16 @@ void file::ReadGlobalParameter()
     ss_MainAlgorithmTimeLimit >> MainAlgorithmTimeLimit;
     cout << dummyline << ":" << MainAlgorithmTimeLimit << endl;
 
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
+    stringstream ss_InitialSolutionMethod(TakeParameter);
+    if (!(ss_InitialSolutionMethod >> InitialSolutionMethod))
+    {
+        cerr << "Error: Invalid InitialSolutionMethod in GlobalParameter.txt." << endl;
+        exit(1);
+    }
+    cout << dummyline << ":" << InitialSolutionMethod << endl;
+
     //Inout parameter validation
     bool valid_input = true;
     if(OutputSolutionJSON != "YES" && OutputSolutionJSON != "NO")
@@ -230,6 +240,12 @@ void file::ReadGlobalParameter()
     if(NumberOfExperiments <= 0)
     {
         cout << "Error: NumberOfExperiments should be a positive integer." << endl;
+        valid_input = false;
+    }
+    if (InitialSolutionMethod != "ConstructAMMInitialSolution" &&
+        InitialSolutionMethod != "Initial_BlockZone_Schedule")
+    {
+        cout << "Error: InitialSolutionMethod must be ConstructAMMInitialSolution or Initial_BlockZone_Schedule." << endl;
         valid_input = false;
     }
     if (AllowLagrangianRelaxation != "YES" && AllowLagrangianRelaxation != "NO")

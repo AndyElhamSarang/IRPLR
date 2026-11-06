@@ -176,6 +176,8 @@ int solution_improvement::OperatorTransfer(
             ////////////////////////////////////////////////////////////////////////////////////
 
             NewDeliveryQuantityCustomerTransfer[pick_day_insert] = 0;
+            vector<int> SupplierCandidateCustomers{customer_idx};
+            vector<vector<double>> SupplierCandidateDeliveryQuantity{NewDeliveryQuantityCustomerTransfer};
             int VehicleIndexInserted = IRPLR.NumberOfVehicles + 1;
             for (int VehicleIndexNewDay = 0; VehicleIndexNewDay < IRPLR.NumberOfVehicles; VehicleIndexNewDay++)
             {
@@ -247,9 +249,26 @@ int solution_improvement::OperatorTransfer(
                 }
             }
 
+            const double quantityBeforeSupplierLimit = NewDeliveryQuantityCustomerTransfer[pick_day_insert];
+            NewDeliveryQuantityCustomerTransfer[pick_day_insert] = min(
+                quantityBeforeSupplierLimit,
+                max(0.0, SupplierAvailabilityForCandidateDay(
+                             IRPLR,
+                             IRPSolution,
+                             pick_day_insert,
+                             SupplierCandidateCustomers,
+                             SupplierCandidateDeliveryQuantity)));
+            if (NewIntroduceNewQuantityOrNotTransfer && VehicleIndexInserted < IRPLR.NumberOfVehicles)
+            {
+                CopyTotalSlackPerVehicle[VehicleIndexInserted] +=
+                    quantityBeforeSupplierLimit - NewDeliveryQuantityCustomerTransfer[pick_day_insert];
+            }
+            SupplierCandidateDeliveryQuantity[0] = NewDeliveryQuantityCustomerTransfer;
+
             if (NewDeliveryQuantityCustomerTransfer[pick_day_insert] < 0.00001)
             {
                 Whether_normal_insert_fail = true;
+                VehicleIndexInserted = IRPLR.NumberOfVehicles + 1;
                 // cout<<"NewDeliveryQuantityCustomerTransfer[pick_day_insert]:"<<NewDeliveryQuantityCustomerTransfer[pick_day_insert]<<", VehicleIndexInserted:"<<VehicleIndexInserted<<endl;
                 assert(VehicleIndexInserted == IRPLR.NumberOfVehicles + 1);
             }
@@ -295,6 +314,7 @@ int solution_improvement::OperatorTransfer(
                         customer_idx,
                         IRPLR);
                 }
+                SupplierCandidateDeliveryQuantity[0] = NewDeliveryQuantityCustomerTransfer;
             }
 
             // cout << "--------------------------------------------------------------------------------" << endl;
@@ -313,6 +333,17 @@ int solution_improvement::OperatorTransfer(
             //     cout << NewInventoryLevelCustomerTransfer[period] << ",";
             // }
             // cout << endl;
+
+            if (Whether_normal_insert_fail == false &&
+                SupplierAvailabilityForCandidateDay(
+                    IRPLR,
+                    IRPSolution,
+                    min(pick_day_remove, pick_day_insert),
+                    SupplierCandidateCustomers,
+                    SupplierCandidateDeliveryQuantity) < -0.00001)
+            {
+                Whether_normal_insert_fail = true;
+            }
 
             if (Whether_normal_insert_fail == false) // If both insert fails, then we do not need to calculate the objective value, because it is infeasible
             {

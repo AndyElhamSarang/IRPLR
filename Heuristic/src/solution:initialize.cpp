@@ -7,6 +7,7 @@ void solution::Initialization(input &IRPLR)
     DeliveryQuantity.clear();
     InventoryLevel.clear();
     InventoryLevelSupplier.clear();
+    SupplierDeliverySlack.clear();
     VehicleAllocation.clear();
     VisitOrder.clear();
     StockOutPerCustomer.clear();
@@ -64,5 +65,12 @@ void solution::Initialization(input &IRPLR)
         {
             StockoutSupplier -= InventoryLevelSupplier[i];
         }
+    }
+    SupplierDeliverySlack.resize(IRPLR.TimeHorizon);
+    double minimumSupplierInventory = numeric_limits<double>::infinity();
+    for (int day = IRPLR.TimeHorizon - 1; day >= 0; --day)
+    {
+        minimumSupplierInventory = min(minimumSupplierInventory, InventoryLevelSupplier[day]);
+        SupplierDeliverySlack[day] = max(0.0, minimumSupplierInventory);
     }
 }

@@ -67,6 +67,15 @@ We also assume sufficient production at the depot to fulfil the demand from all 
 
 Recent methodology development focuses on the objective function to minimise the transportation cost and inventory holding cost. \cite{castro2026hybrid,zhao2025large}
 
+\section*{Main Contributions}
+
+\begin{itemize}
+    \item We developed a new constructive heuristic suitable for the IRP-LR. It differs from the one developed in \cite{alvarez2018iterated}.
+    \item We developed a new MSILS with the amalgamation of iterated local search and Lagrangian relaxation as well as a quantity-focused disturbance procedure.
+    \item We also enhance the local search operator with a local rebalance mechanism inspired by the violation-of-vehicle-capacity strategy from the well-known HGS algorithm for CVRP \cite{vidal2022hybrid}.
+    \item The complete algorithm demonstrates superior performance compared with the Simulated annealing and iterated local search algorithm developed in \cite{alvarez2018iterated} on almost every instance. The algorithm performance is more evident on large instances.
+\end{itemize}
+
 \section{Problem Background and Related Literature}
 \label{sec:problem_description}
 
@@ -663,76 +672,37 @@ I_{i,t}(s)-\mu_{i,t}(s)= I_{i,t-1}(s) -\mu_{i,t-1}(s) - r_{i,t} + \sum_{k\in K}q
 If $s$ is feasible to the relaxed problem and has $\sum_{i\in N'} \sum_{i\in T} \mu_{it}(s) = 0$, then $s$ is also feasible for the original problem. The value of $s$ on the objective function \eqref{obj} is denoted by $f(s)$, and the value on the objective function \eqref{Relaxed_obj} with Lagrange multiplier $\alpha$ is denoted by $f_{\mu}(s, \alpha)$. The following pseudocode outlines the proposed \hyperref[alg:MSILS]{MSILS}. 
 
 
-
 \begin{algorithm}[H]
 \caption{\textbf{MSILS}}\label{alg:MSILS}
 \begin{algorithmic}[1]
-\STATE $s^* \gets$ Empty \AND  $f(s^*) \gets +\infty$  \label{initialisation}
+\STATE $s^*\gets\emptyset$, $f(s^*)\gets+\infty$ \label{initialisation}
 \FOR{$i\gets 1$ \TO $Max_{restart}$} \label{start msils}
-\STATE $s\gets$ \hyperref[alg:InitialSchedule]{Construct initial solution} \label{initial solution construction}
+\STATE $s\gets$\hyperref[alg:InitialSchedule]{Initial\_Solution\_Procedure}, $\hat{s}\gets s$, $it\gets0$ \label{initial solution construction}
 \IF{$f(s)<f(s^*)$} \STATE $s^*\gets s$ \ENDIF
-\STATE  $it \gets 0$ \label{initilise eta}
-\WHILE{ $it < Max_{it}$} \label{start ils}
-    \STATE $\alpha \gets \epsilon (s^*, s , 0, \eta)$ \label{LS:initialise alpha}  
-    \STATE $\bar{s} \gets s$
-    \STATE $s\gets$ \hyperref[alg:LocalSearch]{Local\_Search}$(s,\alpha)$    
-    \WHILE{$f_{\mu}(s,\alpha) \neq f_{\mu}(\bar{s},\alpha)$ \OR $s$ has stockout} \label{search: repeat}
-        \STATE  $\alpha \gets \epsilon (s^*, s , \alpha, \eta)$\label{LS:update alpha}        
-        \STATE $\bar{s} \gets s$
-        \STATE $s\gets$\hyperref[alg:LocalSearch]{Local\_Search}$(s,\alpha)$       
-    \ENDWHILE \label{search: until}
-    \IF{$s$ is feasible \AND $f(s)<f(s^*)$}
-            \STATE $s^*\gets s$, $it\gets 0$
-            \STATE $s^*\gets$ \hyperref[alg:rebalance]{Rebalance}$(s^*)$ \label{run rebalance}
-    \ENDIF
-    \STATE $s \gets$ Disturbance$(s^*, it)$, $it\gets it+1$ \label{disturb}
+\WHILE{$it<|N'|+\sigma|T|+\phi|K|$} \label{start ils}
+\STATE $\alpha\gets\epsilon(s^*,s,0,\eta)$, $\bar{s}\gets s$, $s\gets$\hyperref[alg:LocalSearch]{Local\_Search}$(s,\alpha)$ \label{LS:initialise alpha}
+\WHILE{$f_{\mu}(s,\alpha)\neq f_{\mu}(\bar{s},\alpha)$ \OR $s$ has stockout} \label{search: repeat}
+    \STATE $\alpha\gets\epsilon(s^*,s,\alpha,\eta)$, $\bar{s}\gets s$, $s\gets$\hyperref[alg:LocalSearch]{Local\_Search}$(s,\alpha)$ \label{LS:update alpha}
+\ENDWHILE \label{search: until}
+\IF{$s$ is feasible \AND $f(s)<f(\hat{s})$}
+    \STATE $\hat{s}\gets s$, $it\gets0$, $\hat{s}\gets$\hyperref[alg:rebalance]{Rebalance}$(\hat{s})$ \label{run rebalance}
+\ENDIF
+\IF{$\hat{s}$ is feasible \AND $f(\hat{s})<f(s^*)$} \STATE $s^*\gets\hat{s}$ \ENDIF
+\STATE $s\gets$ Disturbance$(\hat{s},it)$, $it\gets it+1$ \label{disturb}
 \ENDWHILE \label{end ils}
 \ENDFOR \label{end msils}
-\RETURN solution $s^*$
+\RETURN $s^*$
 \end{algorithmic}
 \end{algorithm}
 
+Initially, the global best-known solution $s^*$ is empty, and $f(s^*)$ is set to $+\infty$ (line \ref{initialisation}). $s^*$ is updated throughout the algorithm. The FOR loop (lines \ref{start msils}-\ref{end msils}) implements the multi-start framework. At each restart, a feasible solution to the original problem is generated using the constructive heuristic described in \ref{sec:initial procedure}. This solution is used as the starting solution for the upcoming application of the iterated local search (WHILE loop, lines \ref{start ils}-\ref{end ils}). By repeatedly restarting the iterated local search from different initial solutions, the algorithm can explore diversified regions of the solution space. The number of starting solutions is controlled by the parameter $Max_{restart}$.
 
-
-% \begin{algorithm}[H]
-% \caption{\textbf{MSILS}}\label{alg:MSILS}
-% \begin{algorithmic}[1]
-% \STATE $s^* \gets$ Empty \AND  $f(s^*) \gets +\infty$  \label{initialisation}
-% \FOR{$i\gets 1$ \TO $Max_{restart}$} \label{start msils}
-% \STATE $s\gets$ \hyperref[alg:InitialSchedule]{Construct initial solution} \label{initial solution construction}
-% \IF{$f(s)<f(s^*)$} \STATE $s^*\gets s$ \ENDIF
-% \STATE  $it \gets 0$, $\eta \gets \eta'$, $u\gets 0$ \label{initilise eta}
-% \WHILE{ $it < Max_{it}$} \label{start ils}
-%     \STATE $\alpha \gets \epsilon (s^*, s , 0, \eta)$ \label{LS:initialise alpha}  
-%     \STATE $\bar{s} \gets s$
-%     \STATE $s\gets$ \hyperref[alg:LocalSearch]{Local\_Search}$(s,\alpha)$    
-%     \WHILE{$f_{\mu}(s,\alpha) \neq f_{\mu}(\bar{s},\alpha)$ \OR $s$ has stockout} \label{search: repeat}
-%         \STATE  $\alpha \gets \epsilon (s^*, s , \alpha, \eta)$\label{LS:update alpha}        
-%         \STATE $\bar{s} \gets s$
-%         \STATE $s\gets$\hyperref[alg:LocalSearch]{Local\_Search}$(s,\alpha)$       
-%     \ENDWHILE \label{search: until}
-%     \IF{$min\{it, u\} \geq U$}
-%         \STATE $u\gets 0$, $\eta \gets \kappa \times \eta$ \label{update eta}
-%     \ENDIF
-%     \IF{$s$ is feasible \AND $f(s)<f(s^*)$}
-%             \STATE $s^*\gets s$, $it\gets 0$
-%             \STATE $s^*\gets$ \hyperref[alg:rebalance]{Rebalance}$(s^*)$ \label{run rebalance}
-%     \ENDIF
-%     \STATE $s \gets$ Disturbance$(s^*, it)$, $it\gets it+1$, $u\gets u+1$ \label{disturb}
-% \ENDWHILE \label{end ils}
-% \ENDFOR \label{end msils}
-% \RETURN solution $s^*$
-% \end{algorithmic}
-% \end{algorithm}
-
-Initially, the incumbent best solution $s^*$ is empty, and $f(s^*)$ is set to $+\infty$ (line \ref{initialisation}). Throughout the search process, whenever a feasible solution to the original problem is found with an objective value lower than $f(s^*)$, the incumbent solution $s^*$ is updated accordingly. The FOR loop (lines \ref{start msils}-\ref{end msils}) implements the multi-start framework. At each restart, a feasible solution to the original problem is generated using the constructive heuristic described in \ref{sec:initial procedure}. This solution is used as the starting solution for the upcoming application of the iterated local search (WHILE loop, lines \ref{start ils}-\ref{end ils}). By repeatedly restarting the iterated local search from different initial solutions, the algorithm can explore diversified regions of the solution space. The number of starting solutions is controlled by the parameter $Max_{restart}$.
-
-Each iteration of the iterated local search uses a local search procedure to solve a sequence of relaxed problems, each with a different value of $\alpha$. If an optimal solution $\hat{s}$ for the relaxed problem can be obtained, then following a commonly used version of the Lagrangian relaxation method \cite{fisher1981lagrangian}, $\alpha$ is computed by 
+Each application of the iterated local search uses a local search procedure to solve a sequence of relaxed problems, each with a different value of $\alpha$. If an optimal solution $\Tilde{s}$ for the relaxed problem can be obtained, then following a commonly used version of the Lagrangian relaxation method \cite{fisher1981lagrangian}, $\alpha$ is computed by 
 
 \begin{equation}
-\alpha + \frac{\eta \times (f(s^*) - f_{\mu}(\hat{s},\alpha)) \times (\sum_{i\in N'}\sum_{t\in T} \mu_{it}(\hat{s}) )\,} {\left(\sum_{i\in N'}\sum_{t\in T} \mu_{it}(\hat{s}) \right)^2}  \label{classic lr formula}
+\alpha + \frac{\eta \times (f(s^*) - f_{\mu}(\Tilde{s},\alpha)) \times (\sum_{i\in N'}\sum_{t\in T} \mu_{it}(\Tilde{s}) )\,} {\left(\sum_{i\in N'}\sum_{t\in T} \mu_{it}(\Tilde{s}) \right)^2}  \label{classic lr formula}
 \end{equation}
-where $\eta$ is a scalar. Since the local search cannot guarantee the optimal solution $\hat{s}$, instead of \eqref{classic lr formula}, $\alpha$ is computed by 
+where $\eta$ is a scalar. Since the local search cannot guarantee the optimal solution $\Tilde{s}$, instead of \eqref{classic lr formula}, $\alpha$ is computed by 
 \begin{equation}
 \epsilon(s^*, s, \alpha, \eta) = \alpha + \frac{\eta \times \delta \times (\sum_{i\in N'}\sum_{t\in T} \mu_{it}(s) + 0.001)\,} {\left(\sum_{i\in N'}\sum_{t\in T} \mu_{it}(s) \right)^2+ 0.00001}  \label{epsilon}
 \end{equation} where
@@ -748,24 +718,25 @@ Once local search obtains a feasible solution for the original problem, $\epsilo
 \end{equation*} 
  which greedily increases $\alpha$ until the stopping criterion is satisfied for the WHILE loop (lines \ref{search: repeat}-\ref{search: until}). The initial value of $\alpha$ is computed by $\epsilon (s^*, s, 0, \eta)$ in line \ref{LS:initialise alpha} and the subsequent values is computed by $\epsilon (s^*, s, \alpha, \eta)$ in line \ref{LS:update alpha} using $\alpha$ from the previous call of the local search procedure.  
 
-To escape from the local optimum, the \hyperref[alg:MSILS]{MSILS} begins with a quantity-focused disturbance procedure. This procedure referred to as the rebalance procedure attempts to adjust the delivery quantities on the incumbent best solution, keeping the schedule fixed (see Section \ref{sec:rebalance}). To limit computational overhead, the rebalance procedure is invoked only when the incumbent best solution has been improved during the current local search iteration. To further diversify the search, the \hyperref[alg:MSILS]{MSILS} applies a route-focused disturbance procedure on the incumbent best solution, generating the starting solution for the subsequent call of local search. The iterated local search (WHILE loop lines \ref{start ils}-\ref{end ils}) terminates after the counter $it$ reaches the maximum number $Max_{it}$. Various parameter values for $Max_{restart}$, $Max_{it}$, and $\eta$ are examined in Section \ref{sec: computational experiements}.
+To escape from the local optimum, the \hyperref[alg:MSILS]{MSILS} begins with a quantity-focused disturbance procedure, referred to as the rebalance procedure. This procedure attempts to further improve the locally best-known solution $\hat{s}$ by adjusting the delivery quantities, keeping the schedule fixed (see Section \ref{sec:rebalance}). The output of the procedure is either the input, meaning that the procedure failed to make any improvement or a feasible solution of the original problem with a lower logistic ratio. To limit computational overhead, the rebalance procedure is invoked only when $\hat{s}$ has been improved. To further diversify the search, the \hyperref[alg:MSILS]{MSILS} applies a route-focused disturbance procedure on $\hat{s}$, generating the starting solution for the subsequent call of local search. The iterated local search (WHILE loop lines \ref{start ils}-\ref{end ils}) terminates after the counter $it$ reaches $|N'|+\sigma|T|+\phi|K|$, the maximum permissible number of consecutive iterations without improvement, where $\sigma$ and $\phi$ are the weight parameters on the number of time periods and the number of vehicles, respectively. 
 
 
 
 \subsection{Initial feasible solution} \label{sec:initial procedure}
 
-This section describes the constructive heuristic used to generate a feasible solution to the problem \eqref{obj}-\eqref{domain_y}. The aim of this procedure is to generate good starting solutions for the \hyperref[alg:MSILS]{MSILS} and to establish the initial upper bound. The proposed heuristic incorporates the routing-related considerations into the construction of replenishment schedules by determining customers' priority based on both replenishment urgency and their distance from the depot.
+This section describes the heuristic to construct the initial solution for the \hyperref[alg:MSILS]{MSILS}. It aims to produce a good feasible solution to the original problem \eqref{obj}-\eqref{domain_y}, thereby establishing the initial upper bound. 
 
-Let $s$ denote a solution. It is initially empty, with an empty schedule where routes are empty, and the delivery quantities are set to zero, i.e., $q^k_{it}(s)=0$ for $i\in N'$, $k\in K$, and $t\in T$. The net inventory levels $I_{it}(s) - \mu_{it}(s)$ are then calculated recursively by \eqref{initial I0} and \eqref{Initial I1}. Then, the customers are partitioned by the earliest time period $t$ at which $I_{it}(s) - \mu_{it}(s)$ becomes negative (i.e., when a stockout occurs). Such a time reflects the relationship between a customer's demand and its inventory capacity. Customers with lower inventory capacity or higher demand will experience stockout earlier and consequently require more frequent replenishments. Therefore, customers with earlier stockout times are assigned a higher priority.
+The solution $s$ is initialised with empty routes and zero delivery quantities, $q^k_{it}(s)=0$ for $i\in N'$, $k\in K$, and $t\in T$. The net inventory levels $I_{it}(s) - \mu_{it}(s)$ are calculated by \eqref{initial I0} and \eqref{Initial I1} accordingly. The customers are grouped by the earliest time period in which their net inventory levels become negative. Those customers with earlier stockouts are given higher priority. Within each stockout group, customers are further partitioned spatially. Let $(x_i, y_i)$ denote the coordinates of location $i \in N$. Using the coordinate minima and maxima   
+$$x_{\min} = \min_{i\in N} x_i,\quad x_{\max} = \max_{i\in N} x_i,$$
+$$y_{\min}= \min_{i\in N} y_i,\quad y_{\max}= \max_{i\in N} y_i,$$
+an axis-aligned bounding rectangle is defined with corners $(x_{min},y_{min})$, $(x_{max},y_{min})$, $(x_{max},y_{max})$, and $(x_{min},y_{max})$. The resulting axis-aligned rectangle is divided into a $d\times d$ grid of subregions $R=\{r_1,r_2,\dots,r_{d\times d}\}$ where $d$ is randomly selected between the minimum possible grid resolution $d_{min}$ and the maximum possible grid resolution $d_{\max}$. 
 
-Furthermore, within each priority group corresponding to time period $t$, customers are further partitioned spatially based on their locations. For each customer $i$ in $N'$, its location is specified by coordinates $(x_i, y_i)$. Then, let 
-$$x_{min} = \min\{x_i:i\in N'\}, x_{max} = \max\{x_i:i\in N'\},$$ and
-$$y_{min}= \min\{y_i:i\in N'\}, y_{max}= \max\{y_i:i\in N'\}.$$
-All customers lie within the axis-aligned rectangular region determined by the corner points $(x_{min},y_{min})$, $(x_{max},y_{min})$, $(x_{max},y_{max})$, $(x_{min},y_{max})$. This region is partitioned into a grid of $d\times d$ equally sized subregions, denoted by $R=\{r_1,r_2,\dots,r_{d\times d}\}$. To enable diversified solutions, the value of $d$ is randomly selected from $\left\{ d_{\min} + 2m: m = 0,\ldots,d_{\max} \right\}$ where $d_{min}$ and $d_{\max}$ are parameters defining the minimum and maximum possible grid resolution. The subregions in $R$ are ordered in descending order of their distance from the depot, where the distance is measured between the depot and the centre of each subregion. 
+Observe that, during the early stages of the solution construction, vehicles typically have sufficient capacity to deliver the largest possible quantities respecting both vehicle and inventory capacity constraints. Such flexibility reduces as the construction goes on, and customers who will be considered at a later stage often require more visits. Thus, the subregions are ordered by decreasing distance from their centres to the depot, so customers in more distant subregions are processed earlier.
 
-This ordering is motivated by the observation that, during the early stages of the construction, vehicles typically have sufficient residual capacity to deliver large quantities while respecting both vehicle and inventory capacity constraints. Such deliveries reduce the frequency with which distant customers need to be visited throughout the planning horizon. In contrast, customers considered later in the construction process may receive smaller deliveries because vehicle capacity has already been allocated to previously scheduled customers, potentially resulting in more frequent visits. Since repeated visits to distant customers can substantially increase transportation costs, customers located farther from the depot are prioritised. No further routing optimisation is performed during the constructive phase; instead, routing improvements are devoted to the local search procedure described in Section \ref{sec:local search}.
 
-Let $P_{\rho,r} \subseteq N'$ denote the subset of customers in priority group $\rho\in T$ and subregion $r\in R$. The pseudocode, \hyperref[alg:InitialSchedule]{Construct Initial Solution}, summarises the procedure.
+For each stockout group and subregion, the heuristic randomly selects a customer and repeatedly schedules a visit to address that customer's earliest remaining stockout. It first searches for an unoccupied period between the current search period and the stockout period that has remaining fleet capacity, choosing randomly among available periods. If none is available, it searches backwards for an earlier period. In the selected period, it assigns the customer to the vehicle that can accommodate the largest delivery, with the quantity limited by that vehicle's residual capacity and the customer's remaining inventory capacity. It then updates the customer's inventory trajectory and continues until no customer stockout remains. If a customer faces stockout even when the customer is visited in every period, then no feasible schedule exists for that customer. In this case, the instance is infeasible. The procedure returns an empty solution, and the \hyperref[alg:MSILS]{MSILS} is terminated. 
+
+Let $P_{t,r} \subseteq N'$ denote the subset of customers in priority group $t\in T$ and subregion $r\in R$. The pseudocode, \hyperref[alg:InitialSchedule]{Construct Initial Solution}, summarises the procedure.
 
 
 \begin{algorithm}[H]
@@ -775,11 +746,11 @@ Let $P_{\rho,r} \subseteq N'$ denote the subset of customers in priority group $
 \begin{algorithmic}[1]
 \STATE initialise solution $s$ \label{Initialise s} 
 \STATE partition customers by priority and distance to depot
-\FOR{$\rho \in T$ \AND $r\in R$}
-    \WHILE{$P_{\rho,r}\neq [\hspace{0.1cm}]$}
-        \STATE randomly choose a customer $i$ from $P_{\rho,r}$
+\FOR{$t \in T$ \AND $r\in R$}
+    \WHILE{$P_{t,r}\neq [\hspace{0.1cm}]$}
+        \STATE randomly choose a customer $i$ from $P_{t,r}$
         \STATE $t_{current}\gets 1$
-        \WHILE{ $\{t\in T: I_{i,t}(s)-\mu_{i,t}(s) <0\} \neq [\hspace{0.1cm}]$}
+        \WHILE{ $\{\hat{t}\in T: I_{i,\hat{t}}(s)-\mu_{i,\hat{t}}(s) <0\} \neq [\hspace{0.1cm}]$}
             \STATE $t_{stockout}\gets \min\{t\in T: I_{i,t}(s)-\mu_{i,t}(s) <0\}$
             \STATE $t_{assign}\gets$ \hyperref[alg:FindVisitTime]{Find Feasible Visit Time} ($t_{current}, t_{stockout}, i$)
             \STATE $(k,q)\gets $ \hyperref[alg:FindVehicleToDeliverMax]{Find Vehicle To Deliver Max}($t_{assign}, i, s$)            
@@ -791,12 +762,13 @@ Let $P_{\rho,r} \subseteq N'$ denote the subset of customers in priority group $
         \STATE $P_{t,r}\gets P_{t,r}\setminus i$
     \ENDWHILE
 \ENDFOR
-\STATE $s\gets $
+\STATE $s\gets $nearest\_neighbour\_insertion$(s)$
 \RETURN $s$ 
 \end{algorithmic}
 \end{algorithm}
 
-The heuristic constructs a feasible solution by iteratively inserting customer visits and delivery quantities until there are no more stockouts. More specifically, for each subset $P_{\rho,r}$, the heuristic randomly selects a customer $i$ and repeatedly resolves its earliest remaining stockout. At each iteration, $t_{stockout}$ is set to the first period in which $I_{i,t}(s)-\mu_{i,t}(s)<0$. Then, the heuristic determines a suitable visit period $t_{assign}$ by \hyperref[alg:FindVisitTime]{Find Feasible Visit Time} and determines a suitable visit vehicle $k$ and delivery quantity $q$ by \hyperref[alg:FindVehicleToDeliverMax]{Find Vehicle To Deliver Max}. The resulting net inventory levels are updated according to \eqref{initial I0} and \eqref{Initial I1}. The process continues until no stockout remains for this customer. Then, this customer is removed from the current subset. After customers in every subset $P_{\rho,r}$ have been processed, the output solution $s$ is returned to \hyperref[alg:MSILS]{MSILS}. If a customer still experiences a stockout even when visited in every period of the planning horizon, then no feasible schedule exists for that customer. In this case, the instance is infeasible. The procedure returns an empty solution, and the \hyperref[alg:MSILS]{MSILS} is terminated. 
+
+After the schedule has been constructed, a nearest-neighbour insertion \cite{braysy2005vehicle} is applied independently to each vehicle's route in each period. It starts with the customer nearest to the depot. At each subsequent step, it selects the unvisited customer closest to the current tour and inserts that customer in the position that yields the smallest increase in the length of the closed route. The resulting solution is then returned to \hyperref[alg:MSILS]{MSILS}.
 
 
 
@@ -908,7 +880,7 @@ In addition to the rebalance procedure described above, an alternative \hyperref
 \subsection{Perturbation} \label{sec:perturbation}
 
 
-The perturbation procedure is a diversification mechanism designed to help the \hyperref[alg:MSILS]{MSILS} escape local optima. It randomly removes two or more adjacent customers from a route together with their associated delivery quantities, after which inventory levels and subsequent deliveries are updated accordingly. The number of removals is determined by $1+\lfloor\frac{|K|\times it}{Max_{it}}\rfloor$, where $it$ is the number of consecutive non-improving iterations, $Max_{it}$ is the maximum number of consecutive non-improving iterations allowed, and $|K|$ is the number of vehicles available in a period. Hence, the perturbation strength increases progressively. This adaptive strategy allows the algorithm to balance intensification and diversification by exploring increasingly distant regions of the solution space when improvements become difficult to obtain. The resulting perturbed solution serves as the starting point for the next local search iteration. Since the removals typically induce stockouts, the perturbed solution is generally infeasible for the original problem. However, allowing such infeasibility enables the search to traverse infeasible regions of the solution space and escape deep local optima. Feasibility is subsequently restored during the local search.
+The perturbation procedure is a diversification mechanism designed to help the \hyperref[alg:MSILS]{MSILS} escape local optima. It randomly removes two or more adjacent customers from a route together with their associated delivery quantities, after which inventory levels and subsequent deliveries are updated accordingly. The number of removals is determined by $1+\lfloor\frac{\theta \times it}{Max_{it}}\rfloor$, where $it$ is the number of consecutive non-improving iterations, $Max_{it}$ is the maximum number of consecutive non-improving iterations allowed, and $\theta$ is a parameter handling the disturbance strength. Hence, the perturbation strength increases progressively as $it$ increases. This adaptive strategy allows the algorithm to balance intensification and diversification by exploring increasingly distant regions of the solution space when improvements become difficult to obtain. The resulting perturbed solution serves as the starting point for the next local search iteration. Since the removals typically induce stockouts, the perturbed solution is generally infeasible for the original problem. However, allowing such infeasibility enables the search to traverse infeasible regions of the solution space and escape deep local optima. Feasibility is subsequently restored during the local search.
 
 
 \section{Computational experiments} \label{sec: computational experiements}
@@ -932,9 +904,7 @@ Also noting, two instances were excluded from the study due to infeasibility. Th
 For reproducibility, all benchmark instances used in the computational experiments are publicly 
 available at \url{https://github.com/AndyElhamSarang/IRP_instances.git}.
 
-
-\subsection{Impact on the performance of individual mechanisms in \hyperref[alg:MSILS]{MSILS} and parameter tuning} \label{sec: tuning}
-
+\subsection{Parameter calibrations}
 
 
 The parameters for the \hyperref[alg:MSILS]{MSILS} are set to the values listed in Table \ref{default parameters}. These values were determined from preliminary experiments.
@@ -943,50 +913,30 @@ The parameters for the \hyperref[alg:MSILS]{MSILS} are set to the values listed 
 \caption{Default values of parameters}
 \label{default parameters}
 \centering
-\begin{tabular}{ p{2cm}p{5cm}p{7cm}}
+\begin{tabular}{ p{2cm}p{8cm}p{5cm}}
 \toprule%
-\textbf{Parameters} & \textbf{Recommended Value} &\textbf{Tested Range} \tabularnewline
+\textbf{Parameters} & \textbf{Definition} &\textbf{Tested Range} \tabularnewline
 \hline
-$d_{\min}$&2& $\{1,2,3,4,5\}$ \tabularnewline
-$d_{\max}$&1& $\{0,1,2,5\}$ \tabularnewline
-$Max_{restart}$ & 3 & \{1,3,5,10,20\} \tabularnewline
-$U$ & $5$ & \{ 1,5,10,30,50\}\tabularnewline
-$\kappa$ & $1.0$ & \{ 0.5,0.75,1.0,1.5,2.0\}\tabularnewline 
-$\eta'$ & $5$ & \{ 1,3,5,10,20\} \tabularnewline
-$Max_{it}$ & $\theta \times (|N'| + \sigma \times |T| + \phi \times |K|)$ & Maximum permissible number of consecutive iterations without improvement. \tabularnewline
-$\theta$ & $3$ & Is redundant should be removed. \tabularnewline
-$\sigma$ & $10$ &\{ 5,7,10,15,20\}. \tabularnewline
-$\phi$ & $8$ & \{ 5,6,7,8,9,10,15,20\}. \tabularnewline
-Disturb strength & $5$ & \{1,2,4,5,7,9,10\}\tabularnewline
+$d_{\min}$&  Minimum grid resolution in initial solution construction & $\{1,\underline{\textbf{2}},3,4,5\}$ \tabularnewline
+$d_{\max}$&  Maximum grid resolution in initial solution construction & $\{2,\underline{\textbf{3}},4,7\}$ \tabularnewline
+$Max_{restart}$ &  Number of initial starting solutions & \{1,\underline{\textbf{3}},5,10,20\} \{3,4,\underline{\textbf{5}},6,7,8,9\} \tabularnewline
+$\eta$ & Scalor for updating the Lagrange multiplier $\alpha$ & \{ 1,3,\underline{\textbf{5}},10,20,100000\} \tabularnewline
+$\sigma$ & Weight parameters on number of time periods to compute the maximum permissible number of consecutive iterations without improvement from the ILS &\{ 5,7,\underline{\textbf{10}},15,20\}\{\underline{\textbf{1}},2,3,4,5,6,8,10,12\} \tabularnewline
+$\phi$ &  Weight parameters on number of vehicles to compute the maximum permissible number of consecutive iterations without improvement from the ILS& \{ 5,6,7,\underline{\textbf{8}},9,10,15,20\}\{8,\underline{\textbf{9}},10,11,12\} \tabularnewline
+$\theta$ & Disturbance strength & \{1,\underline{\textbf{2}},4,5,7,9,10\}\tabularnewline
 \hline
 \end{tabular}
 \end{table}
 
+% $U$ & $5$ & \{ 1,\underline{\textbf{5}},10,30,50\}\tabularnewline
+% $\kappa$ & $1.0$ & \{ 0.5,0.75,1.0,1.5,2.0\}\tabularnewline 
 
 % $Max_{it}$ & $\theta \times (|N'| + \sigma \times |T| + \phi \times |K|)$
 
-$\theta$ = $3$ 
-$\sigma$= $10$
-$\phi$ = $10$ 
-\begin{table}[H]
-\caption{Summary of \hyperref[alg:MSILS]{MSILS} parameters}
-\label{default parameters}
-\centering
-\begin{tabular}{ p{2cm}p{9cm}}
-\toprule%
-\textbf{Parameters}  &\textbf{Definition} \tabularnewline
-\hline
-$d_{\min}$& Minimum grid resolution in initial solution construction. \tabularnewline
-$d_{\max}$& Increment defining the maximum possible grid resolution in initial solution construction. \tabularnewline
-$Max_{restart}$  & Number of initial solutions. \tabularnewline
-$U$  & Number that triggers the adjustment of the scalar $\eta$.\tabularnewline
-$\kappa$  & The parameter for updaing the scalar $\eta$.\tabularnewline 
-$\eta'$  & Initial value of $\eta$. \tabularnewline
-$Max_{it}$  & Maximum permissible number of consecutive iterations without improvement. \tabularnewline
-$\theta, \sigma, \phi$  & Parameters to compute $Max_{it}$. \tabularnewline
-\hline
-\end{tabular}
-\end{table}
+
+\subsection{Impact on the performance of individual mechanisms in \hyperref[alg:MSILS]{MSILS} and parameter tuning} \label{sec: tuning}
+
+
 The proposed \hyperref[alg:MSILS]{MSILS} has several key components, including an application of the Lagrangian relaxation technique, the rebalance procedure, and the disturbance procedure. This section examines the performance gain from utilising each of these components. Four variants have been derived from the \hyperref[alg:MSILS]{MSILS}. Each variant deactivates or modifies a specific component. Table \ref{Variants of MSILS} summarises each variant.
 
 \begin{table}\small
@@ -999,10 +949,11 @@ The proposed \hyperref[alg:MSILS]{MSILS} has several key components, including a
 \hline
 
 \hyperref[alg:MSILS]{MSILS}& Full algorithm described in Section \ref{sec: alg}.  \tabularnewline
-$\cancel{L}$ & Instead of initialise $\alpha$ as line \ref{LS:initialise alpha} in \hyperref[alg:MSILS]{MSILS}, $\alpha$ is set to 100000.\tabularnewline
 $\cancel{R}$ & Deactivating the \hyperref[alg:rebalance]{Rebalance} Procedure at line \ref{run rebalance} in \hyperref[alg:MSILS]{MSILS}. \tabularnewline
 $D\&R$ & Instead of using the \hyperref[alg:rebalance]{Rebalance} Procedure described in Section \ref{sec:rebalance}, line \ref{run rebalance} uses the \hyperref[alg: destroy and rebalance]{Destory\_And\_Rebalance} procedure described in Appendix~\ref{sec: rebalance without feasibility}\tabularnewline
 $\cancel{D}$ & Deactivating the First-stage DISTURB from the procedure Perturbation. \tabularnewline
+MSILS-HGS& MSILS with HGS, with the time required for the HGS excluded from the time limit.\tabularnewline
+MSILS-Initial-Alt& Use constructive heuristics in \cite{alvarez2018iterated} to construct the initial feasible solution. \tabularnewline
 \hline
 \end{tabular}
 \end{table}
@@ -1049,7 +1000,7 @@ Average & -11.06 & -7.37 & -7.38 & -6.18 & -8.00 \\
 \end{table}
 
 
-\subsection{\hyperref[alg:MSILS]{MSILS} with HGS} \label{comparions with HGS}
+\subsection{Robustness} \label{Robustness}
 
 \appendix
 

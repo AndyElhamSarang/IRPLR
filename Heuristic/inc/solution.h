@@ -15,6 +15,7 @@ public:
   vector<vector<double>> DeliveryQuantity; //Main decision
   vector<vector<double>> InventoryLevel;
   vector<double> InventoryLevelSupplier;
+  vector<double> SupplierDeliverySlack;
   vector<vector<int>> VehicleAllocation;
   vector<vector<int>> VisitOrder;
   vector<double> StockOutPerCustomer;
@@ -34,6 +35,7 @@ public:
   void UpdateVehicleAllocationVisitOrderForRemoval(input &IRPLR, int &day, int &vehicle);
   void print_solution(input &IRPLR);
   void GetLogisticRatio(input &IRPLR);
+  void UpdateSupplierInventory(input &IRPLR);
   double GetTransCostSingleRoute(/*int route, int head, int tail, int insert_length, vector<int> &Input_route, data &wsrp, proprecessing &memory*/);
   void Validation(input &IRPLR);
 

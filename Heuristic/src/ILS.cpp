@@ -1,5 +1,5 @@
 #include "lib.h"
-void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, file &read_file, int &MS_ITERATION)
+void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, vector<solution> &TimeCheckpointSolutions, file &read_file, int &MS_ITERATION)
 {
     cout << "//////////////////////////////////////" << endl;
     cout << "//   Start Iterated Local Search    //" << endl;
@@ -68,7 +68,7 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "Start Local Search, iteration " << LocalSearchCounter << ", with Disturbance Counter: " << DisturbanceCounter << endl;
             cout << "---------------------------------------------" << endl;
 
-            ImprovedLocalSearch(IRPLR, IRPSolution, ScalarLagrangianRelaxation, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+            ImprovedLocalSearch(IRPLR, IRPSolution, ScalarLagrangianRelaxation, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, TimeCheckpointSolutions, DisturbanceCounter, RunHGSAtEnd);
             // LocalSearch(IRPLR, IRPSolution, ScalarLagrangianRelaxation, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s,IRPSolution60s);
             time(&LocalSearch_end_time);
             double total_LocalSearch_time = difftime(LocalSearch_end_time, LocalSearch_start_time);
@@ -415,6 +415,27 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
     catch (int time_limit_reached)
     {
         cout << "!Stop by time limit" << endl;
+    }
+    time(&total_end_time);
+    const double totalElapsedTime = difftime(total_end_time, total_start_time);
+    for (size_t checkpointIndex = 0; checkpointIndex < TimeCheckpointSolutions.size(); ++checkpointIndex)
+    {
+        const double checkpointTime = static_cast<double>((checkpointIndex + 1) * 30);
+        if (totalElapsedTime >= checkpointTime && TimeCheckpointSolutions[checkpointIndex].solution_time < 0)
+        {
+            TimeCheckpointSolutions[checkpointIndex] = GlobalBest;
+            TimeCheckpointSolutions[checkpointIndex].solution_time = totalElapsedTime;
+            if (checkpointIndex == 0)
+            {
+                IRPSolution30s = TimeCheckpointSolutions[checkpointIndex];
+                whether_results_reported_30 = true;
+            }
+            else if (checkpointIndex == 1)
+            {
+                IRPSolution60s = TimeCheckpointSolutions[checkpointIndex];
+                whether_results_reported_60 = true;
+            }
+        }
     }
     if (OutputSolutionJSON == "YES")
     {

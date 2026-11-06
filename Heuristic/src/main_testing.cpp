@@ -31,6 +31,7 @@ string OutputSolutionJSON;
 // Parameters
 int NumberOfInitialSolutions = 0;
 int NumberOfExperiments = 0;
+string InitialSolutionMethod = "Initial_BlockZone_Schedule";
 string AllowLagrangianRelaxation;
 string TypeOfRebalance;
 double InitialLagrangianScalar = 0;
@@ -157,7 +158,12 @@ int main()
 				Table << ",InitialCost,InitialQuantity,InitialLogisticRatio,T_InitialSchedule,InitialCostAfterHGS,InitialQuantityAfterHGS,InitialLogisticRatioAfterHGS,InitialTimeForHGS,T_InitialSolution,NumberOfRebalance,NumberOfFeasibleRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,RebalanceMaxPercentageImprovement,RebalanceMinPercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,BestCostAfterHGS,BestQuantityAfterHGS,BestLogisticRatioAfterHGS,TimeForHGS,Time";
 			}
 
-			Table << ",FirstImpCost,FirstImpQuantity,FirstImpLogisticRatio,TimeAtFirstImprovement,BestCostAt30s,BestQuantityAt30s,BestLogisticRatioAt30s,TimeAt30s,BestCostAt60s,BestQuantityAt60s,BestLogisticRatioAt60s,TimeAt60s,GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_iteration,T_To_best,T_total_for_HGS,T_Total\n";
+			Table << ",FirstImpCost,FirstImpQuantity,FirstImpLogisticRatio,TimeAtFirstImprovement";
+			for (int checkpoint = 30; checkpoint <= MainAlgorithmTimeLimit; checkpoint += 30)
+			{
+				Table << ",BestCostAt" << checkpoint << "s,BestQuantityAt" << checkpoint << "s,BestLogisticRatioAt" << checkpoint << "s,TimeAt" << checkpoint << "s";
+			}
+			Table << ",GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_iteration,T_To_best,T_total_for_HGS,T_Total\n";
 		}
 
 		for (int i = 0; i < read_file.instances.size(); i++)
@@ -208,6 +214,13 @@ int main()
 				solution FirstImprovementSolution;
 				solution IRPSolution30s;
 				solution IRPSolution60s;
+				vector<solution> TimeCheckpointSolutions;
+				for (int checkpoint = 30; checkpoint <= MainAlgorithmTimeLimit; checkpoint += 30)
+				{
+					solution checkpointSolution;
+					checkpointSolution.solution_time = -1;
+					TimeCheckpointSolutions.push_back(checkpointSolution);
+				}
 
 				whether_results_reported_30 = false;
 				whether_results_reported_60 = false;
@@ -243,7 +256,7 @@ int main()
 					// generator.seed(static_cast<unsigned int>(time(0)));
 					solution_improvement Metaheuristic;
 					// Metaheuristic.LargeNeighbourhoodSearch(IRPLR, IRPSolution, Routing, memory); //Previously tested code.
-					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, read_file, j);
+					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, TimeCheckpointSolutions, read_file, j);
 				}
 				time(&total_end_time);
 				double accum_time = difftime(total_end_time, total_start_time);
@@ -266,21 +279,10 @@ int main()
 				{
 					Table << FirstImprovementSolution.TotalTransportationCost << "," << FirstImprovementSolution.TotalDelivery << "," << FirstImprovementSolution.LogisticRatio << "," << FirstImprovementSolution.solution_time << ",";
 				}
-				if (whether_results_reported_30 == false)
+				for (const solution &checkpointSolution : TimeCheckpointSolutions)
 				{
-					Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << GlobalBest.solution_time << ",";
-				}
-				else
-				{
-					Table << IRPSolution30s.TotalTransportationCost << "," << IRPSolution30s.TotalDelivery << "," << IRPSolution30s.LogisticRatio << "," << IRPSolution30s.solution_time << ",";
-				}
-				if (whether_results_reported_60 == false)
-				{
-					Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << GlobalBest.solution_time << ",";
-				}
-				else
-				{
-					Table << IRPSolution60s.TotalTransportationCost << "," << IRPSolution60s.TotalDelivery << "," << IRPSolution60s.LogisticRatio << "," << IRPSolution60s.solution_time << ",";
+					const solution &reportedSolution = checkpointSolution.solution_time < 0 ? GlobalBest : checkpointSolution;
+					Table << reportedSolution.TotalTransportationCost << "," << reportedSolution.TotalDelivery << "," << reportedSolution.LogisticRatio << "," << reportedSolution.solution_time << ",";
 				}
 				if (OutputResults == 1)
 				{

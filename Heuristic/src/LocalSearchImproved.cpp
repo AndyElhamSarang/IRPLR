@@ -23,21 +23,24 @@ void RecordSolution(solution &IRPSolution, solution &SolutionToRecord, double &t
     IRPSolution.LogisticRatio = SolutionToRecord.LogisticRatio;
     IRPSolution.solution_time = time_stamp;
 }
-void RecordSolution_First_30s_60s(input &IRPLR, solution &IRPSolution, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, int &DisturbanceCounter, bool &RunHGSAtEnd)
+void RecordTimedSolutions(input &IRPLR, solution &IRPSolution, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, vector<solution> &TimeCheckpointSolutions, int &DisturbanceCounter, bool &RunHGSAtEnd)
 {
-
     time(&total_end_time);
     double accum_time = difftime(total_end_time, total_start_time);
 
-    ////////////////////////////////////////////////
-    //                                            //
-    //     Report Global Best Solution at 30s     //
-    //                                            //
-    ////////////////////////////////////////////////
-    // cout << "Accumulated time: " << accum_time << "s." << endl;
-    if (accum_time > 29 && whether_results_reported_30 == false)
+    bool checkpointDue = false;
+    for (size_t checkpointIndex = 0; checkpointIndex < TimeCheckpointSolutions.size(); ++checkpointIndex)
     {
-        cout << "30s time point reached." << endl;
+        const double checkpointTime = static_cast<double>((checkpointIndex + 1) * 30);
+        if (accum_time >= checkpointTime && TimeCheckpointSolutions[checkpointIndex].solution_time < 0)
+        {
+            checkpointDue = true;
+            break;
+        }
+    }
+
+    if (checkpointDue)
+    {
         IRPSolution.GetLogisticRatio(IRPLR);
         if (fabs(IRPSolution.ViolationStockOut - 0) < 0.00001)
         {
@@ -53,38 +56,26 @@ void RecordSolution_First_30s_60s(input &IRPLR, solution &IRPSolution, solution 
                 }
             }
         }
-        whether_results_reported_30 = true;
-        RecordSolution(IRPSolution30s, GlobalBest, accum_time);
-    }
 
-    ////////////////////////////////////////////////
-    //                                            //
-    //     Report Global Best Solution at 60s     //
-    //                                            //
-    ////////////////////////////////////////////////
-    if (accum_time > 59 && whether_results_reported_60 == false)
-    {
-        cout << "60s time point reached." << endl;
-        IRPSolution.GetLogisticRatio(IRPLR);
-
-        if (fabs(IRPSolution.ViolationStockOut - 0) < 0.00001)
+        for (size_t checkpointIndex = 0; checkpointIndex < TimeCheckpointSolutions.size(); ++checkpointIndex)
         {
-            if (fabs(IRPSolution.ViolationMoreThanCapacity - 0) < 0.00001)
+            const double checkpointTime = static_cast<double>((checkpointIndex + 1) * 30);
+            if (accum_time >= checkpointTime && TimeCheckpointSolutions[checkpointIndex].solution_time < 0)
             {
-                assert(IRPSolution.ViolationStockOut >= -0.00001);
-                assert(IRPSolution.ViolationMoreThanCapacity >= -0.00001);
-                if (GlobalBest.LogisticRatio - IRPSolution.LogisticRatio > 0.00001)
+                cout << checkpointTime << "s time point reached." << endl;
+                RecordSolution(TimeCheckpointSolutions[checkpointIndex], GlobalBest, accum_time);
+                if (checkpointIndex == 0)
                 {
-
-                    RecordSolution(GlobalBest, IRPSolution, accum_time);
-                    RunHGSAtEnd = true;
-                    DisturbanceCounter = 0;
+                    whether_results_reported_30 = true;
+                    RecordSolution(IRPSolution30s, GlobalBest, accum_time);
+                }
+                else if (checkpointIndex == 1)
+                {
+                    whether_results_reported_60 = true;
+                    RecordSolution(IRPSolution60s, GlobalBest, accum_time);
                 }
             }
         }
-
-        whether_results_reported_60 = true;
-        RecordSolution(IRPSolution60s, GlobalBest, accum_time);
     }
 
     if (whether_results_reported_first_improvement == false)
@@ -111,9 +102,10 @@ void RecordSolution_First_30s_60s(input &IRPLR, solution &IRPSolution, solution 
     }
 }
 
-int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &ScalarLagrangianRelaxation, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, int &DisturbanceCounter, bool &RunHGSAtEnd)
+int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &ScalarLagrangianRelaxation, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, vector<solution> &TimeCheckpointSolutions, int &DisturbanceCounter, bool &RunHGSAtEnd)
 {
     int whether_improved_via_local_search = 0;
+    IRPSolution.UpdateSupplierInventory(IRPLR);
     memory.PopulatePrefixAndSuffix(IRPLR, IRPSolution);
     IRPSolution.GetLogisticRatio(IRPLR);
     memory.PopulateQuantityStructure(IRPLR, IRPSolution);
@@ -234,6 +226,10 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     min_shift2,
                     max_shift2);
                 }
+                if (whether_improved == 1)
+                {
+                    IRPSolution.UpdateSupplierInventory(IRPLR);
+                }
                 // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, temp_global_best_logistic_ratio, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
@@ -241,7 +237,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 }
                 // IRPSolution.Validation(IRPLR);
                 memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
-                RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+                RecordTimedSolutions(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, TimeCheckpointSolutions, DisturbanceCounter, RunHGSAtEnd);
 
                 if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
                 {
@@ -341,6 +337,10 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     max_shift2);
                 }
                 
+                if (whether_improved == 1)
+                {
+                    IRPSolution.UpdateSupplierInventory(IRPLR);
+                }
                 
                 // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, temp_global_best_logistic_ratio, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
@@ -349,7 +349,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 }
                 // IRPSolution.Validation(IRPLR);
                 memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
-                RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+                RecordTimedSolutions(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, TimeCheckpointSolutions, DisturbanceCounter, RunHGSAtEnd);
                 // cout << "Logistic Ratio: " << IRPSolution.LogisticRatio << endl;
                 if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
                 {
@@ -425,6 +425,10 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     PenaltyMoreThanCapacity,
                     TransferDetails,
                     memory);
+                if (whether_improved == 1)
+                {
+                    IRPSolution.UpdateSupplierInventory(IRPLR);
+                }
                 // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, temp_global_best_logistic_ratio, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
@@ -432,7 +436,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                 }
 
                 memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
-                RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+                RecordTimedSolutions(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, TimeCheckpointSolutions, DisturbanceCounter, RunHGSAtEnd);
 
                 if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
                 {
@@ -475,6 +479,10 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             {
                 ThrowIfLocalSearchTimeLimitReached();
                 whether_improved = OperatorSwapRemoveInsert(IRPLR, IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, memory, SwapRemoveInsertPair, min_remove_length, max_remove_length, min_insert_length, max_insert_length);
+                if (whether_improved == 1)
+                {
+                    IRPSolution.UpdateSupplierInventory(IRPLR);
+                }
                 // InitialiseUpdateLagrangianMultipler(IRPSolution, PenaltyForStockOut, PenaltyMoreThanCapacity, temp_global_best_logistic_ratio, ScalarLagrangianRelaxation);
                 if (whether_improved == 1)
                 {
@@ -482,7 +490,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     true_local = 0;
                 }
                 memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
-                RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+                RecordTimedSolutions(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, TimeCheckpointSolutions, DisturbanceCounter, RunHGSAtEnd);
 
                 // IRPSolution.Validation(IRPLR);
                 if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
@@ -512,7 +520,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
             //         whether_improved_via_Repair = true;
             //         true_local = 0;
             //     }
-            //     RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+            //     RecordTimedSolutions(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, TimeCheckpointSolutions, DisturbanceCounter, RunHGSAtEnd);
 
             //     // IRPSolution.Validation(IRPLR);
             //     if (IRPSolution.ViolationStockOut < 0.00001 && IRPSolution.ViolationMoreThanCapacity < 0.00001)
@@ -596,7 +604,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                                 true_local = 0;
                             }
                             memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
-                            RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+                            RecordTimedSolutions(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, TimeCheckpointSolutions, DisturbanceCounter, RunHGSAtEnd);
                         }
                         memory.TrackSingleRouteOptimisation[day][vehicle] = 0;
                         counter++;
@@ -612,7 +620,7 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
     catch (int time_limit_reached)
     {
         cout << "!Stop by time limit" << endl;
-        RecordSolution_First_30s_60s(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, DisturbanceCounter, RunHGSAtEnd);
+        RecordTimedSolutions(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, TimeCheckpointSolutions, DisturbanceCounter, RunHGSAtEnd);
     }
     return whether_improved_via_local_search;
 }

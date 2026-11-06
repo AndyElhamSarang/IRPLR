@@ -21,6 +21,34 @@ void NoStockOutAtDepot(input &IRPLR, solution &IRPSolution)
     }
     cout << "Check passed!" << endl;
 }
+
+void solution::UpdateSupplierInventory(input &IRPLR)
+{
+    TotalDeliveryPerDay.assign(IRPLR.TimeHorizon, 0.0);
+    InventoryLevelSupplier.assign(IRPLR.TimeHorizon, 0.0);
+    SupplierDeliverySlack.assign(IRPLR.TimeHorizon, 0.0);
+    StockoutSupplier = 0.0;
+
+    double supplierInventory = IRPLR.Supplier.InventoryBegin;
+    for (int day = 0; day < IRPLR.TimeHorizon; ++day)
+    {
+        for (size_t customer = 0; customer < DeliveryQuantity.size(); ++customer)
+        {
+            TotalDeliveryPerDay[day] += DeliveryQuantity[customer][day];
+        }
+        supplierInventory += IRPLR.Supplier.QuantityProduced - TotalDeliveryPerDay[day];
+        InventoryLevelSupplier[day] = supplierInventory;
+        StockoutSupplier += max(0.0, -supplierInventory);
+    }
+
+    double minimumSupplierInventory = numeric_limits<double>::infinity();
+    for (int day = IRPLR.TimeHorizon - 1; day >= 0; --day)
+    {
+        minimumSupplierInventory = min(minimumSupplierInventory, InventoryLevelSupplier[day]);
+        SupplierDeliverySlack[day] = max(0.0, minimumSupplierInventory);
+    }
+}
+
 void ComputeCorrectObjv()
 {}
 void CustomerVisitedAtMostOncePerPeriod(input &IRPLR, solution &IRPSolution)

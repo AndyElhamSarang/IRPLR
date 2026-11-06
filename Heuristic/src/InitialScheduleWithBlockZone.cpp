@@ -15,12 +15,35 @@
   - Iteratively assign retailers (random selection within zone) to feasible periods
     and vehicles, updating delivery quantities, vehicle loads and retailer inventories.
 */
-double InitialDeliveryMax(double &VehicleCapacity, double &VehicleLoad, double &InventoryMax, double &PreviousInventoryLevel)
+double InitialSupplierDeliverySlack(const vector<double> &SupplierDeliverySlack, int day)
+{
+    assert(day >= 0 && day < static_cast<int>(SupplierDeliverySlack.size()));
+    return SupplierDeliverySlack[day];
+}
+
+void UpdateSupplierInventory(input &IRPLR, const vector<double> &TotalDeliveryPerDay, vector<double> &InventoryLevelSupplier, vector<double> &SupplierDeliverySlack)
+{
+    double supplierInventory = IRPLR.Supplier.InventoryBegin;
+    for (int day = 0; day < static_cast<int>(InventoryLevelSupplier.size()); day++)
+    {
+        supplierInventory += IRPLR.Supplier.QuantityProduced - TotalDeliveryPerDay[day];
+        InventoryLevelSupplier[day] = supplierInventory;
+    }
+
+    double minimumSupplierInventory = numeric_limits<double>::infinity();
+    for (int day = static_cast<int>(InventoryLevelSupplier.size()) - 1; day >= 0; --day)
+    {
+        minimumSupplierInventory = min(minimumSupplierInventory, InventoryLevelSupplier[day]);
+        SupplierDeliverySlack[day] = max(0.0, minimumSupplierInventory);
+    }
+}
+
+double InitialDeliveryMax(double &VehicleCapacity, double &VehicleLoad, double &InventoryMax, double &PreviousInventoryLevel, const double &SupplierAvailability)
 {
     // assert(VehicleCapacity - VehicleLoad > -0.00001);
     // assert(InventoryMax - PreviousInventoryLevel > -0.00001);
     // cout<<"VehicleCapacity: "<<VehicleCapacity<<", VehicleLoad: "<<VehicleLoad<<", InventoryMax: "<<InventoryMax<<", CustomerDemand: "<<CustomerDemand<<", PreviousInventoryLevel: "<<PreviousInventoryLevel<<endl;
-    return max(0.0, min<double>(VehicleCapacity - VehicleLoad, InventoryMax - PreviousInventoryLevel));
+    return max(0.0, min<double>(SupplierAvailability, min<double>(VehicleCapacity - VehicleLoad, InventoryMax - PreviousInventoryLevel)));
 }
 void InitialAdjustQuantityAndInventoryLevel(
     double &previous_inventory_level,
@@ -29,6 +52,9 @@ void InitialAdjustQuantityAndInventoryLevel(
     vector<double> &DeliveryQuantity,
     vector<double> &InventoryLevel,
     vector<vector<double>> &VehicleLoad,
+    vector<double> &TotalDeliveryPerDay,
+    vector<double> &InventoryLevelSupplier,
+    vector<double> &SupplierDeliverySlack,
     vector<vector<int>> &VehicleAllocation,
     int &customer_index,
     input &IRPLR)
@@ -48,8 +74,10 @@ void InitialAdjustQuantityAndInventoryLevel(
         DeliveryQuantity[day] = DeliveryQuantity[day] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
         ChangeInTotalQuantity = ChangeInTotalQuantity - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
         VehicleLoad[day][vehicle] = VehicleLoad[day][vehicle] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
+        TotalDeliveryPerDay[day] = TotalDeliveryPerDay[day] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
         CurrentInventoryLevel = CurrentInventoryLevel - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
     }
+    UpdateSupplierInventory(IRPLR, TotalDeliveryPerDay, InventoryLevelSupplier, SupplierDeliverySlack);
 
     // if (fabs(InventoryLevel[day] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
     // {
@@ -88,9 +116,11 @@ void InitialAdjustQuantityAndInventoryLevel(
     for (int y = day + 1; y < DeliveryQuantity.size(); y++)
     {
         // cout<<"y:"<<y<<","<<DeliveryQuantity.size()<<endl;
+        bool supplierInventoryChanged = false;
         if (DeliveryQuantity[y] != 0) // If true means I am visiting. The algorithm assume if it is visited the delilivery quantity is positive
         {
-            double DeltaQ = InitialDeliveryMax(IRPLR.Vehicle.capacity, VehicleLoad[y][VehicleAllocation[customer_index][y]], IRPLR.Retailers[customer_index].InventoryMax, CurrentInventoryLevel);
+            double supplierAvailability = InitialSupplierDeliverySlack(SupplierDeliverySlack, y);
+            double DeltaQ = InitialDeliveryMax(IRPLR.Vehicle.capacity, VehicleLoad[y][VehicleAllocation[customer_index][y]], IRPLR.Retailers[customer_index].InventoryMax, CurrentInventoryLevel, supplierAvailability);
             if (DeltaQ > 0)
             {
                 int allocVeh = VehicleAllocation[customer_index][y];
@@ -98,6 +128,8 @@ void InitialAdjustQuantityAndInventoryLevel(
                 DeliveryQuantity[y] += DeltaQ;
                 ChangeInTotalQuantity += DeltaQ;
                 VehicleLoad[y][allocVeh] += DeltaQ;
+                TotalDeliveryPerDay[y] += DeltaQ;
+                supplierInventoryChanged = true;
             }
         }
         double PreviousInventoryLevel = CurrentInventoryLevel;
@@ -113,7 +145,13 @@ void InitialAdjustQuantityAndInventoryLevel(
             int allocVeh = VehicleAllocation[customer_index][y];
             assert(allocVeh >= 0 && allocVeh < (int)VehicleLoad[y].size());
             VehicleLoad[y][allocVeh] -= delta;
+            TotalDeliveryPerDay[y] -= delta;
+            supplierInventoryChanged = true;
             CurrentInventoryLevel -= delta;
+        }
+        if (supplierInventoryChanged)
+        {
+            UpdateSupplierInventory(IRPLR, TotalDeliveryPerDay, InventoryLevelSupplier, SupplierDeliverySlack);
         }
 
         // if (fabs(InventoryLevel[y] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
@@ -575,7 +613,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 // If total load equals total fleet capacity consider period full
                                 if (fabs(TotalLoad - IRPLR.Vehicle.capacity * IRPLR.NumberOfVehicles) < 0.00001)
                                     VisitedOrNot = 1;
-                                if (VisitedOrNot == 0)
+                                if (VisitedOrNot == 0 && InitialSupplierDeliverySlack(IRPSolution.SupplierDeliverySlack, i) >= 0.00001)
                                     PotentialPeriods.push_back(i);
                             }
 
@@ -612,10 +650,12 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 {
                                     double Load = 0;
                                     int vehicle_index = IRPLR.NumberOfVehicles; // sentinel; gets set to chosen vehicle index
+                                    const double supplierAvailability =
+                                        InitialSupplierDeliverySlack(IRPSolution.SupplierDeliverySlack, RandomPickANonStockOutPeriod);
                                     // Try to find a vehicle with room to deliver up to retailer's capacity (InventoryMax limited by remaining inventory level)
                                     for (int i = 0; i < IRPLR.NumberOfVehicles; i++)
                                     {
-                                        Load = InitialDeliveryMax(IRPLR.Vehicle.capacity, IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][i], IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax, IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1]);
+                                        Load = InitialDeliveryMax(IRPLR.Vehicle.capacity, IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][i], IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax, IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1], supplierAvailability);
 
                                         // cout << "Load: " << Load << ", IRPLR.Vehicle.capacity: " << IRPLR.Vehicle.capacity << ", IRPSolution.VehicleLoad: " << IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][i] << ", IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax: " << IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax << ", IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1]: " << IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1] << endl;
                                          if(Load + IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod - 1] > IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax)
@@ -650,9 +690,11 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                     // Special handling for period 0: inventory baseline is InventoryBegin
                                     double Load = 0;
                                     int vehicle_index = IRPLR.NumberOfVehicles;
+                                    const double supplierAvailability =
+                                        InitialSupplierDeliverySlack(IRPSolution.SupplierDeliverySlack, RandomPickANonStockOutPeriod);
                                     for (int i = 0; i < IRPLR.NumberOfVehicles; i++)
                                     {
-                                        Load = InitialDeliveryMax(IRPLR.Vehicle.capacity, IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][i], IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax, IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin);
+                                        Load = InitialDeliveryMax(IRPLR.Vehicle.capacity, IRPSolution.VehicleLoad[RandomPickANonStockOutPeriod][i], IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax, IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin, supplierAvailability);
 
                                         if (IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][RandomPickANonStockOutPeriod] < Load)
                                         {
@@ -684,6 +726,9 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                                                            IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]],
                                                                            IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]],
                                                                            IRPSolution.VehicleLoad,
+                                                                           IRPSolution.TotalDeliveryPerDay,
+                                                                           IRPSolution.InventoryLevelSupplier,
+                                                                           IRPSolution.SupplierDeliverySlack,
                                                                            IRPSolution.VehicleAllocation,
                                                                            CandidateRetailers[RandomPickARetailer],
                                                                            IRPLR);
@@ -694,12 +739,6 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                     //     IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][i] = tempInventory;
                                     // }
 
-                                    double tempInventorySupplier = IRPLR.Supplier.InventoryBegin;
-                                    for (int i = 0; i < IRPSolution.InventoryLevelSupplier.size(); i++)
-                                    {
-                                        tempInventorySupplier = tempInventorySupplier + IRPLR.Supplier.QuantityProduced - IRPSolution.TotalDeliveryPerDay[i];
-                                        IRPSolution.InventoryLevelSupplier[i] = tempInventorySupplier;
-                                    }
                                 }
 
                                 // Move current period forward after assignment
@@ -744,7 +783,7 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 }
                                 if (fabs(TotalLoad - IRPLR.Vehicle.capacity * IRPLR.NumberOfVehicles) < 0.00001)
                                     VisitedOrNot = 1;
-                                if (VisitedOrNot == 0)
+                                if (VisitedOrNot == 0 && InitialSupplierDeliverySlack(IRPSolution.SupplierDeliverySlack, i) >= 0.00001)
                                 {
                                     // Found a feasible backward period
                                     LookBackwardPeriod = i;
@@ -763,9 +802,11 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                             {
                                 double Load = 0;
                                 int vehicle_index = IRPLR.NumberOfVehicles;
+                                const double supplierAvailability =
+                                    InitialSupplierDeliverySlack(IRPSolution.SupplierDeliverySlack, LookBackwardPeriod);
                                 for (int i = 0; i < IRPLR.NumberOfVehicles; i++)
                                 {
-                                    Load = InitialDeliveryMax(IRPLR.Vehicle.capacity,IRPSolution.VehicleLoad[LookBackwardPeriod][i],IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax,IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod - 1]);
+                                    Load = InitialDeliveryMax(IRPLR.Vehicle.capacity,IRPSolution.VehicleLoad[LookBackwardPeriod][i],IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax,IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod - 1], supplierAvailability);
                                     if (IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] < Load)
                                     {
                                         if(Load + IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod - 1] > IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax)
@@ -789,9 +830,11 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 // Special handling for period 0 using InventoryBegin baseline
                                 double Load = 0;
                                 int vehicle_index = IRPLR.NumberOfVehicles;
+                                const double supplierAvailability =
+                                    InitialSupplierDeliverySlack(IRPSolution.SupplierDeliverySlack, LookBackwardPeriod);
                                 for (int i = 0; i < IRPLR.NumberOfVehicles; i++)
                                 {
-                                    Load = InitialDeliveryMax(IRPLR.Vehicle.capacity, IRPSolution.VehicleLoad[LookBackwardPeriod][i], IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax, IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin);
+                                    Load = InitialDeliveryMax(IRPLR.Vehicle.capacity, IRPSolution.VehicleLoad[LookBackwardPeriod][i], IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryMax, IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin, supplierAvailability);
 
                                     if (IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] < Load)
                                     {
@@ -813,6 +856,9 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                                             IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]],
                                                             IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]],
                                                             IRPSolution.VehicleLoad,
+                                                            IRPSolution.TotalDeliveryPerDay,
+                                                            IRPSolution.InventoryLevelSupplier,
+                                                            IRPSolution.SupplierDeliverySlack,
                                                             IRPSolution.VehicleAllocation,
                                                             CandidateRetailers[RandomPickARetailer],
                                                             IRPLR
@@ -824,14 +870,6 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                             //     tempInventory = tempInventory - IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].Demand + IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]][i];
                             //     IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][i] = tempInventory;
                             // }
-
-                            double tempInventorySupplier = IRPLR.Supplier.InventoryBegin;
-                            for (int i = 0; i < IRPSolution.InventoryLevelSupplier.size(); i++)
-                            {
-
-                                tempInventorySupplier = tempInventorySupplier + IRPLR.Supplier.QuantityProduced - IRPSolution.TotalDeliveryPerDay[i];
-                                IRPSolution.InventoryLevelSupplier[i] = tempInventorySupplier;
-                            }
 
                             CurrentPeriod = LookBackwardPeriod + 1;
                             if (printout_initialSchedule == 1)

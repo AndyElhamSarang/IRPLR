@@ -3,7 +3,7 @@ class solution_improvement
 
 private:
 public:
-    void IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, file &read_file, int &MS_ITERATION);
+    void IteratedLocalSearch(input &IRPLR, solution &IRPSolution, HGS &Routing, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, vector<solution> &TimeCheckpointSolutions, file &read_file, int &MS_ITERATION);
 
     double DeliveryMax(
         double &VehicleCapacity,
@@ -15,6 +15,12 @@ public:
         double &InventoryMax,
         double &CustomerDemand,
         double &PreviousInventoryLevel);
+    double SupplierAvailabilityForCandidateDay(
+        input &IRPLR,
+        solution &IRPSolution,
+        int day,
+        const vector<int> &CandidateCustomers,
+        const vector<vector<double>> &CandidateDeliveryQuantity);
     double DeliverDemand(double &InventoryMax, double &CustomerDemand, double &PreviousInventoryLevel);
     double Calculate_la_relax_objv(
         double &logistic_ratio,
@@ -136,7 +142,7 @@ public:
 
     int LocalSearch(input &IRPLR, solution &IRPSolution, double &PenaltyForStockOut, double &PenaltyMoreThanCapacity, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s);
 
-    int ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &ScalarLagrangianRelaxation, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, int &DisturbanceCounter, bool &RunHGSAtEnd);
+    int ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &ScalarLagrangianRelaxation, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, vector<solution> &TimeCheckpointSolutions, int &DisturbanceCounter, bool &RunHGSAtEnd);
 
     void PrintTempSolution(input &IRPLR,
                            vector<vector<vector<int>>> &Route,

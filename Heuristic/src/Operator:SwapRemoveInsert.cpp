@@ -226,6 +226,22 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                 // cout << "ChangeInTotalQuantity:" << ChangeInTotalQuantity << ", NewStockOut:" << NewStockOut << ", NewVehicleOverload:" << NewVehicleOverload << ", available slack:" << CopyTotalSlackPerDay << endl;
                                             }
 
+                                            vector<int> SupplierCandidateCustomers;
+                                            vector<vector<double>> SupplierCandidateDeliveryQuantity;
+                                            for (int remove_index = 0; remove_index < remove_length; ++remove_index)
+                                            {
+                                                const int customer = IRPSolution.Route[pick_day][pick_vehicle][pick_allocated_position + remove_index];
+                                                SupplierCandidateCustomers.push_back(customer);
+                                                SupplierCandidateDeliveryQuantity.push_back(NewDeliveryQuantityCustomerRemove[remove_index]);
+                                            }
+                                            for (int insert_index = 0; insert_index < insert_length; ++insert_index)
+                                            {
+                                                const int customer = IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index];
+                                                NewDeliveryQuantityCustomerInsert[insert_index][pick_day] = 0.0;
+                                                SupplierCandidateCustomers.push_back(customer);
+                                                SupplierCandidateDeliveryQuantity.push_back(NewDeliveryQuantityCustomerInsert[insert_index]);
+                                            }
+
                                             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                                             // Get change in delivery quantity and inventory level for the inserted customers
                                             for (int insert_index = 0; insert_index < insert_length; insert_index++)
@@ -277,6 +293,22 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                     CopyTotalSlackPerVehicle = CopyTotalSlackPerVehicle - NewDeliveryQuantityCustomerInsert[insert_index][pick_day];
                                                     NewIntroduceNewQuantityOrNotInsert[insert_index] = true;
                                                 }
+                                                const double quantityBeforeSupplierLimit = NewDeliveryQuantityCustomerInsert[insert_index][pick_day];
+                                                NewDeliveryQuantityCustomerInsert[insert_index][pick_day] = min(
+                                                    quantityBeforeSupplierLimit,
+                                                    max(0.0, SupplierAvailabilityForCandidateDay(
+                                                                 IRPLR,
+                                                                 IRPSolution,
+                                                                 pick_day,
+                                                                 SupplierCandidateCustomers,
+                                                                 SupplierCandidateDeliveryQuantity)));
+                                                if (NewIntroduceNewQuantityOrNotInsert[insert_index])
+                                                {
+                                                    CopyTotalSlackPerVehicle +=
+                                                        quantityBeforeSupplierLimit - NewDeliveryQuantityCustomerInsert[insert_index][pick_day];
+                                                }
+                                                SupplierCandidateDeliveryQuantity[remove_length + insert_index] = NewDeliveryQuantityCustomerInsert[insert_index];
+
                                                 if (NewDeliveryQuantityCustomerInsert[insert_index][pick_day] < 0.001)
                                                 {
                                                     Whether_normal_insert_fail = true;
@@ -323,6 +355,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                             IRPSolution.UnallocatedCustomers[pick_day][pick_unallocated_position + insert_index],
                                                             IRPLR);
                                                     }
+                                                    SupplierCandidateDeliveryQuantity[remove_length + insert_index] = NewDeliveryQuantityCustomerInsert[insert_index];
 
                                                     // cout<<"after update CopyVehicleLoad[pick_day][pick_vehicle]:"<<CopyVehicleLoad[pick_day][pick_vehicle]<<", NewVehicleOverload"<<NewVehicleOverload<<endl;
                                                     assert(fabs(checkNewDeliveryQuantityCustomerInsert - NewDeliveryQuantityCustomerInsert[insert_index][pick_day]) < 1e-6);
@@ -376,6 +409,27 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                     //     bool flag = false;
                                                     //     assert(flag);
                                                     // }
+                                                }
+                                            }
+
+                                            if (Whether_normal_insert_fail == false) // If both insert fails, then we do not need to calculate the objective value, because it is infeasible
+                                            {
+                                                for (int remove_index = 0; remove_index < remove_length; ++remove_index)
+                                                {
+                                                    SupplierCandidateDeliveryQuantity[remove_index] = NewDeliveryQuantityCustomerRemove[remove_index];
+                                                }
+                                                for (int insert_index = 0; insert_index < insert_length; ++insert_index)
+                                                {
+                                                    SupplierCandidateDeliveryQuantity[remove_length + insert_index] = NewDeliveryQuantityCustomerInsert[insert_index];
+                                                }
+                                                if (SupplierAvailabilityForCandidateDay(
+                                                        IRPLR,
+                                                        IRPSolution,
+                                                        pick_day,
+                                                        SupplierCandidateCustomers,
+                                                        SupplierCandidateDeliveryQuantity) < -0.00001)
+                                                {
+                                                    Whether_normal_insert_fail = true;
                                                 }
                                             }
 
