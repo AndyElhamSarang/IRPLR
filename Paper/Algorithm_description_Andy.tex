@@ -658,16 +658,25 @@ This section describes the proposed Multi-Start Iterated Local Search (\hyperref
 Let $s$ denote a solution, which may be infeasible for the original problem \eqref{obj}-\eqref{domain_y}. For each customer $i\in N'$, each time period $t\in T$, and each vehicle $k\in K$, part of the solution $s$ is characterised by $q^k_{it}(s)$, $I_{it}(s)$, and $\mu_{it}(s)$, where
 \begin{itemize}
     \item $q^k_{it}(s)\geq 0$ is the delivery quantity by vehicle $k$, to customer $i$ in time period $t$;
+    \item $I_{0t}(s) \geq 0$ is the inventory level at the depot in time period $t$;
     \item $I_{it}(s) \geq 0$ is the inventory level at customer $i$ in time period $t$; and
     \item $\mu_{it}(s) \geq 0$ is the stockout amount at customer $i$ in time period $t$.
 \end{itemize}
-If customer $i$ is visited by vehicle $k$ in time $t$, $q^k_{it}(s)$ is positive; otherwise, $q^k_{it}(s)$=0. The net inventory level is defined as $I_{it}(s) - \mu_{it}(s)$ and is computed recursively according to
+If customer $i$ is visited by vehicle $k$ in time $t$, $q^k_{it}(s)$ is positive; zero otherwise. The net inventory level is defined as $I_{it}(s) - \mu_{it}(s)$ and is computed recursively according to
 
 \begin{equation}\label{initial I0}
 I_{i,1}(s) - \mu_{i,1}(s)= I_{i,0} - r_{i,1} + \sum_{k\in K}q^k_{i1}(s),
 \end{equation}
 \begin{equation}\label{Initial I1}
 I_{i,t}(s)-\mu_{i,t}(s)= I_{i,t-1}(s) -\mu_{i,t-1}(s) - r_{i,t} + \sum_{k\in K}q^k_{it}(s),\; 2\leq t\leq |T|.
+\end{equation}
+The inventory level of the depot is computed by 
+
+\begin{equation}\label{initial I0}
+I_{0,1}(s) = I_{0,0} + r_{0,1} - \sum_{i\in N'}\sum_{k\in K}q^k_{i1}(s),
+\end{equation}
+\begin{equation}\label{Initial I1}
+I_{0,t}(s)= I_{0,t-1}(s) + r_{0,t} - \sum_{i\in N'}\sum_{k\in K}q^k_{it}(s),\; 2\leq t\leq |T|.
 \end{equation}
 If $s$ is feasible to the relaxed problem and has $\sum_{i\in N'} \sum_{i\in T} \mu_{it}(s) = 0$, then $s$ is also feasible for the original problem. The value of $s$ on the objective function \eqref{obj} is denoted by $f(s)$, and the value on the objective function \eqref{Relaxed_obj} with Lagrange multiplier $\alpha$ is denoted by $f_{\mu}(s, \alpha)$. The following pseudocode outlines the proposed \hyperref[alg:MSILS]{MSILS}. 
 
