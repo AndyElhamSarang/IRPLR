@@ -34,6 +34,7 @@ int NumberOfExperiments = 0;
 string InitialSolutionMethod = "Initial_BlockZone_Schedule";
 string AllowLagrangianRelaxation;
 string TypeOfRebalance;
+string Activate_Disturbance = "YES";
 double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
@@ -114,9 +115,11 @@ int main()
 		cout << "Error: Invalid value for AllowLagrangianRelaxation. Please set it to either 'YES' or 'NO'." << endl;
 		valid_input = false;
 	}
-	if (TypeOfRebalance != "GUARANTEE_FEASIBILITY" && TypeOfRebalance != "NOT_GUARANTEE_FEASIBILITY")
+	if (TypeOfRebalance != "GUARANTEE_FEASIBILITY" &&
+		TypeOfRebalance != "NOT_GUARANTEE_FEASIBILITY" &&
+		TypeOfRebalance != "NO_REBALANCE")
 	{
-		cout << "Error: Invalid value for TypeOfRebalance. Please set it to either 'GUARANTEE_FEASIBILITY' or 'NOT_GUARANTEE_FEASIBILITY'." << endl;
+		cout << "Error: Invalid value for TypeOfRebalance. Please set it to 'GUARANTEE_FEASIBILITY', 'NOT_GUARANTEE_FEASIBILITY', or 'NO_REBALANCE'." << endl;
 		valid_input = false;
 	}
 	if (InitialLagrangianScalar <= 0)
@@ -137,6 +140,11 @@ int main()
 	if (ActivateHGS != "YES" && ActivateHGS != "NO")
 	{
 		cout << "Error: Invalid value for ActivateHGS. Please set it to either 'YES' or 'NO'." << endl;
+		valid_input = false;
+	}
+	if (Activate_Disturbance != "YES" && Activate_Disturbance != "NO")
+	{
+		cout << "Error: Invalid value for Activate_Disturbance. Please set it to either 'YES' or 'NO'." << endl;
 		valid_input = false;
 	}
 	if (valid_input == false)

@@ -176,6 +176,12 @@ void file::ReadGlobalParameter()
 
     getline(ifGlobal, dummyline);
     getline(ifGlobal, TakeParameter);
+    stringstream ss_Activate_Disturbance(TakeParameter);
+    ss_Activate_Disturbance >> Activate_Disturbance;
+    cout << dummyline << ":" << Activate_Disturbance << endl;
+
+    getline(ifGlobal, dummyline);
+    getline(ifGlobal, TakeParameter);
     stringstream ss_Theta(TakeParameter);
     ss_Theta >> theta;
     cout << dummyline << ":" << theta << endl;
@@ -253,9 +259,11 @@ void file::ReadGlobalParameter()
         cout << "Error: Invalid value for AllowLagrangianRelaxation. Please set it to either 'YES' or 'NO'." << endl;
         valid_input = false;
     }
-    if (TypeOfRebalance != "GUARANTEE_FEASIBILITY" && TypeOfRebalance != "NOT_GUARANTEE_FEASIBILITY")
+    if (TypeOfRebalance != "GUARANTEE_FEASIBILITY" &&
+        TypeOfRebalance != "NOT_GUARANTEE_FEASIBILITY" &&
+        TypeOfRebalance != "NO_REBALANCE")
     {
-        cout << "Error: Invalid value for TypeOfRebalance. Please set it to either 'GUARANTEE_FEASIBILITY' or 'NOT_GUARANTEE_FEASIBILITY'." << endl;
+        cout << "Error: Invalid value for TypeOfRebalance. Please set it to 'GUARANTEE_FEASIBILITY', 'NOT_GUARANTEE_FEASIBILITY', or 'NO_REBALANCE'." << endl;
         valid_input = false;
     }
     if (InitialLagrangianScalar <= 0)
@@ -276,6 +284,11 @@ void file::ReadGlobalParameter()
     if (ActivateHGS != "YES" && ActivateHGS != "NO")
     {
         cout << "Error: Invalid value for ActivateHGS. Please set it to either 'YES' or 'NO'." << endl;
+        valid_input = false;
+    }
+    if (Activate_Disturbance != "YES" && Activate_Disturbance != "NO")
+    {
+        cout << "Error: Invalid value for Activate_Disturbance. Please set it to either 'YES' or 'NO'." << endl;
         valid_input = false;
     }
     if (valid_input == false)

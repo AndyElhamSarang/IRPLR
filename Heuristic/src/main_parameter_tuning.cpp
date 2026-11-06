@@ -34,6 +34,7 @@ int NumberOfExperiments =0;
 string InitialSolutionMethod = "Initial_BlockZone_Schedule";
 string AllowLagrangianRelaxation;
 string TypeOfRebalance;
+string Activate_Disturbance = "YES";
 double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
@@ -120,6 +121,7 @@ int main(int argc, char* argv[])
 			else if (opt == "MinGridResolution") { min_grid_resolution = atoi(val.c_str()); provided_options.insert("MinGridResolution"); }
 			else if (opt == "GridResolutionIncrement") { grid_resolution_increment = atoi(val.c_str()); provided_options.insert("GridResolutionIncrement"); }
 			else if (opt == "ActivateHGS" || opt == "Activate HGS") { ActivateHGS = val; provided_options.insert("ActivateHGS"); }
+			else if (opt == "Activate_Disturbance") { Activate_Disturbance = val; }
 			else if (opt == "theta") { theta = atoi(val.c_str()); provided_options.insert("theta"); }
 			else if (opt == "sigma") { sigma = atoi(val.c_str()); provided_options.insert("sigma"); }
 			else if (opt == "phi") { phi = atoi(val.c_str()); provided_options.insert("phi"); }
@@ -159,6 +161,7 @@ int main(int argc, char* argv[])
 		cout << "Min Grid Resolution: " << min_grid_resolution << endl;
 		cout << "Grid Resolution Increment: " << grid_resolution_increment << endl;
 		cout << "Activate HGS: " << ActivateHGS << endl;
+		cout << "Activate Disturbance: " << Activate_Disturbance << endl;
 		cout << "Theta: " << theta << endl;
 		cout << "Sigma: " << sigma << endl;
 		cout << "Phi: " << phi << endl;
@@ -214,6 +217,11 @@ int main(int argc, char* argv[])
 		InitialSolutionMethod != "Initial_BlockZone_Schedule")
 	{
 		cerr << "InitialSolutionMethod must be ConstructAMMInitialSolution or Initial_BlockZone_Schedule." << endl;
+		return 1;
+	}
+	if (Activate_Disturbance != "YES" && Activate_Disturbance != "NO")
+	{
+		cerr << "Activate_Disturbance must be YES or NO." << endl;
 		return 1;
 	}
 

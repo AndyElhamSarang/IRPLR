@@ -290,6 +290,10 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "DisturbanceCounter:" << DisturbanceCounter << ", AdjustPenalty:" << AdjustPenalty << ", ToAdjustPenalty:" << ToAdjustPenalty << " ,ScalarLagrangianRelaxation:" << ScalarLagrangianRelaxation << endl;
             cout << "-----------------------------------------------" << endl;
             cout << "Start Disturbance Operator" << endl;
+            if (run_disturb_rebalance == true && TypeOfRebalance == "NO_REBALANCE")
+            {
+                run_disturb_rebalance = false;
+            }
             if (run_disturb_rebalance == true)
             {
                 run_disturb_rebalance = false;
@@ -388,7 +392,10 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
             cout << "Before Disturbance Operator" << endl;
             IncumbentSolution.print_solution(IRPLR);
 
-            OperatorDisturb(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
+            if (Activate_Disturbance == "YES")
+            {
+                OperatorDisturb(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
+            }
 
             // boost_random_mechanism PickRandomDisturbance;
             // int DisturbanceToRun = PickRandomDisturbance.random_number_generator(0, 1, generator);

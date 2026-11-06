@@ -21,6 +21,7 @@ extern double power;
 extern int DisturbStrength;
 extern double MainAlgorithmTimeLimit;
 extern double AccumulatedTimeHGS;
+extern string Activate_Disturbance;
 
 
 extern int NumberOfBalacingOperatorCalled;

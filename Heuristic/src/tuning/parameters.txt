@@ -27,7 +27,8 @@
 
 # 1:            2:                   3:     4:      5: 
 AllowLagrangianRelaxation         "--AllowLagrangianRelaxation "          o      ("NO","YES")
-TypeOfRebalance                   "--TypeOfRebalance "                    o      ("NOT_GUARANTEE_FEASIBILITY", "GUARANTEE_FEASIBILITY")
+TypeOfRebalance                   "--TypeOfRebalance "                    o      ("NOT_GUARANTEE_FEASIBILITY", "GUARANTEE_FEASIBILITY", "NO_REBALANCE")
+Activate_Disturbance              "--Activate_Disturbance "               o      ("YES", "NO")
 InitialLagrangianScalar           "--InitialLagrangianScalar "            o      (1, 5, 10, 20)
 ToTriggerAdjustment               "--ToTriggerAdjustment "                o      (10, 20, 30, 40, 50)
 ToAdjustLagrangianScalar          "--ToAdjustLagrangianScalar "           o      (0.1,0.5, 0.75, 1.0, 2.0, 5.0, 10.0) 
