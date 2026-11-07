@@ -672,10 +672,10 @@ I_{i,t}(s)-\mu_{i,t}(s)= I_{i,t-1}(s) -\mu_{i,t-1}(s) - r_{i,t} + \sum_{k\in K}q
 \end{equation}
 The inventory level of the depot is computed by 
 
-\begin{equation}\label{initial I0}
+\begin{equation}\label{initial I0 depot}
 I_{0,1}(s) = I_{0,0} + r_{0,1} - \sum_{i\in N'}\sum_{k\in K}q^k_{i1}(s),
 \end{equation}
-\begin{equation}\label{Initial I1}
+\begin{equation}\label{Initial I1 depot}
 I_{0,t}(s)= I_{0,t-1}(s) + r_{0,t} - \sum_{i\in N'}\sum_{k\in K}q^k_{it}(s),\; 2\leq t\leq |T|.
 \end{equation}
 If $s$ is feasible to the relaxed problem and has $\sum_{i\in N'} \sum_{i\in T} \mu_{it}(s) = 0$, then $s$ is also feasible for the original problem. The value of $s$ on the objective function \eqref{obj} is denoted by $f(s)$, and the value on the objective function \eqref{Relaxed_obj} with Lagrange multiplier $\alpha$ is denoted by $f_{\mu}(s, \alpha)$. The following pseudocode outlines the proposed \hyperref[alg:MSILS]{MSILS}. 
@@ -687,6 +687,7 @@ If $s$ is feasible to the relaxed problem and has $\sum_{i\in N'} \sum_{i\in T} 
 \STATE $s^*\gets\emptyset$, $f(s^*)\gets+\infty$ \label{initialisation}
 \FOR{$i\gets 1$ \TO $Max_{restart}$} \label{start msils}
 \STATE $s\gets$\hyperref[alg:InitialSchedule]{Initial\_Solution\_Procedure}, $\hat{s}\gets s$, $it\gets0$ \label{initial solution construction}
+\IF{$s=\emptyset$} \RETURN $s^*$ \ENDIF
 \IF{$f(s)<f(s^*)$} \STATE $s^*\gets s$ \ENDIF
 \WHILE{$it<|N'|+\sigma|T|+\phi|K|$} \label{start ils}
 \STATE $\alpha\gets\epsilon(s^*,s,0,\eta)$, $\bar{s}\gets s$, $s\gets$\hyperref[alg:LocalSearch]{Local\_Search}$(s,\alpha)$ \label{LS:initialise alpha}
@@ -733,9 +734,9 @@ To escape from the local optimum, the \hyperref[alg:MSILS]{MSILS} begins with a 
 
 \subsection{Initial feasible solution} \label{sec:initial procedure}
 
-This section describes the heuristic to construct the initial solution for the \hyperref[alg:MSILS]{MSILS}. It aims to produce a good feasible solution to the original problem \eqref{obj}-\eqref{domain_y}, thereby establishing the initial upper bound. 
+This section describes the heuristic to construct the initial solution for the \hyperref[alg:MSILS]{MSILS}. It also aims to produce a good feasible solution to the original problem \eqref{obj}-\eqref{domain_y}, thereby establishing the initial upper bound. 
 
-The solution $s$ is initialised with empty routes and zero delivery quantities, $q^k_{it}(s)=0$ for $i\in N'$, $k\in K$, and $t\in T$. The net inventory levels $I_{it}(s) - \mu_{it}(s)$ are calculated by \eqref{initial I0} and \eqref{Initial I1} accordingly. The customers are grouped by the earliest time period in which their net inventory levels become negative. Those customers with earlier stockouts are given higher priority. Within each stockout group, customers are further partitioned spatially. Let $(x_i, y_i)$ denote the coordinates of location $i \in N$. Using the coordinate minima and maxima   
+The solution $s$ is initialised with empty routes and zero delivery quantities, $q^k_{it}(s)=0$ for $i\in N'$, $k\in K$, and $t\in T$. The net inventory levels and the inventory levels at the depot are computed by \eqref{initial I0}$-$\eqref{Initial I1 depot}. The procedure starts by grouping the customers according to the earliest time period in which their net inventory levels become negative. Those customers with earlier stockouts are given higher priority. Within each stockout group, customers are further partitioned spatially. Let $(x_i, y_i)$ denote the coordinates of location $i \in N$. Using the coordinate minima and maxima
 $$x_{\min} = \min_{i\in N} x_i,\quad x_{\max} = \max_{i\in N} x_i,$$
 $$y_{\min}= \min_{i\in N} y_i,\quad y_{\max}= \max_{i\in N} y_i,$$
 an axis-aligned bounding rectangle is defined with corners $(x_{min},y_{min})$, $(x_{max},y_{min})$, $(x_{max},y_{max})$, and $(x_{min},y_{max})$. The resulting axis-aligned rectangle is divided into a $d\times d$ grid of subregions $R=\{r_1,r_2,\dots,r_{d\times d}\}$ where $d$ is randomly selected between the minimum possible grid resolution $d_{min}$ and the maximum possible grid resolution $d_{\max}$. 
@@ -743,7 +744,17 @@ an axis-aligned bounding rectangle is defined with corners $(x_{min},y_{min})$, 
 Observe that, during the early stages of the solution construction, vehicles typically have sufficient capacity to deliver the largest possible quantities respecting both vehicle and inventory capacity constraints. Such flexibility reduces as the construction goes on, and customers who will be considered at a later stage often require more visits. Thus, the subregions are ordered by decreasing distance from their centres to the depot, so customers in more distant subregions are processed earlier.
 
 
-For each stockout group and subregion, the heuristic randomly selects a customer and repeatedly schedules a visit to address that customer's earliest remaining stockout. It first searches for an unoccupied period between the current search period and the stockout period that has remaining fleet capacity, choosing randomly among available periods. If none is available, it searches backwards for an earlier period. In the selected period, it assigns the customer to the vehicle that can accommodate the largest delivery, with the quantity limited by that vehicle's residual capacity and the customer's remaining inventory capacity. It then updates the customer's inventory trajectory and continues until no customer stockout remains. If a customer faces stockout even when the customer is visited in every period, then no feasible schedule exists for that customer. In this case, the instance is infeasible. The procedure returns an empty solution, and the \hyperref[alg:MSILS]{MSILS} is terminated. 
+The priority grouping and the spatial ordering determine which customers are considered first, but the timing and size of each delivery must also respect the available supply. A delivery in period $t$ reduces depot inventory in that period and in every subsequent period, according to \eqref{initial I0 depot} and \eqref{Initial I1 depot}. Therefore, the largest additional quantity that can be delivered in period $t$ while keeping depot inventory non-negative is
+\begin{equation}\label{supply slack}
+S_t(s)=\max\left\{0,\;\min_{t'\in T:\,t'\geq t} I_{0,t'}(s)\right\}.
+\end{equation}
+Thus, $S_t(s)$ is the supplier's residual capacity for an additional delivery in period $t$, accounting for its effect on depot inventory over the rest of the horizon. 
+
+For each stockout group and subregion, the heuristic randomly selects a customer and repeatedly schedules a visit to address that customer's earliest remaining stockout. It first searches for a period between the current search period and the stockout period in which the customer is not yet visited, the fleet has remaining capacity and $S_t(s)>0$, choosing randomly among such periods. If none is available, it searches backwards for an earlier period satisfying the same conditions. In the selected period, it assigns the customer to the vehicle that can accommodate the largest delivery. The delivery quantity is bounded by $S_t(s)$, that vehicle's residual capacity, and the customer's remaining inventory capacity.
+
+A new visit raises the customer's inventory in later periods, so the quantities of that customer's other visits may need adjustment. After each assignment, the procedure \hyperref[alg:AdjustDeliveryQuantities]{Adjust Delivery Quantities} updates depot inventory and recomputes the customer's inventory trajectory in chronological order. Since the new visit does not affect the periods before it, only the deliveries in the periods after the selected period are adjusted: it increases each existing delivery only up to the available supplier and vehicle capacity and the customer's remaining inventory capacity, and reduces it if necessary so that it does not exceed the customer's remaining inventory capacity. The heuristic continues until no customer stockout remains.
+
+If no feasible visit period can be found while the customer still has a stockout, the construction stops and returns an empty solution, and the \hyperref[alg:MSILS]{MSILS} is terminated. In the computational experiments on the test bed described in Section \ref{sec: test instances}, this case has never been observed.
 
 Let $P_{t,r} \subseteq N'$ denote the subset of customers in priority group $t\in T$ and subregion $r\in R$. The pseudocode, \hyperref[alg:InitialSchedule]{Construct Initial Solution}, summarises the procedure.
 
@@ -762,10 +773,13 @@ Let $P_{t,r} \subseteq N'$ denote the subset of customers in priority group $t\i
         \WHILE{ $\{\hat{t}\in T: I_{i,\hat{t}}(s)-\mu_{i,\hat{t}}(s) <0\} \neq [\hspace{0.1cm}]$}
             \STATE $t_{stockout}\gets \min\{t\in T: I_{i,t}(s)-\mu_{i,t}(s) <0\}$
             \STATE $t_{assign}\gets$ \hyperref[alg:FindVisitTime]{Find Feasible Visit Time} ($t_{current}, t_{stockout}, i$)
-            \STATE $(k,q)\gets $ \hyperref[alg:FindVehicleToDeliverMax]{Find Vehicle To Deliver Max}($t_{assign}, i, s$)            
+            \IF{$t_{assign}=\emptyset$}
+                \RETURN $\emptyset$
+            \ENDIF
+            \STATE $(k,q)\gets $ \hyperref[alg:FindVehicleToDeliverMax]{Find Vehicle To Deliver Max}($t_{assign}, i, s$)
             \STATE $q^k_{i,t_{assign}}\gets q$
             \STATE add customer $i$ to vehicle $k$'s route on time period $t_{assign}$
-            \STATE for all $t'\in T$, update $I_{i,t'}(s)- \mu_{it'}(s) $ according to \eqref{initial I0} and \eqref{Initial I1} 
+            \STATE \hyperref[alg:AdjustDeliveryQuantities]{Adjust Delivery Quantities}($i, t_{assign}, s$)
             \STATE $t_{current}\gets t_{assign}+1$
         \ENDWHILE
         \STATE $P_{t,r}\gets P_{t,r}\setminus i$
@@ -799,58 +813,55 @@ After the schedule has been constructed, a nearest-neighbour insertion \cite{bra
 
 % From the vast literature of vehicle routing and inventory routing, there have been validated that permitting some constraint violation in local search
 
-The local search uses five neighbourhood operators, denoted by $O_1$, $O_2$, $O_3$, $O_4$, and $O_5$.  These operators are based on those commonly found in the field of vehicle routing (see, for example, \cite{kindervater1997}, \cite{laporte2000classical}, and \cite{elshaer2020taxonomic}) and are also frequently used in the field of inventory routing (see, for example, \cite{alvarez2018iterated}, \cite{lagana2024iterated}, and \cite{castro2026hybrid}). Each operator defines a neighbourhood through a set of alterations. Each alteration transforms the input solution into a neighbouring solution by modifying one or more of its components.  
-
-Rather than employing separate operators for route alterations and delivery quantity alterations, the operators $O_1$, $O_2$, $O_3$, and $O_4$ integrate both into a single alteration. Such an integration enables the exploration of the logistic ratio, i.e., the simultaneous exploration of total transportation cost and total delivery quantity. The routing component of these operators is described as follows:
-
+The local search is a sequential variable neighbourhood descent over five operators $O_1,\dots,O_5$, applied to the relaxed problem with a given Lagrange multiplier $\alpha$. The routing moves themselves are standard in vehicle routing (see, for example, \cite{kindervater1997}, \cite{laporte2000classical}, and \cite{elshaer2020taxonomic}) and inventory routing (see, for example, \cite{alvarez2018iterated}, \cite{lagana2024iterated}, and \cite{castro2026hybrid}):
 
 \begin{itemize}
-\item Operator $O_1$ moves up to 3 adjacent customers from a route to another in the same period. 
-\item Operator $O_2$ exchanges up to 2 adjacent customers in a route with up to 2 adjacent customers in another route in the same period.
-\item Operator $O_3$ transfers a customer visit to a different time period in which this customer is not visited, with the vehicle giving the largest possible delivery quantity at a position with the lowest in transportation cost.
-\item Operator $O_4$ exchanges a customer in a route with one unvisited customer, including the case where either a visited customer becomes unvisited or an unvisited customer becomes visited.
+\item $O_1$ moves up to 3 adjacent customers from one route to another route in the same period;
+\item $O_2$ exchanges up to 2 adjacent customers of one route with up to 2 adjacent customers of another route in the same period;
+\item $O_3$ transfers a customer visit to another period in which the customer is not visited, using the vehicle that can take the largest delivery and the insertion position of least cost;
+\item $O_4$ exchanges a visited customer with an unvisited one in the same route, including the cases where a visit is only removed or only inserted;
+\item $O_5$ moves up to 3 adjacent customers to another position in the same route.
 \end{itemize}
-
+%
 % \item Things worth mentioning: \textcolor{red}{In \cite{alvarez2018iterated}, $Op-opt, Shift, Swap$ are routing operators. So it is reasonable to say that there is no update for the delivery quantities and inventory levels for the subsequent days. Also, I suspect any infeasible move to an infeasible solution is skipped. In our operators, for $Or-opt(k), k \in \{1, 2\}$, it is pure routing operators. But for $Shift(k), k \in \{1, 2\}$ and $Swap(k1, k2), k1, k2 \in \{1, 2\}, k1 \geq k2$, after the move, delivery quantities and inventory level are updated.}
 
+The novelty of the local search lies in how operators $O_1$ to $O_4$ treat quantities. Heuristics for the IRP commonly evaluate routing moves with delivery quantities fixed and revise the quantities in a separate step, often by mathematical programming \citep{iswari2026extending}. Here, each alteration determines both the routes and the resulting delivery quantities, so every move is evaluated by its actual effect on the logistic ratio, that is, on the transportation cost and the total quantity delivered at the same time. Operator $O_5$ is a pure routing operator and leaves quantities unchanged.
 
-For an alteration that results in removing the visit to customer $i\in N'$ at time $t\in T$ on vehicle $k\in K$, the associated $q^k_{it}(s)$ becomes 0. For an alteration that results in a new visit to customer $i\in N'$ at time $t\in T$ on vehicle $k\in K$, the associated $q^k_{it}(s)$ is computed by
+When an alteration removes the visit to customer $i\in N'$ in period $t\in T$, $q^k_{it}(s)$ becomes 0. When it creates a new visit by vehicle $k\in K$, the customer receives the largest quantity allowed by the depot supply, the residual capacity of the vehicle, and the customer's remaining inventory capacity,
 \begin{equation}
-   q^k_{jt} = \max\{0,\min\{Q - \sum_{i\in N'}q^k_{it}(s), U_i-I \}\}\label{Adjust quantity}
+   q^k_{it}(s) = \min\Bigl\{S_t(s),\; Q - \sum_{j\in N'}q^k_{jt}(s),\; U_i-\bigl(I_{i,t-1}(s)-\mu_{i,t-1}(s)\bigr)\Bigr\},\label{Adjust quantity}
 \end{equation}
-where 
-\begin{equation*}    
-I= \left\{ \begin{array}{ll}
-  		I_{i,0}  & \mbox{if $t =1$}; \\
- 		I_{i,t-1}(s) & \mbox{ if $2\leq t\leq |T| $} 
-  		\end{array}\right. 
-\end{equation*}
-Please note that $\max\{0,\cdot\}$ is required since the local search allows the violation of stockout where $I$ can be negative and $U_i-I$ can also be negative. For customer $i$, the resulting inventory level is updated recursively according to \eqref{initial I0} and \eqref{Initial I1}. These updated inventory levels may affect the subsequent deliveries. Therefore, following the update in each time period, if the customer is visited in the subsequent time period, the delivery quantity for that visit is adjusted using \eqref{Adjust quantity}.
+where $I_{i,0}(s)-\mu_{i,0}(s)=I_{i,0}$. A change in period $t$ alters the customer's net inventory in all later periods, so the customer's subsequent deliveries are revised in chronological order: each is increased as far as the residual capacity of its vehicle allows and reduced where necessary to respect $U_i$. Moves that would make the depot inventory negative in any period are discarded.
 
-For the last operator, Operator $O_5$ is a pure routing operator. It transfers up to 3 adjacent customers from their current position to another position in the same route. In contrast to operators $O_1$, $O_2$, $O_3$, and $O_4$, the alterations associated with operator $O_5$ do not affect the delivery quantities and the inventory levels.
+\textbf{Vehicle slack.} Because the logistic ratio rewards large deliveries, vehicles in good solutions are typically fully loaded. For a fully loaded vehicle, \eqref{Adjust quantity} gives a zero quantity, so a large share of the moves that insert a customer into another route or period would be rejected. This idea is inspired by the hybrid genetic search for the CVRP of \cite{vidal2022hybrid}, which permits vehicle capacity violations and penalises them in the objective, so that inserting a customer into a full vehicle is not discarded as an infeasible move. Instead of violating the capacity, the operators here borrow quantity that existing visits do not need. The slack of the delivery to customer $j$ in period $t$,
+\begin{equation}
+\omega_{jt}(s)=\max\Bigl\{0,\;\min\bigl\{\textstyle\sum_{k\in K}q^k_{jt}(s),\;\min_{t'\in T:\,t'\geq t}\bigl(I_{jt'}(s)-\mu_{jt'}(s)\bigr)\bigr\}\Bigr\},\label{visit slack}
+\end{equation}
+is the largest quantity that can be removed from this delivery without creating a stockout in period $t$ or later. The slack of vehicle $k$ in period $t$, $\Omega^k_t(s)$, is the sum of $\omega_{jt}(s)$ over the customers it serves in that period. If vehicle $k$ has no residual capacity, the new visit to customer $i$ receives
+\begin{equation*}
+q^k_{it}(s)=\min\Bigl\{S_t(s),\;\Omega^k_t(s),\;U_i-\bigl(I_{i,t-1}(s)-\mu_{i,t-1}(s)\bigr)\Bigr\},
+\end{equation*}
+where the slack of any customers leaving vehicle $k$ in the same move is excluded from $\Omega^k_t(s)$. The same amount is then removed from the deliveries of the other customers on vehicle $k$, each reduced by at most its slack. In $O_3$, if no vehicle has residual capacity in the target period, the vehicle with the largest slack is used. The move therefore keeps the vehicle within its capacity and creates no new stockout, while the load of the vehicle is redistributed among its customers. This enlarges the neighbourhoods of $O_1$ to $O_4$ to moves involving fully loaded vehicles, which would otherwise be excluded.
 
 \begin{algorithm}
 \captionsetup{labelformat=empty}
 \caption{\textbf{Local Search$(s,\alpha)$}} \label{alg:LocalSearch}
 \begin{algorithmic}[1]
-\FOR{$i \gets 0;\ i \leq 5;\ i \gets i+1$} \label{search: for}
+\FOR{$i \gets 1$ \TO $5$} \label{search: for}
     \REPEAT \label{search: repeat N}
-        \STATE $\hat{s} \gets s$, $j \gets 1$
-        \WHILE{$j < |O_i(s)|$} 
-            \STATE $s' \gets s_j \in O^i(s)$,  $j \gets j+1$
-                \IF{$f_{\mu}(s',\alpha) < f_{\mu}(s,\alpha)$}
-                     \STATE $s \gets s'$
-                \ENDIF
-        \ENDWHILE
-    \UNTIL{$f_{\mu}(s,\alpha) = f_{\mu}(\hat{s}, \alpha)$} \label{search: until N}        
+        \STATE $\hat{s} \gets s$
+        \STATE $s' \gets \arg\min\{f_{\mu}(s'',\alpha): s''\in O_i(s)\}$
+        \IF{$f_{\mu}(s',\alpha) < f_{\mu}(s,\alpha)$}
+            \STATE $s \gets s'$
+        \ENDIF
+    \UNTIL{$f_{\mu}(s,\alpha) = f_{\mu}(\hat{s}, \alpha)$} \label{search: until N}
 \ENDFOR \label{search: endfor}
 \STATE $s\gets $ remove any visit with zero delivery quantity
 \RETURN $s$
 \end{algorithmic}
 \end{algorithm}
 
-
-The local search procedure implements a sequential variable neighbourhood descent procedure for solving the relaxed problem. For a given solution $s$ and the Lagrange multiplier $\alpha$, the neighbourhoods induced by operators $O_1$ to $O_5$ are explored successively. Within a neighbourhood associated with Operator $i\in \{1,2,3,4,5\}$, all neighbouring solutions denoted by $O_i(s)$ are evaluated according to the objective function $f_{\mu}(\cdot,\alpha)$, and the current solution is updated whenever an improving neighbour is identified. The neighbourhood is repeatedly re-explored until no improving solution can be found, thereby ensuring local optimality with respect to the corresponding operator. The search then proceeds to the next operator. The procedure terminates once all five operators have been exhausted without improvement, at which point any visits associated with zero delivery quantity are removed and the resulting solution is returned. The pseudocode, \hyperref[alg:LocalSearch]{Local Search} summaries the local search procedure.
+The neighbourhoods are explored in the order $O_1$ to $O_5$. Within the neighbourhood $O_i(s)$, all neighbouring solutions are evaluated with $f_{\mu}(\cdot,\alpha)$, the best improving one is applied, and the neighbourhood is re-explored until no improving neighbour remains; the search then proceeds to the next operator. To save computation, pairs of routes for which no improving move was found are not re-evaluated until one of them changes, and $O_5$ is applied only to routes modified by $O_1$ to $O_4$. Finally, visits with zero delivery quantity are removed, and the resulting solution is returned.
 
 
 
@@ -1025,7 +1036,8 @@ Average & -11.06 & -7.37 & -7.38 & -6.18 & -8.00 \\
         \STATE \textbf{// schedule forward//}
         \STATE $T_{candidate}\gets\{t\in T:  t_{current}\leq t \leq t_{stockout},$
         \STATE \hspace{9em}  customer $i$ is not visited at $t$, 
-        \STATE \hspace{9em}  $Q\times |K| - \sum_{k\in K}\sum_{i\in N'} q^k_{i,t}(s) > 0\}$
+        \STATE \hspace{9em}  $Q\times |K| - \sum_{k\in K}\sum_{i\in N'} q^k_{i,t}(s) > 0$,
+        \STATE \hspace{9em}  $S_t(s) > 0\}$
         \IF{$T_{candidate}\neq [\hspace{0.1cm}]$}
         \RETURN $t \sim \textsc{Random}(T_{candidate})$
         \ELSE
@@ -1035,11 +1047,12 @@ Average & -11.06 & -7.37 & -7.38 & -6.18 & -8.00 \\
         \STATE \textbf{// schedule backward//}         
             \FOR{$t\gets t_{stockout}; t\geq 1;t\gets t-1$}
                 \IF{customer $i$ is not visited at time period $t$}
-                    \IF{$Q\times |K| - \sum_{k\in K}\sum_{i\in N'} q^k_{i,t}(s) > 0$}
+                    \IF{$Q\times |K| - \sum_{k\in K}\sum_{i\in N'} q^k_{i,t}(s) > 0$ \AND $S_t(s) > 0$}
                         \RETURN $t$
                     \ENDIF
                 \ENDIF
             \ENDFOR
+            \RETURN $\emptyset$
     \ENDIF
 \ENDWHILE
 \end{algorithmic}
@@ -1055,17 +1068,37 @@ Average & -11.06 & -7.37 & -7.38 & -6.18 & -8.00 \\
 \begin{algorithmic}[1]
 \STATE $k'\gets |K|+1$, $q'\gets 0$, 
 \FOR{$k\in K$}
-    \STATE $q\gets 0$
     \IF{$t=1$}
-        \STATE $q\gets min\{Q-\sum_{j\in N'}q^k_{j,1}(s), U_{i} - I_{i,0}\}$    
+        \STATE $q\gets \max\{0,\min\{S_1(s), Q-\sum_{j\in N'}q^k_{j,1}(s), U_{i}-I_{i,0}\}\}$
     \ELSE
-        \STATE $q\gets min\{Q-\sum_{j\in N'}q^k_{j,t}(s), U_{i} - I_{i,t-1}(s)\}$
+        \STATE $q\gets \max\{0,\min\{S_t(s), Q-\sum_{j\in N'}q^k_{j,t}(s), U_{i}-I_{i,t-1}(s)\}\}$
     \ENDIF
     \IF{$q'<q$}
         \STATE $q' \gets q$, $k'\gets k$
     \ENDIF
 \ENDFOR
 \RETURN $k',q'$
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+\begin{algorithm}[H]
+\captionsetup{labelformat=empty}
+\caption{\textbf{Adjust Delivery Quantities}($i$, $t$, $s$)}
+\label{alg:AdjustDeliveryQuantities}
+\begin{algorithmic}[1]
+\STATE update $I_{0,t'}(s)$ for all $t'\in T$ with $t'\geq t$ according to \eqref{initial I0 depot} and \eqref{Initial I1 depot}, and $S_{t'}(s)$ for all $t'\in T$ according to \eqref{supply slack}
+\STATE update $I_{i,t}(s)-\mu_{i,t}(s)$ according to \eqref{initial I0} if $t=1$, and \eqref{Initial I1} otherwise
+\FOR{$\tau\gets t+1$ \TO $|T|$}
+    \IF{customer $i$ is visited by a vehicle $k$ at time period $\tau$}
+        \STATE $q^k_{i,\tau}(s)\gets\min\{q^k_{i,\tau}(s)+\min\{S_\tau(s), Q-\sum_{j\in N'}q^k_{j,\tau}(s)\},$
+        \STATE \hspace{9em} $U_i-(I_{i,\tau-1}(s)-\mu_{i,\tau-1}(s))\}$
+        \STATE update $I_{0,t'}(s)$ for all $t'\in T$ with $t'\geq \tau$ according to \eqref{initial I0 depot} and \eqref{Initial I1 depot}, and $S_{t'}(s)$ for all $t'\in T$ according to \eqref{supply slack}
+    \ENDIF
+    \STATE update $I_{i,\tau}(s)-\mu_{i,\tau}(s)$ according to \eqref{Initial I1}
+\ENDFOR
 \end{algorithmic}
 \end{algorithm}
 

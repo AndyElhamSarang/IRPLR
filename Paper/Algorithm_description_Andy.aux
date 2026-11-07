@@ -14,9 +14,9 @@
 \fi}
 \global\let\hyper@last\relax 
 \gdef\HyperFirstAtBeginDocument#1{#1}
-\providecommand*\HyPL@Entry[1]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
 \citation{archetti2012hybrid,archetti2016inventory}
-\HyPL@Entry{0<</S/D>>}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Abstract}{1}{section.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Introduction}{1}{section.2}\protected@file@percent }
 \citation{archetti2017minimizing,archetti2019exact,alvarez2018iterated}
@@ -91,27 +91,28 @@
 \newlabel{sec:main algorithm}{{4.1}{9}{Main algorithm}{subsection.4.1}{}}
 \newlabel{initial I0}{{18}{9}{Main algorithm}{equation.4.18}{}}
 \newlabel{Initial I1}{{19}{9}{Main algorithm}{equation.4.19}{}}
-\newlabel{initial I0}{{20}{9}{Main algorithm}{equation.4.20}{}}
-\newlabel{Initial I1}{{21}{9}{Main algorithm}{equation.4.21}{}}
+\newlabel{initial I0 depot}{{20}{9}{Main algorithm}{equation.4.20}{}}
+\newlabel{Initial I1 depot}{{21}{9}{Main algorithm}{equation.4.21}{}}
 \citation{fisher1981lagrangian}
 \@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces \textbf  {MSILS}\relax }}{10}{algorithm.1}\protected@file@percent }
 \newlabel{alg:MSILS}{{1}{10}{\textbf {MSILS}\relax }{algorithm.1}{}}
 \newlabel{initialisation}{{1}{10}{\textbf {MSILS}\relax }{ALC@unique.1}{}}
 \newlabel{start msils}{{2}{10}{\textbf {MSILS}\relax }{ALC@unique.2}{}}
 \newlabel{initial solution construction}{{3}{10}{\textbf {MSILS}\relax }{ALC@unique.3}{}}
-\newlabel{start ils}{{7}{10}{\textbf {MSILS}\relax }{ALC@unique.7}{}}
-\newlabel{LS:initialise alpha}{{8}{10}{\textbf {MSILS}\relax }{ALC@unique.8}{}}
-\newlabel{search: repeat}{{9}{10}{\textbf {MSILS}\relax }{ALC@unique.9}{}}
-\newlabel{LS:update alpha}{{10}{10}{\textbf {MSILS}\relax }{ALC@unique.10}{}}
-\newlabel{search: until}{{11}{10}{\textbf {MSILS}\relax }{ALC@unique.11}{}}
-\newlabel{run rebalance}{{13}{10}{\textbf {MSILS}\relax }{ALC@unique.13}{}}
-\newlabel{disturb}{{18}{10}{\textbf {MSILS}\relax }{ALC@unique.18}{}}
-\newlabel{end ils}{{19}{10}{\textbf {MSILS}\relax }{ALC@unique.19}{}}
-\newlabel{end msils}{{20}{10}{\textbf {MSILS}\relax }{ALC@unique.20}{}}
+\newlabel{start ils}{{10}{10}{\textbf {MSILS}\relax }{ALC@unique.10}{}}
+\newlabel{LS:initialise alpha}{{11}{10}{\textbf {MSILS}\relax }{ALC@unique.11}{}}
+\newlabel{search: repeat}{{12}{10}{\textbf {MSILS}\relax }{ALC@unique.12}{}}
+\newlabel{LS:update alpha}{{13}{10}{\textbf {MSILS}\relax }{ALC@unique.13}{}}
+\newlabel{search: until}{{14}{10}{\textbf {MSILS}\relax }{ALC@unique.14}{}}
+\newlabel{run rebalance}{{16}{10}{\textbf {MSILS}\relax }{ALC@unique.16}{}}
+\newlabel{disturb}{{21}{10}{\textbf {MSILS}\relax }{ALC@unique.21}{}}
+\newlabel{end ils}{{22}{10}{\textbf {MSILS}\relax }{ALC@unique.22}{}}
+\newlabel{end msils}{{23}{10}{\textbf {MSILS}\relax }{ALC@unique.23}{}}
 \newlabel{classic lr formula}{{22}{10}{Main algorithm}{equation.4.22}{}}
-\newlabel{epsilon}{{23}{10}{Main algorithm}{equation.4.23}{}}
+\newlabel{epsilon}{{23}{11}{Main algorithm}{equation.4.23}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Initial feasible solution}{11}{subsection.4.2}\protected@file@percent }
 \newlabel{sec:initial procedure}{{4.2}{11}{Initial feasible solution}{subsection.4.2}{}}
+\newlabel{supply slack}{{24}{12}{Initial feasible solution}{equation.4.24}{}}
 \citation{braysy2005vehicle}
 \citation{kindervater1997}
 \citation{laporte2000classical}
@@ -121,57 +122,58 @@
 \citation{castro2026hybrid}
 \@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces \textbf  {Construct Initial Solution}\relax }}{13}{algorithm.2}\protected@file@percent }
 \newlabel{alg:InitialSchedule}{{2}{13}{\textbf {Construct Initial Solution}\relax }{algorithm.2}{}}
-\newlabel{Initialise s}{{1}{13}{\textbf {Construct Initial Solution}\relax }{ALC@unique.22}{}}
+\newlabel{Initialise s}{{1}{13}{\textbf {Construct Initial Solution}\relax }{ALC@unique.25}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Local search}{13}{subsection.4.3}\protected@file@percent }
 \newlabel{sec:local search}{{4.3}{13}{Local search}{subsection.4.3}{}}
-\newlabel{Adjust quantity}{{24}{14}{Local search}{equation.4.24}{}}
+\citation{iswari2026extending}
+\citation{vidal2022hybrid}
+\newlabel{Adjust quantity}{{25}{14}{Local search}{equation.4.25}{}}
+\newlabel{visit slack}{{26}{15}{Local search}{equation.4.26}{}}
 \@writefile{loa}{\contentsline {algorithm}{\numberline {3}{\ignorespaces \textbf  {Local Search$(s,\alpha )$}\relax }}{15}{algorithm.3}\protected@file@percent }
 \newlabel{alg:LocalSearch}{{3}{15}{\textbf {Local Search$(s,\alpha )$}\relax }{algorithm.3}{}}
-\newlabel{search: for}{{1}{15}{\textbf {Local Search$(s,\alpha )$}\relax }{ALC@unique.42}{}}
-\newlabel{search: repeat N}{{2}{15}{\textbf {Local Search$(s,\alpha )$}\relax }{ALC@unique.43}{}}
-\newlabel{search: until N}{{10}{15}{\textbf {Local Search$(s,\alpha )$}\relax }{ALC@unique.51}{}}
-\newlabel{search: endfor}{{11}{15}{\textbf {Local Search$(s,\alpha )$}\relax }{ALC@unique.52}{}}
+\newlabel{search: for}{{1}{15}{\textbf {Local Search$(s,\alpha )$}\relax }{ALC@unique.48}{}}
+\newlabel{search: repeat N}{{2}{15}{\textbf {Local Search$(s,\alpha )$}\relax }{ALC@unique.49}{}}
+\newlabel{search: until N}{{8}{15}{\textbf {Local Search$(s,\alpha )$}\relax }{ALC@unique.55}{}}
+\newlabel{search: endfor}{{9}{15}{\textbf {Local Search$(s,\alpha )$}\relax }{ALC@unique.56}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Rebalance Procedure}{15}{subsection.4.4}\protected@file@percent }
 \newlabel{sec:rebalance}{{4.4}{15}{Rebalance Procedure}{subsection.4.4}{}}
 \@writefile{loa}{\contentsline {algorithm}{\numberline {4}{\ignorespaces \textbf  {Rebalance$(s^*)$}\relax }}{16}{algorithm.4}\protected@file@percent }
 \newlabel{alg:rebalance}{{4}{16}{\textbf {Rebalance$(s^*)$}\relax }{algorithm.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Perturbation}{16}{subsection.4.5}\protected@file@percent }
-\newlabel{sec:perturbation}{{4.5}{16}{Perturbation}{subsection.4.5}{}}
 \citation{alvarez2018iterated}
 \citation{vidal2022hybrid}
 \citation{archetti2007branch}
 \citation{archetti2012hybrid}
 \citation{archetti2012hybrid,coelho2013branch,desaulniers2016branch,santos2016hybrid,archetti2017logistic,alvarez2018iterated,archetti2019exact,castro2026hybrid}
-\citation{archetti2007branch}
-\citation{alvarez2018iterated}
-\citation{archetti2017logistic}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Perturbation}{17}{subsection.4.5}\protected@file@percent }
+\newlabel{sec:perturbation}{{4.5}{17}{Perturbation}{subsection.4.5}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Computational experiments}{17}{section.5}\protected@file@percent }
 \newlabel{sec: computational experiements}{{5}{17}{Computational experiments}{section.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Test instances}{17}{subsection.5.1}\protected@file@percent }
 \newlabel{sec: test instances}{{5.1}{17}{Test instances}{subsection.5.1}{}}
+\citation{archetti2007branch}
+\citation{alvarez2018iterated}
+\citation{archetti2017logistic}
 \citation{archetti2012hybrid}
 \citation{archetti2007branch}
 \citation{archetti2012hybrid}
 \citation{alvarez2018iterated}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Parameter calibrations}{18}{subsection.5.2}\protected@file@percent }
 \citation{alvarez2018iterated}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Variants derived from \hyperref  [alg:MSILS]{MSILS}\relax }}{19}{table.caption.4}\protected@file@percent }
-\newlabel{Variants of MSILS}{{3}{19}{Variants derived from \hyperref [alg:MSILS]{MSILS}\relax }{table.caption.4}{}}
+\citation{alvarez2018iterated}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Parameter calibrations}{19}{subsection.5.2}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Default values of parameters\relax }}{19}{table.caption.3}\protected@file@percent }
 \newlabel{default parameters}{{2}{19}{Default values of parameters\relax }{table.caption.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Impact on the performance of individual mechanisms in \hyperref  [alg:MSILS]{MSILS} and parameter tuning}{19}{subsection.5.3}\protected@file@percent }
 \newlabel{sec: tuning}{{5.3}{19}{Impact on the performance of individual mechanisms in \hyperref [alg:MSILS]{MSILS} and parameter tuning}{subsection.5.3}{}}
 \citation{alvarez2018iterated}
-\citation{alvarez2018iterated}
 \citation{archetti2019exact}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Variants derived from \hyperref  [alg:MSILS]{MSILS}\relax }}{20}{table.caption.4}\protected@file@percent }
+\newlabel{Variants of MSILS}{{3}{20}{Variants derived from \hyperref [alg:MSILS]{MSILS}\relax }{table.caption.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Performance evaluation}{20}{subsection.5.4}\protected@file@percent }
 \newlabel{sec:performance evaluation}{{5.4}{20}{Performance evaluation}{subsection.5.4}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Average percentage gap (\%) of \hyperref  [alg:MSILS]{MSILS} compared with ILS\relax }}{20}{table.caption.5}\protected@file@percent }
 \newlabel{tab:msils_vs_ils}{{4}{20}{Average percentage gap (\%) of \hyperref [alg:MSILS]{MSILS} compared with ILS\relax }{table.caption.5}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Average percentage gap (\%) of \hyperref  [alg:MSILS]{MSILS} compared with SA\relax }}{20}{table.caption.6}\protected@file@percent }
 \newlabel{tab:msils_vs_ils}{{5}{20}{Average percentage gap (\%) of \hyperref [alg:MSILS]{MSILS} compared with SA\relax }{table.caption.6}{}}
-\citation{vidal2022hybrid}
-\citation{vidal2022hybrid}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Robustness}{21}{subsection.5.5}\protected@file@percent }
 \newlabel{Robustness}{{5.5}{21}{Robustness}{subsection.5.5}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {A}Functions used to construct initial solution}{21}{appendix.A}\protected@file@percent }
@@ -179,29 +181,33 @@
 \newlabel{alg:FindVisitTime}{{5}{21}{\textbf {Find Feasible Visit Time}($t_{current}$, $t_{Stockout}$, $i$)\relax }{algorithm.5}{}}
 \@writefile{loa}{\contentsline {algorithm}{\numberline {6}{\ignorespaces \textbf  {Find Vehicle To Deliver Max}($t$, $i$, $s$)\relax }}{21}{algorithm.6}\protected@file@percent }
 \newlabel{alg:FindVehicleToDeliverMax}{{6}{21}{\textbf {Find Vehicle To Deliver Max}($t$, $i$, $s$)\relax }{algorithm.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}\hyperref  [alg:MSILS]{MSILS} with HGS}{22}{appendix.B}\protected@file@percent }
-\newlabel{MSILS with HGS}{{B}{22}{\hyperref [alg:MSILS]{MSILS} with HGS}{appendix.B}{}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {7}{\ignorespaces \textbf  {\hyperref  [alg:MSILS]{MSILS} with HGS in \cite  {vidal2022hybrid}}\relax }}{22}{algorithm.7}\protected@file@percent }
-\newlabel{alg:MSILS with HGS}{{7}{22}{\textbf {\hyperref [alg:MSILS]{MSILS} with HGS in \cite {vidal2022hybrid}}\relax }{algorithm.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {C}Functions used in Rebalance procedure guarantee feasible solution}{23}{appendix.C}\protected@file@percent }
-\@writefile{loa}{\contentsline {algorithm}{\numberline {8}{\ignorespaces \textbf  {Feasible\_Quantity\_To\_Removal$(i,j)$}\relax }}{23}{algorithm.8}\protected@file@percent }
-\newlabel{alg:FeasibleQuantityRemoval}{{8}{23}{\textbf {Feasible\_Quantity\_To\_Removal$(i,j)$}\relax }{algorithm.8}{}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {9}{\ignorespaces \textbf  {Assign\_max\_possible\_quantity\_after\_feasible$(s)$}\relax }}{23}{algorithm.9}\protected@file@percent }
-\newlabel{alg:AssignQuantity}{{9}{23}{\textbf {Assign\_max\_possible\_quantity\_after\_feasible$(s)$}\relax }{algorithm.9}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {D}Rebalance procedure without guarantee feasible solution}{24}{appendix.D}\protected@file@percent }
-\newlabel{sec: rebalance without feasibility}{{D}{24}{Rebalance procedure without guarantee feasible solution}{appendix.D}{}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {10}{\ignorespaces \textbf  {Destory\_And\_Rebalance$(s^*)$}\relax }}{24}{algorithm.10}\protected@file@percent }
-\newlabel{alg: destroy and rebalance}{{10}{24}{\textbf {Destory\_And\_Rebalance$(s^*)$}\relax }{algorithm.10}{}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {11}{\ignorespaces \textbf  {Find\_max\_quantity\_avoid\_stockout$(customer, time)$}\relax }}{24}{algorithm.11}\protected@file@percent }
-\newlabel{alg:FindMaxQuantityAvoidStockout}{{11}{24}{\textbf {Find\_max\_quantity\_avoid\_stockout$(customer, time)$}\relax }{algorithm.11}{}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {12}{\ignorespaces \textbf  {Find\_max\_stockout$(customer, time)$}\relax }}{25}{algorithm.12}\protected@file@percent }
-\newlabel{alg:FindMaxStockout}{{12}{25}{\textbf {Find\_max\_stockout$(customer, time)$}\relax }{algorithm.12}{}}
+\citation{vidal2022hybrid}
+\citation{vidal2022hybrid}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {7}{\ignorespaces \textbf  {Adjust Delivery Quantities}($i$, $t$, $s$)\relax }}{22}{algorithm.7}\protected@file@percent }
+\newlabel{alg:AdjustDeliveryQuantities}{{7}{22}{\textbf {Adjust Delivery Quantities}($i$, $t$, $s$)\relax }{algorithm.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}\hyperref  [alg:MSILS]{MSILS} with HGS}{23}{appendix.B}\protected@file@percent }
+\newlabel{MSILS with HGS}{{B}{23}{\hyperref [alg:MSILS]{MSILS} with HGS}{appendix.B}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {8}{\ignorespaces \textbf  {\hyperref  [alg:MSILS]{MSILS} with HGS in \cite  {vidal2022hybrid}}\relax }}{23}{algorithm.8}\protected@file@percent }
+\newlabel{alg:MSILS with HGS}{{8}{23}{\textbf {\hyperref [alg:MSILS]{MSILS} with HGS in \cite {vidal2022hybrid}}\relax }{algorithm.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Functions used in Rebalance procedure guarantee feasible solution}{24}{appendix.C}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {9}{\ignorespaces \textbf  {Feasible\_Quantity\_To\_Removal$(i,j)$}\relax }}{24}{algorithm.9}\protected@file@percent }
+\newlabel{alg:FeasibleQuantityRemoval}{{9}{24}{\textbf {Feasible\_Quantity\_To\_Removal$(i,j)$}\relax }{algorithm.9}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {10}{\ignorespaces \textbf  {Assign\_max\_possible\_quantity\_after\_feasible$(s)$}\relax }}{24}{algorithm.10}\protected@file@percent }
+\newlabel{alg:AssignQuantity}{{10}{24}{\textbf {Assign\_max\_possible\_quantity\_after\_feasible$(s)$}\relax }{algorithm.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {D}Rebalance procedure without guarantee feasible solution}{25}{appendix.D}\protected@file@percent }
+\newlabel{sec: rebalance without feasibility}{{D}{25}{Rebalance procedure without guarantee feasible solution}{appendix.D}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {11}{\ignorespaces \textbf  {Destory\_And\_Rebalance$(s^*)$}\relax }}{25}{algorithm.11}\protected@file@percent }
+\newlabel{alg: destroy and rebalance}{{11}{25}{\textbf {Destory\_And\_Rebalance$(s^*)$}\relax }{algorithm.11}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {12}{\ignorespaces \textbf  {Find\_max\_quantity\_avoid\_stockout$(customer, time)$}\relax }}{25}{algorithm.12}\protected@file@percent }
+\newlabel{alg:FindMaxQuantityAvoidStockout}{{12}{25}{\textbf {Find\_max\_quantity\_avoid\_stockout$(customer, time)$}\relax }{algorithm.12}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {13}{\ignorespaces \textbf  {Find\_max\_stockout$(customer, time)$}\relax }}{26}{algorithm.13}\protected@file@percent }
+\newlabel{alg:FindMaxStockout}{{13}{26}{\textbf {Find\_max\_stockout$(customer, time)$}\relax }{algorithm.13}{}}
 \bibstyle{apalike}
 \bibdata{reference}
 \bibcite{absi2020branch}{{1}{2020}{{Absi et~al.}}{{}}}
 \bibcite{alonsopecina2024iterated}{{2}{2024}{{Alonso-Pecina et~al.}}{{}}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {13}{\ignorespaces \textbf  {Repair$(s, Stockout\_resolved)$}\relax }}{26}{algorithm.13}\protected@file@percent }
-\newlabel{alg:QunatityRepair}{{13}{26}{\textbf {Repair$(s, Stockout\_resolved)$}\relax }{algorithm.13}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {14}{\ignorespaces \textbf  {Repair$(s, Stockout\_resolved)$}\relax }}{27}{algorithm.14}\protected@file@percent }
+\newlabel{alg:QunatityRepair}{{14}{27}{\textbf {Repair$(s, Stockout\_resolved)$}\relax }{algorithm.14}{}}
 \bibcite{alvarez2018iterated}{{3}{2018}{{Alvarez et~al.}}{{}}}
 \bibcite{archetti2012hybrid}{{4}{2012}{{Archetti et~al.}}{{}}}
 \bibcite{archetti2007branch}{{5}{2007}{{Archetti et~al.}}{{}}}
@@ -230,4 +236,4 @@
 \bibcite{su2020matheuristic}{{28}{2020}{{Su et~al.}}{{}}}
 \bibcite{vidal2022hybrid}{{29}{2022}{{Vidal}}{{}}}
 \bibcite{zhao2025large}{{30}{2025}{{Zhao et~al.}}{{}}}
-\gdef \@abspage@last{29}
+\gdef \@abspage@last{30}

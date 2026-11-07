@@ -21,10 +21,13 @@ double InitialSupplierDeliverySlack(const vector<double> &SupplierDeliverySlack,
     return SupplierDeliverySlack[day];
 }
 
-void UpdateSupplierInventory(input &IRPLR, const vector<double> &TotalDeliveryPerDay, vector<double> &InventoryLevelSupplier, vector<double> &SupplierDeliverySlack)
+// Recompute the supplier inventory from startDay onwards (earlier days are unaffected by a change at startDay),
+// then recompute the delivery slack for all days, since the slack of a day depends on all later days.
+void UpdateSupplierInventory(input &IRPLR, const vector<double> &TotalDeliveryPerDay, vector<double> &InventoryLevelSupplier, vector<double> &SupplierDeliverySlack, int startDay = 0)
 {
-    double supplierInventory = IRPLR.Supplier.InventoryBegin;
-    for (int day = 0; day < static_cast<int>(InventoryLevelSupplier.size()); day++)
+    assert(startDay >= 0 && startDay < static_cast<int>(InventoryLevelSupplier.size()));
+    double supplierInventory = (startDay > 0) ? InventoryLevelSupplier[startDay - 1] : IRPLR.Supplier.InventoryBegin;
+    for (int day = startDay; day < static_cast<int>(InventoryLevelSupplier.size()); day++)
     {
         supplierInventory += IRPLR.Supplier.QuantityProduced - TotalDeliveryPerDay[day];
         InventoryLevelSupplier[day] = supplierInventory;
@@ -71,13 +74,15 @@ void InitialAdjustQuantityAndInventoryLevel(
     if (previous_inventory_level + DeliveryQuantity[day] > IRPLR.Retailers[customer_index].InventoryMax)
     {
         // cout<<"& "<<previous_inventory_level<<","<<DeliveryQuantity[day]<<","<<IRPLR.Retailers[customer_index].InventoryMax<<endl;
-        DeliveryQuantity[day] = DeliveryQuantity[day] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        ChangeInTotalQuantity = ChangeInTotalQuantity - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        VehicleLoad[day][vehicle] = VehicleLoad[day][vehicle] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        TotalDeliveryPerDay[day] = TotalDeliveryPerDay[day] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        CurrentInventoryLevel = CurrentInventoryLevel - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
+        // Compute the excess once, before DeliveryQuantity is modified.
+        double excess = previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax;
+        DeliveryQuantity[day] -= excess;
+        ChangeInTotalQuantity -= excess;
+        VehicleLoad[day][vehicle] -= excess;
+        TotalDeliveryPerDay[day] -= excess;
+        CurrentInventoryLevel -= excess;
     }
-    UpdateSupplierInventory(IRPLR, TotalDeliveryPerDay, InventoryLevelSupplier, SupplierDeliverySlack);
+    UpdateSupplierInventory(IRPLR, TotalDeliveryPerDay, InventoryLevelSupplier, SupplierDeliverySlack, day);
 
     // if (fabs(InventoryLevel[day] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
     // {
@@ -151,7 +156,7 @@ void InitialAdjustQuantityAndInventoryLevel(
         }
         if (supplierInventoryChanged)
         {
-            UpdateSupplierInventory(IRPLR, TotalDeliveryPerDay, InventoryLevelSupplier, SupplierDeliverySlack);
+            UpdateSupplierInventory(IRPLR, TotalDeliveryPerDay, InventoryLevelSupplier, SupplierDeliverySlack, y);
         }
 
         // if (fabs(InventoryLevel[y] - CurrentInventoryLevel) > 0.00001) // If Inventory level is different to the new inventory level, update the stock out accordingly.
@@ -718,11 +723,15 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 }
                                 if (AssignedDelivery == true)
                                 {
-                                    // After assigning a delivery, update the inventory level timeline for the retailer
-                                    int temp_day = 0;
-                                    InitialAdjustQuantityAndInventoryLevel(IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin,
+                                    // After assigning a delivery, update the inventory level timeline for the retailer.
+                                    // Periods before the assigned period are unaffected, so start from the assigned period.
+                                    int temp_day = RandomPickANonStockOutPeriod;
+                                    double temp_previous_inventory_level = (temp_day > 0)
+                                                                               ? IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][temp_day - 1]
+                                                                               : IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin;
+                                    InitialAdjustQuantityAndInventoryLevel(temp_previous_inventory_level,
                                                                            temp_day,
-                                                                           IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][0],
+                                                                           IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][temp_day],
                                                                            IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]],
                                                                            IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]],
                                                                            IRPSolution.VehicleLoad,
@@ -848,11 +857,15 @@ void solution_construction::Initial_BlockZone_Schedule(input &IRPLR, solution &I
                                 IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = vehicle_index;
                                 IRPSolution.VisitOrder[CandidateRetailers[RandomPickARetailer]][LookBackwardPeriod] = IRPSolution.Route[LookBackwardPeriod][vehicle_index].size() - 1;
                             }
-                            // Update inventory timeline after assignment
-                            int temp_day=0;
-                            InitialAdjustQuantityAndInventoryLevel(IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin,
+                            // Update inventory timeline after assignment.
+                            // Periods before the assigned period are unaffected, so start from the assigned period.
+                            int temp_day = LookBackwardPeriod;
+                            double temp_previous_inventory_level = (temp_day > 0)
+                                                                       ? IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]][temp_day - 1]
+                                                                       : IRPLR.Retailers[CandidateRetailers[RandomPickARetailer]].InventoryBegin;
+                            InitialAdjustQuantityAndInventoryLevel(temp_previous_inventory_level,
                                                             temp_day,
-                                                            IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][0],
+                                                            IRPSolution.VehicleAllocation[CandidateRetailers[RandomPickARetailer]][temp_day],
                                                             IRPSolution.DeliveryQuantity[CandidateRetailers[RandomPickARetailer]],
                                                             IRPSolution.InventoryLevel[CandidateRetailers[RandomPickARetailer]],
                                                             IRPSolution.VehicleLoad,
