@@ -46,6 +46,39 @@ double solution_improvement::SupplierAvailabilityForCandidateDay(
     return supplierAvailability;
 }
 
+double solution_improvement::SupplierAvailabilityForCandidateDay(
+    input &IRPLR,
+    solution &IRPSolution,
+    int day,
+    const int *CandidateCustomers,
+    const double *const *CandidateDeliveryQuantity,
+    int NumberOfCandidates)
+{
+    // Identical arithmetic (and summation order) to the vector-based overload above.
+    assert(day >= 0 && day < IRPLR.TimeHorizon);
+    assert(NumberOfCandidates >= 0);
+
+    double supplierAvailability = numeric_limits<double>::infinity();
+    double cumulativeDeliveryDelta = 0.0;
+    for (int futureDay = 0; futureDay < IRPLR.TimeHorizon; ++futureDay)
+    {
+        for (int candidateIndex = 0; candidateIndex < NumberOfCandidates; ++candidateIndex)
+        {
+            const int customer = CandidateCustomers[candidateIndex];
+            cumulativeDeliveryDelta += CandidateDeliveryQuantity[candidateIndex][futureDay] -
+                                       IRPSolution.DeliveryQuantity[customer][futureDay];
+        }
+        if (futureDay >= day)
+        {
+            supplierAvailability = min(
+                supplierAvailability,
+                IRPSolution.InventoryLevelSupplier[futureDay] - cumulativeDeliveryDelta);
+        }
+    }
+
+    return supplierAvailability;
+}
+
 double solution_improvement::DeliverDemand(double &InventoryMax, double &CustomerDemand, double &PreviousInventoryLevel)
 {
     // assert(VehicleCapacity - VehicleLoad > -0.00001);

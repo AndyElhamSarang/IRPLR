@@ -58,8 +58,202 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
     int solutionCounter = 0;
     int working_solutionCounter = 0;
     int not_working_solutionCounter = 0;
-    int naive_implementation = 0;
     set<vector<int>>::iterator select_pair;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                                        //
+    //  Evaluation caches.                                                                                    //
+    //  The quantity part of a move only depends on WHICH customers change vehicle, not on the positions      //
+    //  where they are inserted. Therefore:                                                                   //
+    //   (1) moves with Swap_length2 == 0 (e.g. the shift phase) are evaluated once per                       //
+    //       (pick_position_in_vehicle1, Swap_length1) and reused for every pick_position_in_vehicle2;        //
+    //   (2) moves with Swap_length1 == 0 are evaluated once per (pick_position_in_vehicle2, Swap_length2)    //
+    //       and reused for every pick_position_in_vehicle1.                                                  //
+    //  Only the routing cost (ConcatenateSwapTwoRoutesSingleDay) is evaluated for every position. The        //
+    //  arithmetic is exactly the one of evaluating each candidate from scratch, so the search is unchanged.  //
+    //  All buffers are allocated once per operator call and reused, avoiding per-candidate heap traffic.     //
+    //                                                                                                        //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    struct SwapEvaluation
+    {
+        bool computed = false;
+        bool fail_insert = false;   // an inserted customer cannot receive a positive quantity
+        bool fail_supplier = false; // the final supplier availability check fails
+        vector<vector<double>> DeliveryQuantityRoute1, InventoryLevelRoute1;
+        vector<vector<double>> DeliveryQuantityRoute2, InventoryLevelRoute2;
+        vector<char> IntroduceNewQuantityRoute1, IntroduceNewQuantityRoute2;
+        vector<vector<double>> VehicleLoad;      // [day][vehicle]
+        vector<double> TotalSlackPerVehicle;     // [vehicle] on pick_day
+        double ChangeInTotalQuantity = 0;
+        double StockOut = 0;
+        double VehicleOverload = 0;
+    };
+    const int MaxRows1 = max(max_Swap_length1, 0);
+    const int MaxRows2 = max(max_Swap_length2, 0);
+    SwapEvaluation ScratchEvaluation;
+    vector<SwapEvaluation> CacheFixedPosition1(MaxRows1 + 1); // Swap_length2 == 0: indexed by Swap_length1, valid for the current pick_position_in_vehicle1
+    vector<SwapEvaluation> CacheFixedPosition2;               // Swap_length1 == 0: indexed by pick_position_in_vehicle2 * (MaxRows2 + 1) + Swap_length2, valid for the current pair
+    vector<int> CandidateCustomers(MaxRows1 + MaxRows2);
+    vector<const double *> CandidateRows(MaxRows1 + MaxRows2);
+
+    auto EvaluateSwap = [&](int pick_day, int pick_vehicle1, int pick_position_in_vehicle1, int Swap_length1,
+                            int pick_vehicle2, int pick_position_in_vehicle2, int Swap_length2, SwapEvaluation &out)
+    {
+        if ((int)out.DeliveryQuantityRoute1.size() < Swap_length1)
+        {
+            out.DeliveryQuantityRoute1.resize(Swap_length1);
+            out.InventoryLevelRoute1.resize(Swap_length1);
+            out.IntroduceNewQuantityRoute1.resize(Swap_length1);
+        }
+        if ((int)out.DeliveryQuantityRoute2.size() < Swap_length2)
+        {
+            out.DeliveryQuantityRoute2.resize(Swap_length2);
+            out.InventoryLevelRoute2.resize(Swap_length2);
+            out.IntroduceNewQuantityRoute2.resize(Swap_length2);
+        }
+        out.fail_insert = false;
+        out.fail_supplier = false;
+
+        double SlackDeductRoute1 = 0;
+        for (int route1_index = 0; route1_index < Swap_length1; route1_index++)
+        {
+            const int customer = IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index];
+            out.DeliveryQuantityRoute1[route1_index] = IRPSolution.DeliveryQuantity[customer];
+            out.InventoryLevelRoute1[route1_index] = IRPSolution.InventoryLevel[customer];
+            out.IntroduceNewQuantityRoute1[route1_index] = false;
+            SlackDeductRoute1 += memory.QuantityStructure[customer][pick_day];
+        }
+        double SlackDeductRoute2 = 0;
+        for (int route2_index = 0; route2_index < Swap_length2; route2_index++)
+        {
+            const int customer = IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index];
+            out.DeliveryQuantityRoute2[route2_index] = IRPSolution.DeliveryQuantity[customer];
+            out.InventoryLevelRoute2[route2_index] = IRPSolution.InventoryLevel[customer];
+            out.IntroduceNewQuantityRoute2[route2_index] = false;
+            SlackDeductRoute2 += memory.QuantityStructure[customer][pick_day];
+        }
+        // Candidates for the supplier availability check: route 1 customers first, then route 2 customers
+        int NumberOfCandidates = 0;
+        for (int route1_index = 0; route1_index < Swap_length1; ++route1_index)
+        {
+            CandidateCustomers[NumberOfCandidates] = IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index];
+            out.DeliveryQuantityRoute1[route1_index][pick_day] = 0.0;
+            CandidateRows[NumberOfCandidates] = out.DeliveryQuantityRoute1[route1_index].data();
+            NumberOfCandidates++;
+        }
+        for (int route2_index = 0; route2_index < Swap_length2; ++route2_index)
+        {
+            CandidateCustomers[NumberOfCandidates] = IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index];
+            out.DeliveryQuantityRoute2[route2_index][pick_day] = 0.0;
+            CandidateRows[NumberOfCandidates] = out.DeliveryQuantityRoute2[route2_index].data();
+            NumberOfCandidates++;
+        }
+
+        out.StockOut = IRPSolution.ViolationStockOut;
+        out.VehicleOverload = IRPSolution.ViolationMoreThanCapacity;
+        out.ChangeInTotalQuantity = 0;
+        out.VehicleLoad = IRPSolution.VehicleLoad;
+        out.TotalSlackPerVehicle = memory.TotalSlackPerVehicle[pick_day];
+
+        // Remove customers from route 1 and route 2, make delivery quantity 0 for removed customers and record the change in total delivery quantity
+        for (int route1_index = 0; route1_index < Swap_length1; route1_index++)
+        {
+            const int customer = IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index];
+            out.VehicleLoad[pick_day][pick_vehicle1] = out.VehicleLoad[pick_day][pick_vehicle1] - IRPSolution.DeliveryQuantity[customer][pick_day];
+            out.DeliveryQuantityRoute1[route1_index][pick_day] = 0;
+            out.ChangeInTotalQuantity = out.ChangeInTotalQuantity - IRPSolution.DeliveryQuantity[customer][pick_day];
+        }
+        for (int route2_index = 0; route2_index < Swap_length2; route2_index++)
+        {
+            const int customer = IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index];
+            out.VehicleLoad[pick_day][pick_vehicle2] = out.VehicleLoad[pick_day][pick_vehicle2] - IRPSolution.DeliveryQuantity[customer][pick_day];
+            out.DeliveryQuantityRoute2[route2_index][pick_day] = 0;
+            out.ChangeInTotalQuantity = out.ChangeInTotalQuantity - IRPSolution.DeliveryQuantity[customer][pick_day];
+        }
+
+        // Insert customers of route 1 into vehicle 2 (insert_to_vehicle) and customers of route 2 into vehicle 1.
+        // Supplier availability is evaluated with the current customer's delivery on pick_day still at 0.
+        auto InsertCustomer = [&](int customer, vector<double> &Delivery, vector<double> &Inventory, char &IntroduceNewQuantity,
+                                  int insert_to_vehicle, double SlackDeductInsertToVehicle)
+        {
+            const double SupplierAvailable = SupplierAvailabilityForCandidateDay(
+                IRPLR, IRPSolution, pick_day, CandidateCustomers.data(), CandidateRows.data(), NumberOfCandidates);
+            double &previous_inventory_level = (pick_day == 0) ? IRPLR.Retailers[customer].InventoryBegin : IRPSolution.InventoryLevel[customer][pick_day - 1];
+            Delivery[pick_day] = DeliveryMax(
+                IRPLR.Vehicle.capacity,
+                out.VehicleLoad[pick_day][insert_to_vehicle],
+                IRPLR.Retailers[customer].InventoryMax,
+                IRPLR.Retailers[customer].Demand,
+                previous_inventory_level);
+            // Seek delivery quantity from possible quantity to remove from the existing visits,
+            if (Delivery[pick_day] < 0.00001)
+            {
+                // Strategy 1
+                Delivery[pick_day] = DeliveryMaxAllowingCapacityViolation(
+                    IRPLR.Retailers[customer].InventoryMax,
+                    IRPLR.Retailers[customer].Demand,
+                    previous_inventory_level);
+                Delivery[pick_day] = min(Delivery[pick_day], out.TotalSlackPerVehicle[insert_to_vehicle] - SlackDeductInsertToVehicle);
+                out.TotalSlackPerVehicle[insert_to_vehicle] = out.TotalSlackPerVehicle[insert_to_vehicle] - Delivery[pick_day];
+                IntroduceNewQuantity = true;
+            }
+            const double quantityBeforeSupplierLimit = Delivery[pick_day];
+            Delivery[pick_day] = min(quantityBeforeSupplierLimit, max(0.0, SupplierAvailable));
+            if (IntroduceNewQuantity)
+            {
+                out.TotalSlackPerVehicle[insert_to_vehicle] += quantityBeforeSupplierLimit - Delivery[pick_day];
+            }
+
+            if (Delivery[pick_day] < 0.00001)
+            {
+                out.fail_insert = true;
+            }
+            else
+            {
+                if (IntroduceNewQuantity == false)
+                {
+                    out.ChangeInTotalQuantity += Delivery[pick_day];
+                    out.VehicleLoad[pick_day][insert_to_vehicle] = out.VehicleLoad[pick_day][insert_to_vehicle] + Delivery[pick_day];
+                }
+                assert(Delivery[pick_day] != 0);
+                AdjustQuantityAndInventoryLevel(
+                    previous_inventory_level,
+                    pick_day,
+                    insert_to_vehicle,
+                    Delivery,
+                    Inventory,
+                    out.VehicleLoad,
+                    IRPSolution.VehicleAllocation,
+                    out.ChangeInTotalQuantity,
+                    out.StockOut,
+                    out.VehicleOverload,
+                    customer,
+                    IRPLR);
+            }
+        };
+        for (int route1_index = 0; route1_index < Swap_length1; route1_index++)
+        {
+            InsertCustomer(IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index],
+                           out.DeliveryQuantityRoute1[route1_index], out.InventoryLevelRoute1[route1_index], out.IntroduceNewQuantityRoute1[route1_index],
+                           pick_vehicle2, SlackDeductRoute2);
+        }
+        for (int route2_index = 0; route2_index < Swap_length2; route2_index++)
+        {
+            InsertCustomer(IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index],
+                           out.DeliveryQuantityRoute2[route2_index], out.InventoryLevelRoute2[route2_index], out.IntroduceNewQuantityRoute2[route2_index],
+                           pick_vehicle1, SlackDeductRoute1);
+        }
+
+        if (out.fail_insert == false)
+        {
+            if (SupplierAvailabilityForCandidateDay(
+                    IRPLR, IRPSolution, pick_day, CandidateCustomers.data(), CandidateRows.data(), NumberOfCandidates) < -0.00001)
+            {
+                out.fail_supplier = true;
+            }
+        }
+    };
+
     time(&accumulate_start_time);
     try
     {
@@ -72,10 +266,26 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
             int pair_obtain_improving = 0;
 
             assert(pick_vehicle2 > pick_vehicle1);
+            const int Route1Size = IRPSolution.Route[pick_day][pick_vehicle1].size();
+            const int Route2Size = IRPSolution.Route[pick_day][pick_vehicle2].size();
 
-            for (int pick_position_in_vehicle1 = 0; pick_position_in_vehicle1 <= IRPSolution.Route[pick_day][pick_vehicle1].size(); pick_position_in_vehicle1++) // A position in vehicle 1
+            const size_t CacheFixedPosition2Size = (size_t)(Route2Size + 1) * (MaxRows2 + 1);
+            if (CacheFixedPosition2.size() < CacheFixedPosition2Size)
             {
-                for (int pick_position_in_vehicle2 = 0; pick_position_in_vehicle2 <= IRPSolution.Route[pick_day][pick_vehicle2].size(); pick_position_in_vehicle2++) // A position in vehicle 1
+                CacheFixedPosition2.resize(CacheFixedPosition2Size);
+            }
+            for (size_t i = 0; i < CacheFixedPosition2Size; i++)
+            {
+                CacheFixedPosition2[i].computed = false;
+            }
+
+            for (int pick_position_in_vehicle1 = 0; pick_position_in_vehicle1 <= Route1Size; pick_position_in_vehicle1++) // A position in vehicle 1
+            {
+                for (int i = 0; i <= MaxRows1; i++)
+                {
+                    CacheFixedPosition1[i].computed = false;
+                }
+                for (int pick_position_in_vehicle2 = 0; pick_position_in_vehicle2 <= Route2Size; pick_position_in_vehicle2++) // A position in vehicle 2
                 {
                     for (int Swap_length1 = min_Swap_length1; Swap_length1 <= max_Swap_length1; Swap_length1++)
                     {
@@ -84,7 +294,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                             if (Swap_length1 != 0 || Swap_length2 != 0)
                             {
 
-                                if (pick_position_in_vehicle2 + Swap_length2 <= IRPSolution.Route[pick_day][pick_vehicle2].size() && pick_position_in_vehicle1 + Swap_length1 <= IRPSolution.Route[pick_day][pick_vehicle1].size()) // Make sure the operator does not go outside the range
+                                if (pick_position_in_vehicle2 + Swap_length2 <= Route2Size && pick_position_in_vehicle1 + Swap_length1 <= Route1Size) // Make sure the operator does not go outside the range
                                 {
                                     time(&total_end_time);
                                     double total_ls_time = difftime(total_end_time, total_start_time);
@@ -96,540 +306,29 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                     }
                                     if (Swap_length1 <= 3 && Swap_length2 <= 3)
                                     {
-
                                         ////////////////////////////////////////////////////////////////////////////////
                                         //                                                                            //
                                         //      Efficient implementation of evaluating the swap remove insert move    //
                                         //                                                                            //
                                         ////////////////////////////////////////////////////////////////////////////////
                                         solutionCounter++;
-                                        bool Whether_normal_insert_fail = false; // if insert does not lead to an increase on delivery quantity, this move fails, therefore skip the evalution
-                                        /////////////////////////////////////////////////////////////////////////////////
-                                        //                                                                             //
-                                        //      Evaluate quantity changes without permitting capacity violation        //
-                                        //                                                                             //
-                                        /////////////////////////////////////////////////////////////////////////////////
-                                        // Initialize all data needed to capture the improving solution
-                                        // cout << "*pick_day: " << pick_day << ", pick_vehicle1:" << pick_vehicle1 << ", pick_position_in_vehicle1:" << pick_position_in_vehicle1 << ", pick_vehicle2:" << pick_vehicle2 << ", pick_position_in_vehicle2:" << pick_position_in_vehicle2 << ", Swap_length1:" << Swap_length1 << ", Swap_length2:" << Swap_length2 << endl;
-                                        vector<vector<double>> NewDeliveryQuantityRoute1;
-                                        vector<vector<double>> NewInventoryLevelRoute1;
-                                        vector<bool> NewIntroduceNewQuantityOrNotRoute1;
-                                        double SlackDeductRoute1 = 0;
-                                        for (int route1_index = pick_position_in_vehicle1; route1_index < pick_position_in_vehicle1 + Swap_length1; route1_index++)
+                                        SwapEvaluation *eval = &ScratchEvaluation;
+                                        if (Swap_length2 == 0)
                                         {
-                                            NewDeliveryQuantityRoute1.push_back(IRPSolution.DeliveryQuantity[IRPSolution.Route[pick_day][pick_vehicle1][route1_index]]);
-                                            NewInventoryLevelRoute1.push_back(IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle1][route1_index]]);
-                                            NewIntroduceNewQuantityOrNotRoute1.push_back(false);
-                                            SlackDeductRoute1 += memory.QuantityStructure[IRPSolution.Route[pick_day][pick_vehicle1][route1_index]][pick_day];
+                                            eval = &CacheFixedPosition1[Swap_length1];
                                         }
-                                        // cout << "SlackDeductRoute1:" << SlackDeductRoute1 << endl;
-                                        assert(NewDeliveryQuantityRoute1.size() == Swap_length1);
-                                        assert(NewInventoryLevelRoute1.size() == Swap_length1);
-                                        vector<vector<double>> NewDeliveryQuantityRoute2;
-                                        vector<vector<double>> NewInventoryLevelRoute2;
-                                        vector<bool> NewIntroduceNewQuantityOrNotRoute2;
-                                        double SlackDeductRoute2 = 0;
-                                        for (int route2_index = pick_position_in_vehicle2; route2_index < pick_position_in_vehicle2 + Swap_length2; route2_index++)
+                                        else if (Swap_length1 == 0)
                                         {
-                                            NewDeliveryQuantityRoute2.push_back(IRPSolution.DeliveryQuantity[IRPSolution.Route[pick_day][pick_vehicle2][route2_index]]);
-                                            NewInventoryLevelRoute2.push_back(IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle2][route2_index]]);
-                                            NewIntroduceNewQuantityOrNotRoute2.push_back(false);
-                                            SlackDeductRoute2 += memory.QuantityStructure[IRPSolution.Route[pick_day][pick_vehicle2][route2_index]][pick_day];
+                                            eval = &CacheFixedPosition2[(size_t)pick_position_in_vehicle2 * (MaxRows2 + 1) + Swap_length2];
                                         }
-                                        // cout << "SlackDeductRoute2:" << SlackDeductRoute2 << endl;
-                                        assert(NewDeliveryQuantityRoute2.size() == Swap_length2);
-                                        assert(NewInventoryLevelRoute2.size() == Swap_length2);
-                                        vector<int> SupplierCandidateCustomers;
-                                        vector<vector<double>> SupplierCandidateDeliveryQuantity;
-                                        for (int route1_index = 0; route1_index < Swap_length1; ++route1_index)
+                                        if (eval == &ScratchEvaluation || !eval->computed)
                                         {
-                                            const int customer = IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index];
-                                            SupplierCandidateCustomers.push_back(customer);
-                                            NewDeliveryQuantityRoute1[route1_index][pick_day] = 0.0;
-                                            SupplierCandidateDeliveryQuantity.push_back(NewDeliveryQuantityRoute1[route1_index]);
-                                        }
-                                        for (int route2_index = 0; route2_index < Swap_length2; ++route2_index)
-                                        {
-                                            const int customer = IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index];
-                                            SupplierCandidateCustomers.push_back(customer);
-                                            NewDeliveryQuantityRoute2[route2_index][pick_day] = 0.0;
-                                            SupplierCandidateDeliveryQuantity.push_back(NewDeliveryQuantityRoute2[route2_index]);
+                                            EvaluateSwap(pick_day, pick_vehicle1, pick_position_in_vehicle1, Swap_length1,
+                                                         pick_vehicle2, pick_position_in_vehicle2, Swap_length2, *eval);
+                                            eval->computed = true;
                                         }
 
-                                        double NewStockOut = IRPSolution.ViolationStockOut;
-                                        double NewVehicleOverload = IRPSolution.ViolationMoreThanCapacity;
-                                        double ChangeInTotalQuantity = 0;
-                                        vector<vector<double>> CopyVehicleLoad = IRPSolution.VehicleLoad;
-                                        vector<double> CopyTotalSlackPerVehicle = memory.TotalSlackPerVehicle[pick_day];
-
-                                        // cout << "intialize all data needed to capture the improving solution" << endl;
-                                        // cout << "SelectedVehicleLoad1: " << CopyVehicleLoad[pick_day][pick_vehicle1] << endl;
-                                        // cout << "SelectedVehicleLoad2: " << CopyVehicleLoad[pick_day][pick_vehicle2] << endl;
-                                        // cout << "ChangeInTotalQuantity: " << ChangeInTotalQuantity << endl;
-                                        // cout << "NewDeliveryQuantityRoute1" << endl;
-                                        // for (int i = 0; i < NewDeliveryQuantityRoute1.size(); i++)
-                                        // {
-                                        //     for (int j = 0; j < NewDeliveryQuantityRoute1[i].size(); j++)
-                                        //     {
-                                        //         cout << NewDeliveryQuantityRoute1[i][j] << ",";
-                                        //     }
-                                        //     cout << endl;
-                                        // }
-                                        // cout << endl;
-                                        // cout << "NewInventoryLevelRoute1" << endl;
-                                        // for (int i = 0; i < NewInventoryLevelRoute1.size(); i++)
-                                        // {
-                                        //     for (int j = 0; j < NewInventoryLevelRoute1[i].size(); j++)
-                                        //     {
-                                        //         cout << NewInventoryLevelRoute1[i][j] << ",";
-                                        //     }
-                                        //     cout << endl;
-                                        // }
-                                        // cout << endl;
-                                        // cout << "NewDeliveryQuantityRoute2" << endl;
-                                        // for (int i = 0; i < NewDeliveryQuantityRoute2.size(); i++)
-                                        // {
-                                        //     for (int j = 0; j < NewDeliveryQuantityRoute2[i].size(); j++)
-                                        //     {
-                                        //         cout << NewDeliveryQuantityRoute2[i][j] << ",";
-                                        //     }
-                                        //     cout << endl;
-                                        // }
-                                        // cout << endl;
-                                        // cout << "NewInventoryLevelRoute2" << endl;
-                                        // for (int i = 0; i < NewInventoryLevelRoute2.size(); i++)
-                                        // {
-                                        //     for (int j = 0; j < NewInventoryLevelRoute2[i].size(); j++)
-                                        //     {
-                                        //         cout << NewInventoryLevelRoute2[i][j] << ",";
-                                        //     }
-                                        //     cout << endl;
-                                        // }
-                                        // cout << endl;
-                                        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                        // Get change in delivery quantity and inventory level
-                                        // Remove customers from route 1 and route 2
-                                        // Make delivery quantity 0 for removed customers
-                                        // Record the change in total delivery quantity
-                                        for (int route1_index = 0; route1_index < Swap_length1; route1_index++)
-                                        {
-                                            CopyVehicleLoad[pick_day][pick_vehicle1] = CopyVehicleLoad[pick_day][pick_vehicle1] - IRPSolution.DeliveryQuantity[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]][pick_day];
-                                            NewDeliveryQuantityRoute1[route1_index][pick_day] = 0;
-                                            ChangeInTotalQuantity = ChangeInTotalQuantity - IRPSolution.DeliveryQuantity[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]][pick_day];
-                                        }
-                                        for (int route2_index = 0; route2_index < Swap_length2; route2_index++)
-                                        {
-                                            CopyVehicleLoad[pick_day][pick_vehicle2] = CopyVehicleLoad[pick_day][pick_vehicle2] - IRPSolution.DeliveryQuantity[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]][pick_day];
-                                            NewDeliveryQuantityRoute2[route2_index][pick_day] = 0;
-                                            ChangeInTotalQuantity = ChangeInTotalQuantity - IRPSolution.DeliveryQuantity[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]][pick_day];
-                                        }
-
-                                        // cout << "Remove customers from route 1 and route 2" << endl;
-                                        // cout << " Make delivery quantity 0 for removed customers" << endl;
-                                        // cout << "Record the change in total delivery quantity" << endl;
-                                        // cout << "CopyVehicleLoad[pick_day][pick_vehicle1]: " << CopyVehicleLoad[pick_day][pick_vehicle1] << endl;
-                                        // cout << "CopyVehicleLoad[pick_day][pick_vehicle2]: " << CopyVehicleLoad[pick_day][pick_vehicle2] << endl;
-                                        // cout << "ChangeInTotalQuantity: " << ChangeInTotalQuantity << endl;
-                                        // cout << "NewDeliveryQuantityRoute1" << endl;
-                                        // for (int i = 0; i < NewDeliveryQuantityRoute1.size(); i++)
-                                        // {
-                                        //     for (int j = 0; j < NewDeliveryQuantityRoute1[i].size(); j++)
-                                        //     {
-                                        //         cout << NewDeliveryQuantityRoute1[i][j] << ",";
-                                        //     }
-                                        //     cout << endl;
-                                        // }
-                                        // cout << endl;
-                                        // cout << "NewInventoryLevelRoute1" << endl;
-                                        // for (int i = 0; i < NewInventoryLevelRoute1.size(); i++)
-                                        // {
-                                        //     for (int j = 0; j < NewInventoryLevelRoute1[i].size(); j++)
-                                        //     {
-                                        //         cout << NewInventoryLevelRoute1[i][j] << ",";
-                                        //     }
-                                        //     cout << endl;
-                                        // }
-                                        // cout << endl;
-                                        // cout << "NewDeliveryQuantityRoute2" << endl;
-                                        // for (int i = 0; i < NewDeliveryQuantityRoute2.size(); i++)
-                                        // {
-                                        //     for (int j = 0; j < NewDeliveryQuantityRoute2[i].size(); j++)
-                                        //     {
-                                        //         cout << NewDeliveryQuantityRoute2[i][j] << ",";
-                                        //     }
-                                        //     cout << endl;
-                                        // }
-                                        // cout << endl;
-                                        // cout << "NewInventoryLevelRoute2" << endl;
-                                        // for (int i = 0; i < NewInventoryLevelRoute2.size(); i++)
-                                        // {
-                                        //     for (int j = 0; j < NewInventoryLevelRoute2[i].size(); j++)
-                                        //     {
-                                        //         cout << NewInventoryLevelRoute2[i][j] << ",";
-                                        //     }
-                                        //     cout << endl;
-                                        // }
-                                        // cout << endl;
-                                        // Update delivery quantity and inventory level for inserted customers from route 2 to route 1 and inserted customers from route 1 to route 2
-                                        for (int route1_index = 0; route1_index < Swap_length1; route1_index++)
-                                        {
-
-                                            // Add delivery quantity for inserted customers from route 2 to route 1
-                                            if (pick_day == 0)
-                                            {
-                                                NewDeliveryQuantityRoute1[route1_index][pick_day] = DeliveryMax(
-                                                    IRPLR.Vehicle.capacity,
-                                                    CopyVehicleLoad[pick_day][pick_vehicle2],
-                                                    IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryMax,
-                                                    IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].Demand,
-                                                    IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryBegin);
-                                            }
-                                            else
-                                            {
-
-                                                NewDeliveryQuantityRoute1[route1_index][pick_day] = DeliveryMax(
-                                                    IRPLR.Vehicle.capacity,
-                                                    CopyVehicleLoad[pick_day][pick_vehicle2],
-                                                    IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryMax,
-                                                    IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].Demand,
-                                                    IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]][pick_day - 1]);
-                                            }
-                                            // Seek delivery quantity from possible quantity to remove from the existing visits,
-                                            if (NewDeliveryQuantityRoute1[route1_index][pick_day] < 0.00001)
-                                            {
-                                                // Strategy 1
-                                                if (pick_day == 0)
-                                                {
-                                                    NewDeliveryQuantityRoute1[route1_index][pick_day] = DeliveryMaxAllowingCapacityViolation(
-                                                        IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryMax,
-                                                        IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].Demand,
-                                                        IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryBegin);
-                                                }
-                                                else
-                                                {
-
-                                                    NewDeliveryQuantityRoute1[route1_index][pick_day] = DeliveryMaxAllowingCapacityViolation(
-                                                        IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryMax,
-                                                        IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].Demand,
-                                                        IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]][pick_day - 1]);
-                                                }
-                                                // // Strategy 2
-                                                // if (pick_day == 0)
-                                                // {
-                                                //     NewDeliveryQuantityRoute1[route1_index][pick_day] = DeliverDemand(
-                                                //         IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryMax,
-                                                //         IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].Demand,
-                                                //         IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryBegin);
-                                                // }
-                                                // else
-                                                // {
-
-                                                //     NewDeliveryQuantityRoute1[route1_index][pick_day] = DeliverDemand(
-                                                //         IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryMax,
-                                                //         IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].Demand,
-                                                //         IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]][pick_day - 1]);
-                                                // }
-
-                                                // cout << "Customer:" << IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index] << " on day " << pick_day << ", from vehicle " << pick_vehicle1 << " to vehicle " << pick_vehicle2 << ", Delivery Max Allowing Capacity Violation: " << NewDeliveryQuantityRoute1[route1_index][pick_day] << ", CopyTotalSlackPerVehicle[pick_vehicle2]: " << CopyTotalSlackPerVehicle[pick_vehicle2] << ", CopyTotalSlackPerVehicle[pick_vehicle2] - SlackDeductRoute2:" << CopyTotalSlackPerVehicle[pick_vehicle2] - SlackDeductRoute2 << ", Delivery Quantity can be added:" << min(NewDeliveryQuantityRoute1[route1_index][pick_day], CopyTotalSlackPerVehicle[pick_vehicle2] - SlackDeductRoute2) << ", Slack available after adjustment:" << CopyTotalSlackPerVehicle[pick_vehicle2] - min(NewDeliveryQuantityRoute1[route1_index][pick_day], CopyTotalSlackPerVehicle[pick_vehicle2] - SlackDeductRoute2) << endl;
-
-                                                NewDeliveryQuantityRoute1[route1_index][pick_day] = min(NewDeliveryQuantityRoute1[route1_index][pick_day], CopyTotalSlackPerVehicle[pick_vehicle2] - SlackDeductRoute2);
-                                                CopyTotalSlackPerVehicle[pick_vehicle2] = CopyTotalSlackPerVehicle[pick_vehicle2] - NewDeliveryQuantityRoute1[route1_index][pick_day];
-                                                NewIntroduceNewQuantityOrNotRoute1[route1_index] = true;
-                                            }
-
-                                            const double quantityBeforeSupplierLimit = NewDeliveryQuantityRoute1[route1_index][pick_day];
-                                            NewDeliveryQuantityRoute1[route1_index][pick_day] = min(
-                                                quantityBeforeSupplierLimit,
-                                                max(0.0, SupplierAvailabilityForCandidateDay(
-                                                             IRPLR,
-                                                             IRPSolution,
-                                                             pick_day,
-                                                             SupplierCandidateCustomers,
-                                                             SupplierCandidateDeliveryQuantity)));
-                                            if (NewIntroduceNewQuantityOrNotRoute1[route1_index])
-                                            {
-                                                CopyTotalSlackPerVehicle[pick_vehicle2] +=
-                                                    quantityBeforeSupplierLimit - NewDeliveryQuantityRoute1[route1_index][pick_day];
-                                            }
-                                            SupplierCandidateDeliveryQuantity[route1_index] = NewDeliveryQuantityRoute1[route1_index];
-
-                                            if (NewDeliveryQuantityRoute1[route1_index][pick_day] < 0.00001)
-                                            {
-                                                Whether_normal_insert_fail = true;
-                                            }
-                                            else
-                                            {
-                                                if (NewIntroduceNewQuantityOrNotRoute1[route1_index] == false)
-                                                {
-                                                    ChangeInTotalQuantity += NewDeliveryQuantityRoute1[route1_index][pick_day];
-                                                    CopyVehicleLoad[pick_day][pick_vehicle2] = CopyVehicleLoad[pick_day][pick_vehicle2] + NewDeliveryQuantityRoute1[route1_index][pick_day];
-                                                }
-
-                                                // cout << "Add new delivery quantity" << endl;
-                                                // cout << "CopyVehicleLoad[pick_day][pick_vehicle1]: " << CopyVehicleLoad[pick_day][pick_vehicle1] << endl;
-                                                // cout << "CopyVehicleLoad[pick_day][pick_vehicle2]: " << CopyVehicleLoad[pick_day][pick_vehicle2] << endl;
-                                                // cout << "ChangeInTotalQuantity: " << ChangeInTotalQuantity << endl;
-                                                // cout << "NewDeliveryQuantityRoute1" << endl;
-                                                // for (int i = 0; i < NewDeliveryQuantityRoute1.size(); i++)
-                                                // {
-                                                //     for (int j = 0; j < NewDeliveryQuantityRoute1[i].size(); j++)
-                                                //     {
-                                                //         cout << NewDeliveryQuantityRoute1[i][j] << ",";
-                                                //     }
-                                                //     cout << endl;
-                                                // }
-                                                // cout << endl;
-                                                // cout << "NewInventoryLevelRoute1" << endl;
-                                                // for (int i = 0; i < NewInventoryLevelRoute1.size(); i++)
-                                                // {
-                                                //     for (int j = 0; j < NewInventoryLevelRoute1[i].size(); j++)
-                                                //     {
-                                                //         cout << NewInventoryLevelRoute1[i][j] << ",";
-                                                //     }
-                                                //     cout << endl;
-                                                // }
-                                                // cout << endl;
-                                                // cout << "NewDeliveryQuantityRoute2" << endl;
-                                                // for (int i = 0; i < NewDeliveryQuantityRoute2.size(); i++)
-                                                // {
-                                                //     for (int j = 0; j < NewDeliveryQuantityRoute2[i].size(); j++)
-                                                //     {
-                                                //         cout << NewDeliveryQuantityRoute2[i][j] << ",";
-                                                //     }
-                                                //     cout << endl;
-                                                // }
-                                                // cout << endl;
-                                                // cout << "NewInventoryLevelRoute2" << endl;
-                                                // for (int i = 0; i < NewInventoryLevelRoute2.size(); i++)
-                                                // {
-                                                //     for (int j = 0; j < NewInventoryLevelRoute2[i].size(); j++)
-                                                //     {
-                                                //         cout << NewInventoryLevelRoute2[i][j] << ",";
-                                                //     }
-                                                //     cout << endl;
-                                                // }
-                                                // cout << endl;
-
-                                                assert(NewDeliveryQuantityRoute1[route1_index][pick_day] != 0);
-
-                                                if (pick_day == 0)
-                                                {
-                                                    AdjustQuantityAndInventoryLevel(
-                                                        IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]].InventoryBegin,
-                                                        pick_day,
-                                                        pick_vehicle2,
-                                                        NewDeliveryQuantityRoute1[route1_index],
-                                                        NewInventoryLevelRoute1[route1_index],
-                                                        CopyVehicleLoad,
-                                                        IRPSolution.VehicleAllocation,
-                                                        ChangeInTotalQuantity,
-                                                        NewStockOut,
-                                                        NewVehicleOverload,
-                                                        IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index],
-                                                        IRPLR);
-                                                }
-                                                else
-                                                {
-                                                    AdjustQuantityAndInventoryLevel(
-                                                        IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index]][pick_day - 1],
-                                                        pick_day,
-                                                        pick_vehicle2,
-                                                        NewDeliveryQuantityRoute1[route1_index],
-                                                        NewInventoryLevelRoute1[route1_index],
-                                                        CopyVehicleLoad,
-                                                        IRPSolution.VehicleAllocation,
-                                                        ChangeInTotalQuantity,
-                                                        NewStockOut,
-                                                        NewVehicleOverload,
-                                                        IRPSolution.Route[pick_day][pick_vehicle1][pick_position_in_vehicle1 + route1_index],
-                                                        IRPLR);
-                                                }
-                                                SupplierCandidateDeliveryQuantity[route1_index] = NewDeliveryQuantityRoute1[route1_index];
-                                            }
-                                        }
-
-                                        for (int route2_index = 0; route2_index < Swap_length2; route2_index++)
-                                        {
-                                            if (pick_day == 0)
-                                            {
-
-                                                NewDeliveryQuantityRoute2[route2_index][pick_day] = DeliveryMax(
-                                                    IRPLR.Vehicle.capacity,
-                                                    CopyVehicleLoad[pick_day][pick_vehicle1],
-                                                    IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryMax,
-                                                    IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].Demand,
-                                                    IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryBegin);
-                                            }
-                                            else
-                                            {
-
-                                                NewDeliveryQuantityRoute2[route2_index][pick_day] = DeliveryMax(
-                                                    IRPLR.Vehicle.capacity,
-                                                    CopyVehicleLoad[pick_day][pick_vehicle1],
-                                                    IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryMax,
-                                                    IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].Demand,
-                                                    IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]][pick_day - 1]);
-                                            }
-                                            // Seek delivery quantity from possible quantity to remove from the existing visits,
-                                            if (NewDeliveryQuantityRoute2[route2_index][pick_day] < 0.00001)
-                                            {
-                                                // Strategy 1
-                                                if (pick_day == 0)
-                                                {
-                                                    NewDeliveryQuantityRoute2[route2_index][pick_day] = DeliveryMaxAllowingCapacityViolation(
-                                                        IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryMax,
-                                                        IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].Demand,
-                                                        IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryBegin);
-                                                }
-                                                else
-                                                {
-
-                                                    NewDeliveryQuantityRoute2[route2_index][pick_day] = DeliveryMaxAllowingCapacityViolation(
-                                                        IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryMax,
-                                                        IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].Demand,
-                                                        IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]][pick_day - 1]);
-                                                }
-                                                // // Strategy 2
-                                                // if (pick_day == 0)
-                                                // {
-                                                //     NewDeliveryQuantityRoute2[route2_index][pick_day] = DeliverDemand(
-                                                //         IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryMax,
-                                                //         IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].Demand,
-                                                //         IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryBegin);
-                                                // }
-                                                // else
-                                                // {
-
-                                                //     NewDeliveryQuantityRoute2[route2_index][pick_day] = DeliverDemand(
-                                                //         IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryMax,
-                                                //         IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].Demand,
-                                                //         IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]][pick_day - 1]);
-                                                // }
-
-                                                // cout << "Customer:" << IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index] << " on day " << pick_day << ", from vehicle " << pick_vehicle2 << ", to vehicle " << pick_vehicle1 << ", Delivery Max Allowing Capacity Violation: " << NewDeliveryQuantityRoute2[route2_index][pick_day] << ", CopyTotalSlackPerVehicle[pick_vehicle1] - SlackDeductRoute1: " << CopyTotalSlackPerVehicle[pick_vehicle1] - SlackDeductRoute1 << ", Delivery Quantity can be added:" << min(NewDeliveryQuantityRoute2[route2_index][pick_day], CopyTotalSlackPerVehicle[pick_vehicle1] - SlackDeductRoute1) << "Slack available after adjustment:" << CopyTotalSlackPerVehicle[pick_vehicle1] - min(NewDeliveryQuantityRoute2[route2_index][pick_day], CopyTotalSlackPerVehicle[pick_vehicle1] - SlackDeductRoute1) << endl;
-
-                                                NewDeliveryQuantityRoute2[route2_index][pick_day] = min(NewDeliveryQuantityRoute2[route2_index][pick_day], CopyTotalSlackPerVehicle[pick_vehicle1] - SlackDeductRoute1);
-                                                CopyTotalSlackPerVehicle[pick_vehicle1] = CopyTotalSlackPerVehicle[pick_vehicle1] - NewDeliveryQuantityRoute2[route2_index][pick_day];
-                                                NewIntroduceNewQuantityOrNotRoute2[route2_index] = true;
-
-                                                // bool flag = false;
-                                                // assert(flag);
-                                            }
-
-                                            const double quantityBeforeSupplierLimit = NewDeliveryQuantityRoute2[route2_index][pick_day];
-                                            NewDeliveryQuantityRoute2[route2_index][pick_day] = min(
-                                                quantityBeforeSupplierLimit,
-                                                max(0.0, SupplierAvailabilityForCandidateDay(
-                                                             IRPLR,
-                                                             IRPSolution,
-                                                             pick_day,
-                                                             SupplierCandidateCustomers,
-                                                             SupplierCandidateDeliveryQuantity)));
-                                            if (NewIntroduceNewQuantityOrNotRoute2[route2_index])
-                                            {
-                                                CopyTotalSlackPerVehicle[pick_vehicle1] +=
-                                                    quantityBeforeSupplierLimit - NewDeliveryQuantityRoute2[route2_index][pick_day];
-                                            }
-                                            SupplierCandidateDeliveryQuantity[Swap_length1 + route2_index] = NewDeliveryQuantityRoute2[route2_index];
-
-                                            if (NewDeliveryQuantityRoute2[route2_index][pick_day] < 0.00001)
-                                            {
-                                                Whether_normal_insert_fail = true;
-                                            }
-                                            else
-                                            {
-                                                if (NewIntroduceNewQuantityOrNotRoute2[route2_index] == false)
-                                                {
-                                                    ChangeInTotalQuantity += NewDeliveryQuantityRoute2[route2_index][pick_day];
-                                                    CopyVehicleLoad[pick_day][pick_vehicle1] = CopyVehicleLoad[pick_day][pick_vehicle1] + NewDeliveryQuantityRoute2[route2_index][pick_day];
-                                                }
-                                                assert(NewDeliveryQuantityRoute2[route2_index][pick_day] != 0);
-
-                                                if (pick_day == 0)
-                                                {
-                                                    AdjustQuantityAndInventoryLevel(
-                                                        IRPLR.Retailers[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]].InventoryBegin,
-                                                        pick_day,
-                                                        pick_vehicle1,
-                                                        NewDeliveryQuantityRoute2[route2_index],
-                                                        NewInventoryLevelRoute2[route2_index],
-                                                        CopyVehicleLoad,
-                                                        IRPSolution.VehicleAllocation,
-                                                        ChangeInTotalQuantity,
-                                                        NewStockOut,
-                                                        NewVehicleOverload,
-                                                        IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index],
-                                                        IRPLR);
-                                                }
-                                                else
-                                                {
-                                                    AdjustQuantityAndInventoryLevel(
-                                                        IRPSolution.InventoryLevel[IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index]][pick_day - 1],
-                                                        pick_day,
-                                                        pick_vehicle1,
-                                                        NewDeliveryQuantityRoute2[route2_index],
-                                                        NewInventoryLevelRoute2[route2_index],
-                                                        CopyVehicleLoad,
-                                                        IRPSolution.VehicleAllocation,
-                                                        ChangeInTotalQuantity,
-                                                        NewStockOut,
-                                                        NewVehicleOverload,
-                                                        IRPSolution.Route[pick_day][pick_vehicle2][pick_position_in_vehicle2 + route2_index],
-                                                        IRPLR);
-                                                }
-                                                SupplierCandidateDeliveryQuantity[Swap_length1 + route2_index] = NewDeliveryQuantityRoute2[route2_index];
-                                            }
-                                        }
-
-                                        // cout << "Update delivery quantity and inventory level for inserted customers from route 2 to route 1 and inserted customers from route 1 to route 2" << endl;
-                                        // cout << "CopyVehicleLoad[pick_day][pick_vehicle1]: " << CopyVehicleLoad[pick_day][pick_vehicle1] << endl;
-                                        // cout << "CopyVehicleLoad[pick_day][pick_vehicle2]: " << CopyVehicleLoad[pick_day][pick_vehicle2] << endl;
-                                        // cout << "ChangeInTotalQuantity: " << ChangeInTotalQuantity << endl;
-                                        // cout << "NewDeliveryQuantityRoute1" << endl;
-                                        // for (int i = 0; i < NewDeliveryQuantityRoute1.size(); i++)
-                                        // {
-                                        //     for (int j = 0; j < NewDeliveryQuantityRoute1[i].size(); j++)
-                                        //     {
-                                        //         cout << NewDeliveryQuantityRoute1[i][j] << ",";
-                                        //     }
-                                        //     cout << endl;
-                                        // }
-                                        // cout << endl;
-                                        // cout << "NewInventoryLevelRoute1" << endl;
-                                        // for (int i = 0; i < NewInventoryLevelRoute1.size(); i++)
-                                        // {
-                                        //     for (int j = 0; j < NewInventoryLevelRoute1[i].size(); j++)
-                                        //     {
-                                        //         cout << NewInventoryLevelRoute1[i][j] << ",";
-                                        //     }
-                                        //     cout << endl;
-                                        // }
-                                        // cout << endl;
-                                        // cout << "NewDeliveryQuantityRoute2" << endl;
-                                        // for (int i = 0; i < NewDeliveryQuantityRoute2.size(); i++)
-                                        // {
-                                        //     for (int j = 0; j < NewDeliveryQuantityRoute2[i].size(); j++)
-                                        //     {
-                                        //         cout << NewDeliveryQuantityRoute2[i][j] << ",";
-                                        //     }
-                                        //     cout << endl;
-                                        // }
-                                        // cout << endl;
-                                        // cout << "NewInventoryLevelRoute2" << endl;
-                                        // for (int i = 0; i < NewInventoryLevelRoute2.size(); i++)
-                                        // {
-                                        //     for (int j = 0; j < NewInventoryLevelRoute2[i].size(); j++)
-                                        //     {
-                                        //         cout << NewInventoryLevelRoute2[i][j] << ",";
-                                        //     }
-                                        //     cout << endl;
-                                        // }
-                                        // cout << endl;
-                                        // assert(pick_day ==0);
-                                        // bool flag = false;
-                                        // assert(flag);
-
-                                        if (Whether_normal_insert_fail == false)
+                                        if (eval->fail_insert == false)
                                         {
                                             working_solutionCounter++;
                                             double NewRoute1Cost = memory.ConcatenateSwapTwoRoutesSingleDay(
@@ -654,57 +353,24 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                                 IRPSolution,
                                                 IRPLR,
                                                 memory);
-                                            // cout << "NewRoute1Cost: " << NewRoute1Cost << ", NewRoute2Cost: " << NewRoute2Cost << endl;
                                             double NewTotalTransportationCost =
                                                 IRPSolution.TotalTransportationCost - IRPSolution.TransportationCostPerRoute[pick_day][pick_vehicle1] - IRPSolution.TransportationCostPerRoute[pick_day][pick_vehicle2] + NewRoute1Cost + NewRoute2Cost;
-                                            // cout << "PenaltyForStockOut: " << PenaltyForStockOut << endl;
-                                            // cout << "PenaltyMoreThanCapacity: " << PenaltyMoreThanCapacity << endl;
 
                                             double NewTotalDelivery = std::numeric_limits<double>::max();
                                             double NewLogisticRatio = std::numeric_limits<double>::max();
                                             double temp_LR_objv = std::numeric_limits<double>::max();
-
-                                            for (int route1_index = 0; route1_index < Swap_length1; ++route1_index)
+                                            if (eval->fail_supplier == false)
                                             {
-                                                SupplierCandidateDeliveryQuantity[route1_index] = NewDeliveryQuantityRoute1[route1_index];
-                                            }
-                                            for (int route2_index = 0; route2_index < Swap_length2; ++route2_index)
-                                            {
-                                                SupplierCandidateDeliveryQuantity[Swap_length1 + route2_index] = NewDeliveryQuantityRoute2[route2_index];
-                                            }
-                                            if (SupplierAvailabilityForCandidateDay(
-                                                    IRPLR,
-                                                    IRPSolution,
-                                                    pick_day,
-                                                    SupplierCandidateCustomers,
-                                                    SupplierCandidateDeliveryQuantity) < -0.00001)
-                                            {
-                                                Whether_normal_insert_fail = true;
-                                            }
-                                            if (Whether_normal_insert_fail == false)
-                                            {
-                                                NewTotalDelivery = IRPSolution.TotalDelivery + ChangeInTotalQuantity;
+                                                NewTotalDelivery = IRPSolution.TotalDelivery + eval->ChangeInTotalQuantity;
                                                 NewLogisticRatio = NewTotalTransportationCost / NewTotalDelivery;
-                                                temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut, PenaltyMoreThanCapacity, NewVehicleOverload);
-
-                                                // cout << "Whether_normal_insert_fail: " << Whether_normal_insert_fail << ";";
-                                                // cout << "NewTotalTransportationCost: " << NewTotalTransportationCost << ";";
-                                                // cout << "NewTotalDelivery: " << NewTotalDelivery << ";";
-                                                // cout << "NewLogisticRatio: " << NewLogisticRatio << ";";
-                                                // cout << "NewStockOut: " << NewStockOut << ";";
-                                                // cout << "NewVehicleOverload: " << NewVehicleOverload << ";";
-                                                // cout << "temp_LR_objv: " << temp_LR_objv << endl;
+                                                temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, eval->StockOut, PenaltyMoreThanCapacity, eval->VehicleOverload);
                                             }
 
-                                            //  cout<<"objv_begin:"<<objv_begin<<" temp_LR_objv:" << temp_LR_objv << endl;
                                             if (objv_begin - temp_LR_objv > 0.00001)
                                             {
-
                                                 pair_obtain_improving = 1;
                                                 if (LR_objv - temp_LR_objv > 0.00001)
                                                 {
-
-                                                    // cout << "LR_objv:" << LR_objv << ", temp_LR_objv:" << temp_LR_objv << endl;
                                                     LR_objv = temp_LR_objv;
                                                     move[0] = pick_day;
                                                     move[1] = pick_vehicle1;
@@ -713,149 +379,38 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                                     move[4] = pick_position_in_vehicle2;
                                                     move[5] = Swap_length1;
                                                     move[6] = Swap_length2;
-                                                    whether_improved_or_not = 1; // whether_improved_or_not = 1;
+                                                    whether_improved_or_not = 1;
 
                                                     ImpDeliveryQuantityRoute1.clear();
                                                     ImpInventoryLevelRoute1.clear();
                                                     ImpDeliveryQuantityRoute2.clear();
                                                     ImpInventoryLevelRoute2.clear();
-
                                                     for (int route1_index = 0; route1_index < Swap_length1; route1_index++)
                                                     {
-                                                        ImpDeliveryQuantityRoute1.push_back(NewDeliveryQuantityRoute1[route1_index]);
-                                                        ImpInventoryLevelRoute1.push_back(NewInventoryLevelRoute1[route1_index]);
+                                                        ImpDeliveryQuantityRoute1.push_back(eval->DeliveryQuantityRoute1[route1_index]);
+                                                        ImpInventoryLevelRoute1.push_back(eval->InventoryLevelRoute1[route1_index]);
                                                     }
-
                                                     for (int route2_index = 0; route2_index < Swap_length2; route2_index++)
                                                     {
-                                                        ImpDeliveryQuantityRoute2.push_back(NewDeliveryQuantityRoute2[route2_index]);
-                                                        ImpInventoryLevelRoute2.push_back(NewInventoryLevelRoute2[route2_index]);
+                                                        ImpDeliveryQuantityRoute2.push_back(eval->DeliveryQuantityRoute2[route2_index]);
+                                                        ImpInventoryLevelRoute2.push_back(eval->InventoryLevelRoute2[route2_index]);
                                                     }
-                                                    ImpVehicleLoad = CopyVehicleLoad;
-                                                    ImpStockOut = NewStockOut;
-                                                    ImpVehicleOverload = NewVehicleOverload;
+                                                    ImpVehicleLoad = eval->VehicleLoad;
+                                                    ImpStockOut = eval->StockOut;
+                                                    ImpVehicleOverload = eval->VehicleOverload;
                                                     ImpLogisticRatio = NewLogisticRatio;
                                                     ImpTotalTransportationCost = NewTotalTransportationCost;
                                                     ImpTotalDelivery = NewTotalDelivery;
-                                                    IntroduceNewQuantityOrNotRoute1 = NewIntroduceNewQuantityOrNotRoute1;
-                                                    IntroduceNewQuantityOrNotRoute2 = NewIntroduceNewQuantityOrNotRoute2;
-                                                    ImpTotalSlackPerVehicle = CopyTotalSlackPerVehicle;
-                                                    // cout << "Improving solution found" << endl;
-                                                    // cout << "Update delivery quantity and inventory level for inserted customers from route 2 to route 1 and inserted customers from route 1 to route 2" << endl;
-                                                    // cout << "CopyVehicleLoad[pick_day][pick_vehicle1]: " << CopyVehicleLoad[pick_day][pick_vehicle1] << endl;
-                                                    // cout << "CopyVehicleLoad[pick_day][pick_vehicle2]: " << CopyVehicleLoad[pick_day][pick_vehicle2] << endl;
-                                                    // cout << "ChangeInTotalQuantity: " << ChangeInTotalQuantity << endl;
-                                                    // cout << "NewDeliveryQuantityRoute1" << endl;
-                                                    // for (int i = 0; i < NewDeliveryQuantityRoute1.size(); i++)
-                                                    // {
-                                                    //     for (int j = 0; j < NewDeliveryQuantityRoute1[i].size(); j++)
-                                                    //     {
-                                                    //         cout << NewDeliveryQuantityRoute1[i][j] << ",";
-                                                    //     }
-                                                    //     cout << endl;
-                                                    // }
-                                                    // cout << endl;
-                                                    // cout << "NewInventoryLevelRoute1" << endl;
-                                                    // for (int i = 0; i < NewInventoryLevelRoute1.size(); i++)
-                                                    // {
-                                                    //     for (int j = 0; j < NewInventoryLevelRoute1[i].size(); j++)
-                                                    //     {
-                                                    //         cout << NewInventoryLevelRoute1[i][j] << ",";
-                                                    //     }
-                                                    //     cout << endl;
-                                                    // }
-                                                    // cout << endl;
-                                                    // cout << "NewDeliveryQuantityRoute2" << endl;
-                                                    // for (int i = 0; i < NewDeliveryQuantityRoute2.size(); i++)
-                                                    // {
-                                                    //     for (int j = 0; j < NewDeliveryQuantityRoute2[i].size(); j++)
-                                                    //     {
-                                                    //         cout << NewDeliveryQuantityRoute2[i][j] << ",";
-                                                    //     }
-                                                    //     cout << endl;
-                                                    // }
-                                                    // cout << endl;
-                                                    // cout << "NewInventoryLevelRoute2" << endl;
-                                                    // for (int i = 0; i < NewInventoryLevelRoute2.size(); i++)
-                                                    // {
-                                                    //     for (int j = 0; j < NewInventoryLevelRoute2[i].size(); j++)
-                                                    //     {
-                                                    //         cout << NewInventoryLevelRoute2[i][j] << ",";
-                                                    //     }
-                                                    //     cout << endl;
-                                                    // }
-                                                    // cout << endl;
+                                                    IntroduceNewQuantityOrNotRoute1.assign(eval->IntroduceNewQuantityRoute1.begin(), eval->IntroduceNewQuantityRoute1.begin() + Swap_length1);
+                                                    IntroduceNewQuantityOrNotRoute2.assign(eval->IntroduceNewQuantityRoute2.begin(), eval->IntroduceNewQuantityRoute2.begin() + Swap_length2);
+                                                    ImpTotalSlackPerVehicle = eval->TotalSlackPerVehicle;
                                                 }
                                             }
-                                            ////////////////////////////////////////////////////////////////////////
-                                            //                                                                    //
-                                            //      Verify the correctness of the efficient implementation        //
-                                            //                                                                    //
-                                            ////////////////////////////////////////////////////////////////////////
-
-                                            // vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
-                                            // cout << "pick_day: " << pick_day << ", pick_vehicle1: " << pick_vehicle1 << ", vehicle1 size: " << IRPSolution.Route[pick_day][pick_vehicle1].size() << ", pick_position_in_vehicle1: " << pick_position_in_vehicle1 << ", Swap_length1: " << Swap_length1 << ", pick_vehicle2: " << pick_vehicle2 << ", vehicle2 size: " << IRPSolution.Route[pick_day][pick_vehicle2].size() << ", pick_position_in_vehicle2: " << pick_position_in_vehicle2 << ", Swap_length2: " << Swap_length2 << endl;
-                                            // for (int i = 0; i < TempRoute.size(); i++)
-                                            // {
-                                            //     for (int j = 0; j < TempRoute[i].size(); j++)
-                                            //     {
-                                            //         cout << "Route for day " << i << ", vehicle " << j << ": ";
-                                            //         for (int k = 0; k < TempRoute[i][j].size(); k++)
-                                            //         {
-                                            //             cout << TempRoute[i][j][k] << ", ";
-                                            //         }
-                                            //         cout << endl;
-                                            //     }
-                                            // }
-                                            // TempRoute[pick_day][pick_vehicle1].insert(TempRoute[pick_day][pick_vehicle1].begin() + pick_position_in_vehicle1,
-                                            //                                           TempRoute[pick_day][pick_vehicle2].begin() + pick_position_in_vehicle2,
-                                            //                                           TempRoute[pick_day][pick_vehicle2].begin() + pick_position_in_vehicle2 + Swap_length2);
-                                            // TempRoute[pick_day][pick_vehicle2].erase(TempRoute[pick_day][pick_vehicle2].begin() + pick_position_in_vehicle2,
-                                            //                                          TempRoute[pick_day][pick_vehicle2].begin() + pick_position_in_vehicle2 + Swap_length2);
-                                            // TempRoute[pick_day][pick_vehicle2].insert(TempRoute[pick_day][pick_vehicle2].begin() + pick_position_in_vehicle2,
-                                            //                                           TempRoute[pick_day][pick_vehicle1].begin() + pick_position_in_vehicle1 + Swap_length2,
-                                            //                                           TempRoute[pick_day][pick_vehicle1].begin() + pick_position_in_vehicle1 + Swap_length2 + Swap_length1);
-                                            // TempRoute[pick_day][pick_vehicle1].erase(TempRoute[pick_day][pick_vehicle1].begin() + pick_position_in_vehicle1 + Swap_length2,
-                                            //                                          TempRoute[pick_day][pick_vehicle1].begin() + pick_position_in_vehicle1 + Swap_length2 + Swap_length1);
-
-                                            // double CheckRouteCost = 0;
-                                            // for (int i = 0; i < TempRoute.size(); i++)
-                                            // {
-                                            //     for (int j = 0; j < TempRoute[i].size(); j++)
-                                            //     {
-                                            //         if (TempRoute[i][j].size() != 0)
-                                            //         {
-                                            //             CheckRouteCost += IRPLR.Distance[0][TempRoute[i][j][0] + 1];
-                                            //             CheckRouteCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
-                                            //             for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
-                                            //             {
-                                            //                 CheckRouteCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
-                                            //             }
-                                            //         }
-                                            //     }
-                                            // }
-                                            // for (int i = 0; i < TempRoute.size(); i++)
-                                            // {
-                                            //     for (int j = 0; j < TempRoute[i].size(); j++)
-                                            //     {
-                                            //         cout << "Route for day " << i << ", vehicle " << j << ": ";
-                                            //         for (int k = 0; k < TempRoute[i][j].size(); k++)
-                                            //         {
-                                            //             cout << TempRoute[i][j][k] << ", ";
-                                            //         }
-                                            //         cout << endl;
-                                            //     }
-                                            // }
-                                            // cout << "NewTotalTransportationCost:" << NewTotalTransportationCost << ", Check Route Cost:" << CheckRouteCost << endl;
-                                            // assert(fabs(NewTotalTransportationCost - CheckRouteCost) < 0.00001);
                                         }
                                         else
                                         { // If failed in evalute, this pair is kept for next iteration, treat it easy`
-                                            // cout << "Not Working case: pick_day: " << pick_day << ", pick_vehicle1:" << pick_vehicle1 << ", pick_position_in_vehicle1:" << pick_position_in_vehicle1 << ", pick_vehicle2:" << pick_vehicle2 << ", pick_position_in_vehicle2:" << pick_position_in_vehicle2 << ", Swap_length1:" << Swap_length1 << ", Swap_length2:" << Swap_length2 << endl;
-
                                             not_working_solutionCounter++;
                                             pair_obtain_improving = 1;
-                                            // assert(not_working_solutionCounter==0);
                                         }
                                     }
                                     else

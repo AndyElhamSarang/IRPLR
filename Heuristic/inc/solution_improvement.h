@@ -21,6 +21,14 @@ public:
         int day,
         const vector<int> &CandidateCustomers,
         const vector<vector<double>> &CandidateDeliveryQuantity);
+    // Same computation as above, but takes raw pointers so callers can pass existing rows without copying them.
+    double SupplierAvailabilityForCandidateDay(
+        input &IRPLR,
+        solution &IRPSolution,
+        int day,
+        const int *CandidateCustomers,
+        const double *const *CandidateDeliveryQuantity,
+        int NumberOfCandidates);
     double DeliverDemand(double &InventoryMax, double &CustomerDemand, double &PreviousInventoryLevel);
     double Calculate_la_relax_objv(
         double &logistic_ratio,

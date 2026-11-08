@@ -314,12 +314,12 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     PenaltyForStockOut,
                     PenaltyMoreThanCapacity,
                     memory,
-                    ShiftTwoRoutesOnSingleDayPair,
-                    ShiftTwoRoutesOnSingleDayPairToReconsider,
-                    min_shift1,
-                    max_shift1,
-                    min_shift2,
-                    max_shift2);
+                    SwapTwoRoutesOnSingleDayPair,
+                    SwapTwoRoutesOnSingleDayPairToReconsider,
+                    min_swap1,
+                    max_swap1,
+                    min_swap2,
+                    max_swap2);
                 }
                 else
                 {
@@ -329,12 +329,12 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                     PenaltyForStockOut,
                     PenaltyMoreThanCapacity,
                     memory,
-                    ShiftTwoRoutesOnSingleDayPair,
-                    ShiftTwoRoutesOnSingleDayPairToReconsider,
-                    min_shift1,
-                    max_shift1,
-                    min_shift2,
-                    max_shift2);
+                    SwapTwoRoutesOnSingleDayPair,
+                    SwapTwoRoutesOnSingleDayPairToReconsider,
+                    min_swap1,
+                    max_swap1,
+                    min_swap2,
+                    max_swap2);
                 }
                 
                 if (whether_improved == 1)
@@ -598,10 +598,31 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
                         {
                             ThrowIfLocalSearchTimeLimitReached();
                             memory.PopulateSingleRouteSubpath(IRPLR, IRPSolution.Route[day][vehicle]);
-                            whether_improved = OperatorIntra(IRPLR, IRPSolution.Route[day][vehicle], day, vehicle, MinToReinsert, MaxToReinsert, memory, IRPSolution.TotalTransportationCost);
+                            // OperatorIntra compares candidate costs of this single route against CurrentTransportationCost
+                            // (and overwrites it with the improved route cost), so it must receive the cost of this route,
+                            // not the total transportation cost of the solution.
+                            const vector<int> &IntraRoute = IRPSolution.Route[day][vehicle];
+                            double RouteCostBeforeIntra = 0;
+                            if (IntraRoute.size() != 0)
+                            {
+                                RouteCostBeforeIntra += IRPLR.Distance[0][IntraRoute[0] + 1];
+                                for (int k = 0; k + 1 < (int)IntraRoute.size(); k++)
+                                {
+                                    RouteCostBeforeIntra += IRPLR.Distance[IntraRoute[k] + 1][IntraRoute[k + 1] + 1];
+                                }
+                                RouteCostBeforeIntra += IRPLR.Distance[IntraRoute[IntraRoute.size() - 1] + 1][0];
+                            }
+                            double RouteCostAfterIntra = RouteCostBeforeIntra;
+                            whether_improved = OperatorIntra(IRPLR, IRPSolution.Route[day][vehicle], day, vehicle, MinToReinsert, MaxToReinsert, memory, RouteCostAfterIntra);
                             if (whether_improved == 1)
                             {
                                 true_local = 0;
+                                assert(RouteCostAfterIntra < RouteCostBeforeIntra);
+                                IRPSolution.TotalTransportationCost += RouteCostAfterIntra - RouteCostBeforeIntra;
+                                if (day < (int)IRPSolution.TransportationCostPerRoute.size() && vehicle < (int)IRPSolution.TransportationCostPerRoute[day].size())
+                                {
+                                    IRPSolution.TransportationCostPerRoute[day][vehicle] = RouteCostAfterIntra;
+                                }
                             }
                             memory.UpdatePrefixAndSuffix(IRPLR, IRPSolution);
                             RecordTimedSolutions(IRPLR, IRPSolution, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, TimeCheckpointSolutions, DisturbanceCounter, RunHGSAtEnd);

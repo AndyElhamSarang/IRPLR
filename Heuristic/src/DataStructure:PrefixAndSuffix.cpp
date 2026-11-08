@@ -80,7 +80,7 @@ double preprocessing::PopulateSingleRoutePrefixAndSuffix(input &IRPLR, vector<in
     double TransportationCost=0;
     // cout << "PopulateSingleRoutePrefixAndSuffix" << endl;
     SingleRoutePrefix.clear();
-    SingleRoutePrefix.clear();
+    SingleRouteSuffix.clear();
     if (route.size() != 0)
     {
         double TempCumulatedDistance = 0;

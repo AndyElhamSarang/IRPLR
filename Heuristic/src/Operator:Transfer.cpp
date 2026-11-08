@@ -56,7 +56,40 @@ int solution_improvement::OperatorTransfer(
     int solutionCounter = 0;
     int working_solutionCounter = 0;
     int not_working_solutionCounter = 0;
-    int naive_implementation = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                                        //
+    //  Evaluation caches (the search is unchanged: every value is computed exactly as before).               //
+    //   - TransferDetails is ordered by (customer, visitedDay, unallocatedDay), so the removal part          //
+    //     (quantity adjustment after removing the visit and the cost of the shortened route) is evaluated    //
+    //     once per (customer, visitedDay) and reused for every unallocatedDay.                               //
+    //   - The cheapest insertion position of a customer into a route only depends on the customer and the    //
+    //     target route, so it is evaluated once per (customer, unallocatedDay, vehicle).                     //
+    //  All buffers are allocated once per operator call and reused.                                          //
+    //                                                                                                        //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    int RemovalCustomer = -1;
+    int RemovalDay = -1;
+    vector<double> RemovalDeliveryQuantity;
+    vector<double> RemovalInventoryLevel;
+    vector<vector<double>> RemovalVehicleLoad;
+    double RemovalChangeInTotalQuantity = 0;
+    double RemovalStockOut = 0;
+    double RemovalVehicleOverload = 0;
+    bool RemovalRouteCostComputed = false;
+    double RemovalRouteCost = 0;
+
+    int InsertionCustomer = -1;
+    vector<vector<char>> InsertionComputed(IRPLR.TimeHorizon, vector<char>(IRPLR.NumberOfVehicles, 0));
+    vector<vector<double>> InsertionRouteCost(IRPLR.TimeHorizon, vector<double>(IRPLR.NumberOfVehicles, 0));
+    vector<vector<int>> InsertionPosition(IRPLR.TimeHorizon, vector<int>(IRPLR.NumberOfVehicles, 0));
+
+    vector<double> NewDeliveryQuantityCustomerTransfer;
+    vector<double> NewInventoryLevelCustomerTransfer;
+    vector<vector<double>> CopyVehicleLoad;
+    vector<double> CopyTotalSlackPerVehicle;
+    int SupplierCandidateCustomers[1];
+    const double *SupplierCandidateDeliveryQuantity[1];
 
     time(&accumulate_start_time);
     try
@@ -85,89 +118,58 @@ int solution_improvement::OperatorTransfer(
             bool Whether_normal_insert_fail = false; // if insert does not lead to an increase on delivery quantity, this move fails, therefore skip the evalution
 
             /////////////////////////////////////////////////////////////////////////////////
-            //                                                                             //
-            //      Evaluate quantity changes without permitting capacity violation        //
-            //                                                                             //
-            /////////////////////////////////////////////////////////////////////////////////
+            // Get change in delivery quantity and inventory level for the removed customers (cached per (customer, removal day))
+            if (customer_idx != RemovalCustomer || pick_day_remove != RemovalDay)
+            {
+                RemovalCustomer = customer_idx;
+                RemovalDay = pick_day_remove;
+                RemovalRouteCostComputed = false;
+
+                RemovalDeliveryQuantity = IRPSolution.DeliveryQuantity[customer_idx];
+                RemovalInventoryLevel = IRPSolution.InventoryLevel[customer_idx];
+                RemovalStockOut = IRPSolution.ViolationStockOut;
+                RemovalVehicleOverload = IRPSolution.ViolationMoreThanCapacity;
+                RemovalChangeInTotalQuantity = 0;
+                RemovalVehicleLoad = IRPSolution.VehicleLoad;
+
+                RemovalVehicleLoad[pick_day_remove][IRPSolution.VehicleAllocation[customer_idx][pick_day_remove]] = RemovalVehicleLoad[pick_day_remove][IRPSolution.VehicleAllocation[customer_idx][pick_day_remove]] - IRPSolution.DeliveryQuantity[customer_idx][pick_day_remove];
+                RemovalDeliveryQuantity[pick_day_remove] = 0;
+                RemovalChangeInTotalQuantity = RemovalChangeInTotalQuantity - IRPSolution.DeliveryQuantity[customer_idx][pick_day_remove];
+
+                // The following code adjust the delivery quantity and inventory level of the removed customer across all affected periods.
+                double &previous_inventory_level = (pick_day_remove == 0) ? IRPLR.Retailers[customer_idx].InventoryBegin : IRPSolution.InventoryLevel[customer_idx][pick_day_remove - 1];
+                AdjustQuantityAndInventoryLevel(
+                    previous_inventory_level,
+                    pick_day_remove,
+                    IRPSolution.VehicleAllocation[customer_idx][pick_day_remove],
+                    RemovalDeliveryQuantity,
+                    RemovalInventoryLevel,
+                    RemovalVehicleLoad,
+                    IRPSolution.VehicleAllocation,
+                    RemovalChangeInTotalQuantity,
+                    RemovalStockOut,
+                    RemovalVehicleOverload,
+                    customer_idx,
+                    IRPLR);
+            }
+            if (customer_idx != InsertionCustomer)
+            {
+                InsertionCustomer = customer_idx;
+                for (int day = 0; day < IRPLR.TimeHorizon; day++)
+                {
+                    fill(InsertionComputed[day].begin(), InsertionComputed[day].end(), 0);
+                }
+            }
+
             // Initialize all data needed to capture the improving solution
-            vector<double> NewDeliveryQuantityCustomerTransfer(IRPSolution.DeliveryQuantity[customer_idx]);
-            vector<double> NewInventoryLevelCustomerTransfer(IRPSolution.InventoryLevel[customer_idx]);
+            NewDeliveryQuantityCustomerTransfer = RemovalDeliveryQuantity;
+            NewInventoryLevelCustomerTransfer = RemovalInventoryLevel;
             bool NewIntroduceNewQuantityOrNotTransfer = false;
-            double NewStockOut = IRPSolution.ViolationStockOut;
-            double NewVehicleOverload = IRPSolution.ViolationMoreThanCapacity;
-            double ChangeInTotalQuantity = 0;
-            vector<vector<double>> CopyVehicleLoad = IRPSolution.VehicleLoad;
-            vector<double> CopyTotalSlackPerVehicle = memory.TotalSlackPerVehicle[pick_day_insert];
-            // cout << "================================================================" << endl;
-            // cout << "TransferDetails: Retailer " << customer_idx << ", from day " << pick_day_remove << " to day " << pick_day_insert << endl;
-            // cout << "NewDeliveryQuantityCustomerTransfer:";
-            // for (int period = 0; period < NewDeliveryQuantityCustomerTransfer.size(); period++)
-            // {
-            //     cout << NewDeliveryQuantityCustomerTransfer[period] << ",";
-            // }
-            // cout << endl;
-
-            // cout << "NewInventoryLevelCustomerTransfer:";
-            // for (int period = 0; period < NewInventoryLevelCustomerTransfer.size(); period++)
-            // {
-            //     cout << NewInventoryLevelCustomerTransfer[period] << ",";
-            // }
-            // cout << endl;
-
-            /////////////////////////////////////////////////////////////////////////////////
-            // Get change in delivery quantity and inventory level for the removed customers
-
-            CopyVehicleLoad[pick_day_remove][IRPSolution.VehicleAllocation[customer_idx][pick_day_remove]] = CopyVehicleLoad[pick_day_remove][IRPSolution.VehicleAllocation[customer_idx][pick_day_remove]] - IRPSolution.DeliveryQuantity[customer_idx][pick_day_remove];
-            NewDeliveryQuantityCustomerTransfer[pick_day_remove] = 0;
-            ChangeInTotalQuantity = ChangeInTotalQuantity - IRPSolution.DeliveryQuantity[customer_idx][pick_day_remove];
-
-            // The following code adjust the delivery quantity and inventory level of the removed customer across all affected periods.
-            if (pick_day_remove == 0)
-            {
-                AdjustQuantityAndInventoryLevel(
-                    IRPLR.Retailers[customer_idx].InventoryBegin,
-                    pick_day_remove,
-                    IRPSolution.VehicleAllocation[customer_idx][pick_day_remove],
-                    NewDeliveryQuantityCustomerTransfer,
-                    NewInventoryLevelCustomerTransfer,
-                    CopyVehicleLoad,
-                    IRPSolution.VehicleAllocation,
-                    ChangeInTotalQuantity,
-                    NewStockOut,
-                    NewVehicleOverload,
-                    customer_idx,
-                    IRPLR);
-            }
-            else
-            {
-                AdjustQuantityAndInventoryLevel(
-                    IRPSolution.InventoryLevel[customer_idx][pick_day_remove - 1],
-                    pick_day_remove,
-                    IRPSolution.VehicleAllocation[customer_idx][pick_day_remove],
-                    NewDeliveryQuantityCustomerTransfer,
-                    NewInventoryLevelCustomerTransfer,
-                    CopyVehicleLoad,
-                    IRPSolution.VehicleAllocation,
-                    ChangeInTotalQuantity,
-                    NewStockOut,
-                    NewVehicleOverload,
-                    customer_idx,
-                    IRPLR);
-            }
-            // cout << "--------------------------------------------------------------------------------" << endl;
-            // cout << "After removing the customer from the original day, the change in total quantity is: " << ChangeInTotalQuantity << ", and the new stock out is: " << NewStockOut << endl;
-            // cout << "NewDeliveryQuantityCustomerTransfer:";
-            // for (int period = 0; period < NewDeliveryQuantityCustomerTransfer.size(); period++)
-            // {
-            //     cout << NewDeliveryQuantityCustomerTransfer[period] << ",";
-            // }
-            // cout << endl;
-            // cout << "NewInventoryLevelCustomerTransfer:";
-            // for (int period = 0; period < NewInventoryLevelCustomerTransfer.size(); period++)
-            // {
-            //     cout << NewInventoryLevelCustomerTransfer[period] << ",";
-            // }
-            // cout << endl;
+            double NewStockOut = RemovalStockOut;
+            double NewVehicleOverload = RemovalVehicleOverload;
+            double ChangeInTotalQuantity = RemovalChangeInTotalQuantity;
+            CopyVehicleLoad = RemovalVehicleLoad;
+            CopyTotalSlackPerVehicle = memory.TotalSlackPerVehicle[pick_day_insert];
 
             ////////////////////////////////////////////////////////////////////////////////////
             //                                                                                //
@@ -176,8 +178,16 @@ int solution_improvement::OperatorTransfer(
             ////////////////////////////////////////////////////////////////////////////////////
 
             NewDeliveryQuantityCustomerTransfer[pick_day_insert] = 0;
-            vector<int> SupplierCandidateCustomers{customer_idx};
-            vector<vector<double>> SupplierCandidateDeliveryQuantity{NewDeliveryQuantityCustomerTransfer};
+            SupplierCandidateCustomers[0] = customer_idx;
+            SupplierCandidateDeliveryQuantity[0] = NewDeliveryQuantityCustomerTransfer.data();
+            // Supplier availability is evaluated with the delivery on pick_day_insert still at 0
+            const double SupplierAvailableInsertDay = SupplierAvailabilityForCandidateDay(
+                IRPLR,
+                IRPSolution,
+                pick_day_insert,
+                SupplierCandidateCustomers,
+                SupplierCandidateDeliveryQuantity,
+                1);
             int VehicleIndexInserted = IRPLR.NumberOfVehicles + 1;
             for (int VehicleIndexNewDay = 0; VehicleIndexNewDay < IRPLR.NumberOfVehicles; VehicleIndexNewDay++)
             {
@@ -237,9 +247,7 @@ int solution_improvement::OperatorTransfer(
                         temp_largest_quantity = temp_NewDeliveryQuantityCustomerTransfer;
                         temp_largest_quantity_vehicle = temp_vehicle;
                     }
-                    // cout << "Customer:" << customer_idx << " from day " << pick_day_remove << " to day " << pick_day_insert << ", Delivery Max Allowing Capacity Violation: " << QuantityMax << ", CopyTotalSlackPerVehicle[temp_vehicle]: " << CopyTotalSlackPerVehicle[temp_vehicle] << ", Delivery Quantity can be added:" << min(QuantityMax, CopyTotalSlackPerVehicle[temp_vehicle]) << endl;
                 }
-                // cout << "Quantity to add:" << min(QuantityMax, temp_largest_quantity) << " to vehicle " << temp_largest_quantity_vehicle << " new slack " << CopyTotalSlackPerVehicle[temp_largest_quantity_vehicle] - QuantityMax << endl;
                 if (temp_largest_quantity > 0)
                 {
                     NewDeliveryQuantityCustomerTransfer[pick_day_insert] = min(QuantityMax, temp_largest_quantity);
@@ -252,24 +260,17 @@ int solution_improvement::OperatorTransfer(
             const double quantityBeforeSupplierLimit = NewDeliveryQuantityCustomerTransfer[pick_day_insert];
             NewDeliveryQuantityCustomerTransfer[pick_day_insert] = min(
                 quantityBeforeSupplierLimit,
-                max(0.0, SupplierAvailabilityForCandidateDay(
-                             IRPLR,
-                             IRPSolution,
-                             pick_day_insert,
-                             SupplierCandidateCustomers,
-                             SupplierCandidateDeliveryQuantity)));
+                max(0.0, SupplierAvailableInsertDay));
             if (NewIntroduceNewQuantityOrNotTransfer && VehicleIndexInserted < IRPLR.NumberOfVehicles)
             {
                 CopyTotalSlackPerVehicle[VehicleIndexInserted] +=
                     quantityBeforeSupplierLimit - NewDeliveryQuantityCustomerTransfer[pick_day_insert];
             }
-            SupplierCandidateDeliveryQuantity[0] = NewDeliveryQuantityCustomerTransfer;
 
             if (NewDeliveryQuantityCustomerTransfer[pick_day_insert] < 0.00001)
             {
                 Whether_normal_insert_fail = true;
                 VehicleIndexInserted = IRPLR.NumberOfVehicles + 1;
-                // cout<<"NewDeliveryQuantityCustomerTransfer[pick_day_insert]:"<<NewDeliveryQuantityCustomerTransfer[pick_day_insert]<<", VehicleIndexInserted:"<<VehicleIndexInserted<<endl;
                 assert(VehicleIndexInserted == IRPLR.NumberOfVehicles + 1);
             }
             else
@@ -314,25 +315,7 @@ int solution_improvement::OperatorTransfer(
                         customer_idx,
                         IRPLR);
                 }
-                SupplierCandidateDeliveryQuantity[0] = NewDeliveryQuantityCustomerTransfer;
             }
-
-            // cout << "--------------------------------------------------------------------------------" << endl;
-            // cout << "After adding the customer from the original day to the new day, " << "at vehicle " << VehicleIndexInserted << ", the change in total quantity is: " << ChangeInTotalQuantity << ", and the new stock out is: " << NewStockOut << endl;
-
-            // cout << "NewDeliveryQuantityCustomerTransfer:";
-            // for (int period = 0; period < NewDeliveryQuantityCustomerTransfer.size(); period++)
-            // {
-            //     cout << NewDeliveryQuantityCustomerTransfer[period] << ",";
-            // }
-            // cout << endl;
-
-            // cout << "NewInventoryLevelCustomerTransfer:";
-            // for (int period = 0; period < NewInventoryLevelCustomerTransfer.size(); period++)
-            // {
-            //     cout << NewInventoryLevelCustomerTransfer[period] << ",";
-            // }
-            // cout << endl;
 
             if (Whether_normal_insert_fail == false &&
                 SupplierAvailabilityForCandidateDay(
@@ -340,7 +323,8 @@ int solution_improvement::OperatorTransfer(
                     IRPSolution,
                     min(pick_day_remove, pick_day_insert),
                     SupplierCandidateCustomers,
-                    SupplierCandidateDeliveryQuantity) < -0.00001)
+                    SupplierCandidateDeliveryQuantity,
+                    1) < -0.00001)
             {
                 Whether_normal_insert_fail = true;
             }
@@ -350,47 +334,56 @@ int solution_improvement::OperatorTransfer(
                 working_solutionCounter++;
                 int temp_int = IRPLR.NumberOfVehicles + 1;
                 int temp_int2 = 0;
-                double NewRouteCostRemoved = memory.ConcatenateSwapTwoRoutesSingleDay(
-                    pick_day_remove,
-                    IRPSolution.VehicleAllocation[customer_idx][pick_day_remove],
-                    IRPSolution.VisitOrder[customer_idx][pick_day_remove],
-                    TransferNumber,
-                    temp_int,
-                    temp_int2,
-                    temp_int2,
-                    IRPSolution,
-                    IRPLR,
-                    memory);
-                int CheapestInsertPosition = IRPSolution.Route[pick_day_insert][VehicleIndexInserted].size() + 1;
-                double NewRouteCostInserted = numeric_limits<double>::max();
-                for (int insert_position = 0; insert_position <= IRPSolution.Route[pick_day_insert][VehicleIndexInserted].size(); insert_position++) // A position in the new vehicle
+                if (!RemovalRouteCostComputed)
                 {
-
-                    double TempNewRouteCostInserted = memory.ConcatenateChepestInsertion(
-                        pick_day_insert,
-                        VehicleIndexInserted,
-                        insert_position,
-                        temp_int2,
+                    RemovalRouteCost = memory.ConcatenateSwapTwoRoutesSingleDay(
                         pick_day_remove,
                         IRPSolution.VehicleAllocation[customer_idx][pick_day_remove],
                         IRPSolution.VisitOrder[customer_idx][pick_day_remove],
                         TransferNumber,
+                        temp_int,
+                        temp_int2,
+                        temp_int2,
                         IRPSolution,
                         IRPLR,
                         memory);
-                    if (TempNewRouteCostInserted < NewRouteCostInserted)
-                    {
-                        NewRouteCostInserted = TempNewRouteCostInserted;
-                        CheapestInsertPosition = insert_position;
-                    }
+                    RemovalRouteCostComputed = true;
                 }
+                double NewRouteCostRemoved = RemovalRouteCost;
+                if (!InsertionComputed[pick_day_insert][VehicleIndexInserted])
+                {
+                    int CheapestInsertPosition = IRPSolution.Route[pick_day_insert][VehicleIndexInserted].size() + 1;
+                    double NewRouteCostInserted = numeric_limits<double>::max();
+                    for (int insert_position = 0; insert_position <= IRPSolution.Route[pick_day_insert][VehicleIndexInserted].size(); insert_position++) // A position in the new vehicle
+                    {
+                        double TempNewRouteCostInserted = memory.ConcatenateChepestInsertion(
+                            pick_day_insert,
+                            VehicleIndexInserted,
+                            insert_position,
+                            temp_int2,
+                            pick_day_remove,
+                            IRPSolution.VehicleAllocation[customer_idx][pick_day_remove],
+                            IRPSolution.VisitOrder[customer_idx][pick_day_remove],
+                            TransferNumber,
+                            IRPSolution,
+                            IRPLR,
+                            memory);
+                        if (TempNewRouteCostInserted < NewRouteCostInserted)
+                        {
+                            NewRouteCostInserted = TempNewRouteCostInserted;
+                            CheapestInsertPosition = insert_position;
+                        }
+                    }
+                    InsertionComputed[pick_day_insert][VehicleIndexInserted] = 1;
+                    InsertionRouteCost[pick_day_insert][VehicleIndexInserted] = NewRouteCostInserted;
+                    InsertionPosition[pick_day_insert][VehicleIndexInserted] = CheapestInsertPosition;
+                }
+                const double NewRouteCostInserted = InsertionRouteCost[pick_day_insert][VehicleIndexInserted];
+                const int CheapestInsertPosition = InsertionPosition[pick_day_insert][VehicleIndexInserted];
                 assert(CheapestInsertPosition < IRPSolution.Route[pick_day_insert][VehicleIndexInserted].size() + 1);
 
                 double NewTotalTransportationCost =
                     IRPSolution.TotalTransportationCost - IRPSolution.TransportationCostPerRoute[pick_day_remove][IRPSolution.VehicleAllocation[customer_idx][pick_day_remove]] + NewRouteCostRemoved - IRPSolution.TransportationCostPerRoute[pick_day_insert][VehicleIndexInserted] + NewRouteCostInserted;
-
-                // cout << "PenaltyForStockOut: " << PenaltyForStockOut << endl;
-                // cout << "PenaltyMoreThanCapacity: " << PenaltyMoreThanCapacity << endl;
 
                 double NewTotalDelivery = std::numeric_limits<double>::max();
                 double NewLogisticRatio = std::numeric_limits<double>::max();
@@ -401,16 +394,7 @@ int solution_improvement::OperatorTransfer(
                     NewTotalDelivery = IRPSolution.TotalDelivery + ChangeInTotalQuantity;
                     NewLogisticRatio = NewTotalTransportationCost / NewTotalDelivery;
                     temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, NewStockOut, PenaltyMoreThanCapacity, NewVehicleOverload);
-
-                    // cout << "Whether_normal_insert_fail: " << Whether_normal_insert_fail << endl;
-                    // cout << "NewTotalTransportationCost: " << NewTotalTransportationCost << endl;
-                    // cout << "NewTotalDelivery: " << NewTotalDelivery << endl;
-                    // cout << "NewLogisticRatio: " << NewLogisticRatio << endl;
-                    // cout << "NewStockOut: " << NewStockOut << endl;
-                    // cout << "NewVehicleOverload: " << NewVehicleOverload << endl;
-                    // cout << "temp_LR_objv: " << temp_LR_objv << endl;
                 }
-                //  cout<<"objv_begin:"<<objv_begin<<" temp_LR_objv:" << temp_LR_objv << endl;
                 if (objv_begin - temp_LR_objv > 0.00001)
                 {
 
@@ -429,8 +413,6 @@ int solution_improvement::OperatorTransfer(
                         move[6] = TransferNumber;                                               // Swap_length1
                         move[7] = 0;                                                            // Swap_length2
                         move[8] = customer_idx;                                                 // customer_index
-                        ImpDeliveryQuantityCustomerTransfer.clear();
-                        ImpInventoryLevelCustomerTransfer.clear();
                         ImpDeliveryQuantityCustomerTransfer = NewDeliveryQuantityCustomerTransfer;
                         ImpInventoryLevelCustomerTransfer = NewInventoryLevelCustomerTransfer;
                         ImpVehicleLoad = CopyVehicleLoad;
@@ -442,67 +424,6 @@ int solution_improvement::OperatorTransfer(
                         ImpTotalSlackPerVehicle = CopyTotalSlackPerVehicle;
                     }
                 }
-
-                ////////////////////////////////////////////////////////////////////////
-                //                                                                    //
-                //      Verify the correctness of the efficient implementation        //
-                //                                                                    //
-                ////////////////////////////////////////////////////////////////////////
-
-                // vector<vector<vector<int>>> TempRoute(IRPSolution.Route);
-                // cout << "Customer " << customer_idx << ", "
-                //      << "remove_day: " << pick_day_remove << ", remove from vehicle: " << IRPSolution.VehicleAllocation[customer_idx][pick_day_remove]
-                //      << ", remove position: " << IRPSolution.VisitOrder[customer_idx][pick_day_remove] << ", remove_length: " << TransferNumber
-                //      << ", insert_day: " << pick_day_insert << ", insert vehicle: " << VehicleIndexInserted << ", insert_position: " << CheapestInsertPosition << ", insert_length: " << TransferNumber << endl;
-                // for (int i = 0; i < TempRoute.size(); i++)
-                // {
-                //     for (int j = 0; j < TempRoute[i].size(); j++)
-                //     {
-                //         cout << "Route for day " << i << ", vehicle " << j << ": ";
-                //         for (int k = 0; k < TempRoute[i][j].size(); k++)
-                //         {
-                //             cout << TempRoute[i][j][k] << ", ";
-                //         }
-                //         cout << endl;
-                //     }
-                // }
-                // TempRoute[pick_day_insert][VehicleIndexInserted].insert(TempRoute[pick_day_insert][VehicleIndexInserted].begin() + CheapestInsertPosition,
-                //                                                               TempRoute[pick_day_remove][IRPSolution.VehicleAllocation[customer_idx][pick_day_remove]].begin() + IRPSolution.VisitOrder[customer_idx][pick_day_remove],
-                //                                                               TempRoute[pick_day_remove][IRPSolution.VehicleAllocation[customer_idx][pick_day_remove]].begin() + IRPSolution.VisitOrder[customer_idx][pick_day_remove] + TransferNumber);
-                // TempRoute[pick_day_remove][IRPSolution.VehicleAllocation[customer_idx][pick_day_remove]].erase(
-                //     TempRoute[pick_day_remove][IRPSolution.VehicleAllocation[customer_idx][pick_day_remove]].begin() + IRPSolution.VisitOrder[customer_idx][pick_day_remove],
-                //     TempRoute[pick_day_remove][IRPSolution.VehicleAllocation[customer_idx][pick_day_remove]].begin() + IRPSolution.VisitOrder[customer_idx][pick_day_remove] + TransferNumber);
-
-                // double CheckRouteCost = 0;
-                // for (int i = 0; i < TempRoute.size(); i++)
-                // {
-                //     for (int j = 0; j < TempRoute[i].size(); j++)
-                //     {
-                //         if (TempRoute[i][j].size() != 0)
-                //         {
-                //             CheckRouteCost += IRPLR.Distance[0][TempRoute[i][j][0] + 1];
-                //             CheckRouteCost += IRPLR.Distance[TempRoute[i][j][TempRoute[i][j].size() - 1] + 1][0];
-                //             for (int test = 0; test < TempRoute[i][j].size() - 1; test++)
-                //             {
-                //                 CheckRouteCost += IRPLR.Distance[TempRoute[i][j][test] + 1][TempRoute[i][j][test + 1] + 1];
-                //             }
-                //         }
-                //     }
-                // }
-                // for (int i = 0; i < TempRoute.size(); i++)
-                // {
-                //     for (int j = 0; j < TempRoute[i].size(); j++)
-                //     {
-                //         cout << "Route for day " << i << ", vehicle " << j << ": ";
-                //         for (int k = 0; k < TempRoute[i][j].size(); k++)
-                //         {
-                //             cout << TempRoute[i][j][k] << ", ";
-                //         }
-                //         cout << endl;
-                //     }
-                // }
-                // cout << "NewTotalTransportationCost:" << NewTotalTransportationCost << ", Check Route Cost:" << CheckRouteCost << endl;
-                // assert(fabs(NewTotalTransportationCost - CheckRouteCost) < 0.00001);
             }
             else
             {
