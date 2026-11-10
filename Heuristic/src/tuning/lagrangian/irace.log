@@ -1,0 +1,90 @@
+#------------------------------------------------------------------------------
+# irace: An implementation in R of (Elitist) Iterated Racing
+# Version: 4.5.a705077
+# Copyright (C) 2010-2025
+# Manuel Lopez-Ibanez     <manuel.lopez-ibanez@manchester.ac.uk>
+# Jeremie Dubois-Lacoste
+# Leslie Perez Caceres    <leslie.perez.caceres@ulb.ac.be>
+#
+# This is free software, and you are welcome to redistribute it under certain
+# conditions.  See the GNU General Public License for details. There is NO
+# WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# irace builds upon previous code from the race package:
+#     race: Racing methods for the selection of the best
+#     Copyright (C) 2003 Mauro Birattari
+#------------------------------------------------------------------------------
+# installed at: /home/andy/R/x86_64-pc-linux-gnu-library/4.3/irace
+# called with: --scenario scenario.txt
+# 2026-11-09 00:31:31 AWST: Reading parameter file '/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian/parameters.txt'.
+# 2026-11-09 00:31:31 AWST: Read 2 configuration(s) from file '/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian/configurations.txt'
+# 2026-11-09 00:31:31 AWST: Initialization
+# Elitist race
+# Elitist new instances: 1
+# Elitist limit: 2
+# nbIterations: 3
+# minNbSurvival: 3
+# nbParameters: 3
+# seed: 565233579
+# confidence level: 0.95
+# budget: 5000
+# mu: 5
+# deterministic: FALSE
+
+# 2026-11-09 00:31:31 AWST: Iteration 1 of 3
+# experimentsUsed: 0
+# remainingBudget: 5000
+# currentBudget: 1666
+# nbConfigurations: 277
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          1|        277|         60|    0.9447036864|        277|00:50:55|   NA|  NA|    NA|
+|x|          2|        277|         44|    0.6030718066|        554|01:12:15|+0.21|0.60|0.7555|
+|x|          3|        277|         44|    0.5627072732|        831|01:09:59|+0.03|0.35|0.9193|
+|x|          4|        277|         93|    0.6594396414|       1108|00:54:56|+0.11|0.33|0.8378|
+|-|          5|        161|        187|    0.6133580258|       1385|01:09:58|-0.13|0.09|1.1176|
+|=|          6|        161|         93|    0.6507204169|       1546|00:27:53|-0.07|0.11|1.0543|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          93    mean value:     0.6507204169
+Description of the best-so-far configuration:
+   .ID. InitialLagrangianScalar ToTriggerAdjustment ToAdjustLagrangianScalar .PARENT.
+93   93                   5.582                  54                   1.7604       NA
+
+# 2026-11-09 06:17:32 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+    InitialLagrangianScalar ToTriggerAdjustment ToAdjustLagrangianScalar
+93                   5.5820                  54                   1.7604
+244                 38.6040                  46                   0.3075
+109                 57.8646                  18                   0.1419
+# 2026-11-09 06:17:32 AWST: Iteration 2 of 3
+# experimentsUsed: 1546
+# remainingBudget: 3454
+# currentBudget: 1727
+# nbConfigurations: 249
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          7|        249|        436|    0.4057047395|        249|01:02:59|   NA|  NA|    NA|
+|x|          5|        249|        109|    0.4183836623|        495|01:01:59|-0.02|0.49|1.0216|
+|x|          6|        249|        482|    0.5577192466|        741|00:41:54|-0.09|0.27|1.0789|
+|x|          2|        249|        109|    0.4790802766|        987|01:04:01|-0.07|0.20|1.0519|
+|=|          4|        249|        109|    0.5737390758|       1233|00:48:33|-0.02|0.18|1.0151|
+|=|          3|        249|        109|    0.5553646426|       1479|01:02:00|-0.01|0.16|1.0113|

@@ -39,7 +39,7 @@ double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
 string ActivateHGS;
-int theta=0;
+double theta=0;
 int sigma=0; 
 int phi=0;
 int min_grid_resolution = 0;
@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
 			else if (opt == "GridResolutionIncrement") { grid_resolution_increment = atoi(val.c_str()); provided_options.insert("GridResolutionIncrement"); }
 			else if (opt == "ActivateHGS" || opt == "Activate HGS") { ActivateHGS = val; provided_options.insert("ActivateHGS"); }
 			else if (opt == "Activate_Disturbance") { Activate_Disturbance = val; }
-			else if (opt == "theta") { theta = atoi(val.c_str()); provided_options.insert("theta"); }
+			else if (opt == "theta") { theta = atof(val.c_str()); provided_options.insert("theta"); }
 			else if (opt == "sigma") { sigma = atoi(val.c_str()); provided_options.insert("sigma"); }
 			else if (opt == "phi") { phi = atoi(val.c_str()); provided_options.insert("phi"); }
 			else if (opt == "DisturbStrength") { DisturbStrength = atoi(val.c_str()); provided_options.insert("DisturbStrength"); }
@@ -130,6 +130,7 @@ int main(int argc, char* argv[])
 			else if (opt == "InitialSolutionMethod") { InitialSolutionMethod = val; }
 			else if (opt == "OutputResults") { OutputResults = atoi(val.c_str()); }
 			else if (opt == "OutputSolutionJSON") { OutputSolutionJSON = val; }
+			else if (opt == "seed") { generator.seed(static_cast<unsigned int>(strtoul(val.c_str(), NULL, 10))); } // irace-provided seed for reproducible runs
 			else
 			{
 				cerr << "Warning: unknown option --" << opt << " (ignored)" << endl;
@@ -198,7 +199,7 @@ int main(int argc, char* argv[])
 		cout << "Grid Resolution Increment: " << grid_resolution_increment << endl;
 		ActivateHGS = argv[11];
 		cout << "Activate HGS: " << ActivateHGS << endl;
-		theta = atoi(argv[12]);
+		theta = atof(argv[12]);
 		cout << "Theta: " << theta << endl;
 		sigma = atoi(argv[13]);
 		cout << "Sigma: " << sigma << endl;
@@ -259,6 +260,12 @@ int main(int argc, char* argv[])
 	read_file.InstanceDirectories.push_back(instance_dir);
 
 	read_file.ReadGlobalSettings();
+	// Under irace, several runs execute in parallel in the same directory:
+	// never write the shared CSV/JSON files, and keep console output minimal.
+	OutputResults = 0;
+	OutputSolutionJSON = "NO";
+	printout_inputdata = printout_initialSchedule = printout_initialOutputCVRP = 0;
+	printout_initialRouting = printout_initialReadCVRP = printout_initial = 0;
 	for (int experiment = 0; experiment < NumberOfExperiments; experiment++)
 	{
 		if (OutputResults == 1)
@@ -344,8 +351,12 @@ int main(int argc, char* argv[])
 
 				time(&total_start_time);
 				time(&start_time_to_best);
-				for (int j = 0; j < NumberOfInitialSolutions; j++)
+				int NumberOfStartsRun = 0;
+				// Stop launching new starts once the time budget is used up. With a large
+				// NumberOfInitialSolutions this means "restart until the time limit".
+				for (int j = 0; j < NumberOfInitialSolutions && difftime(time(NULL), total_start_time) < MainAlgorithmTimeLimit; j++)
 				{
+					NumberOfStartsRun++;
 					cout << "Attempt:" << j << endl;
 
 					solution_construction initial_solution;
@@ -384,7 +395,12 @@ int main(int argc, char* argv[])
 				cout << "Global best" << endl;				
 				GlobalBest.print_solution(IRPLR);
 				cout << "BestTransportationCost:" << GlobalBest.TotalTransportationCost << "\t TotalDelivery:" << GlobalBest.TotalDelivery << "\t LogistcRatio:" << GlobalBest.LogisticRatio << endl;
-				cout << "IRACE_COST "<<GlobalBest.LogisticRatio << endl;
+				// printf (not cout) so the cost is still reported when built with -DDISABLE_COUT
+				printf("IRACE_COST %.10g\n", GlobalBest.LogisticRatio);
+				printf("IRACE_ITERATIONS %d\n", Global_total_iteration);
+				printf("IRACE_STARTS %d\n", NumberOfStartsRun);
+				printf("IRACE_ELAPSED %.0f\n", accum_time);
+				fflush(stdout);
 				if(OutputSolutionJSON == "YES")
 				{
 					GlobalBest.OutputJSON(IRPLR, read_file.JSONDirectory + IRPLR.InstanceName+ "_global_best.json");

@@ -20,11 +20,17 @@ $EXE \
     --instance "$INSTANCE" \
     --NumberOfExperiments 1 \
     --ActivateHGS NO \
-    --theta 3 \
+    --theta 1 \
+    --MainAlgorithmTimeLimit 60 \
+    --AllowLagrangianRelaxation YES \
+    --TypeOfRebalance NOT_GUARANTEE_FEASIBILITY \
+    --InitialSolutionMethod Initial_BlockZone_Schedule \
+    --DisturbStrength 2 \
+    --NumberOfInitialSolutions  1 \
+    --MinGridResolution 2 \
+    --GridResolutionIncrement 2 \
     --sigma 10 \
     --phi 10 \
-    --MainAlgorithmTimeLimit 30 \
-    --DisturbStrength 5 \
     "$@" \
     > "$OUTPUT" 2>&1
 

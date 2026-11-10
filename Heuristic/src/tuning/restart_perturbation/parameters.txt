@@ -1,0 +1,14 @@
+## Restart & perturbation parameters of MS-ILS (ILS.cpp, Operator:Disturb.cpp)
+##  A start ends after MaxDisturbance = ceil(theta*(N + sigma*T + phi*V)) iterations
+##  without a feasible improvement; restarts repeat until the 60 s limit.
+##  Each perturbation removes 1 + DisturbStrength*counter/MaxDisturbance route segments (<= V).
+##  theta is real (log scale) so restarts can be shorter than N iterations on large instances:
+##  0.01 -> ~3 non-improving iterations on n200; 5 -> effectively never restart.
+# name            switch               type   range
+theta             "--theta "           r,log  (0.01, 5)
+sigma             "--sigma "           i      (0, 20)
+phi               "--phi "             i      (0, 20)
+DisturbStrength   "--DisturbStrength " i      (0, 10)
+
+[global]
+digits = 4

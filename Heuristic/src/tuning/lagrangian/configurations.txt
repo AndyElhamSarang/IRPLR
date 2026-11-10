@@ -1,0 +1,6 @@
+## Initial configurations raced from the start:
+##  row 1 = current default in par/GlobalParameter.txt
+##  row 2 = best elite of the interrupted 2026-11-08 irace run
+InitialLagrangianScalar ToTriggerAdjustment ToAdjustLagrangianScalar
+5                       5                   1
+50                      25                  0.5

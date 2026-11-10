@@ -39,7 +39,7 @@ double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
 string ActivateHGS;
-int theta = 0;
+double theta = 0;
 int sigma = 0;
 int phi = 0;
 int min_grid_resolution = 0;

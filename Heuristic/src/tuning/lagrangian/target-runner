@@ -1,0 +1,52 @@
+#!/bin/bash
+###############################################################################
+# irace target runner for MS-ILS (Lagrangian-parameter tuning).
+# Called by irace as:  target-runner <configID> <instanceID> <seed> <instance> [params...]
+# Prints the cost (GlobalBest.LogisticRatio, lower is better) on stdout.
+###############################################################################
+CONFIG_ID=$1
+INSTANCE_ID=$2
+SEED=$3
+INSTANCE=$4
+shift 4
+
+EXE="/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/MS_parameter_tuning.out"
+if [ ! -x "$EXE" ]; then
+    echo "ERROR: cannot find executable $EXE (run 'make parameter_tuning' in src/)" >&2
+    exit 1
+fi
+
+# Fixed (non-tuned) parameters = defaults in par/GlobalParameter.txt.
+# The tuned parameters arrive in "$@" and come last, so they take precedence.
+FIXED=(
+    --NumberOfExperiments 1
+    --MainAlgorithmTimeLimit 60
+    --InitialSolutionMethod Initial_BlockZone_Schedule
+    --NumberOfInitialSolutions 1
+    --MinGridResolution 2
+    --GridResolutionIncrement 2
+    --AllowLagrangianRelaxation YES
+    --TypeOfRebalance NOT_GUARANTEE_FEASIBILITY
+    --ActivateHGS NO
+    --Activate_Disturbance YES
+    --theta 1
+    --sigma 10
+    --phi 10
+    --DisturbStrength 2
+)
+
+OUTPUT=$(mktemp "${TMPDIR:-/tmp}/msils_c${CONFIG_ID}_i${INSTANCE_ID}_XXXXXX.log")
+"$EXE" --instance "$INSTANCE" --seed "$SEED" "${FIXED[@]}" "$@" > "$OUTPUT" 2>&1
+STATUS=$?
+
+COST=$(grep "^IRACE_COST" "$OUTPUT" | tail -n 1 | awk '{print $2}')
+if [ $STATUS -ne 0 ] || [ -z "$COST" ]; then
+    echo "ERROR: run failed (exit $STATUS) config=$CONFIG_ID instance=$INSTANCE seed=$SEED args: $*" >&2
+    tail -n 20 "$OUTPUT" >&2
+    rm -f "$OUTPUT"
+    exit 1
+fi
+
+echo "$COST"
+rm -f "$OUTPUT"
+exit 0

@@ -39,7 +39,7 @@ double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
 string ActivateHGS;
-int theta=0;
+double theta=0;
 int sigma=0; 
 int phi=0;
 int min_grid_resolution = 0;
@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
 			else if (opt == "GridResolutionIncrement") { grid_resolution_increment = atoi(val.c_str()); }
 			else if (opt == "ActivateHGS" || opt == "Activate HGS") { ActivateHGS = val; }
 			else if (opt == "Activate_Disturbance") { Activate_Disturbance = val; }
-			else if (opt == "theta") { theta = atoi(val.c_str()); }
+			else if (opt == "theta") { theta = atof(val.c_str()); }
 			else if (opt == "sigma") { sigma = atoi(val.c_str()); }
 			else if (opt == "phi") { phi = atoi(val.c_str()); }
 			else if (opt == "MainAlgorithmTimeLimit") { MainAlgorithmTimeLimit = atof(val.c_str()); }
@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
 		cout << "Grid Resolution Increment: " << grid_resolution_increment << endl;
 		ActivateHGS = argv[11];
 		cout << "Activate HGS: " << ActivateHGS << endl;
-		theta = atoi(argv[12]);
+		theta = atof(argv[12]);
 		cout << "Theta: " << theta << endl;
 		sigma = atoi(argv[13]);
 		cout << "Sigma: " << sigma << endl;

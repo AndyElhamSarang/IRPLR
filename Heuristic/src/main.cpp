@@ -40,12 +40,18 @@ double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
 string ActivateHGS;
-int theta = 0;
+double theta = 0;
 int sigma = 0;
 int phi = 0;
 int min_grid_resolution = 0;
 int grid_resolution_increment = 0;
 int DisturbStrength = 0;
+
+// CSV columns written once per start (by INITIAL_ZONE, main and IteratedLocalSearch).
+// Used for the header and to pad starts that are skipped when the time limit is reached.
+const string PerStartColumns = "InitialCost,InitialQuantity,InitialLogisticRatio,T_InitialSchedule,InitialCostAfterNearestInsertion,InitialQuantityAfterNearestInsertion,InitialLogisticRatioAfterNearestInsertion,T_InitialScheduleAfterNearestInsertion,InitialCostAfterHGS,InitialQuantityAfterHGS,InitialLogisticRatioAfterHGS,InitialTimeForHGS,T_InitialSolution,NumberOfRebalance,NumberOfFeasibleRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,RebalanceMaxPercentageImprovement,RebalanceMinPercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,BestCostAfterHGS,BestQuantityAfterHGS,BestLogisticRatioAfterHGS,TimeForHGS,Time";
+const int NumberOfPerStartColumns = count(PerStartColumns.begin(), PerStartColumns.end(), ',') + 1;
+
 int main()
 {
 	file read_file;
@@ -87,7 +93,7 @@ int main()
 			Table << ",#TimePeriods,#Nodes,#Vehicle";
 			for (int i = 0; i < NumberOfInitialSolutions; i++)
 			{
-				Table << ",InitialCost,InitialQuantity,InitialLogisticRatio,T_InitialSchedule,InitialCostAfterNearestInsertion,InitialQuantityAfterNearestInsertion,InitialLogisticRatioAfterNearestInsertion,T_InitialScheduleAfterNearestInsertion,InitialCostAfterHGS,InitialQuantityAfterHGS,InitialLogisticRatioAfterHGS,InitialTimeForHGS,T_InitialSolution,NumberOfRebalance,NumberOfFeasibleRebalance,NumberOfRebalanceImproved,RebalanceAveragePercentageImprovement,RebalanceMaxPercentageImprovement,RebalanceMinPercentageImprovement,BestCost,BestQuantity,BestLogisticRatio,BestCostAfterHGS,BestQuantityAfterHGS,BestLogisticRatioAfterHGS,TimeForHGS,Time";
+				Table << "," << PerStartColumns;
 			}
 
 			Table << ",FirstImpCost,FirstImpQuantity,FirstImpLogisticRatio,TimeAtFirstImprovement";
@@ -95,7 +101,7 @@ int main()
 			{
 				Table << ",BestCostAt" << checkpoint << "s,BestQuantityAt" << checkpoint << "s,BestLogisticRatioAt" << checkpoint << "s,TimeAt" << checkpoint << "s";
 			}
-			Table << ",GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_iteration,T_To_best,T_total_for_HGS,T_Total\n";
+			Table << ",GlobalBestCost,GlobalBestQuantity,GlobalBestLogisticRatio,T_iteration,T_To_best,T_total_for_HGS,T_Total,NumberOfRestarts\n";
 		}
 
 		for (int i = 0; i < read_file.instances.size(); i++)
@@ -161,8 +167,12 @@ int main()
 
 				time(&total_start_time);
 				time(&start_time_to_best);
-				for (int j = 0; j < NumberOfInitialSolutions; j++)
+				// Stop launching new starts once the time budget is used up (same rule as the
+				// irace tuning binary). NumberOfInitialSolutions is an upper limit on starts.
+				int NumberOfStartsRun = 0;
+				for (int j = 0; j < NumberOfInitialSolutions && difftime(time(NULL), total_start_time) < MainAlgorithmTimeLimit; j++)
 				{
+					NumberOfStartsRun++;
 					cout << "Attempt:" << j << endl;
 
 					solution_construction initial_solution;
@@ -190,6 +200,19 @@ int main()
 					solution_improvement Metaheuristic;
 					Metaheuristic.IteratedLocalSearch(IRPLR, IRPSolution, Routing, memory, GlobalBest, FirstImprovementSolution, IRPSolution30s, IRPSolution60s, TimeCheckpointSolutions, read_file, j);
 				}
+				// Starts skipped because the time limit was reached: fill their columns with 0
+				// so the row keeps the same layout as the header.
+				if (OutputResults == 1)
+				{
+					for (int j = NumberOfStartsRun; j < NumberOfInitialSolutions; j++)
+					{
+						for (int c = 0; c < NumberOfPerStartColumns; c++)
+						{
+							Table << 0 << ",";
+						}
+					}
+				}
+				cout << "Number of starts run: " << NumberOfStartsRun << " of " << NumberOfInitialSolutions << endl;
 				time(&total_end_time);
 				double accum_time = difftime(total_end_time, total_start_time);
 				cout << "Global best" << endl;
@@ -219,7 +242,7 @@ int main()
 				if (OutputResults == 1)
 				{
 
-					Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << Global_total_iteration << "," << GlobalBest.solution_time << "," << AccumulatedTimeHGS << "," << accum_time << ",";
+					Table << GlobalBest.TotalTransportationCost << "," << GlobalBest.TotalDelivery << "," << GlobalBest.LogisticRatio << "," << Global_total_iteration << "," << GlobalBest.solution_time << "," << AccumulatedTimeHGS << "," << accum_time << "," << NumberOfStartsRun << ",";
 				}
 				if (OutputResults == 1)
 				{

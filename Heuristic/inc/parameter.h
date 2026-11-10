@@ -44,7 +44,7 @@ extern time_t total_end_time;
 extern time_t HGS_start_time;
 extern time_t HGS_end_time;
 
-extern int theta;
+extern double theta;
 extern int sigma; 
 extern int phi;
 extern int min_grid_resolution;

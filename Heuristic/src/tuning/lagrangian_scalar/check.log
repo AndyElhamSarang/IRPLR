@@ -1,0 +1,156 @@
+#------------------------------------------------------------------------------
+# irace: An implementation in R of (Elitist) Iterated Racing
+# Version: 4.5.a705077
+# Copyright (C) 2010-2025
+# Manuel Lopez-Ibanez     <manuel.lopez-ibanez@manchester.ac.uk>
+# Jeremie Dubois-Lacoste
+# Leslie Perez Caceres    <leslie.perez.caceres@ulb.ac.be>
+#
+# This is free software, and you are welcome to redistribute it under certain
+# conditions.  See the GNU General Public License for details. There is NO
+# WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# irace builds upon previous code from the race package:
+#     race: Racing methods for the selection of the best
+#     Copyright (C) 2003 Mauro Birattari
+#------------------------------------------------------------------------------
+# installed at: /home/andy/R/x86_64-pc-linux-gnu-library/4.3/irace
+# called with: --scenario scenario.txt --check
+# 2026-11-09 13:35:25 AWST: Checking scenario
+# 2026-11-09 13:35:25 AWST: Reading parameter file '/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/parameters.txt'.
+# --- Parameters Hierarchy ---
+                Parameter Level              Depends.on
+1 InitialLagrangianScalar     1 InitialLagrangianScalar
+# ------------------------
+List of 1
+ $ InitialLagrangianScalar:List of 9
+  ..$ name        : chr "InitialLagrangianScalar"
+  ..$ type        : chr "r"
+  ..$ domain      : num [1:2] 1e-01 1e+03
+  ..$ label       : chr "--InitialLagrangianScalar "
+  ..$ is_dependent: logi FALSE
+  ..$ isFixed     : logi FALSE
+  ..$ transform   : chr "log"
+  .. ..- attr(*, "lower")= num -2.30258509299405
+  .. ..- attr(*, "upper")= num 6.90775527898214
+  ..$ condition   : logi TRUE
+  ..$ digits      : int 4
+  ..- attr(*, "class")= chr [1:3] "ParamReal" "Parameter" "list"
+Forbidden:
+NULL
+# 2026-11-09 13:35:25 AWST: Parameters have been read
+Warning: == irace == Assuming 'mu = firstTest * blockSize' because 'mu' cannot be smaller.
+
+## irace scenario:
+scenarioFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/scenario.txt"
+execDir = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar"
+parameterFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/parameters.txt"
+parameters = <environment>
+initConfigurations = NULL
+configurationsFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/configurations.txt"
+logFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/irace.Rdata"
+recoveryFile = ""
+instances = c("/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n50_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n100_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n200_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n50_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n100_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n200_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n50_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n100_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n200_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n50_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n100_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n200_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n50_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n100_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n200_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n50_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n100_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n200_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n50_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n100_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n200_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n50_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n100_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n200_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n50_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n100_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n200_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n50_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n100_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n200_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n50_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n100_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n200_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n50_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n100_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n200_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n50_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n100_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n200_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n50_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n100_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n200_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n50_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n100_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n200_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n50_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n100_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n200_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n50_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n100_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n200_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n50_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n100_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n200_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n50_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n100_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n200_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n50_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n100_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n200_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n50_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n100_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n200_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n50_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n100_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n200_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n50_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n100_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n200_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n50_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n100_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n200_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n50_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n100_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n200_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n50_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n100_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n200_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n50_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n100_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n200_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n50_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n100_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n200_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n50_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n100_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n200_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n50_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n100_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n200_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n50_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n100_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n200_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n50_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n100_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n200_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n50_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n100_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n200_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n50_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n100_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n200_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n50_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n100_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n200_4.dat")
+trainInstancesDir = ""
+trainInstancesFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/instances-train.txt"
+sampleInstances = TRUE
+testInstancesDir = ""
+testInstancesFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/instances-test.txt"
+testInstances = c("1t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n100_2.dat", "2t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n50_3.dat", "3t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs10n50_5.dat", "4t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n100_1.dat", "5t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n200_3.dat", "6t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n50_1.dat", "7t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs1n50_4.dat", "8t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n200_4.dat", "9t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs2n50_5.dat", "10t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n100_5.dat", "11t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n200_1.dat", "12t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n200_5.dat", "13t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs3n50_2.dat", "14t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n100_4.dat", "15t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n100_5.dat", "16t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n200_1.dat", "17t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n200_2.dat", "18t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n50_5.dat", "19t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n200_1.dat", "20t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n200_2.dat", "21t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n50_1.dat", "22t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs5n50_4.dat", "23t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n100_1.dat", "24t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n100_2.dat", "25t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n100_3.dat", "26t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n200_3.dat", "27t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n200_4.dat", "28t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs6n50_4.dat", "29t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n100_1.dat", "30t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n100_2.dat", "31t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n100_3.dat", "32t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n100_4.dat", "33t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n200_2.dat", "34t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n200_3.dat", "35t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n200_4.dat", "36t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n50_2.dat", "37t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs7n50_3.dat", "38t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n100_4.dat", "39t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n100_5.dat", "40t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs8n200_5.dat", "41t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n100_3.dat", "42t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n200_5.dat", "43t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n50_1.dat", "44t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n50_2.dat", "45t" = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs9n50_3.dat")
+testNbElites = 3L
+testIterationElites = FALSE
+testType = "friedman"
+firstTest = 2L
+blockSize = 3L
+eachTest = 1L
+targetRunner = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/target-runner"
+targetRunnerLauncher = ""
+targetCmdline = "{configurationID} {instanceID} {seed} {instance} {bound} {targetRunnerArgs}"
+targetRunnerRetries = 1L
+targetRunnerTimeout = 0L
+targetRunnerData = ""
+targetRunnerParallel = NULL
+targetEvaluator = NULL
+deterministic = FALSE
+maxExperiments = 1500L
+minExperiments = NA_character_
+maxTime = 0L
+budgetEstimation = 0.05
+minMeasurableTime = 0.01
+parallel = 4L
+loadBalancing = TRUE
+mpi = FALSE
+batchmode = "0"
+quiet = FALSE
+debugLevel = 2L
+seed = NA_character_
+softRestart = TRUE
+softRestartThreshold = 1e-04
+elitist = TRUE
+elitistNewInstances = 1L
+elitistLimit = 2L
+repairConfiguration = NULL
+iterationCallback = NULL
+capping = FALSE
+cappingAfterFirstTest = FALSE
+cappingType = "median"
+boundType = "candidate"
+boundMax = NULL
+boundDigits = 0L
+boundPar = 1L
+boundAsTimeout = TRUE
+postselection = TRUE
+aclib = FALSE
+nbIterations = 0L
+nbExperimentsPerIteration = 0L
+minNbSurvival = 0L
+nbConfigurations = 0L
+mu = 6L
+confidence = 0.95
+## end of irace scenario
+# 2026-11-09 13:35:25 AWST: Checking target runner.
+# 2026-11-09 13:35:25 AWST: Read 1 configuration(s) from file '/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/configurations.txt'
+  InitialLagrangianScalar
+1                       5
+# 2026-11-09 13:35:25 AWST: Executing targetRunner (3 times)...
+# 2026-11-09 13:35:25 AWST: /home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/target-runner 1 57 1234567 /home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n200_5.dat  --InitialLagrangianScalar 5
+# 2026-11-09 13:35:25 AWST: /home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/target-runner 2 57 1234567 /home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n200_5.dat  --InitialLagrangianScalar 175.3542
+# 2026-11-09 13:35:25 AWST: /home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/target-runner 3 57 1234567 /home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n200_5.dat  --InitialLagrangianScalar 1.5034
+# 2026-11-09 13:36:26 AWST: DONE (2) Elapsed wall-clock seconds: 60.34
+0.3717069935# 2026-11-09 13:36:27 AWST: DONE (3) Elapsed wall-clock seconds: 61.33
+# 2026-11-09 13:36:27 AWST: DONE (1) Elapsed wall-clock seconds: 61.34
+0.35566016520.3646331615# targetRunner returned:
+[[1]]
+[[1]]$cost
+[1] 0.3646331615
+
+[[1]]$outputRaw
+[1] "0.3646331615"
+
+[[1]]$call
+[1] "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/target-runner 1 57 1234567 /home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n200_5.dat  --InitialLagrangianScalar 5"
+
+
+[[2]]
+[[2]]$cost
+[1] 0.3717069935
+
+[[2]]$outputRaw
+[1] "0.3717069935"
+
+[[2]]$call
+[1] "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/target-runner 2 57 1234567 /home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n200_5.dat  --InitialLagrangianScalar 175.3542"
+
+
+[[3]]
+[[3]]$cost
+[1] 0.3556601652
+
+[[3]]$outputRaw
+[1] "0.3556601652"
+
+[[3]]$call
+[1] "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/lagrangian_scalar/target-runner 3 57 1234567 /home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/Large/abs4n200_5.dat  --InitialLagrangianScalar 1.5034"
+
+
+# 2026-11-09 13:36:27 AWST: Check successful.

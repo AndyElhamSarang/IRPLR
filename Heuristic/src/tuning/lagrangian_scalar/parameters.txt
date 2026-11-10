@@ -1,0 +1,9 @@
+## Tune only the (constant) Lagrangian step scalar.
+## ToAdjustLagrangianScalar is fixed to 1 in target-runner, so the scalar never
+## changes during a run and ToTriggerAdjustment has no effect.
+## Size check (2026-11-09): 5 beat 1 (growing), 50 and 1000 (shrinking) on n50 and n200.
+# name                    switch                        type   range
+InitialLagrangianScalar   "--InitialLagrangianScalar "  r,log  (0.1, 1000)
+
+[global]
+digits = 4

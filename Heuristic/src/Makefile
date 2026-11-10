@@ -154,6 +154,7 @@ parameter_tuning:
 	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
 	-I $(andy) -I $(andy_boost) \
+	-DDISABLE_COUT \
 	-o MS_parameter_tuning.out -O3
 andy:
 	$(CC) main.cpp file:Read_andy.cpp file:ReadInstanceName.cpp file:GlobalParameter.cpp \

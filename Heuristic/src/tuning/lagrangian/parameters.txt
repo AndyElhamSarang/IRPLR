@@ -1,0 +1,12 @@
+## Group G2 - Lagrangian relaxation schedule (see ILS.cpp, OperatorUtility.cpp)
+##  InitialLagrangianScalar : step-size scalar of the subgradient multiplier update (tau)
+##  ToTriggerAdjustment     : #non-improving iterations before the scalar is rescaled
+##  ToAdjustLagrangianScalar: multiplicative factor applied to the scalar (<1 shrinks, >1 grows)
+## Ranges cover all values used in earlier manual/irace attempts (1..10000, 1..50, 0.1..10).
+# name                     switch                         type   range
+InitialLagrangianScalar    "--InitialLagrangianScalar "   r,log  (0.1, 10000)
+ToTriggerAdjustment        "--ToTriggerAdjustment "       i,log  (1, 100)
+ToAdjustLagrangianScalar   "--ToAdjustLagrangianScalar "  r,log  (0.1, 10)
+
+[global]
+digits = 4

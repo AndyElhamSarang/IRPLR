@@ -1,0 +1,170 @@
+#------------------------------------------------------------------------------
+# irace: An implementation in R of (Elitist) Iterated Racing
+# Version: 4.5.a705077
+# Copyright (C) 2010-2025
+# Manuel Lopez-Ibanez     <manuel.lopez-ibanez@manchester.ac.uk>
+# Jeremie Dubois-Lacoste
+# Leslie Perez Caceres    <leslie.perez.caceres@ulb.ac.be>
+#
+# This is free software, and you are welcome to redistribute it under certain
+# conditions.  See the GNU General Public License for details. There is NO
+# WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# irace builds upon previous code from the race package:
+#     race: Racing methods for the selection of the best
+#     Copyright (C) 2003 Mauro Birattari
+#------------------------------------------------------------------------------
+# installed at: /home/andy/R/x86_64-pc-linux-gnu-library/4.3/irace
+# called with: --scenario scenario.txt
+# 2026-11-08 16:43:21 AWST: Reading parameter file '/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/parameters.txt'.
+# --- Parameters Hierarchy ---
+                 Parameter Level               Depends.on
+1  InitialLagrangianScalar     1  InitialLagrangianScalar
+2      ToTriggerAdjustment     1      ToTriggerAdjustment
+3 ToAdjustLagrangianScalar     1 ToAdjustLagrangianScalar
+# ------------------------
+## irace scenario:
+scenarioFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/scenario.txt"
+execDir = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning"
+parameterFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/parameters.txt"
+parameters = <environment>
+initConfigurations = NULL
+configurationsFile = ""
+logFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/irace.Rdata"
+recoveryFile = ""
+instances = c("/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/H3/abs1n25_1.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/H3/abs2n25_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/H4/abs2n25_2.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/H4/abs3n25_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/H5/abs3n25_3.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/H5/abs4n25_5.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/H6/abs4n25_4.dat", "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Data/H6/abs5n25_5.dat")
+trainInstancesDir = ""
+trainInstancesFile = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/instances-list_training.txt"
+sampleInstances = TRUE
+testInstancesDir = ""
+testInstancesFile = ""
+testInstances = NULL
+testNbElites = 1L
+testIterationElites = FALSE
+testType = "friedman"
+firstTest = 5L
+blockSize = 1L
+eachTest = 1L
+targetRunner = "/home/andy/Desktop/Curtin/IRPLR/IRPLR/Heuristic/src/tuning/target-runner"
+targetRunnerLauncher = ""
+targetCmdline = "{configurationID} {instanceID} {seed} {instance} {bound} {targetRunnerArgs}"
+targetRunnerRetries = 0L
+targetRunnerTimeout = 0L
+targetRunnerData = ""
+targetRunnerParallel = NULL
+targetEvaluator = NULL
+deterministic = FALSE
+maxExperiments = 15000L
+minExperiments = NA_character_
+maxTime = 0L
+budgetEstimation = 0.05
+minMeasurableTime = 0.01
+parallel = 4L
+loadBalancing = TRUE
+mpi = FALSE
+batchmode = "0"
+quiet = FALSE
+debugLevel = 1L
+seed = NA_character_
+softRestart = TRUE
+softRestartThreshold = 1e-04
+elitist = TRUE
+elitistNewInstances = 1L
+elitistLimit = 2L
+repairConfiguration = NULL
+iterationCallback = NULL
+capping = FALSE
+cappingAfterFirstTest = FALSE
+cappingType = "median"
+boundType = "candidate"
+boundMax = NULL
+boundDigits = 0L
+boundPar = 1L
+boundAsTimeout = TRUE
+postselection = TRUE
+aclib = FALSE
+nbIterations = 0L
+nbExperimentsPerIteration = 0L
+minNbSurvival = 0L
+nbConfigurations = 0L
+mu = 5L
+confidence = 0.95
+## end of irace scenario
+# 2026-11-08 16:43:21 AWST: Initialization
+# Elitist race
+# Elitist new instances: 1
+# Elitist limit: 2
+# nbIterations: 3
+# minNbSurvival: 3
+# nbParameters: 3
+# seed: 247602417
+# confidence level: 0.95
+# budget: 15000
+# mu: 5
+# deterministic: FALSE
+
+# 2026-11-08 16:43:21 AWST: Iteration 1 of 3
+# experimentsUsed: 0
+# remainingBudget: 15000
+# currentBudget: 5000
+# nbConfigurations: 833
+# 2026-11-08 16:43:21 AWST: Sample 833 configurations from Sobol distribution
+# 2026-11-08 16:43:21 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          1|         36|         31|     1.317280000|         36|00:03:05|   NA|  NA|    NA|
+|x|          2|         36|         13|     1.419450000|         72|00:03:53|+0.11|0.55|0.7018|
+|x|          3|         36|         36|     1.612870000|        108|00:03:02|+0.06|0.37|0.8254|
+|x|          4|         36|         23|     1.569325000|        144|00:04:04|+0.20|0.40|0.7339|
+|-|          5|         29|         23|     1.613332000|        180|00:02:21|-0.12|0.10|1.0685|
+|=|          6|         29|         23|     1.685693333|        209|00:04:15|-0.08|0.10|1.0302|
+|=|          7|         29|         17|     1.593418857|        238|00:00:09|-0.08|0.08|1.0265|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+# Stopped because tests without elimination (2) >= elitistLimit (2)
+Best-so-far configuration:          17    mean value:      1.593418857
+Description of the best-so-far configuration:
+   .ID. InitialLagrangianScalar ToTriggerAdjustment ToAdjustLagrangianScalar .PARENT.
+17   17                      50                  25                      0.5       NA
+
+# 2026-11-08 17:04:14 AWST: Extracting elites
+# 2026-11-08 17:04:14 AWST: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   .ID. InitialLagrangianScalar ToTriggerAdjustment ToAdjustLagrangianScalar .PARENT. .RANK.          .WEIGHT.
+17   17                      50                  25                      0.5       NA   76.0 0.500000000000000
+14   14                       1                  25                        2       NA   79.5 0.333333333333333
+23   23                       1                  25                        1       NA   80.5 0.166666666666667
+# 2026-11-08 17:04:14 AWST: Initialise model
+# 2026-11-08 17:04:14 AWST: End of iteration 1
+# 2026-11-08 17:04:14 AWST: Iteration 2 of 3
+# experimentsUsed: 238
+# remainingBudget: 14762
+# currentBudget: 7381
+# nbConfigurations: 925
+# 2026-11-08 17:04:14 AWST: Update model
+# 2026-11-08 17:04:14 AWST: Sample 922 configurations from model
+# 2026-11-08 17:04:14 AWST: Computing similarity of configurations . DONE
+# 2026-11-08 17:04:14 AWST: Soft restart: 42 77 96 128 156 185 190 225 284 306 349 380 436 455 483 516 521 572 613 625 694 714 766 777 779 791 841 872 883 923 40 48 50 55 57 58 68 70 71 73 74 75 78 80 83 86 87 89 95 97 101 103 113 119 121 134 144 147 150 155 157 166 169 170 172 173 174 176 186 194 198 200 202 205 209 212 223 224 233 240 243 249 250 254 255 262 264 266 267 271 274 276 277 286 291 295 296 299 304 318 322 329 330 335 336 339 340 350 363 366 367 371 372 381 382 386 388 400 402 418 424 432 435 441 443 447 448 452 456 470 472 476 477 480 487 488 490 495 497 499 502 503 513 528 533 534 541 554 555 561 562 566 571 577 578 582 585 587 589 598 602 603 605 606 608 612 614 615 616 622 623 626 633 637 644 648 649 652 656 661 665 666 670 675 676 680 688 689 693 699 701 712 715 718 728 736 739 742 744 749 752 753 758 761 763 768 770 773 782 783 788 799 817 819 820 822 824 828 831 834 837 854 858 866 867 873 875 878 882 885 890 893 900 907 908 913 914 919 920 935 947 958 38 43 44 107 114 126 206 235 270 282 283 352 361 368 385 401 419 430 460 464 520 542 567 631 641 667 707 710 741 776 793 801 833 860 880 955 23 37 47 52 54 56 59 60 66 67 79 81 82 91 98 99 100 105 112 117 120 124 125 127 130 135 137 139 142 163 167 171 175 192 193 195 203 215 220 226 228 231 232 236 253 256 263 265 268 269 280 293 301 303 305 309 310 319 332 334 344 345 346 347 353 362 364 378 383 384 394 398 405 407 408 411 413 417 420 422 431 440 444 446 451 458 459 462 467 478 489 493 494 496 498 504 505 506 515 518 525 529 530 547 559 564 569 573 579 583 588 590 593 594 595 604 607 617 630 634 635 638 643 646 668 672 679 683 685 687 691 695 696 705 713 716 719 722 734 740 746 748 750 759 771 780 781 784 785 794 798 802 815 816 821 829 835 836 842 846 849 853 861 871 881 886 887 891 897 902 905 909 910 916 918 926 932 934 936 937 940 945 946 952 954 957 41 62 72 76 102 108 123 129 141 153 160 164 165 177 196 204 222 238 244 245 248 260 275 278 292 297 312 313 314 337 341 355 373 379 390 391 397 399 403 423 428 473 474 475 500 501 508 514 517 519 537 539 540 544 553 557 558 568 570 574 575 576 611 621 627 629 647 659 664 678 682 690 698 708 717 720 724 743 755 756 767 769 774 778 789 800 803 818 823 830 838 844 855 859 868 869 879 898 899 912 922 924 931 944 948 51 53 64 69 90 111 115 138 154 159 161 168 178 183 188 189 214 227 234 239 247 258 261 272 285 289 307 316 317 321 325 327 328 331 338 342 343 356 369 370 375 389 392 393 396 415 427 437 449 468 469 479 491 511 535 548 556 563 639 651 657 660 671 673 697 700 709 711 735 745 757 760 765 775 786 792 795 797 804 807 808 812 813 826 843 848 850 851 857 862 863 889 895 896 933 942 950 953 39 49 84 92 93 104 106 109 132 133 136 148 149 152 179 180 181 182 184 187 191 197 199 201 208 210 211 218 221 230 237 241 242 251 252 279 281 287 288 290 300 302 308 311 320 324 326 351 354 358 360 365 374 377 395 404 409 414 421 425 426 429 438 439 445 453 454 457 465 466 484 486 492 507 509 524 527 532 538 543 546 549 550 565 580 581 584 596 597 600 601 609 610 619 628 640 642 645 669 681 684 686 703 704 725 730 731 733 737 751 754 764 772 790 796 806 809 810 827 845 847 856 865 870 876 877 894 901 904 911 917 925 939 941 951 956 17 45 46 61 63 65 85 88 94 110 116 118 122 131 140 143 145 146 151 158 162 207 213 216 217 219 229 246 257 259 273 294 298 315 323 333 348 357 359 376 387 406 410 412 416 433 434 442 450 461 463 471 481 482 485 510 512 522 523 526 531 536 545 551 552 560 586 591 592 599 618 620 624 632 636 650 653 654 655 658 662 663 674 677 692 702 706 721 723 726 727 729 732 738 747 762 787 805 811 814 825 832 839 840 852 864 874 884 888 892 903 906 915 921 927 928 929 930 938 943 949 !
+# 2026-11-08 17:04:14 AWST: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . Alive configurations were already evaluated on this instance and nothing is discarded.
+     : All alive configurations are elite, but some need to be evaluated on this instance.
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          8|        925|        872|     1.031760000|        925|01:42:00|   NA|  NA|    NA|
+|x|          6|        925|        417|     1.528440000|       1847|03:34:29|+0.30|0.65|0.6921|

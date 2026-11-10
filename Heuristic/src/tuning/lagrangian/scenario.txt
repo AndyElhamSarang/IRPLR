@@ -1,0 +1,20 @@
+## irace scenario: tune the 3 Lagrangian parameters of MS-ILS on Data/Large.
+## Run from this directory:  ./run.sh   (paths below are relative to this file)
+parameterFile      = "./parameters.txt"
+configurationsFile = "./configurations.txt"
+trainInstancesFile = "./instances-train.txt"   # 105 instances: 7 per (n, variant) cell
+testInstancesFile  = "./instances-test.txt"    # 45 disjoint instances: 3 per cell
+targetRunner       = "./target-runner"
+execDir            = "."
+logFile            = "./irace.Rdata"
+
+deterministic      = 0
+## Budget: ~60 s per run on Large, 4 runs in parallel -> ~240 runs/hour.
+## 5000 runs ~= 21 h, plus testing 3 elites x 45 test instances (~35 min).
+maxExperiments     = 5000
+parallel           = 4
+targetRunnerRetries = 1
+
+## After tuning, evaluate the final elites on the held-out test set.
+testNbElites       = 3
+testIterationElites = 0
