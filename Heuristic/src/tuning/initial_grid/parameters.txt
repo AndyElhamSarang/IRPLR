@@ -1,0 +1,7 @@
+## Initial-solution grid parameters (InitialScheduleWithBlockZone.cpp)
+##  Each start draws a grid size g uniformly from {Min, ..., Min + Inc - 1} and
+##  partitions the customers into g x g blocks. Inc = number of grid sizes to choose from.
+##  g = 1..15 checked to run on n50 and n200.
+# name                    switch                       type  range
+MinGridResolution         "--MinGridResolution "       i     (1, 15)
+GridResolutionIncrement   "--GridResolutionIncrement " i     (1, 8)

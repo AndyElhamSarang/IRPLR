@@ -1,0 +1,26 @@
+## irace scenario: tune MinGridResolution, GridResolutionIncrement of MS-ILS on Data/Large.
+## Run from this directory:  ./run.sh   (paths are relative to this file)
+parameterFile      = "./parameters.txt"
+configurationsFile = "./configurations.txt"
+trainInstancesFile = "./instances-train.txt"   # 105 instances in 35 blocks of (n50, n100, n200)
+testInstancesFile  = "./instances-test.txt"    # 45 held-out instances
+targetRunner       = "./target-runner"
+execDir            = "."
+logFile            = "./irace.Rdata"
+
+deterministic      = 0
+## Each elimination test happens only after whole blocks, so every decision
+## sees all three sizes. blockSize multiplies firstTest/eachTest:
+## first test after 2 blocks (6 instances), then after every block.
+blockSize          = 3
+firstTest          = 2
+eachTest           = 1
+
+## Budget: every run takes 60 s, 4 in parallel -> 240 runs/hour.
+## 1500 runs ~= 6.3 h, plus testing 3 elites x 45 test instances (~35 min).
+maxExperiments     = 1500
+parallel           = 4
+targetRunnerRetries = 1
+
+testNbElites       = 3
+testIterationElites = 0
