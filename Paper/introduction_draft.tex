@@ -1,0 +1,277 @@
+% =====================================================================
+% Introduction (with integrated literature review) -- DRAFT
+% Usage: \input{introduction_draft} in place of the current
+%        "Introduction", "Main Contributions" and
+%        "Solution Approaches in the Literature" blocks.
+% Requires: natbib (\citet/\citep), xcolor, tabularx, booktabs.
+% Red text = numbers or claims to confirm before submission.
+% =====================================================================
+
+\section{Introduction}
+\label{sec:introduction}
+
+The inventory routing problem (IRP) arises in vendor-managed inventory
+systems, in which a supplier monitors the stock levels of its customers and
+takes responsibility for replenishing them. Over a multi-period planning
+horizon, the supplier jointly decides when each customer is visited, how much
+product is delivered at each visit, and how the vehicles are routed, subject
+to customer storage capacities, vehicle capacities, and the requirement that
+no customer runs out of stock. Integrating these decisions, rather than
+fixing replenishment plans first and routing them afterwards, can produce
+substantial savings \citep{archetti2016inventory}. However, the integration
+couples a vehicle routing problem in every period with inventory dynamics
+that link the periods together. As a result, the IRP remains one of the most
+challenging problems in distribution logistics
+\citep{moin2007overview,bertazzi2012inventory,coelho2014thirty,ekcsi2026inventory}.
+
+Most of the IRP literature minimises the total cost, defined as the sum of
+routing and inventory holding costs. In many applications, however, holding
+costs are difficult to estimate or are negligible compared with transport
+costs, and practitioners evaluate distribution plans by the transport cost
+per unit of product delivered. This key performance indicator, known as the
+\emph{logistic ratio}, has long been used in the distribution of industrial
+gases \citep{bell1983improving,benoist2011randomized,singh2015incremental}.
+It was also the objective of the ROADEF/EURO Challenge 2016, proposed by
+Air Liquide \citep{andre2020roadef}. \citet{archetti2017logistic} formalised
+the IRP with logistic ratio (IRP-LR) and showed that solutions that minimise
+total cost can be poor in terms of the logistic ratio. One reason is the
+finite-horizon effect: under a cost objective there is little incentive to
+deliver product near the end of the horizon if it will only be consumed
+afterwards. The logistic ratio, in contrast, rewards every unit delivered
+and therefore produces replenishment plans that differ markedly from
+cost-minimising ones.
+
+The IRP-LR is harder to solve than the classical IRP. Its objective is the
+ratio of two decision-dependent quantities: the routing cost in the numerator
+and the total delivered quantity in the denominator. A move that shortens the
+routes can therefore worsen the objective if it also reduces the quantity
+delivered, and a longer route can be preferable if it allows a larger
+delivery. Exact approaches build on parametric fractional programming
+\citep{dinkelbach1967}, which replaces the ratio with a sequence of linear
+objectives. \citet{archetti2017logistic} and \citet{archetti2019exact}
+developed exact algorithms for the IRP-LR along these lines, and
+\citet{baldacci2020fractional} proposed a general exact framework for vehicle
+routing problems with fractional objectives. These methods provide optimal
+solutions and bounds, but their computational requirements restrict them to
+instances with at most \textcolor{red}{50} customers. For larger instances, to the best of our
+knowledge, the only heuristics evaluated on the IRP-LR benchmark are the
+iterated local search (ILS) and simulated annealing (SA) algorithms of
+\citet{alvarez2018iterated}. The algorithms developed for the ROADEF/EURO
+Challenge 2016 address a richer industrial variant with a ratio objective,
+using heuristic branch-cut-and-price \citep{absi2020branch}, local search
+combined with mathematical programming \citep{su2020matheuristic},
+fixed-sequence reoptimisation of quantities and timing
+\citep{he2020fixedsequence}, and hyper-heuristic sequence selection
+\citep{kheiri2020heuristic}. More recently, ratio objectives have been
+studied in a multi-source setting solved by ILS \citep{alonsopecina2024iterated}
+and in a multi-product setting with lateral transshipment and uncertain
+demand \citep{man2025logistics}. Compared with the classical IRP, for which
+a wide range of exact and heuristic methods exists, the heuristic literature
+on the IRP-LR remains sparse.
+
+\subsection{Related literature and research gaps}
+\label{sec:intro_literature}
+
+For the classical IRP, exact methods based on branch-and-cut
+\citep{archetti2007branch,coelho2013branch}, branch-price-and-cut
+\citep{desaulniers2016branch}, and their matheuristic extensions
+\citep{skaalnes2023branch} solve instances of moderate size. Large instances
+are handled by heuristics, which are reviewed by \citet{sofianopoulou2021review}
+and \citet{ekcsi2026inventory}. We organise the discussion around three
+design choices that are particularly important under a logistic-ratio
+objective. Table~\ref{tab:literature_irplr} summarises the studies most
+closely related to this work.
+
+\paragraph{Where delivery quantities are decided.}
+Efficient local search is available for routing decisions, whereas delivery
+quantities are naturally determined by mathematical programming. Most IRP
+heuristics therefore decompose the problem: a heuristic explores visit
+schedules and routes, and a mathematical program sets or repairs the
+quantities \citep{iswari2026extending}. Examples include the tabu search
+combined with mixed-integer programming of \citet{archetti2012hybrid}, the
+matheuristic of \citet{archetti2017matheuristic}, the variable MIP
+neighbourhood descent of \citet{coelho2020variable}, the ILS matheuristic of
+\citet{lagana2024iterated}, and route-improving matheuristics for related
+production routing problems \citep{vadseth2023multi}. In the hybrid genetic
+search (HGS) of \citet{castro2026hybrid}, the routing component builds on the
+HGS for the capacitated vehicle routing problem (CVRP)
+\citep{vidal2022hybrid}, while the quantities are obtained by solving a
+minimum-cost flow problem with the network simplex algorithm.
+\citet{zhao2025large} extend HGS with a large neighbourhood that
+simultaneously changes visit periods, insertion positions, and delivery
+quantities across the horizon. Decomposition works well when holding costs
+make quantity decisions secondary to routing. Under the logistic ratio,
+however, the change in delivered quantity caused by a routing move is part
+of the value of that move. A move that is evaluated with quantities held
+fixed can appear unattractive even though it becomes improving once the
+quantities are adjusted, and solving a mathematical program for every
+candidate move is too expensive within a local search. This suggests
+evaluating each move by its combined effect on routing cost and delivered
+quantity. It also suggests using an exact optimisation step for quantities
+only occasionally, as \citet{he2020fixedsequence} showed with fixed-sequence
+reoptimisation.
+
+\paragraph{How infeasibility is handled.}
+Allowing a search to visit infeasible solutions and penalising the violation
+in the objective is a well-established strategy in vehicle routing. It is a
+central component of HGS \citep{vidal2022hybrid}, and in inventory routing
+it has been used to relax vehicle capacity
+\citep{archetti2012hybrid,castro2026hybrid} and customer stockouts
+\citep{zhao2025large}. In the IRP, the stockout constraints make the
+feasible region particularly fragmented. Removing a single visit usually
+causes a stockout in some later period, so a search restricted to feasible
+solutions cannot easily move between replenishment plans with different
+visit patterns. Penalising stockouts addresses this, but under a ratio
+objective the penalty weight is difficult to set. The logistic ratio is
+measured in cost per unit and varies widely across instances, so a fixed
+penalty is either too weak, and the search remains infeasible, or too
+strong, and the search behaves as if infeasibility were forbidden. Lagrangian
+relaxation \citep{fisher1981lagrangian} offers a principled alternative: the
+stockout constraint is dualised, and the multiplier is updated with a
+subgradient-type rule that scales the penalty to the current gap from the
+incumbent. To the best of our knowledge, this has not previously been used
+to guide a local search for the IRP-LR.
+
+\paragraph{Saturated vehicles.}
+Because the logistic ratio rewards large deliveries, vehicles in good
+IRP-LR solutions are typically fully loaded. Any move that inserts a
+customer into such a vehicle is then infeasible if the existing quantities
+are kept, so large parts of the inter-route and inter-period neighbourhoods
+are effectively unavailable. In the CVRP, HGS addresses the corresponding
+issue by allowing capacity violations at a penalty \citep{vidal2022hybrid}.
+In the IRP-LR, there is a feasible alternative. The deliveries already on a
+full vehicle often include quantities that are not needed to prevent future
+stockouts, and this slack can be reassigned to the inserted customer without
+violating any constraint. Exploiting this slack keeps the search within
+capacity while giving access to the moves that matter most for the
+logistic ratio.
+
+Together, these observations identify the gap addressed in this paper:
+there is no scalable heuristic for the IRP-LR that (i) evaluates routing and
+quantity decisions jointly within each move, (ii) explores
+inventory-infeasible solutions in a controlled manner that adapts to the
+ratio objective, and (iii) does not depend on a mathematical programming
+solver.
+
+\begin{table*}[!htbp]
+\centering
+\caption{Studies most relevant to the IRP-LR and to the proposed solution
+methodology.}
+\label{tab:literature_irplr}
+\scriptsize
+\renewcommand{\arraystretch}{1.18}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{
+>{\raggedright\arraybackslash}p{2.3cm}
+>{\raggedright\arraybackslash}p{2.6cm}
+>{\raggedright\arraybackslash}p{2.8cm}
+>{\raggedright\arraybackslash}X
+>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Study} & \textbf{Problem / objective} & \textbf{Solution approach}
+& \textbf{Key search characteristic} & \textbf{Relevance to this work} \\
+\midrule
+\citet{archetti2017logistic} & IRP; routing cost / quantity delivered
+  & Exact fractional optimisation & Joint routing and replenishment
+  & Introduces the IRP-LR \\
+\citet{alvarez2018iterated} & IRP including logistic ratio
+  & ILS and SA & Neighbourhood search over routes and replenishment
+  & Benchmark heuristic for the IRP-LR \\
+\citet{archetti2019exact} & IRP-LR & Iterative exact method
+  & Sequence of IRPs with linear objectives
+  & Optimal solutions for small instances \\
+\citet{baldacci2020fractional} & VRP with fractional objective
+  & Exact method & Primal and dual bounding procedures
+  & General fractional routing methodology \\
+\citet{absi2020branch} & Rich IRP; unit distribution cost
+  & Heuristic branch-cut-and-price
+  & Integrated routing, quantity, and scheduling
+  & Large-scale industrial ratio IRP \\
+\citet{su2020matheuristic} & ROADEF/EURO IRP & Local search with MIP/LP
+  & Mathematical programming sets timing and quantities
+  & Hybrid local-search design \\
+\citet{he2020fixedsequence} & ROADEF/EURO IRP
+  & Fixed-sequence matheuristic
+  & Reoptimises quantities and timing for fixed visit sequences
+  & Separation of route structure and quantity optimisation \\
+\citet{alonsopecina2024iterated} & Operating cost / quantity delivered
+  & ILS & Neighbourhood search for a multi-source IRP
+  & Recent ILS with a ratio objective \\
+\citet{man2025logistics} & Multi-product logistics-ratio IRP
+  & Robust fractional optimisation & Uncertainty and lateral transshipment
+  & Extension of logistics-ratio optimisation \\
+\citet{castro2026hybrid} & Classical IRP & HGS
+  & Route search with min-cost-flow quantity optimisation
+  & State-of-the-art decomposition-based search \\
+\citet{zhao2025large} & Classical and stockout-penalised IRP
+  & HGS with large neighbourhood
+  & Cross-period route/quantity moves; penalised stockouts
+  & Joint moves and controlled infeasibility \\
+\midrule
+\textbf{This paper} & IRP-LR & Multi-start ILS (solver-free)
+  & Joint route--quantity moves; vehicle slack; Lagrangian stockout penalty
+  & Scalable heuristic for the IRP-LR \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\subsection{Contributions}
+\label{sec:intro_contributions}
+
+This paper proposes a multi-start iterated local search (MSILS) for the
+IRP-LR. The algorithm does not require a mathematical programming solver.
+Its main contributions are as follows.
+
+\begin{enumerate}
+  \item \textbf{Joint evaluation of route and quantity decisions.} Four of
+  the five local search operators update delivery quantities as part of
+  each move, using closed-form rules that respect depot supply, vehicle
+  capacity, and customer storage capacity. Every candidate move is
+  therefore evaluated by its actual effect on the logistic ratio, that is,
+  on routing cost and delivered quantity together.
+
+  \item \textbf{Vehicle slack.} We introduce a mechanism that reassigns
+  quantity not needed to prevent future stockouts from the existing
+  deliveries of a fully loaded vehicle to a newly inserted customer. The
+  mechanism is motivated by the capacity-violation strategy of HGS
+  \citep{vidal2022hybrid}, but it never violates vehicle capacity. It makes
+  available the inter-route and inter-period moves that would otherwise be
+  rejected, and it creates no new stockouts.
+
+  \item \textbf{Lagrangian-guided exploration of infeasible solutions.}
+  The zero-stockout constraint is dualised, and the local search solves a
+  sequence of relaxed problems in which the Lagrange multiplier is updated
+  by a subgradient-type rule based on the gap from the incumbent. The
+  penalty therefore scales automatically to the magnitude of the logistic
+  ratio of each instance, allowing the search to cross infeasible regions
+  and then return to feasibility.
+
+  \item \textbf{Problem-specific construction, rebalancing, and
+  perturbation.} Initial solutions are built by a randomised constructive
+  heuristic that prioritises customers by stockout urgency and distance
+  from the depot. A rebalance procedure redistributes quantities over a
+  fixed schedule whenever the incumbent improves, and an adaptive
+  perturbation increases its strength as the number of non-improving
+  iterations grows.
+
+  \item \textbf{Computational evidence.} Experiments on
+  \textcolor{red}{1128} benchmark instances, comprising \textcolor{red}{978}
+  instances with 5 to 50 customers and \textcolor{red}{150} instances with
+  50 to 200 customers, show that the MSILS improves on the ILS and SA of
+  \citet{alvarez2018iterated} by on average \textcolor{red}{6.30\%} and
+  \textcolor{red}{8.00\%}, respectively, on the large instances, with larger
+  gains as the instance size grows. On small instances, it finds solutions
+  within \textcolor{red}{X\%} of the optimal values reported by
+  \citet{archetti2019exact}. A component analysis quantifies the
+  contribution of each mechanism, and we also examine whether embedding the
+  HGS of \citet{vidal2022hybrid} as a routing post-optimiser brings further
+  improvement. The instances are publicly available
+  \textcolor{red}{(and the code will be released upon acceptance)}.
+\end{enumerate}
+
+The remainder of the paper is organised as follows.
+Section~\ref{sec:problem_description} defines the IRP-LR and the
+Lagrangian-relaxed problem used by the algorithm. Section~\ref{sec: alg}
+describes the MSILS. Section~\ref{sec: computational experiements} reports
+the computational experiments, and Section~\textcolor{red}{\ref{sec:conclusion}}
+concludes and outlines directions for future research.

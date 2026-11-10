@@ -2,88 +2,6 @@
 
 namespace
 {
-    void IncreaseDeliveriesAtExistingVisits(input &IRPLR, solution &candidate)
-    {
-        const double epsilon = 1e-9;
-        const int timeHorizon = IRPLR.TimeHorizon;
-        const int numberOfCustomers = static_cast<int>(IRPLR.Retailers.size());
-        vector<vector<double>> customerHeadroomSuffix(
-            numberOfCustomers, vector<double>(timeHorizon, numeric_limits<double>::infinity()));
-        for (int customer = 0; customer < numberOfCustomers; ++customer)
-        {
-            double minimumHeadroom = numeric_limits<double>::infinity();
-            for (int day = timeHorizon - 1; day >= 0; --day)
-            {
-                const double inventoryBeforeDelivery =
-                    day == 0 ? IRPLR.Retailers[customer].InventoryBegin
-                             : candidate.InventoryLevel[customer][day - 1];
-                const double currentHeadroom =
-                    IRPLR.Retailers[customer].InventoryMax -
-                    inventoryBeforeDelivery -
-                    candidate.DeliveryQuantity[customer][day];
-                minimumHeadroom = min(minimumHeadroom, currentHeadroom);
-                customerHeadroomSuffix[customer][day] = minimumHeadroom;
-            }
-        }
-
-        vector<double> supplierHeadroomSuffix(timeHorizon, numeric_limits<double>::infinity());
-        double minimumSupplierInventory = numeric_limits<double>::infinity();
-        for (int day = timeHorizon - 1; day >= 0; --day)
-        {
-            minimumSupplierInventory = min(minimumSupplierInventory, candidate.InventoryLevelSupplier[day]);
-            supplierHeadroomSuffix[day] = minimumSupplierInventory;
-        }
-
-        vector<double> additionalByCustomer(numberOfCustomers, 0.0);
-        double additionalFromSupplier = 0.0;
-        for (int day = 0; day < static_cast<int>(candidate.Route.size()); ++day)
-        {
-            double additionalToday = 0.0;
-            for (int vehicle = 0; vehicle < static_cast<int>(candidate.Route[day].size()); ++vehicle)
-            {
-                for (int customer : candidate.Route[day][vehicle])
-                {
-                    const double inventorySlack =
-                        customerHeadroomSuffix[customer][day] - additionalByCustomer[customer];
-                    const double supplierSlack =
-                        supplierHeadroomSuffix[day] - additionalFromSupplier - additionalToday;
-                    const double vehicleSlack =
-                        IRPLR.Vehicle.capacity - candidate.VehicleLoad[day][vehicle];
-                    const double additionalQuantity =
-                        max(0.0, min(vehicleSlack, min(inventorySlack, supplierSlack)));
-                    if (additionalQuantity <= epsilon)
-                    {
-                        continue;
-                    }
-
-                    candidate.DeliveryQuantity[customer][day] += additionalQuantity;
-                    candidate.VehicleLoad[day][vehicle] += additionalQuantity;
-                    candidate.TotalDeliveryPerDay[day] += additionalQuantity;
-                    additionalByCustomer[customer] += additionalQuantity;
-                    additionalToday += additionalQuantity;
-                }
-            }
-            additionalFromSupplier += additionalToday;
-        }
-
-        for (int customer = 0; customer < numberOfCustomers; ++customer)
-        {
-            double inventory = IRPLR.Retailers[customer].InventoryBegin;
-            for (int day = 0; day < timeHorizon; ++day)
-            {
-                inventory += candidate.DeliveryQuantity[customer][day] - IRPLR.Retailers[customer].Demand;
-                candidate.InventoryLevel[customer][day] = inventory;
-            }
-        }
-
-        double supplierInventory = IRPLR.Supplier.InventoryBegin;
-        for (int day = 0; day < timeHorizon; ++day)
-        {
-            supplierInventory += IRPLR.Supplier.QuantityProduced - candidate.TotalDeliveryPerDay[day];
-            candidate.InventoryLevelSupplier[day] = supplierInventory;
-        }
-    }
-
     bool ConstructAMMInitialSolution(input &IRPLR, solution &bestSolution)
     {
         const double epsilon = 1e-9;
@@ -138,6 +56,10 @@ namespace
 
                         const double quantity = min((retailer.InventoryMax - inventory[customer]) * demandRatio,
                                                     IRPLR.Vehicle.capacity);
+                        // Criterion 2 of Alvarez et al. (2018): in the last period, visit the customer
+                        // if holding the product at the supplier is more expensive than holding it at
+                        // the customer plus a round trip. Kept as in the original, which uses the same
+                        // construction heuristic for both objective functions.
                         const double estimatedRoundTripCost = 2.0 * IRPLR.Distance[0][customer + 1];
                         const bool economicalOnLastDay =
                             isLastDay &&
@@ -149,87 +71,79 @@ namespace
                         }
                     }
 
-                    const auto nearestDepotFirst = [&IRPLR](const pair<int, double> &left,
-                                                             const pair<int, double> &right)
-                    {
-                        return IRPLR.Distance[0][left.first + 1] < IRPLR.Distance[0][right.first + 1];
-                    };
-                    sort(mandatoryCustomers.begin(), mandatoryCustomers.end(), nearestDepotFirst);
-                    sort(candidateCustomers.begin(), candidateCustomers.end(), nearestDepotFirst);
-
+                    // Nearest-neighbour route construction (Alvarez et al., 2018, following
+                    // Braysy and Gendreau, 2005). Vehicles are filled one after another: starting
+                    // from the last node of the vehicle's route (the depot if empty), the nearest
+                    // unrouted customer whose delivery fits the residual capacity is appended,
+                    // until no such customer remains; then the next vehicle is used. Mandatory
+                    // customers are routed first, then the optional customers extend the same
+                    // routes. Deliveries are also limited by the supplier's available inventory.
                     double availableSupply = supplierInventory + IRPLR.Supplier.QuantityProduced;
-                    const auto scheduleCustomer = [&](const pair<int, double> &customerToSchedule,
-                                                      bool isMandatory) -> bool
+                    const auto routeNearestNeighbour = [&](const vector<pair<int, double>> &customers) -> bool
                     {
-                        const int customer = customerToSchedule.first;
-                        const double quantity = min(customerToSchedule.second, availableSupply);
-                        if (quantity <= epsilon)
+                        vector<bool> routed(customers.size(), false);
+                        size_t numberRouted = 0;
+                        for (int vehicle = 0; vehicle < IRPLR.NumberOfVehicles && numberRouted < customers.size();
+                             ++vehicle)
                         {
-                            return !isMandatory;
-                        }
-
-                        int bestVehicle = -1;
-                        int bestPosition = -1;
-                        double bestIncrease = numeric_limits<double>::infinity();
-                        for (int vehicle = 0; vehicle < IRPLR.NumberOfVehicles; ++vehicle)
-                        {
-                            if (candidate.VehicleLoad[day][vehicle] + quantity >
-                                IRPLR.Vehicle.capacity + epsilon)
+                            vector<int> &route = candidate.Route[day][vehicle];
+                            int currentNode = route.empty() ? 0 : route.back() + 1;
+                            while (numberRouted < customers.size())
                             {
-                                continue;
-                            }
-
-                            const vector<int> &route = candidate.Route[day][vehicle];
-                            for (int position = 0; position <= static_cast<int>(route.size()); ++position)
-                            {
-                                const int previousNode = position == 0 ? 0 : route[position - 1] + 1;
-                                const int nextNode = position == static_cast<int>(route.size())
-                                                         ? 0
-                                                         : route[position] + 1;
-                                const double increase =
-                                    IRPLR.Distance[previousNode][customer + 1] +
-                                    IRPLR.Distance[customer + 1][nextNode] -
-                                    IRPLR.Distance[previousNode][nextNode];
-                                if (increase < bestIncrease)
+                                int nearestIndex = -1;
+                                double nearestDistance = numeric_limits<double>::infinity();
+                                double nearestQuantity = 0.0;
+                                for (int index = 0; index < static_cast<int>(customers.size()); ++index)
                                 {
-                                    bestIncrease = increase;
-                                    bestVehicle = vehicle;
-                                    bestPosition = position;
+                                    if (routed[index])
+                                    {
+                                        continue;
+                                    }
+                                    const double quantity = min(customers[index].second, availableSupply);
+                                    if (quantity <= epsilon ||
+                                        candidate.VehicleLoad[day][vehicle] + quantity >
+                                            IRPLR.Vehicle.capacity + epsilon)
+                                    {
+                                        continue;
+                                    }
+                                    const double distance =
+                                        IRPLR.Distance[currentNode][customers[index].first + 1];
+                                    if (distance < nearestDistance)
+                                    {
+                                        nearestDistance = distance;
+                                        nearestIndex = index;
+                                        nearestQuantity = quantity;
+                                    }
                                 }
+                                if (nearestIndex < 0)
+                                {
+                                    break;
+                                }
+
+                                const int customer = customers[nearestIndex].first;
+                                route.push_back(customer);
+                                candidate.DeliveryQuantity[customer][day] = nearestQuantity;
+                                candidate.VehicleLoad[day][vehicle] += nearestQuantity;
+                                candidate.TotalDeliveryPerDay[day] += nearestQuantity;
+                                availableSupply -= nearestQuantity;
+                                inventory[customer] += nearestQuantity;
+                                routed[nearestIndex] = true;
+                                ++numberRouted;
+                                currentNode = customer + 1;
                             }
                         }
-
-                        if (bestVehicle < 0)
-                        {
-                            return !isMandatory;
-                        }
-
-                        candidate.Route[day][bestVehicle].insert(
-                            candidate.Route[day][bestVehicle].begin() + bestPosition, customer);
-                        candidate.DeliveryQuantity[customer][day] = quantity;
-                        candidate.VehicleLoad[day][bestVehicle] += quantity;
-                        candidate.TotalDeliveryPerDay[day] += quantity;
-                        availableSupply -= quantity;
-                        inventory[customer] += quantity;
-                        return true;
+                        return numberRouted == customers.size();
                     };
 
-                    for (const auto &customer : mandatoryCustomers)
+                    // All mandatory customers must be visited; otherwise this parameter
+                    // combination yields no solution.
+                    if (!routeNearestNeighbour(mandatoryCustomers))
                     {
-                        if (!scheduleCustomer(customer, true))
-                        {
-                            feasible = false;
-                            break;
-                        }
-                    }
-                    if (!feasible)
-                    {
+                        feasible = false;
                         break;
                     }
-                    for (const auto &customer : candidateCustomers)
-                    {
-                        scheduleCustomer(customer, false);
-                    }
+                    // Optional customers that do not fit are simply not visited.
+                    routeNearestNeighbour(candidateCustomers);
 
                     supplierInventory = availableSupply;
                     if (supplierInventory < -epsilon)
@@ -253,7 +167,6 @@ namespace
                     continue;
                 }
 
-                IncreaseDeliveriesAtExistingVisits(IRPLR, candidate);
                 candidate.UpdateVehicleAllocationVisitOrder(IRPLR);
                 candidate.GetLogisticRatio(IRPLR);
                 if (candidate.TotalDelivery <= epsilon)
