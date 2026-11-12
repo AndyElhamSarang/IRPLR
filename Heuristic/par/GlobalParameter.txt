@@ -1,11 +1,11 @@
 NumberOfInitialSolution
-30
+100
 MinGridResolution
-2
+3
 GridResolutionIncrement
 2
 NumberOfExperiments
-1
+5
 AllowLagrangianRelaxation
 YES
 TypeOfRebalance
@@ -31,4 +31,4 @@ Disturb_strength
 MainAlgorithmTimeLimit
 60
 InitialSolutionMethod
-Initial_BlockZone_Schedule
+ConstructAMMInitialSolution
