@@ -59,9 +59,10 @@ int main()
 	read_file.ReadIRPInstanceName();
 	read_file.ReadGlobalSettings();
 	read_file.ReadGlobalParameter();
+	read_file.ReadSeeds();
 	for (int experiment = 0; experiment < NumberOfExperiments; experiment++)
 	{
-		RandomSeed = static_cast<unsigned int>(time(0));
+		RandomSeed = read_file.Seeds[experiment];
 		generator.seed(RandomSeed);
 
 		if (OutputResults == 1)
