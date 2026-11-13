@@ -9,6 +9,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{booktabs}
+\usepackage{multirow}
 \usepackage{caption}
 \usepackage{cancel}
 \usepackage{hyperref}
@@ -36,14 +37,15 @@ citecolor=blue,
 
 \section{Abstract}
 
-The paper presents a multi-start iterated local search  for solving the inventory routing problem with logistic ratio. The proposed optimisation algorithm utilise serval components include an application of the Lagrangian relaxation where violation on the stockout constratins is permitted, a devliery quantity reoptimisation procedure, and serval local search operators integrates both routing decision and quantity decision. The computational experiements were conducted on 978 small instances with 5 to 50 customer and 150 large instances with 50 to 200 customers. The results shown the proposed algorithm outperformance all instances on previous available metaheuristics for large instances and produces competitive results on small instances. We also give our attempt on integrating the hybrid genetic search from capacited vehicle routing problem into the proposed multi-started iterated local search. With hybrid genetic search, the solution quality can still be improved by certain percentage.
+The paper presents a multi-start iterated local search  for solving the inventory routing problem with logistic ratio. The proposed optimisation algorithm utilise serval components include an application of the Lagrangian relaxation where violation on the stockout constratins is permitted, a devliery quantity reoptimisation procedure, and serval local search operators integrates both routing decision and quantity decision. The computational experiements were conducted on 978 small instances with 5 to 50 customer and 150 large instances with 50 to 200 customers. On the large instances, the logistic ratios of re-implementations of the previously available metaheuristics are on average 3.2\% and 6.6\% higher than those of the proposed algorithm, which is outperformed only by the re-implemented iterated local search on the largest instances with four and five vehicles. \textcolor{red}{[Small-instance result: within X\% of the optimal values.]} We also give our attempt on integrating the hybrid genetic search from capacited vehicle routing problem into the proposed multi-started iterated local search. With hybrid genetic search, the solution quality can still be improved by certain percentage.
 
 
 
 \section{Introduction}
 \label{sec:introduction}
 
-The inventory routing problem (IRP) arises in vendor-managed inventory
+The inventory routing problem (IRP), which originated in the distribution of
+industrial gases \citep{bell1983improving}, arises in vendor-managed inventory
 systems, in which a supplier monitors the stock levels of its customers and
 takes responsibility for replenishing them. Over a multi-period planning
 horizon, the supplier jointly decides when each customer is visited, how much
@@ -58,12 +60,12 @@ challenging problems in distribution logistics
 \citep{moin2007overview,bertazzi2012inventory,coelho2014thirty,ekcsi2026inventory}.
 
 Most of the IRP literature minimises the total cost, defined as the sum of
-routing and inventory holding costs. In many applications, however, holding
+routing and inventory holding costs \citep{bertazzi2012inventory,coelho2014thirty}. In many applications, however, holding
 costs are difficult to estimate or are negligible compared with transport
 costs, and practitioners evaluate distribution plans by the transport cost
-per unit of product delivered. This key performance indicator, known as the
-\emph{logistic ratio}, has long been used in the distribution of industrial
-gases \citep{bell1983improving,benoist2011randomized,singh2015incremental}.
+per unit of product delivered \citep{benoist2011randomized}. This key performance indicator, known as the
+\emph{logistic ratio}, is used in practice in the distribution of industrial
+gases \citep{benoist2011randomized}.
 It was also the objective of the ROADEF/EURO Challenge 2016, proposed by
 Air Liquide \citep{andre2020roadef}. \citet{archetti2017logistic} formalised
 the IRP with logistic ratio (IRP-LR) and showed that solutions that minimise
@@ -74,18 +76,19 @@ afterwards. The logistic ratio, in contrast, rewards every unit delivered
 and therefore produces replenishment plans that differ markedly from
 cost-minimising ones.
 
-The IRP-LR is NP-hard in the strong sense, since it contains the travelling
-salesman problem as a special case (Section~\ref{sec:problem_formulation}).
-Its objective is moreover the ratio of two decision-dependent quantities: the
-routing cost in the numerator and the total delivered quantity in the
-denominator. Exact approaches build on parametric fractional programming
-\citep{dinkelbach1967}, which replaces the ratio with a sequence of linear
-objectives. \citet{archetti2017logistic} and \citet{archetti2019exact}
+The IRP-LR is strongly NP-hard, as it contains the travelling salesman
+problem as a special case (Section~\ref{sec:problem_formulation}). Its
+objective adds a further difficulty: it is a ratio of two decision-dependent
+quantities, the routing cost in the numerator and the total delivered
+quantity in the denominator. Exact approaches therefore rely on parametric
+fractional programming \citep{dinkelbach1967}, which solves a sequence of
+problems in which the ratio is replaced by the parametric objective
+$\text{cost} - \lambda \cdot \text{quantity}$. \citet{archetti2017logistic} and \citet{archetti2019exact}
 developed exact algorithms for the IRP-LR along these lines, and
 \citet{baldacci2020fractional} proposed a general exact framework for vehicle
 routing problems with fractional objectives. These methods provide optimal
 solutions and bounds, but their computational requirements restrict them to
-instances with at most \textcolor{red}{50} customers. For larger instances, to the best of our
+instances with at most 25 customers. For larger instances, to the best of our
 knowledge, the only heuristics evaluated on the IRP-LR benchmark are the
 iterated local search (ILS) and simulated annealing (SA) algorithms of
 \citet{alvarez2018iterated}. The algorithms developed for the ROADEF/EURO
@@ -293,10 +296,16 @@ Its main contributions are as follows.
   \item \textbf{Computational evidence.} Experiments on
   \textcolor{red}{1128} benchmark instances, comprising \textcolor{red}{978}
   instances with 5 to 50 customers and \textcolor{red}{150} instances with
-  50 to 200 customers, show that the MSILS improves on the ILS and SA of
-  \citet{alvarez2018iterated} by on average \textcolor{red}{6.30\%} and
-  \textcolor{red}{8.00\%}, respectively, on the large instances, with larger
-  gains as the instance size grows. On small instances, it finds solutions
+  50 to 200 customers, compare the MSILS with the ILS and SA of
+  \citet{alvarez2018iterated}. On the large instances, the logistic ratios
+  obtained by our re-implementations of these algorithms, run on the same
+  computer and with the same time limit, are on average
+  \textcolor{red}{3.2\%} and \textcolor{red}{6.6\%} higher than those of the
+  MSILS. The advantage of the MSILS is largest on instances with few
+  vehicles; only on the largest instances with four and five vehicles is the
+  re-implemented ILS slightly better. \textcolor{red}{[Add the comparison
+  with the published ILS and SA results (17.3\% and 19.3\%) once their source
+  for the large instances is confirmed.]} On small instances, it finds solutions
   within \textcolor{red}{X\%} of the optimal values reported by
   \citet{archetti2019exact}. A component analysis quantifies the
   contribution of each mechanism, and we also examine whether embedding the
@@ -307,7 +316,7 @@ Its main contributions are as follows.
 
 Preliminary results of this work were presented at the 15th International
 Conference on Operations Research and Enterprise Systems (ICORES 2026)
-\textcolor{red}{[add citation]}. The present paper extends that work with
+\citep{archetti2026heuristic}. The present paper extends that work with
 \textcolor{red}{[list extensions, e.g.\ the complete algorithm description,
 the component analysis, and the experiments on the large instances]}.
 
@@ -315,7 +324,7 @@ The remainder of the paper is organised as follows.
 Section~\ref{sec:problem_description} defines the IRP-LR and the
 Lagrangian-relaxed problem used by the algorithm. Section~\ref{sec: alg}
 describes the MSILS. Section~\ref{sec: computational experiements} reports
-the computational experiments, and Section~\textcolor{red}{\ref{sec:conclusion}}
+the computational experiments, and Section~\ref{sec:conclusion}
 concludes and outlines directions for future research.
 
 \section{Problem Background and Related Literature}
@@ -626,7 +635,7 @@ optimisation and of allowing controlled infeasibility during the search.
 \centering
 \caption{Selected literature relevant to the IRP-LR and the proposed
 solution methodology.}
-\label{tab:literature_irplr}
+\label{tab:literature_irplr_background}
 \scriptsize
 \renewcommand{\arraystretch}{1.18}
 \setlength{\tabcolsep}{3pt}
@@ -1277,39 +1286,95 @@ Compared with the supplementary results from \cite{alvarez2018iterated} availabl
 
 
 The proposed \hyperref[alg:MSILS]{MSILS} is compared with ILS and SA in \cite{alvarez2018iterated}. The algorithm is validated in small instances by comparing the optimal solutions obtained by the ACS algorithm developed in \cite{archetti2019exact}.
-\begin{table}[htbp] 
-\centering 
-\caption{Average percentage gap (\%) of \hyperref[alg:MSILS]{MSILS} compared with ILS} \label{tab:msils_vs_ils} 
-\begin{tabular}{lccccc} 
-\toprule & $|T|=2$ & $|T|=3$ & $|T|=4$ & $|T|=5$ & Average \\ 
-\midrule 
-$|N'|=50$ & -8.00 & -4.30 & -5.03 & -5.13 & -5.61 \\ 
-$|N'|=100$ & -8.63 & -6.59 & -6.57 & -6.90 & -7.17 \\ 
-$|N'|=200$ & -9.02 & -6.16 & -5.16 & -4.10 & -6.11 \\ 
-\midrule 
-Average & -8.55 & -5.68 & -5.58 & -5.38 & -6.30 \\ 
-\bottomrule 
-\end{tabular} 
+
+Table~\ref{tab:summary} summarises the results on the large instances of
+\cite{archetti2012hybrid}, grouped by the number of vehicles $|K|$ and the
+number of customers $|N'|$, with 10 instances per group. The first three
+columns report the best, average and worst logistic ratios obtained by
+\hyperref[alg:MSILS]{MSILS}. The remaining columns report the relative
+percentage difference (RPD) of each competing method with respect to
+\hyperref[alg:MSILS]{MSILS}, so a positive value means that
+\hyperref[alg:MSILS]{MSILS} obtains the lower logistic ratio. ILS and SA refer
+to the best of five runs reported by \cite{alvarez2018iterated}
+\textcolor{red}{[confirm the source of these values: Alvarez et al.\ report
+logistic-ratio results only for instances with up to 50 customers; if these
+are logistic ratios of their total-cost solutions, say so]}. Re-ILS and Re-SA
+denote our C++ re-implementations of these algorithms, run on the same
+computer and with the same time limit as the \hyperref[alg:MSILS]{MSILS}
+\textcolor{red}{[number of runs per instance, time limit]}. Where
+\cite{alvarez2018iterated} leave implementation details unspecified, such as
+how operators are applied within the randomised variable neighbourhood
+descent, how delivery quantities are set by the routing and insertion
+operators, and how the perturbation and SA neighbours are drawn, we made the
+choices documented with the code \textcolor{red}{[repository URL or
+appendix]}. The re-implementations use the published parameter values. With
+these values, Re-SA performed worse on small instances than the SA results
+reported by \cite{alvarez2018iterated}, and its results should therefore be
+interpreted with caution \textcolor{red}{[add the gap figures once the
+validation runs are repeated sequentially]}.
+
+\begin{table}[htbp]
+\centering
+\caption{Average results by number of vehicles $|K|$ and number of customers
+$|N'|$ (10 instances per group). The \hyperref[alg:MSILS]{MSILS} columns report
+average logistic ratios; all other columns report the relative percentage
+difference (RPD, \%) with respect to \hyperref[alg:MSILS]{MSILS}, computed as
+$100\times(\text{Method}-\text{MSILS})/\text{MSILS}$. ILS and SA are compared
+with the best \hyperref[alg:MSILS]{MSILS} value; the best, average and worst
+values of Re-ILS and Re-SA are compared with the best, average and worst
+\hyperref[alg:MSILS]{MSILS} values, respectively.}
+\label{tab:summary}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{cc ccc cc ccc ccc}
+\toprule
+ & & \multicolumn{3}{c}{MSILS} & \multicolumn{2}{c}{RPD (\%)} & \multicolumn{3}{c}{Re-ILS RPD (\%)} & \multicolumn{3}{c}{Re-SA RPD (\%)} \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
+$|K|$ & $|N'|$ & Best & Average & Worst & ILS & SA & Best & Average & Worst & Best & Average & Worst \\
+\midrule
+\multirow{3}{*}{1} & 50  & 0.59 & 0.59 & 0.59 & 16.66 & 18.49 & 4.45 & 6.06 & 7.48 & 8.98 & 10.32 & 11.92 \\
+                   & 100 & 0.37 & 0.37 & 0.38 & 23.34 & 23.29 & 9.05 & 10.39 & 12.04 & 13.43 & 13.87 & 14.87 \\
+                   & 200 & 0.25 & 0.26 & 0.26 & 29.56 & 31.41 & 10.88 & 12.20 & 13.24 & 15.04 & 14.82 & 15.02 \\
+\midrule
+\multirow{3}{*}{2} & 50  & 0.71 & 0.72 & 0.73 & 14.74 & 14.23 & 2.46 & 2.81 & 2.79 & 6.99 & 7.38 & 7.21 \\
+                   & 100 & 0.41 & 0.42 & 0.43 & 19.38 & 21.28 & 4.21 & 4.13 & 3.88 & 11.17 & 10.01 & 9.10 \\
+                   & 200 & 0.27 & 0.28 & 0.29 & 24.32 & 33.93 & 5.36 & 4.05 & 2.47 & 10.58 & 8.54 & 6.91 \\
+\midrule
+\multirow{3}{*}{3} & 50  & 0.87 & 0.88 & 0.89 & 9.71 & 10.75 & 0.73 & 1.31 & 1.81 & 4.06 & 4.75 & 5.25 \\
+                   & 100 & 0.46 & 0.47 & 0.48 & 15.62 & 15.55 & 3.05 & 2.84 & 3.35 & 6.43 & 6.30 & 6.55 \\
+                   & 200 & 0.30 & 0.31 & 0.32 & 20.32 & 25.59 & 1.55 & 2.04 & 2.01 & 5.58 & 5.48 & 5.42 \\
+\midrule
+\multirow{3}{*}{4} & 50  & 1.03 & 1.04 & 1.06 & 10.11 & 9.88 & 1.33 & 1.65 & 2.07 & 3.62 & 3.77 & 4.17 \\
+                   & 100 & 0.53 & 0.54 & 0.55 & 13.29 & 14.60 & 0.20 & 0.44 & 0.07 & 4.24 & 3.67 & 2.62 \\
+                   & 200 & 0.33 & 0.34 & 0.35 & 20.37 & 26.54 & 0.25 & $-$0.45 & $-$1.49 & 3.88 & 2.80 & 1.35 \\
+\midrule
+\multirow{3}{*}{5} & 50  & 1.20 & 1.21 & 1.22 & 10.62 & 10.19 & 0.59 & 1.03 & 1.63 & 2.87 & 3.04 & 3.16 \\
+                   & 100 & 0.59 & 0.60 & 0.61 & 13.95 & 12.92 & 0.75 & 1.07 & 1.43 & 3.21 & 3.10 & 3.11 \\
+                   & 200 & 0.36 & 0.37 & 0.38 & 17.25 & 21.24 & $-$1.11 & $-$1.41 & $-$1.67 & 1.10 & 1.03 & 0.79 \\
+\midrule
+\multicolumn{2}{c}{Average} & 0.55 & 0.56 & 0.57 & 17.28 & 19.33 & 2.92 & 3.21 & 3.41 & 6.75 & 6.59 & 6.50 \\
+\bottomrule
+\end{tabular}%
+}
 \end{table}
 
+\hyperref[alg:MSILS]{MSILS} obtains a lower logistic ratio than ILS and SA
+\citep{alvarez2018iterated} in every group, by 9.7\% to 33.9\%. For each
+number of vehicles, the advantage grows with the number of customers, and it
+is generally smaller with more vehicles. Against Re-ILS and Re-SA the margins
+are smaller and narrow as the number of vehicles increases. Re-SA is
+outperformed in every group. Re-ILS is
+outperformed in all groups except the largest instances with four and five
+vehicles: with $|K|=5$ and $|N'|=200$, Re-ILS is better than
+\hyperref[alg:MSILS]{MSILS} by 1.1\% to 1.7\%, and with $|K|=4$ and
+$|N'|=200$ its average and worst values are better by 0.45\% and 1.49\%.
 
-\begin{table}[htbp] 
-\centering 
-\caption{Average percentage gap (\%) of \hyperref[alg:MSILS]{MSILS} compared with SA} \label{tab:msils_vs_ils} 
-\begin{tabular}{lccccc} 
-\toprule & $|T|=2$ & $|T|=3$ & $|T|=4$ & $|T|=5$ & Average \\ 
-\midrule 
-$|N'|=50$ & -7.59 & -5.28 & -4.82 & -4.97 & -5.67 \\ 
-$|N'|=100$ & -10.00 & -6.66 & -7.56 & -6.16 & -7.59 \\ 
-$|N'|=200$ & -15.59 & -10.18 & -9.77 & -7.40 & -10.73 \\ 
-\midrule 
-Average & -11.06 & -7.37 & -7.38 & -6.18 & -8.00 \\ 
-\bottomrule 
-\end{tabular} 
-\end{table}
 
 
 \subsection{Robustness} \label{Robustness}
+
+\section{Conclusions}\label{sec:conclusion}
+
+\textcolor{red}{[To be written.]}
 
 \appendix
 

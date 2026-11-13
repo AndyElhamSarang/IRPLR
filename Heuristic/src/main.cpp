@@ -36,6 +36,8 @@ string InitialSolutionMethod = "Initial_BlockZone_Schedule";
 string AllowLagrangianRelaxation;
 string TypeOfRebalance;
 string Activate_Disturbance = "YES";
+string LocalSearchOrder = "SEQUENTIAL";
+bool UseVehicleSlack = true;
 double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
