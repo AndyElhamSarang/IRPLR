@@ -16,4 +16,8 @@ class file
 
   void ReadGlobalSettings();
   void ReadGlobalParameter();
+
+  // One seed per experiment, read from par/Seed.txt
+  vector<unsigned int> Seeds;
+  void ReadSeeds();
 };

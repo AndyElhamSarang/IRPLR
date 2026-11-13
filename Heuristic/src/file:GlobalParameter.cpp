@@ -296,3 +296,51 @@ void file::ReadGlobalParameter()
         exit(1);
     }
 }
+
+// Read one random seed per experiment from par/Seed.txt (one seed per line).
+// The number of seeds must equal NumberOfExperiments, so call this after ReadGlobalParameter().
+void file::ReadSeeds()
+{
+    cout << "Read Seeds" << endl;
+    string SeedFile = MachineDirectory + "Curtin/IRPLR/IRPLR/Heuristic/par/Seed.txt";
+    ifstream ifSeed(SeedFile.c_str());
+    if (!ifSeed.is_open())
+    {
+        cout << "Error: Cannot open seed file " << SeedFile << endl;
+        exit(1);
+    }
+
+    Seeds.clear();
+    string line;
+    int line_number = 0;
+    while (getline(ifSeed, line))
+    {
+        line_number++;
+        // Skip blank lines
+        if (line.find_first_not_of(" \t\r\n") == string::npos)
+        {
+            continue;
+        }
+        stringstream ss_seed(line);
+        long long seed;
+        string trailing;
+        if (!(ss_seed >> seed) || (ss_seed >> trailing) || seed < 0 || seed > numeric_limits<unsigned int>::max())
+        {
+            cout << "Error: Invalid seed on line " << line_number << " of Seed.txt: '" << line << "'" << endl;
+            exit(1);
+        }
+        Seeds.push_back(static_cast<unsigned int>(seed));
+    }
+
+    if ((int)Seeds.size() != NumberOfExperiments)
+    {
+        cout << "Error: Seed.txt contains " << Seeds.size() << " seed(s) but NumberOfExperiments is " << NumberOfExperiments
+             << ". The number of seeds must match the number of experiments." << endl;
+        exit(1);
+    }
+
+    for (int i = 0; i < (int)Seeds.size(); i++)
+    {
+        cout << "Seed for experiment " << i + 1 << ":" << Seeds[i] << endl;
+    }
+}
