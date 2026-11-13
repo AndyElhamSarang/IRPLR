@@ -6,12 +6,15 @@ Reports class averages by number of customers n and vehicles K, win/tie/loss cou
 two-sided Wilcoxon signed-rank test (normal approximation with tie correction) on the
 per-instance averages.
 
-usage: python3 scripts/compare_rvnd.py [results/rvnd_test45_60s.csv]
+usage: python3 scripts/compare_rvnd.py [results/rvnd_test45_60s.csv] [BASE=SEQUENTIAL] [VARIANT=RVND]
+       e.g. python3 scripts/compare_rvnd.py results/disturb_15_60s.csv SEGMENT SHAW
 """
 import csv, math, re, sys
 from collections import defaultdict
 
 src = sys.argv[1] if len(sys.argv) > 1 else 'results/rvnd_test45_60s.csv'
+BASE = sys.argv[2] if len(sys.argv) > 2 else 'SEQUENTIAL'
+VAR = sys.argv[3] if len(sys.argv) > 3 else 'RVND'
 lr = defaultdict(dict)  # (inst, order) -> {seed: lr}
 iters = defaultdict(list)
 fails = 0
@@ -47,7 +50,7 @@ def wilcoxon(d):
 
 rows = []
 for inst in sorted({i for i, _ in lr}):
-    a, b = lr.get((inst, 'SEQUENTIAL'), {}), lr.get((inst, 'RVND'), {})
+    a, b = lr.get((inst, BASE), {}), lr.get((inst, VAR), {})
     seeds = sorted(set(a) & set(b))
     if not seeds:
         continue
@@ -61,7 +64,7 @@ for inst in sorted({i for i, _ in lr}):
 if not rows:
     sys.exit('no paired results yet')
 print(f'{len(rows)} instances with paired results, {sum(r["seeds"] for r in rows)} seed pairs, {fails} failed runs')
-for o in ('SEQUENTIAL', 'RVND'):
+for o in (BASE, VAR):
     if iters[o]:
         print(f'  mean ILS iterations per run, {o}: {sum(iters[o]) / len(iters[o]):.0f}')
 
@@ -71,8 +74,8 @@ def summary(label, rs):
     w = sum(x < -1e-9 for x in g); l = sum(x > 1e-9 for x in g)
     print(f'{label:<10} {len(rs):>4} {sum(g) / len(g):>+9.2f} {sum(gb) / len(gb):>+9.2f}   {w:>3}/{len(g) - w - l}/{l}')
 
-print('\nGap of RVND vs SEQUENTIAL (%), negative = RVND better')
-print(f'{"class":<10} {"inst":>4} {"avg-gap":>9} {"best-gap":>9}   W/T/L (RVND)')
+print(f'\nGap of {VAR} vs {BASE} (%), negative = {VAR} better')
+print(f'{"class":<10} {"inst":>4} {"avg-gap":>9} {"best-gap":>9}   W/T/L ({VAR})')
 for n in sorted({r['n'] for r in rows}):
     summary(f'n={n}', [r for r in rows if r['n'] == n])
 for k in sorted({r['K'] for r in rows}):
@@ -80,7 +83,7 @@ for k in sorted({r['K'] for r in rows}):
 summary('all', rows)
 p, m = wilcoxon([r['avg_rvnd'] - r['avg_seq'] for r in rows])
 print(f'\nWilcoxon signed-rank on per-instance averages: n={m}, two-sided p={p:.4f}')
-seedpairs = [lr[(r["inst"], "RVND")][s] - lr[(r["inst"], "SEQUENTIAL")][s] for r in rows
-             for s in set(lr[(r["inst"], "RVND")]) & set(lr[(r["inst"], "SEQUENTIAL")])]
+seedpairs = [lr[(r["inst"], VAR)][s] - lr[(r["inst"], BASE)][s] for r in rows
+             for s in set(lr[(r["inst"], VAR)]) & set(lr[(r["inst"], BASE)])]
 p2, m2 = wilcoxon(seedpairs)
 print(f'Wilcoxon signed-rank on all seed pairs:        n={m2}, two-sided p={p2:.4f}')

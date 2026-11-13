@@ -37,6 +37,7 @@ string TypeOfRebalance;
 string Activate_Disturbance = "YES";
 string LocalSearchOrder = "SEQUENTIAL";
 bool UseVehicleSlack = true;
+string DisturbOperator = "SEGMENT";
 double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
