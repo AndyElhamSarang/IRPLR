@@ -37,6 +37,7 @@ string TypeOfRebalance;
 string Activate_Disturbance = "YES";
 string LocalSearchOrder = "SEQUENTIAL";
 bool UseVehicleSlack = true;
+string LocalSearchMemory = "NO";
 string DisturbOperator = "SEGMENT";
 double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
@@ -132,6 +133,8 @@ int main(int argc, char* argv[])
 			}
 			else if (opt == "LocalSearchOrder") { LocalSearchOrder = val; }
 			else if (opt == "DisturbOperator") { if (val != "SEGMENT" && val != "SHAW") { cerr << "DisturbOperator must be SEGMENT or SHAW." << endl; return 1; } DisturbOperator = val; }
+			else if (opt == "LocalSearchMemory") { if (val != "NO" && val != "ROUTE" && val != "MIDDLE" && val != "EXACT") { cerr << "LocalSearchMemory must be NO, ROUTE, MIDDLE or EXACT." << endl; return 1; } LocalSearchMemory = val; }
+			else if (opt == "LocalSearchMemoryAudit") { if (val != "YES" && val != "NO") { cerr << "LocalSearchMemoryAudit must be YES or NO." << endl; return 1; } local_search_memory::SetAudit(val == "YES"); }
 			else if (opt == "UseVehicleSlack") { if (val != "YES" && val != "NO") { cerr << "UseVehicleSlack must be YES or NO." << endl; return 1; } UseVehicleSlack = (val == "YES"); }
 			else if (opt == "theta") { theta = atof(val.c_str()); provided_options.insert("theta"); }
 			else if (opt == "sigma") { sigma = atoi(val.c_str()); provided_options.insert("sigma"); }
@@ -243,6 +246,7 @@ int main(int argc, char* argv[])
 	}
 	cout << "Local Search Order: " << LocalSearchOrder << endl;
 	cout << "Use Vehicle Slack: " << (UseVehicleSlack ? "YES" : "NO") << endl;
+	cout << "Local Search Memory: " << LocalSearchMemory << endl;
 	cout << "Disturb Operator: " << DisturbOperator << endl;
 
 	file read_file;
@@ -418,6 +422,10 @@ int main(int argc, char* argv[])
 				printf("IRACE_COST %.10g\n", GlobalBest.LogisticRatio);
 				printf("IRACE_ITERATIONS %d\n", Global_total_iteration);
 				printf("IRACE_STARTS %d\n", NumberOfStartsRun);
+				printf("LS_MEMORY_PAIRS_SKIPPED %lld\n", local_search_memory::SkippedPairs());
+				printf("LS_MEMORY_PAIRS_SCANNED %lld\n", local_search_memory::ScannedPairs());
+				printf("LS_MEMORY_AUDIT_WOULD_SKIP %lld\n", local_search_memory::AuditWouldSkip());
+				printf("LS_MEMORY_AUDIT_MISSES %lld\n", local_search_memory::AuditMisses());
 				printf("IRACE_ELAPSED %.0f\n", accum_time);
 				fflush(stdout);
 				if(OutputSolutionJSON == "YES")

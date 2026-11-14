@@ -24,6 +24,7 @@ extern double AccumulatedTimeHGS;
 extern string Activate_Disturbance;
 extern string LocalSearchOrder; // SEQUENTIAL (O1..O5 in fixed order) or RVND (random order, Alvarez et al. 2018)
 extern bool UseVehicleSlack;
+extern string LocalSearchMemory; // NO | ROUTE | MIDDLE | EXACT, see LocalSearchMemory.h
 extern string DisturbOperator; // SEGMENT: OperatorDisturb (paper); SHAW: OperatorDisturb_Shaw1998_Pisinger2007 (related removal)   // YES: O1-O4 may borrow slack from a full vehicle for an inserted visit; NO: such moves fail
 
 

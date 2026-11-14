@@ -44,6 +44,7 @@ andy_desktop:
 	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
 	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
+	LocalSearchMemory.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
 	-o test.out -O3
 andy_desktop_DISABLE_COUT:
@@ -80,6 +81,7 @@ andy_desktop_DISABLE_COUT:
 	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
 	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
+	LocalSearchMemory.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
 	-DDISABLE_COUT \
 	-o test_DISABLE_COUT.out -O3
@@ -117,6 +119,7 @@ parameter_tuning_desktop:
 	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
 	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
+	LocalSearchMemory.cpp \
 	-I $(andy_desktop) -I $(andy_desktop_boost) \
 	-o MS_parameter_tuning.out -O3
 parameter_tuning:
@@ -153,6 +156,7 @@ parameter_tuning:
 	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
 	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
+	LocalSearchMemory.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-DDISABLE_COUT \
 	-o MS_parameter_tuning.out -O3
@@ -190,6 +194,7 @@ andy:
 	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
 	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
+	LocalSearchMemory.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-o MS.out -O3
 andy_DISABLE_COUT:
@@ -226,6 +231,7 @@ andy_DISABLE_COUT:
 	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
 	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
+	LocalSearchMemory.cpp \
 	-I $(andy) -I $(andy_boost) \
 	-DDISABLE_COUT \
 	-o MSILS.out -O3
@@ -263,6 +269,7 @@ andy_lenovo:
 	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
 	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
+	LocalSearchMemory.cpp \
 	-I $(andy_lenovo) -I $(andy_lenovo_boost) \
 	-o irplr.out -O3
 andy_testpc:
@@ -299,6 +306,7 @@ andy_testpc:
 	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
 	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
+	LocalSearchMemory.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-o irplr.out -O3
 testpc_parameter_tuning:
@@ -335,6 +343,7 @@ testpc_parameter_tuning:
 	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
 	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
+	LocalSearchMemory.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-o MS_parameter_tuning.out -O3
 andy_testpc_DISABLE_COUT:
@@ -371,6 +380,7 @@ andy_testpc_DISABLE_COUT:
 	Operator:SwapTwoRoutesSingleDayWithoutQuantityBalancing.cpp \
 	Operator:Disturb.cpp Operator:DisturbAppendToAnotherDay.cpp \
 	Operator:Disturb_Shaw1998_Pisinger2007.cpp \
+	LocalSearchMemory.cpp \
 	-I $(andy_testpc) -I $(andy_testpc_boost) \
 	-DDISABLE_COUT \
 	-o irplr.out -O3

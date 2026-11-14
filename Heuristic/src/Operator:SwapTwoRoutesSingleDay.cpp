@@ -254,6 +254,14 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
         }
     };
 
+    // Neighbourhood memory (LocalSearchMemory ROUTE, MIDDLE or EXACT), see LocalSearchMemory.h
+    const bool UseMemory = (LocalSearchMemory != "NO");
+    const int MemoryNeighbourhood = (max_Swap_length2 == 0) ? local_search_memory::SHIFT : local_search_memory::SWAP;
+    const vector<int> NoExtraCustomers;
+    if (UseMemory)
+    {
+        local_search_memory::StartScan(IRPSolution);
+    }
     time(&accumulate_start_time);
     try
     {
@@ -266,6 +274,26 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
             int pair_obtain_improving = 0;
 
             assert(pick_vehicle2 > pick_vehicle1);
+            if (UseMemory)
+            {
+                const local_search_memory::PairDecision decision = local_search_memory::BeginPair(
+                    MemoryNeighbourhood, pick_day, pick_vehicle1, pick_vehicle2, NoExtraCustomers, IRPSolution, memory, IRPLR,
+                    PenaltyForStockOut, PenaltyMoreThanCapacity, objv_begin);
+                if (decision.skip) // the pair has no improving move: same pair-set bookkeeping as a full scan would give
+                {
+                    if (decision.hadFailure)
+                    {
+                        ++select_pair;
+                    }
+                    else
+                    {
+                        select_pair = SwapTwoRoutesOnSingleDayPair.erase(select_pair);
+                    }
+                    continue;
+                }
+            }
+            bool pair_has_improving_move = false;
+            bool pair_has_failure = false;
             const int Route1Size = IRPSolution.Route[pick_day][pick_vehicle1].size();
             const int Route2Size = IRPSolution.Route[pick_day][pick_vehicle2].size();
 
@@ -364,11 +392,20 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                                 NewTotalDelivery = IRPSolution.TotalDelivery + eval->ChangeInTotalQuantity;
                                                 NewLogisticRatio = NewTotalTransportationCost / NewTotalDelivery;
                                                 temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, eval->StockOut, PenaltyMoreThanCapacity, eval->VehicleOverload);
+                                                if (UseMemory)
+                                                {
+                                                    local_search_memory::AddMove(
+                                                        NewRoute1Cost + NewRoute2Cost - IRPSolution.TransportationCostPerRoute[pick_day][pick_vehicle1] - IRPSolution.TransportationCostPerRoute[pick_day][pick_vehicle2],
+                                                        eval->ChangeInTotalQuantity,
+                                                        eval->StockOut - IRPSolution.ViolationStockOut,
+                                                        eval->VehicleOverload - IRPSolution.ViolationMoreThanCapacity);
+                                                }
                                             }
 
                                             if (objv_begin - temp_LR_objv > 0.00001)
                                             {
                                                 pair_obtain_improving = 1;
+                                                pair_has_improving_move = true;
                                                 if (LR_objv - temp_LR_objv > 0.00001)
                                                 {
                                                     LR_objv = temp_LR_objv;
@@ -411,6 +448,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                                         { // If failed in evalute, this pair is kept for next iteration, treat it easy`
                                             not_working_solutionCounter++;
                                             pair_obtain_improving = 1;
+                                            pair_has_failure = true;
                                         }
                                     }
                                     else
@@ -428,6 +466,10 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                         }
                     }
                 }
+            }
+            if (UseMemory)
+            {
+                local_search_memory::EndPair(pair_has_improving_move, pair_has_failure);
             }
             if (pair_obtain_improving == 0)
             {

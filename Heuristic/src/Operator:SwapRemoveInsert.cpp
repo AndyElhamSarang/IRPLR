@@ -16,6 +16,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
     memory.PopulateQuantityStructure(IRPLR, IRPSolution);
     // IRPSolution.print_solution(IRPLR);
     LR_objv = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut, PenaltyMoreThanCapacity, IRPSolution.ViolationMoreThanCapacity);
+    const double objv_begin = LR_objv; // objective of the starting solution, used by the neighbourhood memory
     cout << "TotalTransportationCost:" << IRPSolution.TotalTransportationCost << "\t TotalDelivery:" << IRPSolution.TotalDelivery << "\t LogistcRatio:" << IRPSolution.LogisticRatio << "\t ViolationStockOut: " << IRPSolution.ViolationStockOut << "\t PenaltyForStockOut:" << PenaltyForStockOut << "\t ViolationMoreThanCapacity:" << IRPSolution.ViolationMoreThanCapacity << "\t PenaltyMoreThanCapacity:" << PenaltyMoreThanCapacity << "\t LR_objv:" << LR_objv << endl;
 
     // IRPSolution.print_solution(IRPLR);
@@ -263,6 +264,12 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
         }
     };
 
+    // Neighbourhood memory (LocalSearchMemory ROUTE, MIDDLE or EXACT), see LocalSearchMemory.h
+    const bool UseMemory = (LocalSearchMemory != "NO");
+    if (UseMemory)
+    {
+        local_search_memory::StartScan(IRPSolution);
+    }
     time(&accumulate_start_time);
     try
     {
@@ -273,6 +280,14 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
             int pick_vehicle = pair[1];
             const int RouteSize = IRPSolution.Route[pick_day][pick_vehicle].size();
             const int UnallocatedSize = IRPSolution.UnallocatedCustomers[pick_day].size();
+            if (UseMemory && local_search_memory::BeginPair(local_search_memory::SWAP_REMOVE_INSERT, pick_day, pick_vehicle, -1,
+                                                            IRPSolution.UnallocatedCustomers[pick_day], IRPSolution, memory, IRPLR,
+                                                            PenaltyForStockOut, PenaltyMoreThanCapacity, objv_begin)
+                                 .skip)
+            {
+                continue; // the pair has no improving move
+            }
+            bool pair_has_improving_move = false;
 
             const size_t PureInsertionCacheSize = (size_t)(UnallocatedSize + 1) * (MaxInsertRows + 1);
             if (PureInsertionCache.size() < PureInsertionCacheSize)
@@ -355,6 +370,17 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                                                 double NewTotalDelivery = IRPSolution.TotalDelivery + res->ChangeInTotalQuantity;
                                                 double NewLogisticRatio = NewTotalTransportationCost / NewTotalDelivery;
                                                 double temp_LR_objv = Calculate_la_relax_objv(NewLogisticRatio, PenaltyForStockOut, res->StockOut, PenaltyMoreThanCapacity, res->VehicleOverload);
+                                                if (objv_begin - temp_LR_objv > 0.00001)
+                                                {
+                                                    pair_has_improving_move = true;
+                                                }
+                                                if (UseMemory)
+                                                {
+                                                    local_search_memory::AddMove(NewRouteCost - IRPSolution.TransportationCostPerRoute[pick_day][pick_vehicle],
+                                                                                 res->ChangeInTotalQuantity,
+                                                                                 res->StockOut - IRPSolution.ViolationStockOut,
+                                                                                 res->VehicleOverload - IRPSolution.ViolationMoreThanCapacity);
+                                                }
 
                                                 if (LR_objv - temp_LR_objv > 0.00001)
                                                 {
@@ -411,6 +437,10 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                         }
                     }
                 }
+            }
+            if (UseMemory)
+            {
+                local_search_memory::EndPair(pair_has_improving_move, false);
             }
         }
     }
