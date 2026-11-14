@@ -29,7 +29,7 @@ ToAdjustLagrangianScalar | positive number | factor multiplying eta when an adju
 LocalSearchOrder | SEQUENTIAL or RVND | operator order O1..O5 (SEQUENTIAL = paper, RVND = random order as in Alvarez et al. 2018)
 SEQUENTIAL
 LocalSearchMemory | NO or ROUTE or MIDDLE or EXACT | O1, O2, O4 skip vehicle pairs scanned without improvement: NO = off (paper), EXACT = only while every input of the pair is unchanged (same search as NO), MIDDLE = ignores later-day loads and supplier inventory, ROUTE = only route changes count (HGS-style)
-NO
+EXACT
 UseVehicleSlack | YES or NO | O1-O4 may borrow slack quantity from other deliveries on a full vehicle (paper: YES)
 YES
 TypeOfRebalance | GUARANTEE_FEASIBILITY or NOT_GUARANTEE_FEASIBILITY or NO_REBALANCE | rebalance procedure (paper: NOT_GUARANTEE_FEASIBILITY)

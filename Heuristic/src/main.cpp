@@ -77,24 +77,28 @@ int main()
 			string file_name = experiment_name + "_exp" + experiment_str + file_type;
 			Table.open(file_name);
 			Table << "Seed," << RandomSeed << "\n";
+			// Every parameter of GlobalParameter.txt, in the same order as that file
 			Table << "Global Parameters"
+				  << ",NumberOfExperiments," << NumberOfExperiments
+				  << ",MainAlgorithmTimeLimit," << MainAlgorithmTimeLimit
 				  << ",NumberOfInitialSolutions," << NumberOfInitialSolutions
+				  << ",InitialSolutionMethod," << InitialSolutionMethod
 				  << ",MinGridResolution," << min_grid_resolution
 				  << ",GridResolutionIncrement," << grid_resolution_increment
-				  << ",NumberOfExperiments," << NumberOfExperiments
-				  << ",InitialSolutionMethod," << InitialSolutionMethod
-				  << ",AllowLagrangianRelaxation," << AllowLagrangianRelaxation
-				  << ",TypeOfRebalance," << TypeOfRebalance
-				  << ",InitialLagrangianScalar," << InitialLagrangianScalar
-				  << ",ToAdjustLagrangianScalar," << ToAdjustLagrangianScalar
-				  << ",ToTriggerAdjustment," << ToTriggerAdjustment
 				  << ",ActivateHGS," << ActivateHGS
-				  << ",Activate_Disturbance," << (Activate_Disturbance == "YES" ? DisturbOperator : string("NO_DISTURB"))
 				  << ",theta," << theta
 				  << ",sigma," << sigma
 				  << ",phi," << phi
-				  << ",DisturbStrength," << DisturbStrength
-				  << ",MainAlgorithmTimeLimit," << MainAlgorithmTimeLimit << "\n";
+				  << ",AllowLagrangianRelaxation," << AllowLagrangianRelaxation
+				  << ",InitialLagrangianScalar," << InitialLagrangianScalar
+				  << ",ToTriggerAdjustment," << ToTriggerAdjustment
+				  << ",ToAdjustLagrangianScalar," << ToAdjustLagrangianScalar
+				  << ",LocalSearchOrder," << LocalSearchOrder
+				  << ",LocalSearchMemory," << LocalSearchMemory
+				  << ",UseVehicleSlack," << (UseVehicleSlack ? "YES" : "NO")
+				  << ",TypeOfRebalance," << TypeOfRebalance
+				  << ",Activate_Disturbance," << (Activate_Disturbance == "YES" ? DisturbOperator : string("NO_DISTURB"))
+				  << ",DisturbStrength," << DisturbStrength << "\n";
 			Table << ",#TimePeriods,#Nodes,#Vehicle";
 			for (int i = 0; i < NumberOfInitialSolutions; i++)
 			{
