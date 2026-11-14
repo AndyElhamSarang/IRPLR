@@ -206,7 +206,7 @@ int solution_improvement::OperatorSwapRemoveInsert(input &IRPLR, solution &IRPSo
                 IRPLR.Retailers[customer].InventoryMax,
                 IRPLR.Retailers[customer].Demand,
                 previous_inventory_level);
-            if (InsertDelivery[pick_day] < 0.00001)
+            if (UseVehicleSlack && InsertDelivery[pick_day] < 0.00001) // vehicle slack (can be disabled with --UseVehicleSlack NO)
             {
                 InsertDelivery[pick_day] = DeliveryMaxAllowingCapacityViolation(
                     IRPLR.Retailers[customer].InventoryMax,

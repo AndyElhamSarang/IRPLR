@@ -248,7 +248,7 @@ int solution_improvement::OperatorTransfer(
                         temp_largest_quantity_vehicle = temp_vehicle;
                     }
                 }
-                if (temp_largest_quantity > 0)
+                if (UseVehicleSlack && temp_largest_quantity > 0) // vehicle slack (can be disabled with --UseVehicleSlack NO)
                 {
                     NewDeliveryQuantityCustomerTransfer[pick_day_insert] = min(QuantityMax, temp_largest_quantity);
                     VehicleIndexInserted = temp_largest_quantity_vehicle;

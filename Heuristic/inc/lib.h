@@ -11,6 +11,7 @@
 #include <time.h>
 #include <string>
 #include <set>
+#include <functional>
 #include <limits>
 #include <assert.h>
 

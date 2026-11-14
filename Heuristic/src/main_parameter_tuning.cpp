@@ -35,6 +35,9 @@ string InitialSolutionMethod = "Initial_BlockZone_Schedule";
 string AllowLagrangianRelaxation;
 string TypeOfRebalance;
 string Activate_Disturbance = "YES";
+string LocalSearchOrder = "SEQUENTIAL";
+bool UseVehicleSlack = true;
+string DisturbOperator = "SEGMENT";
 double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
@@ -121,7 +124,15 @@ int main(int argc, char* argv[])
 			else if (opt == "MinGridResolution") { min_grid_resolution = atoi(val.c_str()); provided_options.insert("MinGridResolution"); }
 			else if (opt == "GridResolutionIncrement") { grid_resolution_increment = atoi(val.c_str()); provided_options.insert("GridResolutionIncrement"); }
 			else if (opt == "ActivateHGS" || opt == "Activate HGS") { ActivateHGS = val; provided_options.insert("ActivateHGS"); }
-			else if (opt == "Activate_Disturbance") { Activate_Disturbance = val; }
+			else if (opt == "Activate_Disturbance")
+			{
+				if (val == "NO_DISTURB") val = "NO";
+				else if (val == "SEGMENT" || val == "SHAW") { DisturbOperator = val; val = "YES"; }
+				Activate_Disturbance = val;
+			}
+			else if (opt == "LocalSearchOrder") { LocalSearchOrder = val; }
+			else if (opt == "DisturbOperator") { if (val != "SEGMENT" && val != "SHAW") { cerr << "DisturbOperator must be SEGMENT or SHAW." << endl; return 1; } DisturbOperator = val; }
+			else if (opt == "UseVehicleSlack") { if (val != "YES" && val != "NO") { cerr << "UseVehicleSlack must be YES or NO." << endl; return 1; } UseVehicleSlack = (val == "YES"); }
 			else if (opt == "theta") { theta = atof(val.c_str()); provided_options.insert("theta"); }
 			else if (opt == "sigma") { sigma = atoi(val.c_str()); provided_options.insert("sigma"); }
 			else if (opt == "phi") { phi = atoi(val.c_str()); provided_options.insert("phi"); }
@@ -222,9 +233,17 @@ int main(int argc, char* argv[])
 	}
 	if (Activate_Disturbance != "YES" && Activate_Disturbance != "NO")
 	{
-		cerr << "Activate_Disturbance must be YES or NO." << endl;
+		cerr << "Activate_Disturbance must be NO_DISTURB, SEGMENT or SHAW (or YES/NO)." << endl;
 		return 1;
 	}
+	if (LocalSearchOrder != "SEQUENTIAL" && LocalSearchOrder != "RVND")
+	{
+		cerr << "LocalSearchOrder must be SEQUENTIAL or RVND." << endl;
+		return 1;
+	}
+	cout << "Local Search Order: " << LocalSearchOrder << endl;
+	cout << "Use Vehicle Slack: " << (UseVehicleSlack ? "YES" : "NO") << endl;
+	cout << "Disturb Operator: " << DisturbOperator << endl;
 
 	file read_file;
 

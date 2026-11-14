@@ -186,7 +186,7 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
                 IRPLR.Retailers[customer].Demand,
                 previous_inventory_level);
             // Seek delivery quantity from possible quantity to remove from the existing visits,
-            if (Delivery[pick_day] < 0.00001)
+            if (UseVehicleSlack && Delivery[pick_day] < 0.00001) // vehicle slack (can be disabled with --UseVehicleSlack NO)
             {
                 // Strategy 1
                 Delivery[pick_day] = DeliveryMaxAllowingCapacityViolation(

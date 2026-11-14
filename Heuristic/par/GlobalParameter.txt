@@ -1,34 +1,38 @@
-NumberOfInitialSolution
-100
-MinGridResolution
-3
-GridResolutionIncrement
-2
-NumberOfExperiments
+NumberOfExperiments | positive integer | runs per instance; must equal the number of seeds in Seed.txt
 5
-AllowLagrangianRelaxation
-YES
-TypeOfRebalance
-GUARANTEE_FEASIBILITY
-InitialLagrangianScalar
-5
-ToAdjustLagrangianScalar
-1
-ToTriggerAdjustment
-5
-Activate HGS
-NO
-Activate_Disturbance
-YES
-theta
-0.62
-sigma
-5
-phi
-16
-Disturb_strength
-2
-MainAlgorithmTimeLimit
+MainAlgorithmTimeLimit | seconds | Max_time (paper: 60)
 60
-InitialSolutionMethod
-ConstructAMMInitialSolution
+NumberOfInitialSolution | positive integer | Max_restart, number of starts (paper: 30)
+100
+InitialSolutionMethod | Initial_BlockZone_Schedule or ConstructAMMInitialSolution | constructive heuristic (Initial_BlockZone_Schedule = proposed, ConstructAMMInitialSolution = Alvarez et al. 2018)
+Initial_BlockZone_Schedule
+MinGridResolution | positive integer | d_min of initial construction (paper: 3)
+3
+GridResolutionIncrement | positive integer | Delta_d, number of candidate grid resolutions (paper: 2)
+2
+Activate HGS | YES or NO | improve routes with HGS on initial solutions and on the final best solution (paper main results: NO)
+NO
+theta | positive number | zeta in the paper, weight in Max_it = ceil(zeta*(|N'| + sigma*|T| + phi*|K|)) (paper: 0.62)
+0.62
+sigma | integer >= 0 | weight on |T| in Max_it (paper: 5)
+5
+phi | integer >= 0 | weight on |K| in Max_it (paper: 16)
+16
+AllowLagrangianRelaxation | YES or NO | allow stockout violation with a Lagrange multiplier
+YES
+InitialLagrangianScalar | positive number | eta, scalar for updating the multiplier (paper: 5)
+5
+ToTriggerAdjustment | positive integer | number of disturbances before eta is multiplied by ToAdjustLagrangianScalar (paper: 5)
+5
+ToAdjustLagrangianScalar | positive number | factor multiplying eta when an adjustment is triggered; 1 = eta kept fixed (paper: 1)
+1
+LocalSearchOrder | SEQUENTIAL or RVND | operator order O1..O5 (SEQUENTIAL = paper, RVND = random order as in Alvarez et al. 2018)
+SEQUENTIAL
+UseVehicleSlack | YES or NO | O1-O4 may borrow slack quantity from other deliveries on a full vehicle (paper: YES)
+YES
+TypeOfRebalance | GUARANTEE_FEASIBILITY or NOT_GUARANTEE_FEASIBILITY or NO_REBALANCE | rebalance procedure (paper: NOT_GUARANTEE_FEASIBILITY)
+GUARANTEE_FEASIBILITY
+Activate_Disturbance | NO_DISTURB or SEGMENT or SHAW | first-stage DISTURB of the perturbation: NO_DISTURB = off, SEGMENT = remove a random segment of one route (paper), SHAW = related removal of nearby visits on one day (Shaw 1998, Pisinger and Ropke 2007)
+SEGMENT
+Disturb_strength | integer >= 0 | theta in the paper, disturbance strength (paper: 2)
+2

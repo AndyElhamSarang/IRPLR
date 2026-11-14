@@ -111,115 +111,122 @@ void file::ReadGlobalParameter()
     ifstream ifGlobal;
     ifGlobal.open(GlobalParameter.c_str());
 
-    string dummyline;
-    string TakeParameter;
-    
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_TakeNumberOfInitialSolutions(TakeParameter);
-    ss_TakeNumberOfInitialSolutions >> NumberOfInitialSolutions;
-    cout << dummyline << ":" << NumberOfInitialSolutions << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_TakeMinGridResolution(TakeParameter);
-    ss_TakeMinGridResolution >> min_grid_resolution;
-    cout << dummyline << ":" << min_grid_resolution << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_TakeMaxGridResolution(TakeParameter);
-    ss_TakeMaxGridResolution >> grid_resolution_increment;
-    cout << dummyline << ":" << grid_resolution_increment << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_TakeNumberOfExperiments(TakeParameter);
-    ss_TakeNumberOfExperiments >> NumberOfExperiments;
-    cout << dummyline << ":" << NumberOfExperiments << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_TakeAllowLagrangianRelaxation(TakeParameter);
-    ss_TakeAllowLagrangianRelaxation >> AllowLagrangianRelaxation;
-    cout << dummyline << ":" << AllowLagrangianRelaxation << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_TakeTypeOfRebalance(TakeParameter);
-    ss_TakeTypeOfRebalance >> TypeOfRebalance;
-    cout << dummyline << ":" << TypeOfRebalance << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_TakeInitialLagrangianScalar(TakeParameter);
-    ss_TakeInitialLagrangianScalar >> InitialLagrangianScalar;
-    cout << dummyline << ":" << InitialLagrangianScalar << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_TakeToAdjustLagrangianScalar(TakeParameter);
-    ss_TakeToAdjustLagrangianScalar >> ToAdjustLagrangianScalar;
-    cout << dummyline << ":" << ToAdjustLagrangianScalar << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_TakeToTriggerAdjustment(TakeParameter);
-    ss_TakeToTriggerAdjustment >> ToTriggerAdjustment;
-    cout << dummyline << ":" << ToTriggerAdjustment << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_ActivateHGS(TakeParameter);
-    ss_ActivateHGS >> ActivateHGS;
-    cout << dummyline << ":" << ActivateHGS << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_Activate_Disturbance(TakeParameter);
-    ss_Activate_Disturbance >> Activate_Disturbance;
-    cout << dummyline << ":" << Activate_Disturbance << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_Theta(TakeParameter);
-    ss_Theta >> theta;
-    cout << dummyline << ":" << theta << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_Sigma(TakeParameter);
-    ss_Sigma >> sigma;
-    cout << dummyline << ":" << sigma << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_Phi(TakeParameter);
-    ss_Phi >> phi;
-    cout << dummyline << ":" << phi << endl;
-
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_DisturbStrength(TakeParameter);
-    ss_DisturbStrength >> DisturbStrength;
-    cout << dummyline << ":" << DisturbStrength << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_MainAlgorithmTimeLimit(TakeParameter);
-    ss_MainAlgorithmTimeLimit >> MainAlgorithmTimeLimit;
-    cout << dummyline << ":" << MainAlgorithmTimeLimit << endl;
-
-    getline(ifGlobal, dummyline);
-    getline(ifGlobal, TakeParameter);
-    stringstream ss_InitialSolutionMethod(TakeParameter);
-    if (!(ss_InitialSolutionMethod >> InitialSolutionMethod))
+    if (!ifGlobal)
     {
-        cerr << "Error: Invalid InitialSolutionMethod in GlobalParameter.txt." << endl;
+        cerr << "Error: cannot open " << GlobalParameter << endl;
         exit(1);
     }
-    cout << dummyline << ":" << InitialSolutionMethod << endl;
+
+    // The file is a sequence of pairs: a label line followed by a value line. The parameter is
+    // identified by the label up to the first '|' (the rest of the label is a comment listing the
+    // allowed values), so the entries may appear in any order.
+    vector<pair<string, string>> Entries; // (name, value) in file order
+    string LabelLine, ValueLine;
+    auto Trim = [](const string &text)
+    {
+        const size_t first = text.find_first_not_of(" \t\r");
+        if (first == string::npos)
+            return string();
+        const size_t last = text.find_last_not_of(" \t\r");
+        return text.substr(first, last - first + 1);
+    };
+    while (getline(ifGlobal, LabelLine))
+    {
+        const string Name = Trim(LabelLine.substr(0, LabelLine.find('|')));
+        if (Name.empty())
+            continue; // blank line
+        if (!getline(ifGlobal, ValueLine))
+        {
+            cerr << "Error: GlobalParameter.txt has no value line after \"" << Name << "\"." << endl;
+            exit(1);
+        }
+        for (const auto &entry : Entries)
+        {
+            if (entry.first == Name)
+            {
+                cerr << "Error: " << Name << " appears twice in GlobalParameter.txt." << endl;
+                exit(1);
+            }
+        }
+        Entries.push_back({Name, Trim(ValueLine)});
+    }
+
+    // Each known parameter: (name, required, assign value). Listed in the order they are used in MSILS.
+    string StringUseVehicleSlack = UseVehicleSlack ? "YES" : "NO";
+    string StringDisturbance; // NO_DISTURB, SEGMENT or SHAW (YES/NO from older files mean SEGMENT/NO_DISTURB)
+    struct Parameter
+    {
+        string name;
+        bool required;
+        function<bool(stringstream &)> assign;
+    };
+    const vector<Parameter> Parameters = {
+        {"NumberOfExperiments", true, [&](stringstream &ss) { return bool(ss >> NumberOfExperiments); }},
+        {"MainAlgorithmTimeLimit", true, [&](stringstream &ss) { return bool(ss >> MainAlgorithmTimeLimit); }},
+        {"NumberOfInitialSolution", true, [&](stringstream &ss) { return bool(ss >> NumberOfInitialSolutions); }},
+        {"InitialSolutionMethod", true, [&](stringstream &ss) { return bool(ss >> InitialSolutionMethod); }},
+        {"MinGridResolution", true, [&](stringstream &ss) { return bool(ss >> min_grid_resolution); }},
+        {"GridResolutionIncrement", true, [&](stringstream &ss) { return bool(ss >> grid_resolution_increment); }},
+        {"Activate HGS", true, [&](stringstream &ss) { return bool(ss >> ActivateHGS); }},
+        {"theta", true, [&](stringstream &ss) { return bool(ss >> theta); }},
+        {"sigma", true, [&](stringstream &ss) { return bool(ss >> sigma); }},
+        {"phi", true, [&](stringstream &ss) { return bool(ss >> phi); }},
+        {"AllowLagrangianRelaxation", true, [&](stringstream &ss) { return bool(ss >> AllowLagrangianRelaxation); }},
+        {"InitialLagrangianScalar", true, [&](stringstream &ss) { return bool(ss >> InitialLagrangianScalar); }},
+        {"ToTriggerAdjustment", true, [&](stringstream &ss) { return bool(ss >> ToTriggerAdjustment); }},
+        {"ToAdjustLagrangianScalar", true, [&](stringstream &ss) { return bool(ss >> ToAdjustLagrangianScalar); }},
+        {"LocalSearchOrder", false, [&](stringstream &ss) { return bool(ss >> LocalSearchOrder); }},
+        {"UseVehicleSlack", false, [&](stringstream &ss) { return bool(ss >> StringUseVehicleSlack); }},
+        {"TypeOfRebalance", true, [&](stringstream &ss) { return bool(ss >> TypeOfRebalance); }},
+        {"Activate_Disturbance", true, [&](stringstream &ss) { return bool(ss >> StringDisturbance); }},
+        {"Disturb_strength", true, [&](stringstream &ss) { return bool(ss >> DisturbStrength); }},
+    };
+
+    bool read_ok = true;
+    for (const auto &entry : Entries)
+    {
+        bool known = false;
+        for (const auto &parameter : Parameters)
+            known = known || parameter.name == entry.first;
+        if (!known)
+        {
+            cerr << "Error: unknown parameter \"" << entry.first << "\" in GlobalParameter.txt." << endl;
+            read_ok = false;
+        }
+    }
+    for (const auto &parameter : Parameters)
+    {
+        const pair<string, string> *found = nullptr;
+        for (const auto &entry : Entries)
+            if (entry.first == parameter.name)
+                found = &entry;
+        if (found == nullptr)
+        {
+            if (parameter.required)
+            {
+                cerr << "Error: " << parameter.name << " is missing from GlobalParameter.txt." << endl;
+                read_ok = false;
+            }
+            else
+            {
+                cout << parameter.name << " not given in GlobalParameter.txt, using default" << endl;
+            }
+            continue;
+        }
+        stringstream ss(found->second);
+        string trailing;
+        if (!parameter.assign(ss) || (ss >> trailing))
+        {
+            cerr << "Error: invalid value \"" << found->second << "\" for " << parameter.name << " in GlobalParameter.txt." << endl;
+            read_ok = false;
+            continue;
+        }
+        cout << parameter.name << ":" << found->second << endl;
+    }
+    if (!read_ok)
+    {
+        exit(1);
+    }
 
     //Inout parameter validation
     bool valid_input = true;
@@ -286,11 +293,31 @@ void file::ReadGlobalParameter()
         cout << "Error: Invalid value for ActivateHGS. Please set it to either 'YES' or 'NO'." << endl;
         valid_input = false;
     }
-    if (Activate_Disturbance != "YES" && Activate_Disturbance != "NO")
+    if (StringDisturbance == "NO_DISTURB" || StringDisturbance == "NO")
     {
-        cout << "Error: Invalid value for Activate_Disturbance. Please set it to either 'YES' or 'NO'." << endl;
+        Activate_Disturbance = "NO";
+    }
+    else if (StringDisturbance == "SEGMENT" || StringDisturbance == "SHAW" || StringDisturbance == "YES")
+    {
+        Activate_Disturbance = "YES";
+        DisturbOperator = (StringDisturbance == "SHAW") ? "SHAW" : "SEGMENT";
+    }
+    else
+    {
+        cout << "Error: Invalid value for Activate_Disturbance. Please set it to 'NO_DISTURB', 'SEGMENT' or 'SHAW'." << endl;
         valid_input = false;
     }
+    if (LocalSearchOrder != "SEQUENTIAL" && LocalSearchOrder != "RVND")
+    {
+        cout << "Error: Invalid value for LocalSearchOrder. Please set it to either 'SEQUENTIAL' or 'RVND'." << endl;
+        valid_input = false;
+    }
+    if (StringUseVehicleSlack != "YES" && StringUseVehicleSlack != "NO")
+    {
+        cout << "Error: Invalid value for UseVehicleSlack. Please set it to either 'YES' or 'NO'." << endl;
+        valid_input = false;
+    }
+    UseVehicleSlack = (StringUseVehicleSlack == "YES");
     if (valid_input == false)
     {
         exit(1);

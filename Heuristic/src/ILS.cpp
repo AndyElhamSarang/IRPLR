@@ -396,7 +396,14 @@ void solution_improvement::IteratedLocalSearch(input &IRPLR, solution &IRPSoluti
 
             if (Activate_Disturbance == "YES")
             {
-                OperatorDisturb(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
+                if (DisturbOperator == "SHAW")
+                {
+                    OperatorDisturb_Shaw1998_Pisinger2007(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
+                }
+                else
+                {
+                    OperatorDisturb(IRPLR, IncumbentSolution, IRPSolution, DisturbanceCounter, MaxDisturbance);
+                }
             }
 
             // boost_random_mechanism PickRandomDisturbance;

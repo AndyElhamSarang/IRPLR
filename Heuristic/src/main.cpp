@@ -36,6 +36,9 @@ string InitialSolutionMethod = "Initial_BlockZone_Schedule";
 string AllowLagrangianRelaxation;
 string TypeOfRebalance;
 string Activate_Disturbance = "YES";
+string LocalSearchOrder = "SEQUENTIAL";
+bool UseVehicleSlack = true;
+string DisturbOperator = "SEGMENT";
 double InitialLagrangianScalar = 0;
 double ToAdjustLagrangianScalar = 0;
 int ToTriggerAdjustment = 0;
@@ -85,7 +88,7 @@ int main()
 				  << ",ToAdjustLagrangianScalar," << ToAdjustLagrangianScalar
 				  << ",ToTriggerAdjustment," << ToTriggerAdjustment
 				  << ",ActivateHGS," << ActivateHGS
-				  << ",Activate_Disturbance," << Activate_Disturbance
+				  << ",Activate_Disturbance," << (Activate_Disturbance == "YES" ? DisturbOperator : string("NO_DISTURB"))
 				  << ",theta," << theta
 				  << ",sigma," << sigma
 				  << ",phi," << phi

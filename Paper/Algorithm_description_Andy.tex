@@ -9,6 +9,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{booktabs}
+\usepackage{multirow}
 \usepackage{caption}
 \usepackage{cancel}
 \usepackage{hyperref}
@@ -19,7 +20,8 @@
     urlcolor=cyan,
 citecolor=blue, 
 }
-\title{Inventory Routing}
+\title{A Heuristic Algorithm for the Inventory Routing Problem with Logistic Ratio}
+
 \date{March 2024}
 
 \begin{document}
@@ -35,46 +37,295 @@ citecolor=blue,
 
 \section{Abstract}
 
-The paper presents a multi-start iterated local search  for solving the inventory routing problem with logistic ratio. The proposed optimisation algorithm utilise serval components include an application of the Lagrangian relaxation where violation on the stockout constratins is permitted, a devliery quantity reoptimisation procedure, and serval local search operators integrates both routing decision and quantity decision. The computational experiements were conducted on 978 small instances with 5 to 50 customer and 150 large instances with 50 to 200 customers. The results shown the proposed algorithm outperformance all instances on previous available metaheuristics for large instances and produces competitive results on small instances. We also give our attempt on integrating the hybrid genetic search from capacited vehicle routing problem into the proposed multi-started iterated local search. With hybrid genetic search, the solution quality can still be improved by certain percentage.
+The paper presents a multi-start iterated local search  for solving the inventory routing problem with logistic ratio. The proposed optimisation algorithm utilise serval components include an application of the Lagrangian relaxation where violation on the stockout constratins is permitted, a devliery quantity reoptimisation procedure, and serval local search operators integrates both routing decision and quantity decision. The computational experiements were conducted on 978 small instances with 5 to 50 customer and 150 large instances with 50 to 200 customers. On the large instances, the logistic ratios of re-implementations of the previously available metaheuristics are on average 3.2\% and 6.6\% higher than those of the proposed algorithm, which is outperformed only by the re-implemented iterated local search on the largest instances with four and five vehicles. \textcolor{red}{[Small-instance result: within X\% of the optimal values.]} We also give our attempt on integrating the hybrid genetic search from capacited vehicle routing problem into the proposed multi-started iterated local search. With hybrid genetic search, the solution quality can still be improved by certain percentage.
+
+
 
 \section{Introduction}
+\label{sec:introduction}
 
+The inventory routing problem (IRP), which originated in the distribution of
+industrial gases \citep{bell1983improving}, arises in vendor-managed inventory
+systems, in which a supplier monitors the stock levels of its customers and
+takes responsibility for replenishing them. Over a multi-period planning
+horizon, the supplier jointly decides when each customer is visited, how much
+product is delivered at each visit, and how the vehicles are routed, subject
+to customer storage capacities, vehicle capacities, the supplier's available inventory, and the requirement that
+no customer runs out of stock. Integrating these decisions, rather than
+fixing replenishment plans first and routing them afterwards, can produce
+substantial savings \citep{archetti2016inventory}. However, the integration
+couples a vehicle routing problem in every period with inventory dynamics
+that link the periods together. As a result, the IRP remains one of the most
+challenging problems in distribution logistics
+\citep{moin2007overview,bertazzi2012inventory,coelho2014thirty,ekcsi2026inventory}.
 
-The Inventory Routing Problem (IRP) is an extremely challenging optimization problem where the goal is to determine the replenishment and distribution plan for a supply chain network where there is a single supplier and multiple retailers who need to be replenished with the community produced and distributed by the supplier. A planning horizon is defined over which the replenishment activities should take place. Each retailers faces a per period demand over the horizon and has a maximum inventory capacity. The supplier has a fleet of capacitated vehicles which are used for distribution operations. The goal is to define the plan that optimizes a given objective function in such a way that each retailer has a sufficient quantity to satisfy the demand in all periods and the vehicle capacity is not exceeded in any route. More in detail, the plan consists in defining, for each period, which retailers are visited, what is the quantity delivered to each retailer and what are the routes of the vehicles that has to distribute those quantities. 
+Most of the IRP literature minimises the total cost, defined as the sum of
+routing and inventory holding costs \citep{bertazzi2012inventory,coelho2014thirty}. In many applications, however, holding
+costs are difficult to estimate or are negligible compared with transport
+costs, and practitioners evaluate distribution plans by the transport cost
+per unit of product delivered \citep{benoist2011randomized}. This key performance indicator, known as the
+\emph{logistic ratio}, is used in practice in the distribution of industrial
+gases \citep{benoist2011randomized}.
+It was also the objective of the ROADEF/EURO Challenge 2016, proposed by
+Air Liquide \citep{andre2020roadef}. \citet{archetti2017logistic} formalised
+the IRP with logistic ratio (IRP-LR) and showed that solutions that minimise
+total cost can be poor in terms of the logistic ratio. One reason is the
+finite-horizon effect: under a cost objective there is little incentive to
+deliver product near the end of the horizon if it will only be consumed
+afterwards. The logistic ratio, in contrast, rewards every unit delivered
+and therefore produces replenishment plans that differ markedly from
+cost-minimising ones.
 
-The objective function which is commonly used in the classical IRP consists of the total cost, to be minimized, which is given by the sum of routing cost plus the inventory cost at the supplier and at the retailers \cite{archetti2012hybrid,archetti2016inventory}. However, it often happens that the inventory cost is hard to define or it is negligible with respect to the routing cost. In this case, other objective functions could be used instead of the total cost. Indeed, a KPI which is often used in practice is the so called \textit{Logistic Ratio} (LR) which consists in the ratio between the routing cost and the total quantity delivered. In this case, we obtain the IRP with LR (IRP-LR). 
+The IRP-LR is strongly NP-hard, as it contains the travelling salesman
+problem as a special case (Section~\ref{sec:problem_formulation}). Its
+objective adds a further difficulty: it is a ratio of two decision-dependent
+quantities, the routing cost in the numerator and the total delivered
+quantity in the denominator. Exact approaches therefore rely on parametric
+fractional programming \citep{dinkelbach1967}, which solves a sequence of
+problems in which the ratio is replaced by the parametric objective
+$\text{cost} - \lambda \cdot \text{quantity}$. \citet{archetti2017logistic} and \citet{archetti2019exact}
+developed exact algorithms for the IRP-LR along these lines, and
+\citet{baldacci2020fractional} proposed a general exact framework for vehicle
+routing problems with fractional objectives. These methods provide optimal
+solutions and bounds, but their computational requirements restrict them to
+instances with at most 25 customers. For larger instances, to the best of our
+knowledge, the only heuristics evaluated on the IRP-LR benchmark are the
+iterated local search (ILS) and simulated annealing (SA) algorithms of
+\citet{alvarez2018iterated}. The algorithms developed for the ROADEF/EURO
+Challenge 2016 address a richer industrial variant with a ratio objective,
+using heuristic branch-cut-and-price \citep{absi2020branch}, local search
+combined with mathematical programming \citep{su2020matheuristic},
+fixed-sequence reoptimisation of quantities and timing
+\citep{he2020fixedsequence}, and hyper-heuristic sequence selection
+\citep{kheiri2020heuristic}. More recently, ratio objectives have been
+studied in a multi-source setting solved by ILS \citep{alonsopecina2024iterated}
+and in a multi-product setting with lateral transshipment and uncertain
+demand \citep{man2025logistics}. Compared with the classical IRP, for which
+a wide range of exact and heuristic methods exists, the heuristic literature
+on the IRP-LR remains sparse.
 
-The IRP-LR finds relevant applications in practice, especially when the transportation cost is the main component of the total cost. In fact, it was first introduced in the 2016 ROADEF Challenge by Air Liquide. It then gained success and attracted relevant research attention \cite{archetti2017minimizing,archetti2019exact,alvarez2018iterated}. The problem proved to be much more challenging than IRP when it comes to finding effective solution approaches. The goal of the current work is to propose a new heuristic algorithm for the IRP-LR, namely an Iterated Local Search (ILS).
+\subsection{Related literature and research gaps}
+\label{sec:intro_literature}
 
-% The inventory routing problem is a well-studied combinatorial optimisation problem for decades. The problem is concerned with a set of customer and a central depot where replenishement schedule is required to avoid customers having stockout respecting the inventory capacity. 
+For the classical IRP, exact methods based on branch-and-cut
+\citep{archetti2007branch,coelho2013branch}, branch-price-and-cut
+\citep{desaulniers2016branch}, and their matheuristic extensions
+\citep{skaalnes2023branch} solve instances of moderate size. Large instances
+are handled by heuristics, which are reviewed by \citet{sofianopoulou2021review}
+and \citet{ekcsi2026inventory}. We organise the discussion around three
+design choices that are particularly important under a logistic-ratio
+objective. Table~\ref{tab:literature_irplr} summarises the studies most
+closely related to this work.
 
-Outline:
-\begin{itemize}
-    \item As efficient heuristic search procedures exist for routing decisions, while deciding on delivery quantities may be more naturally done using mathematical programming models, it is common in the literature that the IRP is tackled by some matheuristics \cite{iswari2026extending}. 
-    \item In \cite{castro2026hybrid}, a hybrid genetic search is designed for the IRP, where it uses hybrid genetic search \cite{vidal2022hybrid} for the routing component, while the delivery quantities are obtained by solving a minimum-cost flow model using the network simplex algorithm.
-    \item Allow violation. These two papers allow violation of vehicle capacity 
-    \cite{castro2026hybrid}, \cite{archetti2012hybrid}.
-\end{itemize}
+\paragraph{Where delivery quantities are decided.}
+Efficient local search is available for routing decisions, whereas delivery
+quantities are naturally determined by mathematical programming. Most IRP
+heuristics therefore decompose the problem: a heuristic explores visit
+schedules and routes, and a mathematical program sets or repairs the
+quantities \citep{iswari2026extending}. Examples include the tabu search
+combined with mixed-integer programming of \citet{archetti2012hybrid}, the
+matheuristic of \citet{archetti2017matheuristic}, the variable MIP
+neighbourhood descent of \citet{coelho2020variable}, the ILS matheuristic of
+\citet{lagana2024iterated}, and route-improving matheuristics for related
+production routing problems \citep{vadseth2023multi}. In the hybrid genetic
+search (HGS) of \citet{castro2026hybrid}, the routing component builds on the
+HGS for the capacitated vehicle routing problem (CVRP)
+\citep{vidal2022hybrid}, while the quantities are obtained by solving a
+minimum-cost flow problem with the network simplex algorithm.
+\citet{zhao2025large} extend HGS with a large neighbourhood that
+simultaneously changes visit periods, insertion positions, and delivery
+quantities across the horizon. Decomposition works well when holding costs
+make quantity decisions secondary to routing. Under the logistic ratio,
+however, the change in delivered quantity caused by a routing move is part
+of the value of that move. A move that is evaluated with quantities held
+fixed can appear unattractive even though it becomes improving once the
+quantities are adjusted, and solving a mathematical program for every
+candidate move is too expensive within a local search. This suggests
+evaluating each move by its combined effect on routing cost and delivered
+quantity. It also suggests using an exact optimisation step for quantities
+only occasionally, as \citet{he2020fixedsequence} showed with fixed-sequence
+reoptimisation.
 
+\paragraph{How infeasibility is handled.}
+Allowing a search to visit infeasible solutions and penalising the violation
+in the objective is a well-established strategy in vehicle routing. It is a
+central component of HGS \citep{vidal2022hybrid}, and in inventory routing
+it has been used to relax vehicle capacity
+\citep{archetti2012hybrid,castro2026hybrid} and customer stockouts
+\citep{zhao2025large}. In the IRP, the stockout constraints make the
+feasible region particularly fragmented. Removing a single visit usually
+causes a stockout in some later period, so a search restricted to feasible
+solutions cannot easily move between replenishment plans with different
+visit patterns. Penalising stockouts addresses this, but under a ratio
+objective the penalty weight is difficult to set. The logistic ratio is
+measured in cost per unit and varies widely across instances, so a fixed
+penalty is either too weak, and the search remains infeasible, or too
+strong, and the search behaves as if infeasibility were forbidden. Lagrangian
+relaxation \citep{fisher1981lagrangian} offers a principled alternative: the
+stockout constraint is dualised, and the multiplier is updated with a
+subgradient-type rule that scales the penalty to the current gap from the
+incumbent. To the best of our knowledge, this has not previously been used
+to guide a local search for the IRP-LR.
 
+\paragraph{Saturated vehicles.}
+Because the logistic ratio rewards large deliveries, vehicles in good
+IRP-LR solutions are typically fully loaded. Any move that inserts a
+customer into such a vehicle is then infeasible if the existing quantities
+are kept, so large parts of the inter-route and inter-period neighbourhoods
+are effectively unavailable. In the CVRP, demands are fixed, so a move into
+a full vehicle can only be retained by violating its capacity at a penalty,
+as in HGS \citep{vidal2022hybrid}. In the IRP-LR, delivery quantities are
+themselves decisions, which allows a different remedy that keeps every
+solution capacity-feasible. The deliveries already on a
+full vehicle often include quantities that are not needed to prevent future
+stockouts, and this slack can be reassigned to the inserted customer without
+violating any constraint. Exploiting this slack keeps the search within
+capacity while giving access to the moves that matter most for the
+logistic ratio.
 
-In the vast literature of IRP, most solution approaches are mathematical formulation-based, mostly because of the delivery quantity decision. A gap remains for a pure heuristic approach.
+Together, these observations identify the gap addressed in this paper:
+there is no scalable heuristic for the IRP-LR that (i) evaluates routing and
+quantity decisions jointly within each move, (ii) explores
+inventory-infeasible solutions in a controlled manner that adapts to the
+ratio objective, and (iii) does not depend on a mathematical programming
+solver.
 
-We assume that a customer will eventually have a stockout. Customer eventually not having a stockout should be discarded. We also assume that there will be no stockout if a customer is visited every day. Meaning that it is not difficult in obtaining a feasible solution. The challenge is to obtain a solution that minimises the transportation cost while delivering as much as possible.
+\begin{table*}[!htbp]
+\centering
+\caption{Studies most relevant to the IRP-LR and to the proposed solution
+methodology.}
+\label{tab:literature_irplr}
+\scriptsize
+\renewcommand{\arraystretch}{1.18}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{
+>{\raggedright\arraybackslash}p{2.3cm}
+>{\raggedright\arraybackslash}p{2.6cm}
+>{\raggedright\arraybackslash}p{2.8cm}
+>{\raggedright\arraybackslash}X
+>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Study} & \textbf{Problem / objective} & \textbf{Solution approach}
+& \textbf{Key search characteristic} & \textbf{Relevance to this work} \\
+\midrule
+\citet{archetti2017logistic} & IRP; routing cost / quantity delivered
+  & Exact fractional optimisation & Joint routing and replenishment
+  & Introduces the IRP-LR \\
+\citet{alvarez2018iterated} & IRP including logistic ratio
+  & ILS and SA & Neighbourhood search over routes and replenishment
+  & Benchmark heuristic for the IRP-LR \\
+\citet{archetti2019exact} & IRP-LR & Iterative exact method
+  & Sequence of IRPs with linear objectives
+  & Optimal solutions for small instances \\
+\citet{baldacci2020fractional} & VRP with fractional objective
+  & Exact method & Primal and dual bounding procedures
+  & General fractional routing methodology \\
+\citet{absi2020branch} & Rich IRP; unit distribution cost
+  & Heuristic branch-cut-and-price
+  & Integrated routing, quantity, and scheduling
+  & Large-scale industrial ratio IRP \\
+\citet{su2020matheuristic} & ROADEF/EURO IRP & Local search with MIP/LP
+  & Mathematical programming sets timing and quantities
+  & Hybrid local-search design \\
+\citet{he2020fixedsequence} & ROADEF/EURO IRP
+  & Fixed-sequence matheuristic
+  & Reoptimises quantities and timing for fixed visit sequences
+  & Separation of route structure and quantity optimisation \\
+\citet{alonsopecina2024iterated} & Operating cost / quantity delivered
+  & ILS & Neighbourhood search for a multi-source IRP
+  & Recent ILS with a ratio objective \\
+\citet{man2025logistics} & Multi-product logistics-ratio IRP
+  & Robust fractional optimisation & Uncertainty and lateral transshipment
+  & Extension of logistics-ratio optimisation \\
+\citet{castro2026hybrid} & Classical IRP & HGS
+  & Route search with min-cost-flow quantity optimisation
+  & State-of-the-art decomposition-based search \\
+\citet{zhao2025large} & Classical and stockout-penalised IRP
+  & HGS with large neighbourhood
+  & Cross-period route/quantity moves; penalised stockouts
+  & Joint moves and controlled infeasibility \\
+\midrule
+\textbf{This paper} & IRP-LR & Multi-start ILS (solver-free)
+  & Joint route--quantity moves; vehicle slack; Lagrangian stockout penalty
+  & Scalable heuristic for the IRP-LR \\
+\bottomrule
+\end{tabularx}
+\end{table*}
 
-We also assume sufficient production at the depot to fulfil the demand from all retailers.
+\subsection{Contributions}
+\label{sec:intro_contributions}
 
+This paper proposes a multi-start iterated local search (MSILS) for the
+IRP-LR. The algorithm does not require a mathematical programming solver.
+Its main contributions are as follows.
 
-Recent methodology development focuses on the objective function to minimise the transportation cost and inventory holding cost. \cite{castro2026hybrid,zhao2025large}
+\begin{enumerate}
+  \item \textbf{Joint evaluation of route and quantity decisions.} Four of
+  the five local search operators update delivery quantities as part of
+  each move, using closed-form rules that respect depot supply, vehicle
+  capacity, and customer storage capacity. Every candidate move is
+  therefore evaluated by its actual effect on the logistic ratio, that is,
+  on routing cost and delivered quantity together.
 
-\section*{Main Contributions}
+  \item \textbf{Vehicle slack.} We introduce a mechanism that reassigns
+  quantity not needed to prevent future stockouts from the existing
+  deliveries of a fully loaded vehicle to a newly inserted customer.
+  Unlike the penalised capacity violations used in routing heuristics such
+  as HGS \citep{vidal2022hybrid}, which are needed when demands are fixed,
+  the mechanism exploits the flexibility of IRP delivery quantities and
+  never violates vehicle capacity. It makes
+  available the inter-route and inter-period moves that would otherwise be
+  rejected, and it creates no new stockouts.
 
-\begin{itemize}
-    \item We developed a new constructive heuristic suitable for the IRP-LR. It differs from the one developed in \cite{alvarez2018iterated}.
-    \item We developed a new MSILS with the amalgamation of iterated local search and Lagrangian relaxation as well as a quantity-focused disturbance procedure.
-    \item We also enhance the local search operator with a local rebalance mechanism inspired by the violation-of-vehicle-capacity strategy from the well-known HGS algorithm for CVRP \cite{vidal2022hybrid}.
-    \item The complete algorithm demonstrates superior performance compared with the Simulated annealing and iterated local search algorithm developed in \cite{alvarez2018iterated} on almost every instance. The algorithm performance is more evident on large instances.
-\end{itemize}
+  \item \textbf{Lagrangian-guided exploration of infeasible solutions.}
+  The zero-stockout constraint is dualised, and the local search solves a
+  sequence of relaxed problems in which the Lagrange multiplier is updated
+  by a subgradient-type rule based on the gap from the incumbent. The
+  penalty therefore scales automatically to the magnitude of the logistic
+  ratio of each instance, allowing the search to cross infeasible regions
+  and then return to feasibility.
+
+  \item \textbf{Problem-specific construction, rebalancing, and
+  perturbation.} Initial solutions are built by a randomised constructive
+  heuristic that prioritises customers by stockout urgency and distance
+  from the depot. A rebalance procedure redistributes quantities over a
+  fixed schedule whenever the incumbent improves, and an adaptive
+  perturbation increases its strength as the number of non-improving
+  iterations grows.
+
+  \item \textbf{Computational evidence.} Experiments on
+  \textcolor{red}{1128} benchmark instances, comprising \textcolor{red}{978}
+  instances with 5 to 50 customers and \textcolor{red}{150} instances with
+  50 to 200 customers, compare the MSILS with the ILS and SA of
+  \citet{alvarez2018iterated}. On the large instances, the logistic ratios
+  obtained by our re-implementations of these algorithms, run on the same
+  computer and with the same time limit, are on average
+  \textcolor{red}{3.2\%} and \textcolor{red}{6.6\%} higher than those of the
+  MSILS. The advantage of the MSILS is largest on instances with few
+  vehicles; only on the largest instances with four and five vehicles is the
+  re-implemented ILS slightly better. \textcolor{red}{[Add the comparison
+  with the published ILS and SA results (17.3\% and 19.3\%) once their source
+  for the large instances is confirmed.]} On small instances, it finds solutions
+  within \textcolor{red}{X\%} of the optimal values reported by
+  \citet{archetti2019exact}. A component analysis quantifies the
+  contribution of each mechanism, and we also examine whether embedding the
+  HGS of \citet{vidal2022hybrid} as a routing post-optimiser brings further
+  improvement. The instances are publicly available
+  \textcolor{red}{(and the code will be released upon acceptance)}.
+\end{enumerate}
+
+Preliminary results of this work were presented at the 15th International
+Conference on Operations Research and Enterprise Systems (ICORES 2026)
+\citep{archetti2026heuristic}. The present paper extends that work with
+\textcolor{red}{[list extensions, e.g.\ the complete algorithm description,
+the component analysis, and the experiments on the large instances]}.
+
+The remainder of the paper is organised as follows.
+Section~\ref{sec:problem_description} defines the IRP-LR and the
+Lagrangian-relaxed problem used by the algorithm. Section~\ref{sec: alg}
+describes the MSILS. Section~\ref{sec: computational experiements} reports
+the computational experiments, and Section~\ref{sec:conclusion}
+concludes and outlines directions for future research.
 
 \section{Problem Background and Related Literature}
 \label{sec:problem_description}
@@ -127,6 +378,15 @@ $\mu_{it}$, which are forced to zero in the original problem and therefore do
 not modify its feasible solution set. Their purpose is to enable the
 Lagrangian-relaxation mechanism used later within the proposed solution
 algorithm.
+
+% Moved from the former second introduction; verify against the instances and the code.
+\textcolor{red}{Two properties of the problem shape the design of the
+algorithm. First, a feasible solution is not difficult to obtain: visiting a
+customer in every period prevents it from running out of stock. The
+difficulty therefore lies not in reaching feasibility but in finding a plan
+that keeps the routing cost low while delivering as much product as
+possible. Second, the production at the depot is sufficient to meet the
+demand of all customers over the planning horizon.}
 
 
 \subsection{Problem Formulation}
@@ -296,6 +556,20 @@ Constraint~\eqref{subtour} can be generated dynamically when the formulation
 is solved exactly. Constraints~\eqref{binary_z}--\eqref{domain_y} specify the
 remaining variable domains.
 
+The IRP-LR is NP-hard in the strong sense, even with a single period and a
+single vehicle. Consider an instance with $|T|=|K|=1$ in which every customer
+$i\in N'$ has zero initial inventory, $I_{i0}=0$, a positive demand $r_{i1}>0$
+and capacity $U_i=r_{i1}$, and in which $Q\geq\sum_{i\in N'}r_{i1}$ and
+$I_{00}+r_{01}\geq\sum_{i\in N'}r_{i1}$. By
+Constraints~\eqref{custbal}--\eqref{maxinv}, every customer must be visited
+and receives exactly $r_{i1}$, so the total quantity delivered equals
+$\sum_{i\in N'}r_{i1}$ in every feasible solution. Minimising the logistic
+ratio is then equivalent to minimising the routing cost of a single route
+through all customers, that is, to solving a travelling salesman problem,
+which is NP-hard in the strong sense. Consequently, exact methods can be
+expected to be limited to small instances, and heuristics are required for
+instances of practical size.
+
 
 \subsection{Solution Approaches in the Literature}
 \label{sec:related_solution_methods}
@@ -361,7 +635,7 @@ optimisation and of allowing controlled infeasibility during the search.
 \centering
 \caption{Selected literature relevant to the IRP-LR and the proposed
 solution methodology.}
-\label{tab:literature_irplr}
+\label{tab:literature_irplr_background}
 \scriptsize
 \renewcommand{\arraystretch}{1.18}
 \setlength{\tabcolsep}{3pt}
@@ -672,10 +946,10 @@ I_{i,t}(s)-\mu_{i,t}(s)= I_{i,t-1}(s) -\mu_{i,t-1}(s) - r_{i,t} + \sum_{k\in K}q
 \end{equation}
 The inventory level of the depot is computed by 
 
-\begin{equation}\label{initial I0}
+\begin{equation}\label{initial I0 depot}
 I_{0,1}(s) = I_{0,0} + r_{0,1} - \sum_{i\in N'}\sum_{k\in K}q^k_{i1}(s),
 \end{equation}
-\begin{equation}\label{Initial I1}
+\begin{equation}\label{Initial I1 depot}
 I_{0,t}(s)= I_{0,t-1}(s) + r_{0,t} - \sum_{i\in N'}\sum_{k\in K}q^k_{it}(s),\; 2\leq t\leq |T|.
 \end{equation}
 If $s$ is feasible to the relaxed problem and has $\sum_{i\in N'} \sum_{i\in T} \mu_{it}(s) = 0$, then $s$ is also feasible for the original problem. The value of $s$ on the objective function \eqref{obj} is denoted by $f(s)$, and the value on the objective function \eqref{Relaxed_obj} with Lagrange multiplier $\alpha$ is denoted by $f_{\mu}(s, \alpha)$. The following pseudocode outlines the proposed \hyperref[alg:MSILS]{MSILS}. 
@@ -685,10 +959,11 @@ If $s$ is feasible to the relaxed problem and has $\sum_{i\in N'} \sum_{i\in T} 
 \caption{\textbf{MSILS}}\label{alg:MSILS}
 \begin{algorithmic}[1]
 \STATE $s^*\gets\emptyset$, $f(s^*)\gets+\infty$ \label{initialisation}
-\FOR{$i\gets 1$ \TO $Max_{restart}$} \label{start msils}
+\FOR{$i\gets 1$ \TO $Max_{restart}$ \AND elapsed time $< Max_{time}$} \label{start msils}
 \STATE $s\gets$\hyperref[alg:InitialSchedule]{Initial\_Solution\_Procedure}, $\hat{s}\gets s$, $it\gets0$ \label{initial solution construction}
+\IF{$s=\emptyset$} \RETURN $s^*$ \ENDIF
 \IF{$f(s)<f(s^*)$} \STATE $s^*\gets s$ \ENDIF
-\WHILE{$it<|N'|+\sigma|T|+\phi|K|$} \label{start ils}
+\WHILE{$it<\lceil \zeta(|N'|+\sigma|T|+\phi|K|)\rceil$} \label{start ils}
 \STATE $\alpha\gets\epsilon(s^*,s,0,\eta)$, $\bar{s}\gets s$, $s\gets$\hyperref[alg:LocalSearch]{Local\_Search}$(s,\alpha)$ \label{LS:initialise alpha}
 \WHILE{$f_{\mu}(s,\alpha)\neq f_{\mu}(\bar{s},\alpha)$ \OR $s$ has stockout} \label{search: repeat}
     \STATE $\alpha\gets\epsilon(s^*,s,\alpha,\eta)$, $\bar{s}\gets s$, $s\gets$\hyperref[alg:LocalSearch]{Local\_Search}$(s,\alpha)$ \label{LS:update alpha}
@@ -704,7 +979,7 @@ If $s$ is feasible to the relaxed problem and has $\sum_{i\in N'} \sum_{i\in T} 
 \end{algorithmic}
 \end{algorithm}
 
-Initially, the global best-known solution $s^*$ is empty, and $f(s^*)$ is set to $+\infty$ (line \ref{initialisation}). $s^*$ is updated throughout the algorithm. The FOR loop (lines \ref{start msils}-\ref{end msils}) implements the multi-start framework. At each restart, a feasible solution to the original problem is generated using the constructive heuristic described in \ref{sec:initial procedure}. This solution is used as the starting solution for the upcoming application of the iterated local search (WHILE loop, lines \ref{start ils}-\ref{end ils}). By repeatedly restarting the iterated local search from different initial solutions, the algorithm can explore diversified regions of the solution space. The number of starting solutions is controlled by the parameter $Max_{restart}$.
+Initially, the global best-known solution $s^*$ is empty, and $f(s^*)$ is set to $+\infty$ (line \ref{initialisation}). $s^*$ is updated throughout the algorithm. The FOR loop (lines \ref{start msils}-\ref{end msils}) implements the multi-start framework. At each restart, a feasible solution to the original problem is generated using the constructive heuristic described in \ref{sec:initial procedure}. This solution is used as the starting solution for the upcoming application of the iterated local search (WHILE loop, lines \ref{start ils}-\ref{end ils}). By repeatedly restarting the iterated local search from different initial solutions, the algorithm can explore diversified regions of the solution space. The number of starting solutions is controlled by the parameter $Max_{restart}$. The algorithm also terminates once the elapsed computational time reaches the time limit $Max_{time}$; this limit is checked throughout the search, so an ongoing iterated local search is interrupted when it is reached, and the best solution $s^*$ found so far is returned.
 
 Each application of the iterated local search uses a local search procedure to solve a sequence of relaxed problems, each with a different value of $\alpha$. If an optimal solution $\Tilde{s}$ for the relaxed problem can be obtained, then following a commonly used version of the Lagrangian relaxation method \cite{fisher1981lagrangian}, $\alpha$ is computed by 
 
@@ -727,23 +1002,33 @@ Once local search obtains a feasible solution for the original problem, $\epsilo
 \end{equation*} 
  which greedily increases $\alpha$ until the stopping criterion is satisfied for the WHILE loop (lines \ref{search: repeat}-\ref{search: until}). The initial value of $\alpha$ is computed by $\epsilon (s^*, s, 0, \eta)$ in line \ref{LS:initialise alpha} and the subsequent values is computed by $\epsilon (s^*, s, \alpha, \eta)$ in line \ref{LS:update alpha} using $\alpha$ from the previous call of the local search procedure.  
 
-To escape from the local optimum, the \hyperref[alg:MSILS]{MSILS} begins with a quantity-focused disturbance procedure, referred to as the rebalance procedure. This procedure attempts to further improve the locally best-known solution $\hat{s}$ by adjusting the delivery quantities, keeping the schedule fixed (see Section \ref{sec:rebalance}). The output of the procedure is either the input, meaning that the procedure failed to make any improvement or a feasible solution of the original problem with a lower logistic ratio. To limit computational overhead, the rebalance procedure is invoked only when $\hat{s}$ has been improved. To further diversify the search, the \hyperref[alg:MSILS]{MSILS} applies a route-focused disturbance procedure on $\hat{s}$, generating the starting solution for the subsequent call of local search. The iterated local search (WHILE loop lines \ref{start ils}-\ref{end ils}) terminates after the counter $it$ reaches $|N'|+\sigma|T|+\phi|K|$, the maximum permissible number of consecutive iterations without improvement, where $\sigma$ and $\phi$ are the weight parameters on the number of time periods and the number of vehicles, respectively. 
+To escape from the local optimum, the \hyperref[alg:MSILS]{MSILS} begins with a quantity-focused disturbance procedure, referred to as the rebalance procedure. This procedure attempts to further improve the locally best-known solution $\hat{s}$ by adjusting the delivery quantities, keeping the schedule fixed (see Section \ref{sec:rebalance}). The output of the procedure is either the input, meaning that the procedure failed to make any improvement or a feasible solution of the original problem with a lower logistic ratio. To limit computational overhead, the rebalance procedure is invoked only when $\hat{s}$ has been improved. To further diversify the search, the \hyperref[alg:MSILS]{MSILS} applies a route-focused disturbance procedure on $\hat{s}$, generating the starting solution for the subsequent call of local search. The iterated local search (WHILE loop lines \ref{start ils}-\ref{end ils}) terminates after the counter $it$ reaches $\lceil \zeta(|N'|+\sigma|T|+\phi|K|)\rceil$, the maximum permissible number of consecutive iterations without improvement, where $\sigma$ and $\phi$ are the weight parameters on the number of time periods and the number of vehicles, respectively. 
 
 
 
 \subsection{Initial feasible solution} \label{sec:initial procedure}
 
-This section describes the heuristic to construct the initial solution for the \hyperref[alg:MSILS]{MSILS}. It aims to produce a good feasible solution to the original problem \eqref{obj}-\eqref{domain_y}, thereby establishing the initial upper bound. 
+This section describes the heuristic to construct the initial solution for the \hyperref[alg:MSILS]{MSILS}. It also aims to produce a good feasible solution to the original problem \eqref{obj}-\eqref{domain_y}, thereby establishing the initial upper bound. 
 
-The solution $s$ is initialised with empty routes and zero delivery quantities, $q^k_{it}(s)=0$ for $i\in N'$, $k\in K$, and $t\in T$. The net inventory levels $I_{it}(s) - \mu_{it}(s)$ are calculated by \eqref{initial I0} and \eqref{Initial I1} accordingly. The customers are grouped by the earliest time period in which their net inventory levels become negative. Those customers with earlier stockouts are given higher priority. Within each stockout group, customers are further partitioned spatially. Let $(x_i, y_i)$ denote the coordinates of location $i \in N$. Using the coordinate minima and maxima   
+The solution $s$ is initialised with empty routes and zero delivery quantities, $q^k_{it}(s)=0$ for $i\in N'$, $k\in K$, and $t\in T$. The net inventory levels and the inventory levels at the depot are computed by \eqref{initial I0}$-$\eqref{Initial I1 depot}. The procedure starts by grouping the customers according to the earliest time period in which their net inventory levels become negative. Those customers with earlier stockouts are given higher priority. Within each stockout group, customers are further partitioned spatially. Let $(x_i, y_i)$ denote the coordinates of location $i \in N$. Using the coordinate minima and maxima
 $$x_{\min} = \min_{i\in N} x_i,\quad x_{\max} = \max_{i\in N} x_i,$$
 $$y_{\min}= \min_{i\in N} y_i,\quad y_{\max}= \max_{i\in N} y_i,$$
-an axis-aligned bounding rectangle is defined with corners $(x_{min},y_{min})$, $(x_{max},y_{min})$, $(x_{max},y_{max})$, and $(x_{min},y_{max})$. The resulting axis-aligned rectangle is divided into a $d\times d$ grid of subregions $R=\{r_1,r_2,\dots,r_{d\times d}\}$ where $d$ is randomly selected between the minimum possible grid resolution $d_{min}$ and the maximum possible grid resolution $d_{\max}$. 
+an axis-aligned bounding rectangle is defined with corners $(x_{min},y_{min})$, $(x_{max},y_{min})$, $(x_{max},y_{max})$, and $(x_{min},y_{max})$. The resulting axis-aligned rectangle is divided into a $d\times d$ grid of subregions $R=\{r_1,r_2,\dots,r_{d\times d}\}$ where the grid resolution $d$ is selected uniformly at random from the $\Delta_d$ consecutive integers $\{d_{\min}, d_{\min}+1, \dots, d_{\min}+\Delta_d-1\}$, with $d_{\min}$ the minimum grid resolution and $\Delta_d$ the grid resolution increment.
 
 Observe that, during the early stages of the solution construction, vehicles typically have sufficient capacity to deliver the largest possible quantities respecting both vehicle and inventory capacity constraints. Such flexibility reduces as the construction goes on, and customers who will be considered at a later stage often require more visits. Thus, the subregions are ordered by decreasing distance from their centres to the depot, so customers in more distant subregions are processed earlier.
 
 
-For each stockout group and subregion, the heuristic randomly selects a customer and repeatedly schedules a visit to address that customer's earliest remaining stockout. It first searches for an unoccupied period between the current search period and the stockout period that has remaining fleet capacity, choosing randomly among available periods. If none is available, it searches backwards for an earlier period. In the selected period, it assigns the customer to the vehicle that can accommodate the largest delivery, with the quantity limited by that vehicle's residual capacity and the customer's remaining inventory capacity. It then updates the customer's inventory trajectory and continues until no customer stockout remains. If a customer faces stockout even when the customer is visited in every period, then no feasible schedule exists for that customer. In this case, the instance is infeasible. The procedure returns an empty solution, and the \hyperref[alg:MSILS]{MSILS} is terminated. 
+The priority grouping and the spatial ordering determine which customers are considered first, but the timing and size of each delivery must also respect the available supply. A delivery in period $t$ reduces depot inventory in that period and in every subsequent period, according to \eqref{initial I0 depot} and \eqref{Initial I1 depot}. Therefore, the largest additional quantity that can be delivered in period $t$ while keeping depot inventory non-negative is
+\begin{equation}\label{supply slack}
+S_t(s)=\max\left\{0,\;\min_{t'\in T:\,t'\geq t} I_{0,t'}(s)\right\}.
+\end{equation}
+Thus, $S_t(s)$ is the supplier's residual capacity for an additional delivery in period $t$, accounting for its effect on depot inventory over the rest of the horizon. 
+
+For each stockout group and subregion, the heuristic randomly selects a customer and repeatedly schedules a visit to address that customer's earliest remaining stockout. It first searches for a period between the current search period and the stockout period in which the customer is not yet visited, the fleet has remaining capacity and $S_t(s)>0$, choosing randomly among such periods. If none is available, it searches backwards for an earlier period satisfying the same conditions. In the selected period, it assigns the customer to the vehicle that can accommodate the largest delivery. The delivery quantity is bounded by $S_t(s)$, that vehicle's residual capacity, and the customer's remaining inventory capacity.
+
+A new visit raises the customer's inventory in later periods, so the quantities of that customer's other visits may need adjustment. After each assignment, the procedure \hyperref[alg:AdjustDeliveryQuantities]{Adjust Delivery Quantities} updates depot inventory and recomputes the customer's inventory trajectory in chronological order. Since the new visit does not affect the periods before it, only the deliveries in the periods after the selected period are adjusted: it increases each existing delivery only up to the available supplier and vehicle capacity and the customer's remaining inventory capacity, and reduces it if necessary so that it does not exceed the customer's remaining inventory capacity. The heuristic continues until no customer stockout remains.
+
+If no feasible visit period can be found while the customer still has a stockout, the construction stops and returns an empty solution, and the \hyperref[alg:MSILS]{MSILS} is terminated. In the computational experiments on the test bed described in Section \ref{sec: test instances}, this case has never been observed.
 
 Let $P_{t,r} \subseteq N'$ denote the subset of customers in priority group $t\in T$ and subregion $r\in R$. The pseudocode, \hyperref[alg:InitialSchedule]{Construct Initial Solution}, summarises the procedure.
 
@@ -762,10 +1047,13 @@ Let $P_{t,r} \subseteq N'$ denote the subset of customers in priority group $t\i
         \WHILE{ $\{\hat{t}\in T: I_{i,\hat{t}}(s)-\mu_{i,\hat{t}}(s) <0\} \neq [\hspace{0.1cm}]$}
             \STATE $t_{stockout}\gets \min\{t\in T: I_{i,t}(s)-\mu_{i,t}(s) <0\}$
             \STATE $t_{assign}\gets$ \hyperref[alg:FindVisitTime]{Find Feasible Visit Time} ($t_{current}, t_{stockout}, i$)
-            \STATE $(k,q)\gets $ \hyperref[alg:FindVehicleToDeliverMax]{Find Vehicle To Deliver Max}($t_{assign}, i, s$)            
+            \IF{$t_{assign}=\emptyset$}
+                \RETURN $\emptyset$
+            \ENDIF
+            \STATE $(k,q)\gets $ \hyperref[alg:FindVehicleToDeliverMax]{Find Vehicle To Deliver Max}($t_{assign}, i, s$)
             \STATE $q^k_{i,t_{assign}}\gets q$
             \STATE add customer $i$ to vehicle $k$'s route on time period $t_{assign}$
-            \STATE for all $t'\in T$, update $I_{i,t'}(s)- \mu_{it'}(s) $ according to \eqref{initial I0} and \eqref{Initial I1} 
+            \STATE \hyperref[alg:AdjustDeliveryQuantities]{Adjust Delivery Quantities}($i, t_{assign}, s$)
             \STATE $t_{current}\gets t_{assign}+1$
         \ENDWHILE
         \STATE $P_{t,r}\gets P_{t,r}\setminus i$
@@ -799,58 +1087,55 @@ After the schedule has been constructed, a nearest-neighbour insertion \cite{bra
 
 % From the vast literature of vehicle routing and inventory routing, there have been validated that permitting some constraint violation in local search
 
-The local search uses five neighbourhood operators, denoted by $O_1$, $O_2$, $O_3$, $O_4$, and $O_5$.  These operators are based on those commonly found in the field of vehicle routing (see, for example, \cite{kindervater1997}, \cite{laporte2000classical}, and \cite{elshaer2020taxonomic}) and are also frequently used in the field of inventory routing (see, for example, \cite{alvarez2018iterated}, \cite{lagana2024iterated}, and \cite{castro2026hybrid}). Each operator defines a neighbourhood through a set of alterations. Each alteration transforms the input solution into a neighbouring solution by modifying one or more of its components.  
-
-Rather than employing separate operators for route alterations and delivery quantity alterations, the operators $O_1$, $O_2$, $O_3$, and $O_4$ integrate both into a single alteration. Such an integration enables the exploration of the logistic ratio, i.e., the simultaneous exploration of total transportation cost and total delivery quantity. The routing component of these operators is described as follows:
-
+The local search is a sequential variable neighbourhood descent over five operators $O_1,\dots,O_5$, applied to the relaxed problem with a given Lagrange multiplier $\alpha$. The routing moves themselves are standard in vehicle routing (see, for example, \cite{kindervater1997}, \cite{laporte2000classical}, and \cite{elshaer2020taxonomic}) and inventory routing (see, for example, \cite{alvarez2018iterated}, \cite{lagana2024iterated}, and \cite{castro2026hybrid}):
 
 \begin{itemize}
-\item Operator $O_1$ moves up to 3 adjacent customers from a route to another in the same period. 
-\item Operator $O_2$ exchanges up to 2 adjacent customers in a route with up to 2 adjacent customers in another route in the same period.
-\item Operator $O_3$ transfers a customer visit to a different time period in which this customer is not visited, with the vehicle giving the largest possible delivery quantity at a position with the lowest in transportation cost.
-\item Operator $O_4$ exchanges a customer in a route with one unvisited customer, including the case where either a visited customer becomes unvisited or an unvisited customer becomes visited.
+\item $O_1$ moves up to 3 adjacent customers from one route to another route in the same period;
+\item $O_2$ exchanges up to 2 adjacent customers of one route with up to 2 adjacent customers of another route in the same period;
+\item $O_3$ transfers a customer visit to another period in which the customer is not visited, using the vehicle that can take the largest delivery and the insertion position of least cost;
+\item $O_4$ exchanges a visited customer with an unvisited one in the same route, including the cases where a visit is only removed or only inserted;
+\item $O_5$ moves up to 3 adjacent customers to another position in the same route.
 \end{itemize}
-
+%
 % \item Things worth mentioning: \textcolor{red}{In \cite{alvarez2018iterated}, $Op-opt, Shift, Swap$ are routing operators. So it is reasonable to say that there is no update for the delivery quantities and inventory levels for the subsequent days. Also, I suspect any infeasible move to an infeasible solution is skipped. In our operators, for $Or-opt(k), k \in \{1, 2\}$, it is pure routing operators. But for $Shift(k), k \in \{1, 2\}$ and $Swap(k1, k2), k1, k2 \in \{1, 2\}, k1 \geq k2$, after the move, delivery quantities and inventory level are updated.}
 
+The novelty of the local search lies in how operators $O_1$ to $O_4$ treat quantities. Heuristics for the IRP commonly evaluate routing moves with delivery quantities fixed and revise the quantities in a separate step, often by mathematical programming \citep{iswari2026extending}. Here, each alteration determines both the routes and the resulting delivery quantities, so every move is evaluated by its actual effect on the logistic ratio, that is, on the transportation cost and the total quantity delivered at the same time. Operator $O_5$ is a pure routing operator and leaves quantities unchanged.
 
-For an alteration that results in removing the visit to customer $i\in N'$ at time $t\in T$ on vehicle $k\in K$, the associated $q^k_{it}(s)$ becomes 0. For an alteration that results in a new visit to customer $i\in N'$ at time $t\in T$ on vehicle $k\in K$, the associated $q^k_{it}(s)$ is computed by
+When an alteration removes the visit to customer $i\in N'$ in period $t\in T$, $q^k_{it}(s)$ becomes 0. When it creates a new visit by vehicle $k\in K$, the customer receives the largest quantity allowed by the depot supply, the residual capacity of the vehicle, and the customer's remaining inventory capacity,
 \begin{equation}
-   q^k_{jt} = \max\{0,\min\{Q - \sum_{i\in N'}q^k_{it}(s), U_i-I \}\}\label{Adjust quantity}
+   q^k_{it}(s) = \min\Bigl\{S_t(s),\; Q - \sum_{j\in N'}q^k_{jt}(s),\; U_i-\bigl(I_{i,t-1}(s)-\mu_{i,t-1}(s)\bigr)\Bigr\},\label{Adjust quantity}
 \end{equation}
-where 
-\begin{equation*}    
-I= \left\{ \begin{array}{ll}
-  		I_{i,0}  & \mbox{if $t =1$}; \\
- 		I_{i,t-1}(s) & \mbox{ if $2\leq t\leq |T| $} 
-  		\end{array}\right. 
-\end{equation*}
-Please note that $\max\{0,\cdot\}$ is required since the local search allows the violation of stockout where $I$ can be negative and $U_i-I$ can also be negative. For customer $i$, the resulting inventory level is updated recursively according to \eqref{initial I0} and \eqref{Initial I1}. These updated inventory levels may affect the subsequent deliveries. Therefore, following the update in each time period, if the customer is visited in the subsequent time period, the delivery quantity for that visit is adjusted using \eqref{Adjust quantity}.
+where $I_{i,0}(s)-\mu_{i,0}(s)=I_{i,0}$. A change in period $t$ alters the customer's net inventory in all later periods, so the customer's subsequent deliveries are revised in chronological order: each is increased as far as the residual capacity of its vehicle allows and reduced where necessary to respect $U_i$. Moves that would make the depot inventory negative in any period are discarded.
 
-For the last operator, Operator $O_5$ is a pure routing operator. It transfers up to 3 adjacent customers from their current position to another position in the same route. In contrast to operators $O_1$, $O_2$, $O_3$, and $O_4$, the alterations associated with operator $O_5$ do not affect the delivery quantities and the inventory levels.
+\textbf{Vehicle slack.} Because the logistic ratio rewards large deliveries, vehicles in good solutions are typically fully loaded. For a fully loaded vehicle, \eqref{Adjust quantity} gives a zero quantity, so a large share of the moves that insert a customer into another route or period would be rejected. In the CVRP, where demands are fixed, such moves can only be retained by permitting capacity violations and penalising them in the objective, as in the hybrid genetic search of \cite{vidal2022hybrid}. In the IRP-LR, delivery quantities are decisions, so the operators here instead borrow quantity that existing visits do not need, and vehicle capacity is never violated. The slack of the delivery to customer $j$ in period $t$,
+\begin{equation}
+\omega_{jt}(s)=\max\Bigl\{0,\;\min\bigl\{\textstyle\sum_{k\in K}q^k_{jt}(s),\;\min_{t'\in T:\,t'\geq t}\bigl(I_{jt'}(s)-\mu_{jt'}(s)\bigr)\bigr\}\Bigr\},\label{visit slack}
+\end{equation}
+is the largest quantity that can be removed from this delivery without creating a stockout in period $t$ or later. The slack of vehicle $k$ in period $t$, $\Omega^k_t(s)$, is the sum of $\omega_{jt}(s)$ over the customers it serves in that period. If vehicle $k$ has no residual capacity, the new visit to customer $i$ receives
+\begin{equation*}
+q^k_{it}(s)=\min\Bigl\{S_t(s),\;\Omega^k_t(s),\;U_i-\bigl(I_{i,t-1}(s)-\mu_{i,t-1}(s)\bigr)\Bigr\},
+\end{equation*}
+where the slack of any customers leaving vehicle $k$ in the same move is excluded from $\Omega^k_t(s)$. The same amount is then removed from the deliveries of the other customers on vehicle $k$, each reduced by at most its slack. In $O_3$, if no vehicle has residual capacity in the target period, the vehicle with the largest slack is used. The move therefore keeps the vehicle within its capacity and creates no new stockout, while the load of the vehicle is redistributed among its customers. This enlarges the neighbourhoods of $O_1$ to $O_4$ to moves involving fully loaded vehicles, which would otherwise be excluded.
 
 \begin{algorithm}
 \captionsetup{labelformat=empty}
 \caption{\textbf{Local Search$(s,\alpha)$}} \label{alg:LocalSearch}
 \begin{algorithmic}[1]
-\FOR{$i \gets 0;\ i \leq 5;\ i \gets i+1$} \label{search: for}
+\FOR{$i \gets 1$ \TO $5$} \label{search: for}
     \REPEAT \label{search: repeat N}
-        \STATE $\hat{s} \gets s$, $j \gets 1$
-        \WHILE{$j < |O_i(s)|$} 
-            \STATE $s' \gets s_j \in O^i(s)$,  $j \gets j+1$
-                \IF{$f_{\mu}(s',\alpha) < f_{\mu}(s,\alpha)$}
-                     \STATE $s \gets s'$
-                \ENDIF
-        \ENDWHILE
-    \UNTIL{$f_{\mu}(s,\alpha) = f_{\mu}(\hat{s}, \alpha)$} \label{search: until N}        
+        \STATE $\hat{s} \gets s$
+        \STATE $s' \gets \arg\min\{f_{\mu}(s'',\alpha): s''\in O_i(s)\}$
+        \IF{$f_{\mu}(s',\alpha) < f_{\mu}(s,\alpha)$}
+            \STATE $s \gets s'$
+        \ENDIF
+    \UNTIL{$f_{\mu}(s,\alpha) = f_{\mu}(\hat{s}, \alpha)$} \label{search: until N}
 \ENDFOR \label{search: endfor}
 \STATE $s\gets $ remove any visit with zero delivery quantity
 \RETURN $s$
 \end{algorithmic}
 \end{algorithm}
 
-
-The local search procedure implements a sequential variable neighbourhood descent procedure for solving the relaxed problem. For a given solution $s$ and the Lagrange multiplier $\alpha$, the neighbourhoods induced by operators $O_1$ to $O_5$ are explored successively. Within a neighbourhood associated with Operator $i\in \{1,2,3,4,5\}$, all neighbouring solutions denoted by $O_i(s)$ are evaluated according to the objective function $f_{\mu}(\cdot,\alpha)$, and the current solution is updated whenever an improving neighbour is identified. The neighbourhood is repeatedly re-explored until no improving solution can be found, thereby ensuring local optimality with respect to the corresponding operator. The search then proceeds to the next operator. The procedure terminates once all five operators have been exhausted without improvement, at which point any visits associated with zero delivery quantity are removed and the resulting solution is returned. The pseudocode, \hyperref[alg:LocalSearch]{Local Search} summaries the local search procedure.
+The neighbourhoods are explored in the order $O_1$ to $O_5$. Within the neighbourhood $O_i(s)$, all neighbouring solutions are evaluated with $f_{\mu}(\cdot,\alpha)$, the best improving one is applied, and the neighbourhood is re-explored until no improving neighbour remains; the search then proceeds to the next operator. To save computation, pairs of routes for which no improving move was found are not re-evaluated until one of them changes, and $O_5$ is applied only to routes modified by $O_1$ to $O_4$. Finally, visits with zero delivery quantity are removed, and the resulting solution is returned.
 
 
 
@@ -916,7 +1201,15 @@ available at \url{https://github.com/AndyElhamSarang/IRP_instances.git}.
 \subsection{Parameter calibrations}
 
 
-The parameters for the \hyperref[alg:MSILS]{MSILS} are set to the values listed in Table \ref{default parameters}. These values were determined from preliminary experiments.
+The parameters for the \hyperref[alg:MSILS]{MSILS} are set to the values listed in Table \ref{default parameters}, where the selected value of each parameter is underlined. The numerical parameters were calibrated with the iterated racing procedure implemented in the irace package \citep{lopez2016irace}. irace repeatedly samples candidate configurations, evaluates them on a sequence of training instances, and uses the Friedman test to discard configurations that perform statistically worse than the best ones. The sampling distribution is then biased towards the surviving (elite) configurations for the next iteration.
+
+The calibration used the large instances of \cite{archetti2012hybrid}, which have 50, 100 and 200 customers and 1 to 5 vehicles. For each of the 15 combinations of the number of customers and the number of vehicles, 7 instances were assigned to a training set and 3 different instances to a test set, giving 105 training and 45 test instances. The training instances were presented to irace in blocks of three, one instance of each size, so that every configuration was always compared on small, medium and large instances alike. Each evaluation was a single run of the \hyperref[alg:MSILS]{MSILS} with a random seed and a time limit of $Max_{time}=60$ seconds, and the cost reported to irace was the logistic ratio of the best feasible solution found. The parameters $Max_{restart}$ and $Max_{time}$ were fixed rather than tuned.
+
+To keep the size of the configuration space manageable, the parameters were calibrated in three groups, keeping the other parameters fixed in each case: (i) the grid parameters $d_{\min}$ and $\Delta_d$ of the initial solution construction, with a budget of 1500 runs; (ii) the Lagrangian scalar $\eta$, with a budget of 1500 runs; and (iii) the parameters $\zeta$, $\sigma$, $\phi$ and $\theta$ of the iterated local search and the perturbation, with a budget of 3000 runs. In group (iii), $\zeta$, $\sigma$ and $\phi$ define the maximum number of consecutive non-improving iterations, $Max_{it}=\lceil \zeta(|N'|+\sigma|T|+\phi|K|)\rceil$, and $\theta$ controls the disturbance strength (Section \ref{sec:perturbation}). The ranges searched by irace are given in the last column of Table \ref{default parameters}; $\eta$ and $\zeta$ were sampled on a logarithmic scale.
+
+For the grid parameters, the three elite configurations were $(d_{\min},\Delta_d)=(5,1)$, $(3,2)$ and $(7,3)$. Their average logistic ratios on the 45 test instances differ by less than 0.2\%, and $(3,2)$ and $(5,1)$ are statistically indistinguishable on the training instances. We selected $(3,2)$, under which the grid resolution is drawn from $\{3,4\}$; this configuration was also ranked first in preliminary tuning runs. Compared with the previous setting $(2,2)$, it obtained a lower logistic ratio on 12 of the 15 training instances on which both were evaluated. For $\eta$, irace converged to $\eta\approx3.33$. However, on the training instances evaluated with both values, the difference between $\eta=3.33$ and the initial value $\eta=5$ was not significant (paired Wilcoxon signed-rank test, $p=0.61$), and $\eta=5$ was retained. For group (iii), the elite configurations agreed closely on $\zeta\in[0.51,0.65]$, $\phi\in[14,18]$ and $\theta\in\{1,2\}$, whereas $\sigma$ varied from 5 to 17. The best elite configuration, $\zeta=0.62$, $\sigma=5$, $\phi=16$ and $\theta=2$, was selected. Since $\zeta<1$, each iterated local search is terminated earlier than with $\zeta=1$, and the search restarts from a new initial solution more often. The test instances do not show which elite configuration of group (iii) is best: their average logistic ratios differ by less than 0.1\%.
+
+Overall, the calibration indicates that the \hyperref[alg:MSILS]{MSILS} is robust with respect to its numerical parameters. Poor configurations do exist: in group (iii), for example, the first statistical test discarded 34 of the 83 initial candidate configurations. Within the region of good configurations, however, the performance landscape is flat. In all three groups, Kendall's concordance coefficient between the rankings of the surviving configurations on different instances dropped to about 0.1 by the end of the race, meaning that the relative performance of these configurations is determined mainly by the instance rather than by the parameter values. Consequently, the results reported in the following sections are not sensitive to the precise parameter values in Table \ref{default parameters}.
 
 \begin{table}[H]
 \caption{Default values of parameters}
@@ -926,15 +1219,16 @@ The parameters for the \hyperref[alg:MSILS]{MSILS} are set to the values listed 
 \toprule%
 \textbf{Parameters} & \textbf{Definition} &\textbf{Tested Range} \tabularnewline
 \hline
-$d_{\min}$&  Minimum grid resolution in initial solution construction & $\{1,\underline{\textbf{2}},3,4,5\}$ \tabularnewline
-$d_{\max}$&  Maximum grid resolution in initial solution construction & $\{2,\underline{\textbf{3}},4,7\}$ \tabularnewline
-$Max_{restart}$ &  Number of initial starting solutions & \{1,\underline{\textbf{3}},5,10,20\} \{3,4,\underline{\textbf{5}},6,7,8,9\} \tabularnewline
-$\eta$ & Scalor for updating the Lagrange multiplier $\alpha$ & \{ 1,3,\underline{\textbf{5}},10,20,100000\} \tabularnewline
-$\sigma$ & Weight parameters on number of time periods to compute the maximum permissible number of consecutive iterations without improvement from the ILS &\{ 5,7,\underline{\textbf{10}},15,20\}\{\underline{\textbf{1}},2,3,4,5,6,8,10,12\} \tabularnewline
-$\phi$ &  Weight parameters on number of vehicles to compute the maximum permissible number of consecutive iterations without improvement from the ILS& \{ 5,6,7,\underline{\textbf{8}},9,10,15,20\}\{8,\underline{\textbf{9}},10,11,12\} \tabularnewline
-$\theta$ & Disturbance strength & \{1,\underline{\textbf{2}},4,5,7,9,10\}\tabularnewline
-\hline
-\end{tabular}
+$d_{\min}$&  Minimum grid resolution in initial solution construction & $\{1,2,\underline{\textbf{3}},\dots,15\}$ \tabularnewline
+$\Delta_d$&  Grid resolution increment, i.e., number of candidate grid resolutions in initial solution construction & $\{1,\underline{\textbf{2}},3,\dots,8\}$ \tabularnewline
+$Max_{restart}$ &  Number of initial starting solutions & $\{1,2,3,\dots \underline{\textbf{30}}\}$ \tabularnewline
+$\eta$ & Scalar for updating the Lagrange multiplier $\alpha$ & $\{ 0.1,0.2,\dots,\underline{\textbf{5}},\dots,10000\}$\tabularnewline
+$Max_{time}$ & Time limit (in seconds) for MSILS run & 60 \tabularnewline
+$\zeta$ & Weight parameters on the maximum permissible number of consecutive iterations without improvement from the ILS & $\{ 0.01,0.02,\dots,\underline{\textbf{0.62}},\dots,5\}$\tabularnewline 
+$\sigma$ & Weight parameters on number of time periods to compute the maximum permissible number of consecutive iterations without improvement from the ILS & $\{0,1,0.2,\dots,\underline{\textbf{5}},\dots,20\}$ \tabularnewline
+$\phi$ &  Weight parameters on number of vehicles to compute the maximum permissible number of consecutive iterations without improvement from the ILS & $\{0,1,0.2,\dots,\underline{\textbf{16}},\dots,20\}$ \tabularnewline
+$\theta$ & Disturbance strength & $\{0,1,\underline{\textbf{2}},\dots,10\}$ \tabularnewline
+\hline\end{tabular}
 \end{table}
 
 % $U$ & $5$ & \{ 1,\underline{\textbf{5}},10,30,50\}\tabularnewline
@@ -962,10 +1256,25 @@ $\cancel{R}$ & Deactivating the \hyperref[alg:rebalance]{Rebalance} Procedure at
 $D\&R$ & Instead of using the \hyperref[alg:rebalance]{Rebalance} Procedure described in Section \ref{sec:rebalance}, line \ref{run rebalance} uses the \hyperref[alg: destroy and rebalance]{Destory\_And\_Rebalance} procedure described in Appendix~\ref{sec: rebalance without feasibility}\tabularnewline
 $\cancel{D}$ & Deactivating the First-stage DISTURB from the procedure Perturbation. \tabularnewline
 MSILS-HGS& MSILS with HGS, with the time required for the HGS excluded from the time limit.\tabularnewline
-MSILS-Initial-Alt& Use constructive heuristics in \cite{alvarez2018iterated} to construct the initial feasible solution. \tabularnewline
+MSILS-Initial-Alt& Replace the proposed constructive heuristic with
+the constructive heuristic of \citet{alvarez2018iterated}
+MSILS-Without-Vehicle-Slack \tabularnewline
 \hline
 \end{tabular}
 \end{table}
+
+\textit{MSILS-Initial-Alt} replaces the proposed constructive heuristic with
+the constructive heuristic of \citet{alvarez2018iterated}. The procedure
+builds the solution period by period. In each period, customers whose
+inventory would become negative without a delivery must be visited and are
+filled up to their storage capacity, within the limit of the vehicle
+capacity and the supplier's available inventory; in the last period, they receive only the quantity needed to avoid
+the stockout. Customers expected to stock out in the next few periods may
+also be visited, receiving part of their remaining storage capacity. The
+vehicle routes for the period are then constructed with a nearest-neighbour
+insertion heuristic \cite{braysy2005vehicle}.
+
+
 
 The variant $\cancel{L}$ is used to examine the performance gain of using the Lagrangian relaxation technique. By initialising $\alpha$ to a large value, the \hyperref[alg:LocalSearch]{Local\_Search} procedure would just repair the infeasible starting solution. Thereafter, due to the high penalty for stockout, the search process would remain in the feasible solution space. All four variants and the \hyperref[alg:MSILS]{MSILS} were tested on Archettie2012 benchmark. Each version of the algorithm was given a time limit of 1 minute. 
 
@@ -977,39 +1286,95 @@ Compared with the supplementary results from \cite{alvarez2018iterated} availabl
 
 
 The proposed \hyperref[alg:MSILS]{MSILS} is compared with ILS and SA in \cite{alvarez2018iterated}. The algorithm is validated in small instances by comparing the optimal solutions obtained by the ACS algorithm developed in \cite{archetti2019exact}.
-\begin{table}[htbp] 
-\centering 
-\caption{Average percentage gap (\%) of \hyperref[alg:MSILS]{MSILS} compared with ILS} \label{tab:msils_vs_ils} 
-\begin{tabular}{lccccc} 
-\toprule & $|T|=2$ & $|T|=3$ & $|T|=4$ & $|T|=5$ & Average \\ 
-\midrule 
-$|N'|=50$ & -8.00 & -4.30 & -5.03 & -5.13 & -5.61 \\ 
-$|N'|=100$ & -8.63 & -6.59 & -6.57 & -6.90 & -7.17 \\ 
-$|N'|=200$ & -9.02 & -6.16 & -5.16 & -4.10 & -6.11 \\ 
-\midrule 
-Average & -8.55 & -5.68 & -5.58 & -5.38 & -6.30 \\ 
-\bottomrule 
-\end{tabular} 
+
+Table~\ref{tab:summary} summarises the results on the large instances of
+\cite{archetti2012hybrid}, grouped by the number of vehicles $|K|$ and the
+number of customers $|N'|$, with 10 instances per group. The first three
+columns report the best, average and worst logistic ratios obtained by
+\hyperref[alg:MSILS]{MSILS}. The remaining columns report the relative
+percentage difference (RPD) of each competing method with respect to
+\hyperref[alg:MSILS]{MSILS}, so a positive value means that
+\hyperref[alg:MSILS]{MSILS} obtains the lower logistic ratio. ILS and SA refer
+to the best of five runs reported by \cite{alvarez2018iterated}
+\textcolor{red}{[confirm the source of these values: Alvarez et al.\ report
+logistic-ratio results only for instances with up to 50 customers; if these
+are logistic ratios of their total-cost solutions, say so]}. Re-ILS and Re-SA
+denote our C++ re-implementations of these algorithms, run on the same
+computer and with the same time limit as the \hyperref[alg:MSILS]{MSILS}
+\textcolor{red}{[number of runs per instance, time limit]}. Where
+\cite{alvarez2018iterated} leave implementation details unspecified, such as
+how operators are applied within the randomised variable neighbourhood
+descent, how delivery quantities are set by the routing and insertion
+operators, and how the perturbation and SA neighbours are drawn, we made the
+choices documented with the code \textcolor{red}{[repository URL or
+appendix]}. The re-implementations use the published parameter values. With
+these values, Re-SA performed worse on small instances than the SA results
+reported by \cite{alvarez2018iterated}, and its results should therefore be
+interpreted with caution \textcolor{red}{[add the gap figures once the
+validation runs are repeated sequentially]}.
+
+\begin{table}[htbp]
+\centering
+\caption{Average results by number of vehicles $|K|$ and number of customers
+$|N'|$ (10 instances per group). The \hyperref[alg:MSILS]{MSILS} columns report
+average logistic ratios; all other columns report the relative percentage
+difference (RPD, \%) with respect to \hyperref[alg:MSILS]{MSILS}, computed as
+$100\times(\text{Method}-\text{MSILS})/\text{MSILS}$. ILS and SA are compared
+with the best \hyperref[alg:MSILS]{MSILS} value; the best, average and worst
+values of Re-ILS and Re-SA are compared with the best, average and worst
+\hyperref[alg:MSILS]{MSILS} values, respectively.}
+\label{tab:summary}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{cc ccc cc ccc ccc}
+\toprule
+ & & \multicolumn{3}{c}{MSILS} & \multicolumn{2}{c}{RPD (\%)} & \multicolumn{3}{c}{Re-ILS RPD (\%)} & \multicolumn{3}{c}{Re-SA RPD (\%)} \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
+$|K|$ & $|N'|$ & Best & Average & Worst & ILS & SA & Best & Average & Worst & Best & Average & Worst \\
+\midrule
+\multirow{3}{*}{1} & 50  & 0.59 & 0.59 & 0.59 & 16.66 & 18.49 & 4.45 & 6.06 & 7.48 & 8.98 & 10.32 & 11.92 \\
+                   & 100 & 0.37 & 0.37 & 0.38 & 23.34 & 23.29 & 9.05 & 10.39 & 12.04 & 13.43 & 13.87 & 14.87 \\
+                   & 200 & 0.25 & 0.26 & 0.26 & 29.56 & 31.41 & 10.88 & 12.20 & 13.24 & 15.04 & 14.82 & 15.02 \\
+\midrule
+\multirow{3}{*}{2} & 50  & 0.71 & 0.72 & 0.73 & 14.74 & 14.23 & 2.46 & 2.81 & 2.79 & 6.99 & 7.38 & 7.21 \\
+                   & 100 & 0.41 & 0.42 & 0.43 & 19.38 & 21.28 & 4.21 & 4.13 & 3.88 & 11.17 & 10.01 & 9.10 \\
+                   & 200 & 0.27 & 0.28 & 0.29 & 24.32 & 33.93 & 5.36 & 4.05 & 2.47 & 10.58 & 8.54 & 6.91 \\
+\midrule
+\multirow{3}{*}{3} & 50  & 0.87 & 0.88 & 0.89 & 9.71 & 10.75 & 0.73 & 1.31 & 1.81 & 4.06 & 4.75 & 5.25 \\
+                   & 100 & 0.46 & 0.47 & 0.48 & 15.62 & 15.55 & 3.05 & 2.84 & 3.35 & 6.43 & 6.30 & 6.55 \\
+                   & 200 & 0.30 & 0.31 & 0.32 & 20.32 & 25.59 & 1.55 & 2.04 & 2.01 & 5.58 & 5.48 & 5.42 \\
+\midrule
+\multirow{3}{*}{4} & 50  & 1.03 & 1.04 & 1.06 & 10.11 & 9.88 & 1.33 & 1.65 & 2.07 & 3.62 & 3.77 & 4.17 \\
+                   & 100 & 0.53 & 0.54 & 0.55 & 13.29 & 14.60 & 0.20 & 0.44 & 0.07 & 4.24 & 3.67 & 2.62 \\
+                   & 200 & 0.33 & 0.34 & 0.35 & 20.37 & 26.54 & 0.25 & $-$0.45 & $-$1.49 & 3.88 & 2.80 & 1.35 \\
+\midrule
+\multirow{3}{*}{5} & 50  & 1.20 & 1.21 & 1.22 & 10.62 & 10.19 & 0.59 & 1.03 & 1.63 & 2.87 & 3.04 & 3.16 \\
+                   & 100 & 0.59 & 0.60 & 0.61 & 13.95 & 12.92 & 0.75 & 1.07 & 1.43 & 3.21 & 3.10 & 3.11 \\
+                   & 200 & 0.36 & 0.37 & 0.38 & 17.25 & 21.24 & $-$1.11 & $-$1.41 & $-$1.67 & 1.10 & 1.03 & 0.79 \\
+\midrule
+\multicolumn{2}{c}{Average} & 0.55 & 0.56 & 0.57 & 17.28 & 19.33 & 2.92 & 3.21 & 3.41 & 6.75 & 6.59 & 6.50 \\
+\bottomrule
+\end{tabular}%
+}
 \end{table}
 
+\hyperref[alg:MSILS]{MSILS} obtains a lower logistic ratio than ILS and SA
+\citep{alvarez2018iterated} in every group, by 9.7\% to 33.9\%. For each
+number of vehicles, the advantage grows with the number of customers, and it
+is generally smaller with more vehicles. Against Re-ILS and Re-SA the margins
+are smaller and narrow as the number of vehicles increases. Re-SA is
+outperformed in every group. Re-ILS is
+outperformed in all groups except the largest instances with four and five
+vehicles: with $|K|=5$ and $|N'|=200$, Re-ILS is better than
+\hyperref[alg:MSILS]{MSILS} by 1.1\% to 1.7\%, and with $|K|=4$ and
+$|N'|=200$ its average and worst values are better by 0.45\% and 1.49\%.
 
-\begin{table}[htbp] 
-\centering 
-\caption{Average percentage gap (\%) of \hyperref[alg:MSILS]{MSILS} compared with SA} \label{tab:msils_vs_ils} 
-\begin{tabular}{lccccc} 
-\toprule & $|T|=2$ & $|T|=3$ & $|T|=4$ & $|T|=5$ & Average \\ 
-\midrule 
-$|N'|=50$ & -7.59 & -5.28 & -4.82 & -4.97 & -5.67 \\ 
-$|N'|=100$ & -10.00 & -6.66 & -7.56 & -6.16 & -7.59 \\ 
-$|N'|=200$ & -15.59 & -10.18 & -9.77 & -7.40 & -10.73 \\ 
-\midrule 
-Average & -11.06 & -7.37 & -7.38 & -6.18 & -8.00 \\ 
-\bottomrule 
-\end{tabular} 
-\end{table}
 
 
 \subsection{Robustness} \label{Robustness}
+
+\section{Conclusions}\label{sec:conclusion}
+
+\textcolor{red}{[To be written.]}
 
 \appendix
 
@@ -1025,7 +1390,8 @@ Average & -11.06 & -7.37 & -7.38 & -6.18 & -8.00 \\
         \STATE \textbf{// schedule forward//}
         \STATE $T_{candidate}\gets\{t\in T:  t_{current}\leq t \leq t_{stockout},$
         \STATE \hspace{9em}  customer $i$ is not visited at $t$, 
-        \STATE \hspace{9em}  $Q\times |K| - \sum_{k\in K}\sum_{i\in N'} q^k_{i,t}(s) > 0\}$
+        \STATE \hspace{9em}  $Q\times |K| - \sum_{k\in K}\sum_{i\in N'} q^k_{i,t}(s) > 0$,
+        \STATE \hspace{9em}  $S_t(s) > 0\}$
         \IF{$T_{candidate}\neq [\hspace{0.1cm}]$}
         \RETURN $t \sim \textsc{Random}(T_{candidate})$
         \ELSE
@@ -1035,11 +1401,12 @@ Average & -11.06 & -7.37 & -7.38 & -6.18 & -8.00 \\
         \STATE \textbf{// schedule backward//}         
             \FOR{$t\gets t_{stockout}; t\geq 1;t\gets t-1$}
                 \IF{customer $i$ is not visited at time period $t$}
-                    \IF{$Q\times |K| - \sum_{k\in K}\sum_{i\in N'} q^k_{i,t}(s) > 0$}
+                    \IF{$Q\times |K| - \sum_{k\in K}\sum_{i\in N'} q^k_{i,t}(s) > 0$ \AND $S_t(s) > 0$}
                         \RETURN $t$
                     \ENDIF
                 \ENDIF
             \ENDFOR
+            \RETURN $\emptyset$
     \ENDIF
 \ENDWHILE
 \end{algorithmic}
@@ -1055,17 +1422,37 @@ Average & -11.06 & -7.37 & -7.38 & -6.18 & -8.00 \\
 \begin{algorithmic}[1]
 \STATE $k'\gets |K|+1$, $q'\gets 0$, 
 \FOR{$k\in K$}
-    \STATE $q\gets 0$
     \IF{$t=1$}
-        \STATE $q\gets min\{Q-\sum_{j\in N'}q^k_{j,1}(s), U_{i} - I_{i,0}\}$    
+        \STATE $q\gets \max\{0,\min\{S_1(s), Q-\sum_{j\in N'}q^k_{j,1}(s), U_{i}-I_{i,0}\}\}$
     \ELSE
-        \STATE $q\gets min\{Q-\sum_{j\in N'}q^k_{j,t}(s), U_{i} - I_{i,t-1}(s)\}$
+        \STATE $q\gets \max\{0,\min\{S_t(s), Q-\sum_{j\in N'}q^k_{j,t}(s), U_{i}-I_{i,t-1}(s)\}\}$
     \ENDIF
     \IF{$q'<q$}
         \STATE $q' \gets q$, $k'\gets k$
     \ENDIF
 \ENDFOR
 \RETURN $k',q'$
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+\begin{algorithm}[H]
+\captionsetup{labelformat=empty}
+\caption{\textbf{Adjust Delivery Quantities}($i$, $t$, $s$)}
+\label{alg:AdjustDeliveryQuantities}
+\begin{algorithmic}[1]
+\STATE update $I_{0,t'}(s)$ for all $t'\in T$ with $t'\geq t$ according to \eqref{initial I0 depot} and \eqref{Initial I1 depot}, and $S_{t'}(s)$ for all $t'\in T$ according to \eqref{supply slack}
+\STATE update $I_{i,t}(s)-\mu_{i,t}(s)$ according to \eqref{initial I0} if $t=1$, and \eqref{Initial I1} otherwise
+\FOR{$\tau\gets t+1$ \TO $|T|$}
+    \IF{customer $i$ is visited by a vehicle $k$ at time period $\tau$}
+        \STATE $q^k_{i,\tau}(s)\gets\min\{q^k_{i,\tau}(s)+\min\{S_\tau(s), Q-\sum_{j\in N'}q^k_{j,\tau}(s)\},$
+        \STATE \hspace{9em} $U_i-(I_{i,\tau-1}(s)-\mu_{i,\tau-1}(s))\}$
+        \STATE update $I_{0,t'}(s)$ for all $t'\in T$ with $t'\geq \tau$ according to \eqref{initial I0 depot} and \eqref{Initial I1 depot}, and $S_{t'}(s)$ for all $t'\in T$ according to \eqref{supply slack}
+    \ENDIF
+    \STATE update $I_{i,\tau}(s)-\mu_{i,\tau}(s)$ according to \eqref{Initial I1}
+\ENDFOR
 \end{algorithmic}
 \end{algorithm}
 

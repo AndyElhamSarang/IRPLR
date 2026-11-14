@@ -20,6 +20,12 @@ Alvarez, A., Munari, P., and Morabito, R. (2018).
 \newblock {\em International Transactions in Operational Research},
   25(6):1785--1809.
 
+\bibitem[Andr{\'e} et~al., 2020]{andre2020roadef}
+Andr{\'e}, J., Bourreau, E., and W{\"o}lfler~Calvo, R. (2020).
+\newblock Introduction to the special section: {ROADEF/EURO} challenge
+  2016---inventory routing problem.
+\newblock {\em Transportation Science}, 54:299--301.
+
 \bibitem[Archetti et~al., 2012]{archetti2012hybrid}
 Archetti, C., Bertazzi, L., Hertz, A., and Speranza, M.~G. (2012).
 \newblock A hybrid heuristic for an inventory routing problem.
@@ -31,17 +37,17 @@ Archetti, C., Bertazzi, L., Laporte, G., and Speranza, M.~G. (2007).
   problem.
 \newblock {\em Transportation Science}, 41(3):382--391.
 
+\bibitem[Archetti et~al., 2017a]{archetti2017matheuristic}
+Archetti, C., Boland, N., and Grazia~Speranza, M. (2017a).
+\newblock A matheuristic for the multivehicle inventory routing problem.
+\newblock {\em INFORMS Journal on Computing}, 29(3):377--387.
+
 \bibitem[Archetti et~al., 2019]{archetti2019exact}
 Archetti, C., Coelho, L.~C., and Speranza, M.~G. (2019).
 \newblock An exact algorithm for the inventory routing problem with logistic
   ratio.
 \newblock {\em Transportation Research Part E: Logistics and Transportation
   Review}.
-
-\bibitem[Archetti et~al., 2017a]{archetti2017minimizing}
-Archetti, C., Desaulniers, G., and Speranza, M.~G. (2017a).
-\newblock Minimizing the logistic ratio in the inventory routing problem.
-\newblock {\em EURO Journal on Transportation and Logistics}, 6(4):289--306.
 
 \bibitem[Archetti et~al., 2017b]{archetti2017logistic}
 Archetti, C., Desaulniers, G., and Speranza, M.~G. (2017b).
@@ -59,6 +65,18 @@ Baldacci, R., Lim, A., Traversi, E., and W{\"o}lfler~Calvo, R. (2020).
 \newblock Optimal solution of vehicle routing problems with fractional
   objective function.
 \newblock {\em Transportation Science}, 54:434--452.
+
+\bibitem[Bell et~al., 1983]{bell1983improving}
+Bell, W.~J., Dalberto, L.~M., Fisher, M.~L., Greenfield, A.~J., Jaikumar, R.,
+  Kedia, P., Mack, R.~G., and Prutzman, P.~J. (1983).
+\newblock Improving the distribution of industrial gases with an on-line
+  computerized routing and scheduling optimizer.
+\newblock {\em Interfaces}, 13(6):4--23.
+
+\bibitem[Benoist et~al., 2011]{benoist2011randomized}
+Benoist, T., Gardi, F., Jeanjean, A., and Estellon, B. (2011).
+\newblock Randomized local search for real-life inventory routing.
+\newblock {\em Transportation Science}, 45(3):381--398.
 
 \bibitem[Bertazzi and Speranza, 2012]{bertazzi2012inventory}
 Bertazzi, L. and Speranza, M.~G. (2012).
@@ -81,6 +99,13 @@ Coelho, L.~C., Cordeau, J.-F., and Laporte, G. (2014).
 \newblock Thirty years of inventory routing.
 \newblock {\em Transportation science}, 48(1):1--19.
 
+\bibitem[Coelho et~al., 2020]{coelho2020variable}
+Coelho, L.~C., De~Maio, A., and Lagan{\`a}, D. (2020).
+\newblock A variable mip neighborhood descent for the multi-attribute inventory
+  routing problem.
+\newblock {\em Transportation Research Part E: Logistics and Transportation
+  Review}, 144:102137.
+
 \bibitem[Coelho and Laporte, 2013]{coelho2013branch}
 Coelho, L.~C. and Laporte, G. (2013).
 \newblock A branch-and-cut algorithm for the multi-product multi-vehicle
@@ -97,6 +122,12 @@ Desaulniers, G., Rakke, J.~G., and Coelho, L.~C. (2016).
 Dinkelbach, W. (1967).
 \newblock On nonlinear fractional programming.
 \newblock {\em Management Science}, 13(7):492--498.
+
+\bibitem[Ek{\c{s}}i et~al., 2026]{ekcsi2026inventory}
+Ek{\c{s}}i, A., Elyasi, M., Minner, S., Van~Woensel, T., {\"O}zener, O.~{\"O}.,
+  and Ekici, A. (2026).
+\newblock Inventory-routing problems: Review, challenges, and innovations.
+\newblock {\em European Journal of Operational Research}.
 
 \bibitem[Elshaer and Awad, 2020]{elshaer2020taxonomic}
 Elshaer, R. and Awad, H. (2020).
@@ -145,11 +176,23 @@ Laporte, G., Gendreau, M., Potvin, J.~Y., and Semet, F. (2000).
 \newblock {\em International Transactions in Operational Research},
   7(4-5):285--300.
 
+\bibitem[L{\'o}pez-Ib{\'a}{\~n}ez et~al., 2016]{lopez2016irace}
+L{\'o}pez-Ib{\'a}{\~n}ez, M., Dubois-Lacoste, J., C{\'a}ceres, L.~P.,
+  Birattari, M., and St{\"u}tzle, T. (2016).
+\newblock The irace package: Iterated racing for automatic algorithm
+  configuration.
+\newblock {\em Operations Research Perspectives}, 3:43--58.
+
 \bibitem[Man et~al., 2025]{man2025logistics}
 Man, X., Chang, D., Peng, Z., and Han, W. (2025).
 \newblock A logistics ratio-optimised inventory routing problem with lateral
   transhipment using mixed-integer robust fractional programming.
 \newblock {\em International Journal of Production Research}, 63:10381--10412.
+
+\bibitem[Moin and Salhi, 2007]{moin2007overview}
+Moin, N.~H. and Salhi, S. (2007).
+\newblock Inventory routing problems: A logistical overview.
+\newblock {\em Journal of the Operational Research Society}, 58:1185--1194.
 
 \bibitem[Santos et~al., 2016]{santos2016hybrid}
 Santos, E., Ochi, L.~S., Simonetti, L., and Gonz{\'a}lez, P.~H. (2016).
@@ -157,10 +200,29 @@ Santos, E., Ochi, L.~S., Simonetti, L., and Gonz{\'a}lez, P.~H. (2016).
   inventory routing problem.
 \newblock {\em Electronic Notes in Discrete Mathematics}, 52:197--204.
 
+\bibitem[Sk{\aa}lnes et~al., 2023]{skaalnes2023branch}
+Sk{\aa}lnes, J., Vadseth, S.~T., Andersson, H., and St{\aa}lhane, M. (2023).
+\newblock A branch-and-cut embedded matheuristic for the inventory routing
+  problem.
+\newblock {\em Computers \& Operations Research}, 159:106353.
+
+\bibitem[Sofianopoulou and Mitsopoulos, 2021]{sofianopoulou2021review}
+Sofianopoulou, S. and Mitsopoulos, I. (2021).
+\newblock A review and classification of heuristic algorithms for the inventory
+  routing problem.
+\newblock {\em International Journal of Operational Research}.
+
 \bibitem[Su et~al., 2020]{su2020matheuristic}
 Su, Z., L{\"u}, Z., Wang, Z., Qi, Y., and Benlic, U. (2020).
 \newblock A matheuristic algorithm for the inventory routing problem.
 \newblock {\em Transportation Science}, 54(2):330--354.
+
+\bibitem[Vadseth et~al., 2023]{vadseth2023multi}
+Vadseth, S.~T., Andersson, H., St{\aa}lhane, M., and Chitsaz, M. (2023).
+\newblock A multi-start route improving matheuristic for the production
+  routeing problem.
+\newblock {\em International Journal of Production Research},
+  61(22):7608--7629.
 
 \bibitem[Vidal, 2022]{vidal2022hybrid}
 Vidal, T. (2022).
