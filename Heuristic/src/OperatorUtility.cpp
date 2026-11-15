@@ -160,10 +160,15 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
     if (previous_inventory_level + DeliveryQuantity[day] > IRPLR.Retailers[customer_index].InventoryMax)
     {
         // cout<<"& "<<previous_inventory_level<<","<<DeliveryQuantity[day]<<","<<IRPLR.Retailers[customer_index].InventoryMax<<endl;
-        DeliveryQuantity[day] = DeliveryQuantity[day] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        ChangeInTotalQuantity = ChangeInTotalQuantity - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        VehicleLoad[day][vehicle] = VehicleLoad[day][vehicle] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        CurrentInventoryLevel = CurrentInventoryLevel - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
+        // Repair a delivery that exceeds the inventory cap. Callers are expected to pass feasible deliveries
+        // (capped by DeliveryMax), so this should not normally run. Compute the excess once, before
+        // DeliveryQuantity[day] is trimmed, and remove it from every quantity that depends on the delivery.
+        double excess = previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax;
+        assert(excess <= DeliveryQuantity[day] + 0.00001 && "Inventory before delivery already exceeds InventoryMax; trimming would make the delivery negative");
+        DeliveryQuantity[day] -= excess;
+        ChangeInTotalQuantity -= excess;
+        VehicleLoad[day][vehicle] -= excess;
+        CurrentInventoryLevel -= excess;
     }
     if (VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity > 0.00001)
     {
@@ -455,10 +460,15 @@ void solution_improvement::AdjustQuantityAndInventoryLevelAllowingCapacityViolat
     if (previous_inventory_level + DeliveryQuantity[day] > IRPLR.Retailers[customer_index].InventoryMax)
     {
         // cout<<"& "<<previous_inventory_level<<","<<DeliveryQuantity[day]<<","<<IRPLR.Retailers[customer_index].InventoryMax<<endl;
-        DeliveryQuantity[day] = DeliveryQuantity[day] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        ChangeInTotalQuantity = ChangeInTotalQuantity - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        VehicleLoad[day][vehicle] = VehicleLoad[day][vehicle] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        CurrentInventoryLevel = CurrentInventoryLevel - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
+        // Repair a delivery that exceeds the inventory cap. Callers are expected to pass feasible deliveries
+        // (capped by DeliveryMax), so this should not normally run. Compute the excess once, before
+        // DeliveryQuantity[day] is trimmed, and remove it from every quantity that depends on the delivery.
+        double excess = previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax;
+        assert(excess <= DeliveryQuantity[day] + 0.00001 && "Inventory before delivery already exceeds InventoryMax; trimming would make the delivery negative");
+        DeliveryQuantity[day] -= excess;
+        ChangeInTotalQuantity -= excess;
+        VehicleLoad[day][vehicle] -= excess;
+        CurrentInventoryLevel -= excess;
     }
     if (VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity > 0.00001)
     {
