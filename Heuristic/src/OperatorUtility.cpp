@@ -86,7 +86,6 @@ double solution_improvement::DeliverDemand(double &InventoryMax, double &Custome
     // cout<<"VehicleCapacity: "<<VehicleCapacity<<", VehicleLoad: "<<VehicleLoad<<", InventoryMax: "<<InventoryMax<<", CustomerDemand: "<<CustomerDemand<<", PreviousInventoryLevel: "<<PreviousInventoryLevel<<endl;
     double QuantityDemand = min(CustomerDemand, InventoryMax - PreviousInventoryLevel);
     return max(0.0, QuantityDemand);
-    
 }
 
 double solution_improvement::Calculate_la_relax_objv(double &logistic_ratio, double &stockout_penalty, double &stockout, double &more_than_capacity_penalty, double &violation_more_than_capacity)
@@ -105,7 +104,7 @@ void solution_improvement::InitialiseUpdateLagrangianMultipler(solution &IRPSolu
     assert(PenaltyMoreThanCapacity >= 0);
     assert(ScalarLagrangianRelaxation > 0);
 
-    cout << "PreviousPenaltyForStockOut: " << PenaltyForStockOut << ", PreviousPenaltyMoreThanCapacity: " << PenaltyMoreThanCapacity  << endl;
+    cout << "PreviousPenaltyForStockOut: " << PenaltyForStockOut << ", PreviousPenaltyMoreThanCapacity: " << PenaltyMoreThanCapacity << endl;
     double norm_2 = IRPSolution.ViolationStockOut * IRPSolution.ViolationStockOut + IRPSolution.ViolationMoreThanCapacity * IRPSolution.ViolationMoreThanCapacity;
     double objv_LR = Calculate_la_relax_objv(IRPSolution.LogisticRatio, PenaltyForStockOut, IRPSolution.ViolationStockOut, PenaltyMoreThanCapacity, IRPSolution.ViolationMoreThanCapacity);
     double tau = 0;
@@ -132,7 +131,7 @@ void solution_improvement::InitialiseUpdateLagrangianMultipler(solution &IRPSolu
     // }
     cout << "ScalarLagrangianRelaxation: " << ScalarLagrangianRelaxation << ", norm_2: " << norm_2 << ", temp_global_best_logistic_ratio: " << temp_global_best_logistic_ratio << ", objv_LR: " << objv_LR << ",temp_global_best_logistic_ratio - objv_LR: " << temp_global_best_logistic_ratio - objv_LR << ", tau: " << tau << endl;
     cout << "ViolationStockOut: " << IRPSolution.ViolationStockOut << ", (IRPSolution.ViolationStockOut + 0.00001) * tau: " << (IRPSolution.ViolationStockOut + 0.00001) * tau << ", NewPenaltyForStockOut: " << PenaltyForStockOut << endl;
-    cout << "ViolationMoreThanCapacity: " << IRPSolution.ViolationMoreThanCapacity << ", (IRPSolution.ViolationMoreThanCapacity + 0.00001) * tau: " << (IRPSolution.ViolationMoreThanCapacity + 0.00001) * tau << ", NewPenaltyMoreThanCapacity: " << PenaltyMoreThanCapacity  << endl;
+    cout << "ViolationMoreThanCapacity: " << IRPSolution.ViolationMoreThanCapacity << ", (IRPSolution.ViolationMoreThanCapacity + 0.00001) * tau: " << (IRPSolution.ViolationMoreThanCapacity + 0.00001) * tau << ", NewPenaltyMoreThanCapacity: " << PenaltyMoreThanCapacity << endl;
     cout << "true_local: " << true_local << endl;
 }
 void solution_improvement::AdjustQuantityAndInventoryLevel(
@@ -160,10 +159,15 @@ void solution_improvement::AdjustQuantityAndInventoryLevel(
     if (previous_inventory_level + DeliveryQuantity[day] > IRPLR.Retailers[customer_index].InventoryMax)
     {
         // cout<<"& "<<previous_inventory_level<<","<<DeliveryQuantity[day]<<","<<IRPLR.Retailers[customer_index].InventoryMax<<endl;
-        DeliveryQuantity[day] = DeliveryQuantity[day] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        ChangeInTotalQuantity = ChangeInTotalQuantity - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        VehicleLoad[day][vehicle] = VehicleLoad[day][vehicle] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        CurrentInventoryLevel = CurrentInventoryLevel - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
+        // Repair a delivery that exceeds the inventory cap. Callers are expected to pass feasible deliveries
+        // (capped by DeliveryMax), so this should not normally run. Compute the excess once, before
+        // DeliveryQuantity[day] is trimmed, and remove it from every quantity that depends on the delivery.
+        double excess = previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax;
+        assert(excess <= DeliveryQuantity[day] + 0.00001 && "Inventory before delivery already exceeds InventoryMax; trimming would make the delivery negative");
+        DeliveryQuantity[day] -= excess;
+        ChangeInTotalQuantity -= excess;
+        VehicleLoad[day][vehicle] -= excess;
+        CurrentInventoryLevel -= excess;
     }
     if (VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity > 0.00001)
     {
@@ -455,10 +459,15 @@ void solution_improvement::AdjustQuantityAndInventoryLevelAllowingCapacityViolat
     if (previous_inventory_level + DeliveryQuantity[day] > IRPLR.Retailers[customer_index].InventoryMax)
     {
         // cout<<"& "<<previous_inventory_level<<","<<DeliveryQuantity[day]<<","<<IRPLR.Retailers[customer_index].InventoryMax<<endl;
-        DeliveryQuantity[day] = DeliveryQuantity[day] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        ChangeInTotalQuantity = ChangeInTotalQuantity - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        VehicleLoad[day][vehicle] = VehicleLoad[day][vehicle] - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
-        CurrentInventoryLevel = CurrentInventoryLevel - (previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax);
+        // Repair a delivery that exceeds the inventory cap. Callers are expected to pass feasible deliveries
+        // (capped by DeliveryMax), so this should not normally run. Compute the excess once, before
+        // DeliveryQuantity[day] is trimmed, and remove it from every quantity that depends on the delivery.
+        double excess = previous_inventory_level + DeliveryQuantity[day] - IRPLR.Retailers[customer_index].InventoryMax;
+        assert(excess <= DeliveryQuantity[day] + 0.00001 && "Inventory before delivery already exceeds InventoryMax; trimming would make the delivery negative");
+        DeliveryQuantity[day] -= excess;
+        ChangeInTotalQuantity -= excess;
+        VehicleLoad[day][vehicle] -= excess;
+        CurrentInventoryLevel -= excess;
     }
     if (VehicleLoad[day][vehicle] - IRPLR.Vehicle.capacity > 0.00001)
     {

@@ -1,7 +1,7 @@
 NumberOfExperiments | positive integer | runs per instance; must equal the number of seeds in Seed.txt
 5
 MainAlgorithmTimeLimit | seconds | Max_time (paper: 60)
-60
+30
 NumberOfInitialSolution | positive integer | Max_restart, number of starts (paper: 30)
 100
 InitialSolutionMethod | Initial_BlockZone_Schedule or ConstructAMMInitialSolution | constructive heuristic (Initial_BlockZone_Schedule = proposed, ConstructAMMInitialSolution = Alvarez et al. 2018)

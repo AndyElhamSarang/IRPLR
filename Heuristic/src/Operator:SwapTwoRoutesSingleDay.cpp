@@ -609,7 +609,9 @@ int solution_improvement::OperatorSwapTwoRoutesOnSingleDay(input &IRPLR, solutio
             {
                 LocalRebalanceTrigger = true;
                 int WhileLoopCounter = 0;
-                int vehicle_max_length = IRPSolution.Route[move[0]][move[1]].size();
+                // A customer can be picked more than once (its removable quantity is recomputed after each
+                // removal), so allow more passes than the route length, same bound as the route-2 loop below.
+                int vehicle_max_length = 10*IRPSolution.Route[move[0]][move[1]].size();
                 while (QuantityToBeRemoved > 0)
                 {
                     // cout << "QuantityToBeRemoved: " << QuantityToBeRemoved << endl;
