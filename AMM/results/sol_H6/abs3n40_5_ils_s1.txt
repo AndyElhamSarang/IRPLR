@@ -1,0 +1,35 @@
+instance abs3n40_5
+routing_cost 11996
+quantity 12614
+logistic_ratio 0.9510068178
+total_cost 29233.35
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 853 load 687 : 28(11) 32(58) 27(26) 25(159) 8(156) 6(188) 37(30) 20(59)
+period 2 vehicle 2 cost 371 load 576 : 17(122) 29(114) 35(148) 11(192)
+period 2 vehicle 3 cost 485 load 596 : 38(130) 31(176) 12(126) 7(122) 10(42)
+period 2 vehicle 4 cost 531 load 685 : 21(102) 15(138) 18(37) 19(190) 26(44) 9(174)
+period 2 vehicle 5 cost 732 load 654 : 36(140) 40(58) 4(102) 23(68) 2(180) 16(106)
+period 3 vehicle 1 cost 1152 load 670 : 1(63) 28(22) 32(116) 27(52) 30(210) 13(42) 24(165)
+period 3 vehicle 2 cost 643 load 679 : 20(118) 34(78) 5(165) 3(186) 22(132)
+period 3 vehicle 3 cost 0 load 0 :
+period 3 vehicle 4 cost 480 load 643 : 14(162) 21(51) 39(198) 33(194) 35(38)
+period 3 vehicle 5 cost 0 load 0 :
+period 4 vehicle 1 cost 582 load 687 : 31(176) 8(156) 25(107) 12(126) 7(122)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 787 load 674 : 10(42) 38(130) 22(44) 36(140) 40(174) 4(102) 23(42)
+period 4 vehicle 4 cost 531 load 687 : 21(51) 15(138) 18(99) 19(190) 26(44) 9(165)
+period 4 vehicle 5 cost 489 load 687 : 17(122) 29(57) 33(198) 35(118) 11(192)
+period 5 vehicle 1 cost 1215 load 687 : 1(31.5) 28(22) 32(116) 27(52) 30(115.5) 13(28) 24(110) 33(98) 29(114)
+period 5 vehicle 2 cost 0 load 0 :
+period 5 vehicle 3 cost 752 load 687 : 22(44) 38(65) 3(124) 37(45) 6(282) 5(68) 20(59)
+period 5 vehicle 4 cost 564 load 687 : 21(51) 9(96) 16(159) 2(270) 4(51) 23(60)
+period 5 vehicle 5 cost 0 load 0 :
+period 6 vehicle 1 cost 350 load 584 : 7(122) 12(126) 31(176) 20(118) 10(42)
+period 6 vehicle 2 cost 362 load 679 : 17(122) 35(152) 11(192) 21(51) 14(162)
+period 6 vehicle 3 cost 0 load 0 :
+period 6 vehicle 4 cost 554 load 687 : 15(138) 39(198) 18(68) 19(190) 26(6) 9(87)
+period 6 vehicle 5 cost 563 load 678 : 5(97) 37(15) 6(94) 8(156) 25(238) 34(78)

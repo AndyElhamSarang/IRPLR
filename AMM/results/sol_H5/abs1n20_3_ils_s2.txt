@@ -1,0 +1,20 @@
+instance abs1n20_3
+routing_cost 7136
+quantity 4722
+logistic_ratio 1.511224058
+total_cost 13480.32
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 2 vehicle 1 cost 234 load 336 : 19(160) 18(176)
+period 2 vehicle 2 cost 1017 load 533 : 7(30) 10(92) 17(71) 11(51) 5(100) 14(72) 15(23) 13(94)
+period 2 vehicle 3 cost 1058 load 533 : 4(137.5) 2(118) 1(24) 8(110) 9(42) 6(29.5) 3(32) 12(40)
+period 3 vehicle 1 cost 957 load 533 : 13(47) 5(167) 14(144) 15(46) 6(65) 3(64)
+period 3 vehicle 2 cost 0 load 0 :
+period 3 vehicle 3 cost 901 load 533 : 4(150) 20(174) 16(129) 19(80)
+period 4 vehicle 1 cost 1058 load 533 : 4(108.5) 2(118) 1(24) 8(110) 9(42) 6(58.5) 3(32) 12(40)
+period 4 vehicle 2 cost 642 load 488 : 10(92) 17(213) 11(153) 7(30)
+period 4 vehicle 3 cost 0 load 0 :
+period 5 vehicle 1 cost 158 load 276 : 10(276)
+period 5 vehicle 2 cost 877 load 533 : 17(71) 5(178) 14(144) 15(46) 13(94)
+period 5 vehicle 3 cost 234 load 424 : 19(160) 18(264)

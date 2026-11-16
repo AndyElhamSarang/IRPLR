@@ -1,0 +1,35 @@
+instance abs3n35_5
+routing_cost 16415
+quantity 12277
+logistic_ratio 1.337053026
+total_cost 32992.15
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 0 load 0 :
+period 2 vehicle 2 cost 798 load 647 : 24(96) 23(61) 27(61) 5(94) 32(126) 30(42) 20(167)
+period 2 vehicle 3 cost 938 load 647 : 17(36) 9(106) 3(176) 35(138) 18(75) 13(116)
+period 2 vehicle 4 cost 789 load 634 : 19(24) 26(188) 34(108) 12(82) 33(28) 4(130) 25(74)
+period 2 vehicle 5 cost 1062 load 647 : 15(36) 2(110) 16(98) 8(115) 6(126) 22(162)
+period 3 vehicle 1 cost 1124 load 647 : 21(42) 1(155) 28(232) 12(164) 34(54)
+period 3 vehicle 2 cost 0 load 0 :
+period 3 vehicle 3 cost 635 load 647 : 31(288) 24(48) 23(6) 27(122) 10(183)
+period 3 vehicle 4 cost 1186 load 647 : 17(72) 9(96) 2(50) 16(49) 8(66) 11(267) 5(47)
+period 3 vehicle 5 cost 529 load 647 : 7(245) 29(198) 14(204)
+period 4 vehicle 1 cost 879 load 647 : 18(209) 13(58) 9(185) 15(36) 20(159)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 0 load 0 :
+period 4 vehicle 4 cost 725 load 646 : 19(48) 7(91) 29(87) 26(188) 33(28) 4(130) 25(74)
+period 4 vehicle 5 cost 962 load 647 : 22(162) 6(242) 8(138) 32(63) 30(42)
+period 5 vehicle 1 cost 1151 load 647 : 34(54) 12(90) 28(158) 1(147) 5(94) 23(56) 24(48)
+period 5 vehicle 2 cost 1197 load 647 : 32(88) 11(178) 8(81) 6(92) 16(98) 2(110)
+period 5 vehicle 3 cost 826 load 647 : 17(36) 9(102) 3(186) 35(207) 13(116)
+period 5 vehicle 4 cost 0 load 0 :
+period 5 vehicle 5 cost 0 load 0 :
+period 6 vehicle 1 cost 495 load 647 : 31(288) 10(183) 20(176)
+period 6 vehicle 2 cost 955 load 647 : 13(58) 18(142) 35(69) 3(166) 15(36) 9(104) 17(72)
+period 6 vehicle 3 cost 784 load 647 : 26(188) 34(72) 12(155) 33(28) 4(130) 25(74)
+period 6 vehicle 4 cost 530 load 645 : 19(36) 7(168) 29(237) 14(204)
+period 6 vehicle 5 cost 850 load 647 : 24(88) 21(42) 23(71) 27(183) 32(101) 22(162)

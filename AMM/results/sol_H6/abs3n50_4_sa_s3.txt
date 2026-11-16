@@ -1,0 +1,29 @@
+instance abs3n50_4
+routing_cost 14241
+quantity 14643
+logistic_ratio 0.9725466093
+total_cost 32822.33
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 1294 load 963 : 22(12) 17(77) 49(83) 7(72) 45(108) 48(28) 12(22) 39(54) 10(34) 38(24) 8(56) 40(190) 18(90) 50(61) 11(52)
+period 2 vehicle 2 cost 804 load 952 : 46(22) 9(180) 31(142) 35(98) 15(122) 1(104) 19(192) 44(92)
+period 2 vehicle 3 cost 1284 load 932 : 47(12) 28(38) 33(88) 29(50) 16(124) 21(140) 37(54) 24(196) 6(74) 25(54) 23(102)
+period 2 vehicle 4 cost 212 load 404 : 30(110) 42(194) 2(100)
+period 3 vehicle 1 cost 1162 load 970 : 36(100) 28(76) 27(146) 32(102) 14(96) 48(56) 34(104) 7(36) 5(76) 17(154) 22(24)
+period 3 vehicle 2 cost 656 load 969 : 41(82) 26(291) 47(24) 18(180) 49(166) 50(122) 11(104)
+period 3 vehicle 3 cost 905 load 903 : 44(184) 20(92) 3(120) 4(112) 25(108) 43(137) 19(96) 13(54)
+period 3 vehicle 4 cost 0 load 0 :
+period 4 vehicle 1 cost 0 load 0 :
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 1607 load 977 : 46(11) 33(88) 14(32) 45(108) 38(24) 10(34) 21(140) 24(196) 6(74) 4(112) 25(54) 1(104)
+period 4 vehicle 4 cost 642 load 937 : 2(100) 36(100) 47(12) 40(190) 35(98) 31(71) 41(82) 9(90) 42(194)
+period 5 vehicle 1 cost 693 load 973 : 11(104) 50(61) 49(166) 18(90) 32(153) 27(219) 9(180)
+period 5 vehicle 2 cost 598 load 940 : 30(165) 13(81) 19(192) 3(180) 20(138) 44(184)
+period 5 vehicle 3 cost 1277 load 958 : 28(38) 8(84) 29(75) 10(17) 39(81) 12(33) 48(56) 45(54) 34(156) 7(72) 5(114) 17(154) 22(24)
+period 5 vehicle 4 cost 993 load 979 : 46(22) 31(142) 15(183) 16(186) 21(70) 37(81) 43(142) 23(153)
+period 6 vehicle 1 cost 963 load 979 : 31(71) 35(98) 1(104) 23(51) 43(105) 25(108) 4(112) 3(60) 19(96) 13(27) 44(92) 30(55)
+period 6 vehicle 2 cost 0 load 0 :
+period 6 vehicle 3 cost 742 load 939 : 11(52) 50(122) 49(83) 18(180) 40(190) 33(88) 32(51) 27(73) 28(76) 47(24)
+period 6 vehicle 4 cost 409 load 868 : 42(194) 26(291) 41(82) 9(90) 46(11) 36(100) 2(100)

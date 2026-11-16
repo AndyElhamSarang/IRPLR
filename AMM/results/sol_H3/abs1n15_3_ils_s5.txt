@@ -1,0 +1,14 @@
+instance abs1n15_3
+routing_cost 2758
+quantity 2040
+logistic_ratio 1.351960784
+total_cost 5653.2
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 2 vehicle 1 cost 762 load 413 : 1(64) 14(130) 10(72) 4(104) 11(43)
+period 2 vehicle 2 cost 273 load 413 : 8(158) 5(85) 7(170)
+period 2 vehicle 3 cost 1105 load 412 : 9(44) 6(20) 15(146) 13(110) 12(92)
+period 3 vehicle 1 cost 411 load 413 : 8(79) 3(273) 2(61)
+period 3 vehicle 2 cost 0 load 0 :
+period 3 vehicle 3 cost 207 load 389 : 5(143) 11(161) 7(85)

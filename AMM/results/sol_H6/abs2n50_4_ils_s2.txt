@@ -1,0 +1,29 @@
+instance abs2n50_4
+routing_cost 15985
+quantity 14597
+logistic_ratio 1.095088032
+total_cost 34341.74
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 556 load 850 : 7(114) 9(126) 44(128) 25(78) 33(184) 24(198) 47(22)
+period 2 vehicle 2 cost 1380 load 982 : 3(26) 21(111) 40(37) 20(68) 29(145) 10(88) 4(140) 39(42) 43(32) 23(134) 48(52) 12(22) 50(44) 22(41)
+period 2 vehicle 3 cost 993 load 981 : 19(74) 45(78) 49(88) 8(164) 46(11) 2(134) 30(10) 14(170) 15(88) 27(164)
+period 2 vehicle 4 cost 1141 load 982 : 42(184) 26(38) 31(160) 28(178) 38(82) 41(30) 34(76) 37(160) 13(3) 11(38) 18(33)
+period 3 vehicle 1 cost 873 load 982 : 5(178) 32(111) 36(146) 42(110) 22(82) 1(193) 17(162)
+period 3 vehicle 2 cost 1522 load 982 : 40(74) 16(74) 48(104) 12(11) 50(88) 26(76) 6(174) 35(108) 41(60) 13(60) 11(76) 25(11) 18(66)
+period 3 vehicle 3 cost 0 load 0 :
+period 3 vehicle 4 cost 0 load 0 :
+period 4 vehicle 1 cost 0 load 0 :
+period 4 vehicle 2 cost 1327 load 982 : 19(74) 45(39) 49(148) 30(30) 46(33) 20(47) 29(161) 4(140) 10(88) 16(222)
+period 4 vehicle 3 cost 1011 load 982 : 47(22) 24(198) 17(36) 3(26) 21(209) 8(164) 2(134) 14(23) 15(88) 27(82)
+period 4 vehicle 4 cost 1137 load 982 : 7(114) 9(126) 37(96) 28(178) 31(160) 26(38) 42(86) 33(184)
+period 5 vehicle 1 cost 965 load 982 : 27(164) 14(232) 45(78) 1(144) 5(267) 25(31) 18(66)
+period 5 vehicle 2 cost 1376 load 982 : 19(37) 40(74) 20(55) 29(94) 10(44) 4(70) 39(63) 43(48) 23(201) 48(104) 12(22) 50(88) 22(82)
+period 5 vehicle 3 cost 0 load 0 :
+period 5 vehicle 4 cost 1097 load 982 : 42(110) 36(184) 38(123) 35(72) 41(60) 34(114) 37(149) 13(42) 11(64) 44(64)
+period 6 vehicle 1 cost 1036 load 982 : 5(89) 42(98) 26(72) 31(160) 6(174) 28(178) 36(54) 32(107) 11(50)
+period 6 vehicle 2 cost 995 load 982 : 27(82) 15(88) 14(85) 49(118) 2(134) 8(164) 21(160) 3(26) 17(125)
+period 6 vehicle 3 cost 0 load 0 :
+period 6 vehicle 4 cost 576 load 982 : 47(22) 24(198) 33(184) 25(113) 44(192) 18(33) 9(126) 7(114)

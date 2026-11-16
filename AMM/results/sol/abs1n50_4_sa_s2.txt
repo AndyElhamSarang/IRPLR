@@ -1,0 +1,29 @@
+instance abs1n50_4
+routing_cost 16383
+quantity 14814
+logistic_ratio 1.105913325
+total_cost 35790.38
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 491 load 685 : 33(102) 36(166) 31(180) 26(138) 42(99)
+period 2 vehicle 2 cost 961 load 891 : 19(136) 49(68) 37(90) 50(54) 27(182) 15(54) 23(83) 22(140) 25(48) 9(36)
+period 2 vehicle 3 cost 1259 load 985 : 7(78) 11(48) 34(48) 38(140) 32(46) 1(168) 3(112) 40(68) 46(10) 2(166) 30(55) 35(46)
+period 2 vehicle 4 cost 1426 load 970 : 45(48) 48(152) 39(30) 10(144) 29(45) 6(158) 12(20) 16(174) 5(98) 17(64) 44(37)
+period 3 vehicle 1 cost 1111 load 946 : 45(24) 14(125) 30(110) 46(20) 40(136) 29(90) 13(30) 44(74) 24(297) 41(40)
+period 3 vehicle 2 cost 1017 load 930 : 9(72) 21(270) 20(44) 4(170) 43(116) 23(166) 8(92)
+period 3 vehicle 3 cost 0 load 0 :
+period 3 vehicle 4 cost 570 load 710 : 47(21) 42(198) 28(147) 7(156) 18(188)
+period 4 vehicle 1 cost 1356 load 985 : 2(166) 46(10) 40(68) 48(152) 39(30) 10(144) 6(158) 12(20) 5(98) 17(32) 24(61) 35(46)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 1010 load 984 : 33(102) 36(166) 11(24) 34(48) 32(46) 1(168) 3(112) 31(180) 26(138)
+period 4 vehicle 4 cost 1018 load 827 : 9(36) 25(48) 21(90) 20(44) 4(170) 43(116) 23(83) 22(70) 49(34) 19(136)
+period 5 vehicle 1 cost 1529 load 985 : 35(23) 17(64) 5(49) 16(261) 12(10) 6(66) 29(45) 38(210) 34(24) 11(48) 7(156) 47(29)
+period 5 vehicle 2 cost 975 load 985 : 14(110) 24(137) 44(74) 13(45) 30(110) 2(80) 45(48) 42(198) 33(41) 18(142)
+period 5 vehicle 3 cost 0 load 0 :
+period 5 vehicle 4 cost 952 load 976 : 41(60) 50(81) 27(273) 15(81) 22(140) 37(135) 8(138) 49(68)
+period 6 vehicle 1 cost 0 load 0 :
+period 6 vehicle 2 cost 1126 load 985 : 14(47) 2(86) 46(20) 40(136) 29(90) 10(144) 39(30) 48(152) 1(168) 3(112)
+period 6 vehicle 3 cost 1027 load 985 : 9(72) 25(48) 21(180) 20(44) 4(170) 43(116) 23(166) 22(70) 37(45) 8(46) 49(28)
+period 6 vehicle 4 cost 555 load 985 : 18(66) 33(53) 36(166) 28(147) 31(180) 26(138) 42(99) 19(136)

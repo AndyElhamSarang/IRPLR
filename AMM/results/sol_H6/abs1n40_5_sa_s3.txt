@@ -1,0 +1,35 @@
+instance abs1n40_5
+routing_cost 15155
+quantity 11410
+logistic_ratio 1.328220859
+total_cost 31743.58
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 1300 load 637 : 22(81) 1(43) 20(112) 27(30) 38(176) 12(114) 21(23) 39(58)
+period 2 vehicle 2 cost 915 load 641 : 32(56) 8(92) 5(110) 26(148) 17(57) 11(68) 24(110)
+period 2 vehicle 3 cost 200 load 236 : 40(56) 36(180)
+period 2 vehicle 4 cost 759 load 629 : 33(39) 29(50) 23(36) 16(108) 19(76) 34(90) 4(166) 35(64)
+period 2 vehicle 5 cost 0 load 0 :
+period 3 vehicle 1 cost 879 load 531 : 22(87) 2(72) 31(132) 6(76) 1(86) 33(78)
+period 3 vehicle 2 cost 417 load 647 : 32(112) 3(174) 25(155) 8(184) 37(22)
+period 3 vehicle 3 cost 1066 load 647 : 11(136) 17(114) 13(123) 30(120) 15(118) 18(36)
+period 3 vehicle 4 cost 520 load 559 : 14(252) 9(195) 40(112)
+period 3 vehicle 5 cost 1179 load 644 : 5(55) 10(146) 39(116) 7(261) 21(46) 28(20)
+period 4 vehicle 1 cost 0 load 0 :
+period 4 vehicle 2 cost 200 load 236 : 36(180) 40(56)
+period 4 vehicle 3 cost 0 load 0 :
+period 4 vehicle 4 cost 1217 load 571 : 29(50) 16(108) 19(38) 27(30) 20(56) 6(76) 31(132) 22(81)
+period 4 vehicle 5 cost 457 load 647 : 35(64) 8(92) 25(95) 4(166) 3(174) 32(56)
+period 5 vehicle 1 cost 1141 load 647 : 27(15) 38(264) 12(171) 7(167) 28(30)
+period 5 vehicle 2 cost 918 load 647 : 22(156) 2(108) 1(86) 20(112) 23(54) 16(53) 33(78)
+period 5 vehicle 3 cost 858 load 647 : 26(222) 15(177) 10(219) 4(29)
+period 5 vehicle 4 cost 849 load 647 : 24(165) 11(136) 17(114) 5(110) 18(54) 37(33) 3(35)
+period 5 vehicle 5 cost 1126 load 635 : 34(135) 19(76) 21(46) 39(116) 30(180) 13(82)
+period 6 vehicle 1 cost 0 load 0 :
+period 6 vehicle 2 cost 0 load 0 :
+period 6 vehicle 3 cost 537 load 647 : 29(50) 4(137) 25(134) 8(184) 37(11) 3(131)
+period 6 vehicle 4 cost 417 load 623 : 32(112) 14(252) 9(195) 35(64)
+period 6 vehicle 5 cost 200 load 292 : 36(180) 40(112)

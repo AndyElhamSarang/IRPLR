@@ -1,0 +1,35 @@
+instance abs4n40_5
+routing_cost 13392
+quantity 9753
+logistic_ratio 1.373115964
+total_cost 25763.68
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 739 load 508.5 : 12(37.5) 15(29) 2(54) 19(68) 29(73) 33(74) 38(53) 36(120)
+period 2 vehicle 2 cost 0 load 0 :
+period 2 vehicle 3 cost 682 load 499 : 31(108) 35(196) 14(39) 20(24) 30(62) 37(34) 17(36)
+period 2 vehicle 4 cost 674 load 517 : 16(196) 13(92) 6(64) 39(50) 27(31) 23(84)
+period 2 vehicle 5 cost 910 load 518 : 4(37) 3(49) 10(85) 5(11) 40(28) 9(106) 25(89) 8(71) 18(42)
+period 3 vehicle 1 cost 715 load 514.5 : 15(58) 2(27) 32(42) 29(146) 11(97.5) 7(144)
+period 3 vehicle 2 cost 1041 load 517 : 20(21) 14(39) 24(21) 3(98) 5(22) 10(85) 21(83) 22(26) 28(33) 26(89)
+period 3 vehicle 3 cost 0 load 0 :
+period 3 vehicle 4 cost 662 load 517 : 18(84) 8(142) 34(183) 1(108)
+period 3 vehicle 5 cost 0 load 0 :
+period 4 vehicle 1 cost 591 load 514.5 : 12(38.5) 19(68) 33(74) 38(106) 1(108) 36(120)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 320 load 518 : 4(103) 26(252.5) 11(162.5)
+period 4 vehicle 4 cost 692 load 491 : 31(108) 13(92) 6(64) 39(50) 27(93) 23(84)
+period 4 vehicle 5 cost 1184 load 518 : 8(47) 25(102) 40(14) 10(85) 21(110) 22(26) 24(19) 30(62) 37(17) 17(36)
+period 5 vehicle 1 cost 804 load 518 : 18(84) 34(122) 8(71) 25(54) 9(159) 40(28)
+period 5 vehicle 2 cost 761 load 518 : 15(58) 2(54) 32(28) 29(146) 33(37) 38(106) 36(60) 12(29)
+period 5 vehicle 3 cost 782 load 517 : 37(34) 30(31) 20(30) 14(97.5) 35(98) 16(226.5)
+period 5 vehicle 4 cost 756 load 517.5 : 26(0.5) 3(98) 5(22) 10(170) 21(127) 22(78) 28(22)
+period 5 vehicle 5 cost 0 load 0 :
+period 6 vehicle 1 cost 380 load 496.5 : 31(108) 14(58.5) 35(294) 17(36)
+period 6 vehicle 2 cost 0 load 0 :
+period 6 vehicle 3 cost 702 load 518 : 12(21) 15(29) 2(27) 19(68) 36(60) 1(108) 34(61) 8(95) 25(49)
+period 6 vehicle 4 cost 323 load 518 : 4(70) 26(174) 11(130) 7(144)
+period 6 vehicle 5 cost 674 load 517.5 : 23(84) 27(62) 39(50) 6(64) 13(92) 16(165.5)

@@ -1,0 +1,35 @@
+instance abs4n40_5
+routing_cost 13131
+quantity 9453
+logistic_ratio 1.389082831
+total_cost 25490.76
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 828 load 517 : 18(42) 36(120) 33(74) 29(73) 32(28) 19(68) 2(54) 15(58)
+period 2 vehicle 2 cost 342 load 510 : 12(42) 7(96) 11(130) 26(172) 4(70)
+period 2 vehicle 3 cost 852 load 518 : 35(196) 14(78) 20(30) 30(62) 37(34) 24(20) 3(98)
+period 2 vehicle 4 cost 682 load 384 : 17(18) 31(108) 13(92) 6(32) 39(50) 23(84)
+period 2 vehicle 5 cost 834 load 503 : 8(142) 25(49) 40(14) 5(11) 10(85) 21(128) 22(52) 28(22)
+period 3 vehicle 1 cost 0 load 0 :
+period 3 vehicle 2 cost 0 load 0 :
+period 3 vehicle 3 cost 873 load 509 : 10(170) 5(22) 40(28) 9(106) 34(183)
+period 3 vehicle 4 cost 769 load 508 : 29(146) 33(37) 38(133) 1(108) 18(84)
+period 3 vehicle 5 cost 685 load 502 : 23(42) 27(93) 39(25) 6(64) 13(46) 16(196) 17(36)
+period 4 vehicle 1 cost 782 load 515 : 15(58) 2(54) 19(68) 36(60) 9(106) 25(98) 8(71)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 680 load 423 : 31(54) 35(196) 14(78) 20(30) 30(31) 37(34)
+period 4 vehicle 4 cost 611 load 468 : 21(128) 3(98) 26(172) 4(70)
+period 4 vehicle 5 cost 0 load 0 :
+period 5 vehicle 1 cost 1171 load 518 : 40(28) 5(22) 10(170) 21(29) 22(78) 28(33) 3(49) 24(30) 30(62) 37(17)
+period 5 vehicle 2 cost 575 load 515 : 23(84) 6(64) 39(50) 27(62) 11(159) 7(96)
+period 5 vehicle 3 cost 487 load 518 : 17(36) 31(108) 13(92) 16(282)
+period 5 vehicle 4 cost 664 load 508 : 18(84) 8(142) 1(162) 36(120)
+period 5 vehicle 5 cost 763 load 518 : 12(63) 19(34) 38(132) 33(74) 29(146) 32(42) 2(27)
+period 6 vehicle 1 cost 662 load 515 : 36(60) 1(54) 34(183) 8(71) 25(147)
+period 6 vehicle 2 cost 509 load 486 : 16(110) 20(30) 14(78) 35(196) 31(54) 17(18)
+period 6 vehicle 3 cost 0 load 0 :
+period 6 vehicle 4 cost 0 load 0 :
+period 6 vehicle 5 cost 362 load 518 : 4(70) 26(172) 11(101) 7(96) 15(58) 12(21)

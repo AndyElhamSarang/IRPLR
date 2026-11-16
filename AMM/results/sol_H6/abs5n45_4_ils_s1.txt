@@ -1,0 +1,29 @@
+instance abs5n45_4
+routing_cost 10404
+quantity 14108
+logistic_ratio 0.7374539269
+total_cost 28110.45
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 582 load 669 : 1(110) 12(90) 29(106) 20(120) 35(95) 37(64) 18(84)
+period 2 vehicle 2 cost 425 load 892.25 : 9(135.5) 6(120) 40(117.75) 21(51) 27(168) 13(134) 25(146) 28(20)
+period 2 vehicle 3 cost 855 load 927 : 22(88) 30(102) 14(192) 5(94) 36(74) 41(50) 38(48) 43(38) 10(81) 45(147) 32(13)
+period 2 vehicle 4 cost 933 load 909.5 : 2(80) 39(66) 4(140) 15(62) 16(100) 34(34) 24(50) 44(105) 17(28.5) 11(30) 7(54) 31(160)
+period 3 vehicle 1 cost 614 load 802 : 26(255) 18(42) 37(32) 35(190) 8(22) 20(60) 29(53) 12(93) 1(55)
+period 3 vehicle 2 cost 697 load 864 : 19(222) 45(21) 10(81) 38(24) 3(171) 23(219) 41(100) 32(26)
+period 3 vehicle 3 cost 0 load 0 :
+period 3 vehicle 4 cost 397 load 516 : 42(132) 22(176) 9(91) 33(117)
+period 4 vehicle 1 cost 380 load 903.25 : 25(146) 13(134) 27(168) 21(153) 40(162.25) 6(120) 28(20)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 664 load 927 : 9(129.5) 14(192) 30(102) 5(135.5) 10(162) 43(38) 45(168)
+period 4 vehicle 4 cost 879 load 855.5 : 2(240) 39(33) 4(70) 15(62) 34(34) 24(50) 44(234) 17(28.5) 11(50) 7(54)
+period 5 vehicle 1 cost 582 load 829 : 18(84) 37(64) 35(190) 8(33) 20(120) 29(106) 12(122) 1(110)
+period 5 vehicle 2 cost 693 load 627 : 31(240) 16(150) 15(31) 4(140) 39(66)
+period 5 vehicle 3 cost 811 load 927 : 22(176) 5(181) 36(111) 41(100) 23(151) 3(134) 38(48) 32(26)
+period 5 vehicle 4 cost 0 load 0 :
+period 6 vehicle 1 cost 582 load 916.5 : 28(20) 33(117) 9(178) 14(192) 5(87.5) 30(102) 22(88) 42(132)
+period 6 vehicle 2 cost 552 load 867 : 26(255) 7(108) 11(40) 17(57) 44(243) 24(50) 34(34) 31(80)
+period 6 vehicle 3 cost 413 load 926 : 6(120) 40(140) 21(102) 27(168) 13(134) 25(146) 12(61) 1(55)
+period 6 vehicle 4 cost 345 load 750 : 19(222) 45(168) 10(162) 43(38) 2(160)

@@ -1,0 +1,29 @@
+instance abs6n50_4
+routing_cost 15774
+quantity 16378
+logistic_ratio 0.9631212602
+total_cost 36706.32
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 974 load 1102 : 16(48) 34(188) 42(190) 7(126) 17(108) 15(46) 22(30) 44(168) 25(198)
+period 2 vehicle 2 cost 302 load 519 : 33(78) 2(91) 20(164) 32(186)
+period 2 vehicle 3 cost 1295 load 1066 : 27(92) 30(22) 46(26) 47(28) 10(48) 28(67) 24(194) 39(90) 40(182) 43(58) 12(13) 18(81) 38(28) 19(92) 13(45)
+period 2 vehicle 4 cost 1295 load 1098 : 50(23) 49(134) 1(95) 35(89) 5(67) 9(160) 45(196) 41(144) 26(190)
+period 3 vehicle 1 cost 1195 load 1090 : 29(82) 6(128) 4(24) 28(134) 18(162) 12(26) 23(279) 14(165) 13(90)
+period 3 vehicle 2 cost 499 load 1070 : 11(282) 8(138) 3(42) 36(270) 2(182) 33(156)
+period 3 vehicle 3 cost 0 load 0 :
+period 3 vehicle 4 cost 1336 load 1084 : 37(88) 21(80) 5(134) 48(100) 31(84) 35(178) 1(190) 50(46) 19(184)
+period 4 vehicle 1 cost 401 load 498 : 25(198) 32(186) 30(22) 27(92)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 1120 load 1106 : 20(82) 29(82) 46(26) 6(128) 4(24) 28(67) 24(194) 39(90) 40(182) 10(48) 47(28) 36(64) 2(91)
+period 4 vehicle 4 cost 1256 load 1106 : 38(28) 18(81) 43(58) 23(75) 49(134) 26(190) 41(144) 9(160) 34(188) 16(48)
+period 5 vehicle 1 cost 0 load 0 :
+period 5 vehicle 2 cost 1339 load 1101 : 50(46) 49(67) 48(130) 31(126) 35(178) 1(190) 23(111) 12(26) 3(63) 20(164)
+period 5 vehicle 3 cost 1094 load 1032 : 13(90) 45(294) 5(134) 21(120) 37(132) 19(184) 33(78)
+period 5 vehicle 4 cost 832 load 1002 : 15(69) 42(285) 7(189) 17(162) 22(45) 44(252)
+period 6 vehicle 1 cost 110 load 186 : 32(186)
+period 6 vehicle 2 cost 1142 load 1106 : 3(21) 8(138) 38(28) 18(162) 12(5) 43(58) 40(182) 24(194) 28(134) 10(48) 47(28) 46(26) 29(82)
+period 6 vehicle 3 cost 1046 load 1106 : 44(84) 16(48) 34(188) 9(160) 45(82) 41(144) 26(190) 14(165) 13(45)
+period 6 vehicle 4 cost 538 load 1106 : 25(198) 11(282) 36(206) 20(82) 2(182) 33(156)

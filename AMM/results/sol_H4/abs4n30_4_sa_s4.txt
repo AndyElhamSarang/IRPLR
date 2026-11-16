@@ -1,0 +1,21 @@
+instance abs4n30_4
+routing_cost 7336
+quantity 5954
+logistic_ratio 1.232112865
+total_cost 14442.46
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 403 load 438 : 22(140) 1(32) 6(106) 7(34) 3(126)
+period 2 vehicle 2 cost 475 load 524 : 20(78) 4(31) 5(146) 16(128) 2(92) 27(49)
+period 2 vehicle 3 cost 1044 load 608 : 15(168) 30(158) 25(116) 8(22) 18(32) 12(99) 28(13)
+period 2 vehicle 4 cost 887 load 535 : 13(91) 29(99) 10(96) 19(186) 23(63)
+period 3 vehicle 1 cost 792 load 571 : 27(98) 12(198) 18(64) 28(26) 21(123) 4(62)
+period 3 vehicle 2 cost 672 load 595 : 26(60) 17(29) 13(182) 11(165) 14(159)
+period 3 vehicle 3 cost 881 load 608 : 24(51) 9(96) 25(58) 30(79) 23(126) 29(198)
+period 3 vehicle 4 cost 0 load 0 :
+period 4 vehicle 1 cost 213 load 281 : 1(32) 22(140) 4(31) 20(78)
+period 4 vehicle 2 cost 653 load 586 : 14(53) 17(87) 26(180) 7(34) 6(106) 3(126)
+period 4 vehicle 3 cost 844 load 609 : 29(99) 10(96) 19(185) 15(168) 23(61)
+period 4 vehicle 4 cost 472 load 599 : 5(146) 16(128) 2(276) 27(49)

@@ -1,0 +1,17 @@
+instance abs5n20_4
+routing_cost 6399
+quantity 3068
+logistic_ratio 2.085723598
+total_cost 10591.4
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 640 load 352 : 4(194) 2(158)
+period 2 vehicle 2 cost 793 load 372 : 19(92) 14(78) 8(118) 18(84)
+period 2 vehicle 3 cost 981 load 433 : 11(72) 20(142) 10(120) 6(99)
+period 2 vehicle 4 cost 1260 load 433 : 1(40) 12(128) 15(158) 7(39) 3(68)
+period 3 vehicle 1 cost 990 load 428 : 5(144) 8(59) 13(48) 18(42) 17(135)
+period 3 vehicle 2 cost 874 load 433 : 9(207) 10(60) 6(87) 2(79)
+period 3 vehicle 3 cost 184 load 184 : 19(184)
+period 3 vehicle 4 cost 677 load 433 : 4(97) 16(261) 14(75)

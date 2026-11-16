@@ -1,0 +1,29 @@
+instance abs2n45_4
+routing_cost 15927
+quantity 12558
+logistic_ratio 1.268275203
+total_cost 32214.76
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 0 load 0 :
+period 2 vehicle 2 cost 328 load 398 : 39(74) 18(152) 20(24) 14(80) 40(68)
+period 2 vehicle 3 cost 1211 load 805 : 24(16) 29(126) 15(54) 8(20) 2(38) 45(39) 17(26) 23(35) 28(164) 16(160) 36(74) 32(11) 33(42)
+period 2 vehicle 4 cost 1172 load 798 : 12(12) 4(104) 31(76) 7(40) 27(57) 10(40) 43(134) 38(66) 41(160) 13(68) 9(41)
+period 3 vehicle 1 cost 1135 load 807 : 33(21) 6(138) 32(22) 36(148) 16(80) 23(70) 17(13) 45(78) 2(76) 34(85) 11(76)
+period 3 vehicle 2 cost 851 load 806 : 14(160) 12(24) 4(52) 25(70) 13(136) 9(82) 37(108) 26(174)
+period 3 vehicle 3 cost 919 load 778 : 24(32) 5(150) 42(82) 15(108) 22(154) 1(164) 30(88)
+period 3 vehicle 4 cost 1307 load 800 : 27(114) 21(160) 19(51) 3(90) 44(297) 35(88)
+period 4 vehicle 1 cost 876 load 770 : 22(77) 15(54) 42(82) 5(150) 34(255) 8(10) 29(126) 24(16)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 1122 load 797 : 21(160) 43(134) 38(66) 41(160) 7(20) 31(76) 20(24) 18(152) 39(5)
+period 4 vehicle 4 cost 0 load 0 :
+period 5 vehicle 1 cost 1127 load 811 : 6(102) 32(22) 16(160) 28(246) 23(35) 17(26) 45(78) 2(38) 8(20) 11(84)
+period 5 vehicle 2 cost 415 load 494 : 30(132) 1(246) 33(42) 39(74)
+period 5 vehicle 3 cost 1309 load 811 : 27(114) 10(60) 43(65) 19(34) 3(60) 44(198) 35(132) 36(148)
+period 5 vehicle 4 cost 841 load 811 : 40(78) 14(80) 12(24) 4(104) 25(105) 7(40) 13(136) 9(82) 37(162)
+period 6 vehicle 1 cost 257 load 439 : 39(69) 18(152) 14(160) 40(58)
+period 6 vehicle 2 cost 858 load 811 : 24(32) 29(126) 5(150) 42(82) 15(108) 22(231) 1(82)
+period 6 vehicle 3 cost 1142 load 811 : 37(54) 9(41) 13(68) 41(160) 38(66) 21(160) 43(69) 10(20) 27(57) 7(16) 31(76) 20(24)
+period 6 vehicle 4 cost 1057 load 811 : 26(174) 36(74) 16(66) 28(82) 23(70) 2(76) 34(170) 8(1) 11(32) 6(48) 33(18)

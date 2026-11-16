@@ -1,0 +1,35 @@
+instance abs2n35_5
+routing_cost 13214
+quantity 9813
+logistic_ratio 1.346581066
+total_cost 24743.87
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 0 load 0 :
+period 2 vehicle 2 cost 669 load 505 : 7(58) 12(58) 29(62) 3(64) 1(28) 5(35) 32(30) 19(30) 27(74) 26(66)
+period 2 vehicle 3 cost 752 load 514 : 31(37) 35(38) 28(85) 22(57) 16(96) 25(56) 30(47) 18(98)
+period 2 vehicle 4 cost 848 load 514 : 17(57) 4(76) 23(170) 14(48) 8(56) 9(107)
+period 2 vehicle 5 cost 1066 load 459 : 6(70) 20(83) 34(138) 24(95) 33(73)
+period 3 vehicle 1 cost 342 load 474 : 18(80) 30(94) 22(114) 11(186)
+period 3 vehicle 2 cost 721 load 419 : 15(15) 9(95) 8(112) 2(20) 14(96) 17(57) 13(24)
+period 3 vehicle 3 cost 809 load 507 : 33(146) 24(190) 10(132) 21(39)
+period 3 vehicle 4 cost 0 load 0 :
+period 3 vehicle 5 cost 274 load 396 : 12(116) 27(148) 26(132)
+period 4 vehicle 1 cost 520 load 510 : 11(62) 25(56) 16(288) 22(57) 30(47)
+period 4 vehicle 2 cost 742 load 509 : 7(29) 29(62) 3(64) 1(28) 19(30) 32(30) 5(105) 20(161)
+period 4 vehicle 3 cost 408 load 470 : 31(111) 35(38) 28(179) 18(142)
+period 4 vehicle 4 cost 761 load 512 : 17(114) 4(228) 23(170)
+period 4 vehicle 5 cost 902 load 507 : 6(35) 34(138) 24(95) 9(194) 15(45)
+period 5 vehicle 1 cost 0 load 0 :
+period 5 vehicle 2 cost 715 load 480 : 13(36) 15(15) 9(99) 33(146) 10(88) 21(26) 6(70)
+period 5 vehicle 3 cost 290 load 450 : 26(128) 27(148) 12(116) 7(58)
+period 5 vehicle 4 cost 902 load 518 : 11(62) 17(57) 4(76) 23(85) 14(96) 2(30) 8(112)
+period 5 vehicle 5 cost 0 load 0 :
+period 6 vehicle 1 cost 520 load 518 : 30(94) 22(114) 16(192) 25(56) 11(62)
+period 6 vehicle 2 cost 408 load 518 : 31(74) 35(38) 28(246) 18(160)
+period 6 vehicle 3 cost 896 load 518 : 15(5) 9(99) 33(73) 24(190) 34(138) 21(13)
+period 6 vehicle 4 cost 669 load 515 : 26(70) 27(74) 19(30) 32(30) 5(70) 1(28) 3(64) 29(62) 12(58) 7(29)
+period 6 vehicle 5 cost 0 load 0 :

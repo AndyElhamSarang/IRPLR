@@ -1,0 +1,35 @@
+instance abs2n35_5
+routing_cost 12948
+quantity 9468
+logistic_ratio 1.367553866
+total_cost 24486.16
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 906 load 513 : 6(39) 34(138) 24(190) 33(146)
+period 2 vehicle 2 cost 649 load 504 : 26(66) 27(74) 19(30) 32(30) 5(70) 1(28) 3(32) 12(116) 7(58)
+period 2 vehicle 3 cost 0 load 0 :
+period 2 vehicle 4 cost 842 load 508 : 15(30) 9(99) 8(56) 14(96) 23(170) 17(57)
+period 2 vehicle 5 cost 360 load 440 : 18(80) 30(94) 22(114) 25(28) 11(124)
+period 3 vehicle 1 cost 739 load 508 : 13(24) 17(114) 4(228) 2(30) 8(112)
+period 3 vehicle 2 cost 811 load 500 : 9(198) 10(88) 21(26) 6(66) 20(122)
+period 3 vehicle 3 cost 425 load 435 : 7(29) 29(62) 3(64) 27(148) 26(132)
+period 3 vehicle 4 cost 710 load 505 : 31(74) 35(38) 28(170) 16(192) 25(31)
+period 3 vehicle 5 cost 140 load 160 : 18(160)
+period 4 vehicle 1 cost 931 load 483 : 14(96) 4(18) 23(170) 25(28) 22(114) 30(57)
+period 4 vehicle 2 cost 734 load 396 : 12(116) 1(28) 19(30) 32(30) 5(70) 20(122)
+period 4 vehicle 3 cost 911 load 444 : 9(99) 33(146) 24(95) 34(69) 6(35)
+period 4 vehicle 4 cost 0 load 0 :
+period 4 vehicle 5 cost 0 load 0 :
+period 5 vehicle 1 cost 847 load 518 : 13(36) 17(114) 4(134) 23(85) 14(48) 8(56) 15(45)
+period 5 vehicle 2 cost 434 load 509 : 7(58) 29(93) 3(64) 1(14) 27(148) 26(132)
+period 5 vehicle 3 cost 506 load 512 : 30(47) 25(53) 16(288) 11(124)
+period 5 vehicle 4 cost 863 load 499 : 10(132) 24(190) 34(138) 21(39)
+period 5 vehicle 5 cost 408 load 503 : 18(80) 28(255) 35(57) 31(111)
+period 6 vehicle 1 cost 0 load 0 :
+period 6 vehicle 2 cost 0 load 0 :
+period 6 vehicle 3 cost 680 load 513 : 13(12) 8(112) 2(30) 33(146) 9(198) 15(15)
+period 6 vehicle 4 cost 692 load 508 : 6(70) 20(122) 32(30) 19(30) 27(74) 12(116) 26(66)
+period 6 vehicle 5 cost 360 load 510 : 11(124) 25(28) 22(114) 30(84) 18(160)

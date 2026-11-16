@@ -1,0 +1,29 @@
+instance abs7n50_4
+routing_cost 16730
+quantity 14735
+logistic_ratio 1.135391924
+total_cost 35615.27
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 1195 load 961 : 21(60) 3(68) 16(22) 36(146) 17(77) 32(17) 49(184) 6(86) 9(17) 38(150) 19(60) 27(74)
+period 2 vehicle 2 cost 1615 load 950 : 5(34) 1(158) 48(22) 12(28) 2(74) 39(102) 10(86) 40(120) 44(22) 8(164) 34(38) 13(102)
+period 2 vehicle 3 cost 823 load 943 : 41(164) 45(46) 43(77) 29(152) 31(64) 23(152) 46(26) 26(130) 18(96) 11(36)
+period 2 vehicle 4 cost 0 load 0 :
+period 3 vehicle 1 cost 984 load 947 : 4(212) 19(120) 20(251) 47(45) 17(154) 32(34) 33(87) 28(44)
+period 3 vehicle 2 cost 231 load 652 : 3(136) 14(276) 37(240)
+period 3 vehicle 3 cost 1417 load 966 : 43(154) 7(84) 15(80) 44(44) 10(172) 39(51) 2(148) 30(114) 48(44) 9(34) 35(24) 5(17)
+period 3 vehicle 4 cost 1085 load 942 : 24(291) 42(282) 22(228) 50(80) 25(48) 41(13)
+period 4 vehicle 1 cost 0 load 0 :
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 1035 load 886 : 21(60) 3(68) 16(22) 33(29) 27(37) 19(60) 38(150) 31(64) 23(152) 26(130) 18(96) 11(18)
+period 4 vehicle 4 cost 1446 load 968 : 1(158) 30(114) 12(28) 10(86) 40(120) 15(80) 8(164) 34(38) 13(51) 50(40) 41(89)
+period 5 vehicle 1 cost 1557 load 968 : 27(74) 9(17) 6(129) 48(22) 12(14) 2(148) 39(102) 40(60) 44(44) 15(40) 7(126) 8(18) 13(102) 25(72)
+period 5 vehicle 2 cost 0 load 0 :
+period 5 vehicle 3 cost 845 load 968 : 11(36) 41(144) 45(69) 46(39) 29(228) 43(154) 35(36) 5(34) 4(228)
+period 5 vehicle 4 cost 1078 load 968 : 20(219) 47(30) 49(276) 32(34) 17(154) 36(219) 28(36)
+period 6 vehicle 1 cost 263 load 712 : 21(60) 3(136) 14(276) 37(240)
+period 6 vehicle 2 cost 1035 load 968 : 16(22) 28(16) 33(48) 27(37) 19(120) 20(94) 9(34) 6(43) 48(44) 30(114) 1(158) 38(150) 4(88)
+period 6 vehicle 3 cost 1093 load 968 : 43(77) 42(282) 8(146) 10(172) 24(291)
+period 6 vehicle 4 cost 1028 load 968 : 18(96) 26(130) 25(24) 50(120) 34(38) 22(228) 31(64) 23(152) 46(13) 45(21) 41(82)

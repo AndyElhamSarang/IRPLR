@@ -1,0 +1,29 @@
+instance abs10n50_4
+routing_cost 14815
+quantity 15450
+logistic_ratio 0.9588996764
+total_cost 35708.3
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 638 load 869 : 22(158) 24(190) 41(46) 7(138) 34(122) 47(34) 1(64) 9(97) 27(20)
+period 2 vehicle 2 cost 984 load 894 : 45(67) 2(25) 29(184) 11(120) 49(152) 18(39) 26(62) 46(15) 32(118) 40(112)
+period 2 vehicle 3 cost 1022 load 1011 : 50(184) 19(56) 12(32) 21(180) 5(92) 20(40) 42(184) 6(140) 10(93) 8(10)
+period 2 vehicle 4 cost 1254 load 1026 : 25(138) 23(56) 14(50) 43(84) 35(102) 36(46) 39(138) 16(128) 37(194) 28(90)
+period 3 vehicle 1 cost 923 load 1017 : 45(134) 2(50) 15(182) 3(58) 38(231) 26(124) 18(78) 13(140) 8(20)
+period 3 vehicle 2 cost 116 load 386 : 33(192) 9(194)
+period 3 vehicle 3 cost 1221 load 1025 : 46(30) 44(28) 30(26) 17(108) 31(282) 4(93) 20(80) 48(80) 19(112) 10(186)
+period 3 vehicle 4 cost 0 load 0 :
+period 4 vehicle 1 cost 1096 load 1019 : 41(23) 24(190) 25(138) 14(50) 43(84) 35(102) 28(90) 50(184) 22(158)
+period 4 vehicle 2 cost 1199 load 1022 : 45(67) 15(182) 42(92) 21(180) 16(64) 39(69) 19(56) 6(140) 10(93) 32(59) 27(20)
+period 4 vehicle 3 cost 0 load 0 :
+period 4 vehicle 4 cost 0 load 0 :
+period 5 vehicle 1 cost 1253 load 1027 : 41(46) 25(69) 23(84) 14(25) 43(42) 36(69) 37(258) 39(138) 16(128) 12(48) 48(120)
+period 5 vehicle 2 cost 933 load 1027 : 2(25) 29(159) 11(120) 49(152) 38(154) 26(124) 18(78) 3(79) 13(136)
+period 5 vehicle 3 cost 1186 load 1026 : 46(30) 44(42) 30(39) 17(162) 31(188) 4(127) 5(138) 20(40) 42(184) 8(20) 40(56)
+period 5 vehicle 4 cost 338 load 634 : 9(97) 1(96) 47(51) 34(183) 7(207)
+period 6 vehicle 1 cost 669 load 1018 : 1(32) 47(17) 7(69) 41(23) 24(190) 22(158) 50(184) 32(177) 40(168)
+period 6 vehicle 2 cost 117 load 406 : 27(20) 9(194) 33(192)
+period 6 vehicle 3 cost 1098 load 1027 : 10(186) 6(140) 19(112) 48(17) 42(92) 20(80) 21(180) 37(130) 28(90)
+period 6 vehicle 4 cost 768 load 1016 : 15(182) 13(132) 3(37) 49(152) 11(120) 29(209) 2(50) 45(134)

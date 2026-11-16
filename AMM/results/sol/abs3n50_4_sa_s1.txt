@@ -1,0 +1,29 @@
+instance abs3n50_4
+routing_cost 14019
+quantity 14538
+logistic_ratio 0.964300454
+total_cost 32685.58
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 1629 load 977 : 22(24) 17(77) 5(76) 7(36) 45(108) 48(28) 12(22) 39(54) 10(34) 21(140) 37(54) 24(196) 6(74) 25(54)
+period 2 vehicle 2 cost 714 load 956 : 11(52) 50(122) 49(166) 18(180) 40(190) 33(44) 32(102) 28(76) 47(24)
+period 2 vehicle 3 cost 185 load 304 : 30(110) 42(194)
+period 2 vehicle 4 cost 747 load 908 : 2(100) 46(22) 9(180) 31(71) 35(49) 1(104) 23(102) 19(96) 44(184)
+period 3 vehicle 1 cost 0 load 0 :
+period 3 vehicle 2 cost 905 load 954 : 44(92) 20(92) 3(120) 4(168) 25(108) 43(128) 19(192) 13(54)
+period 3 vehicle 3 cost 1369 load 972 : 17(154) 7(72) 34(104) 48(56) 14(64) 38(24) 8(56) 33(88) 29(54) 16(154) 27(146)
+period 3 vehicle 4 cost 688 load 944 : 11(104) 36(100) 31(142) 35(98) 15(183) 26(194) 41(123)
+period 4 vehicle 1 cost 1329 load 964 : 22(24) 49(166) 34(104) 45(108) 14(64) 38(24) 10(34) 21(140) 8(56) 33(44) 32(102) 28(76) 46(22)
+period 4 vehicle 2 cost 511 load 756 : 11(52) 50(122) 18(180) 40(190) 47(12) 36(100) 2(100)
+period 4 vehicle 3 cost 0 load 0 :
+period 4 vehicle 4 cost 631 load 973 : 9(180) 26(194) 31(71) 1(104) 43(128) 23(102) 42(194)
+period 5 vehicle 1 cost 1271 load 979 : 22(12) 17(154) 5(114) 7(72) 34(47) 45(54) 48(56) 12(33) 39(81) 10(17) 29(71) 32(25) 27(219) 47(24)
+period 5 vehicle 2 cost 0 load 0 :
+period 5 vehicle 3 cost 1258 load 979 : 25(54) 4(112) 6(111) 24(294) 37(81) 16(156) 15(122) 35(49)
+period 5 vehicle 4 cost 598 load 940 : 44(184) 20(138) 3(180) 19(192) 13(81) 30(165)
+period 6 vehicle 1 cost 956 load 979 : 42(194) 31(142) 35(98) 15(61) 16(62) 21(140) 29(19) 33(88) 32(77) 28(76) 46(22)
+period 6 vehicle 2 cost 0 load 0 :
+period 6 vehicle 3 cost 673 load 979 : 30(40) 23(102) 43(128) 25(108) 1(104) 26(194) 41(123) 9(180)
+period 6 vehicle 4 cost 555 load 974 : 2(100) 36(100) 47(12) 40(190) 18(180) 49(166) 50(122) 11(104)

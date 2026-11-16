@@ -1,0 +1,29 @@
+instance abs2n45_4
+routing_cost 15299
+quantity 12489.5
+logistic_ratio 1.224948957
+total_cost 31655.015
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 764 load 792 : 40(68) 14(160) 20(24) 12(24) 4(104) 25(70) 7(40) 31(76) 18(152) 39(74)
+period 2 vehicle 2 cost 858 load 799 : 1(164) 22(137) 15(108) 42(82) 5(150) 29(126) 24(32)
+period 2 vehicle 3 cost 1041 load 808.5 : 11(64) 8(20) 34(170) 2(76) 45(58.5) 17(26) 23(70) 28(164) 32(22) 6(96) 33(42)
+period 2 vehicle 4 cost 1093 load 808.5 : 26(116) 36(74) 16(80) 38(49.5) 27(57) 41(160) 13(136) 9(82) 37(54)
+period 3 vehicle 1 cost 1509 load 811 : 30(132) 8(10) 2(38) 45(58.5) 17(13) 44(297) 19(40.5) 3(90) 35(132)
+period 3 vehicle 2 cost 1125 load 811 : 27(114) 38(49.5) 10(53) 43(67) 21(219.5) 16(160) 36(148)
+period 3 vehicle 3 cost 0 load 0 :
+period 3 vehicle 4 cost 0 load 0 :
+period 4 vehicle 1 cost 836 load 786 : 14(160) 20(24) 12(24) 4(104) 25(35) 7(40) 31(76) 9(82) 37(141) 26(58) 33(42)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 858 load 801 : 1(132) 22(171) 15(108) 42(82) 5(150) 29(126) 24(32)
+period 4 vehicle 4 cost 1209 load 808.5 : 6(48) 32(22) 23(70) 35(44) 21(100.5) 43(201) 10(27) 41(160) 13(136)
+period 5 vehicle 1 cost 1305 load 811 : 13(34.5) 27(114) 38(66) 19(44.5) 3(60) 44(198) 16(160) 36(134)
+period 5 vehicle 2 cost 0 load 0 :
+period 5 vehicle 3 cost 257 load 521 : 40(102) 14(80) 18(228) 39(111)
+period 5 vehicle 4 cost 1041 load 811 : 32(11) 28(246) 23(35) 17(26) 45(78) 2(76) 34(223) 8(20) 11(96)
+period 6 vehicle 1 cost 896 load 811 : 24(32) 29(126) 11(32) 8(10) 34(117) 5(150) 42(82) 15(108) 22(154)
+period 6 vehicle 2 cost 808 load 811 : 39(37) 18(76) 37(129) 9(82) 31(76) 7(40) 25(105) 4(104) 12(24) 20(24) 14(80) 40(34)
+period 6 vehicle 3 cost 1108 load 811 : 13(101.5) 41(160) 43(134) 21(159.5) 35(88) 16(80) 36(88)
+period 6 vehicle 4 cost 591 load 688 : 33(42) 26(174) 6(144) 1(196) 30(132)

@@ -1,0 +1,29 @@
+instance abs4n45_4
+routing_cost 14274
+quantity 13519
+logistic_ratio 1.055847326
+total_cost 31032.59
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 773 load 883 : 40(116) 32(24) 14(122) 18(106) 27(15) 10(62) 43(70) 25(120) 41(120) 39(128)
+period 2 vehicle 2 cost 764 load 889 : 24(44) 8(22) 34(140) 37(191.5) 9(137.5) 35(156) 31(132) 33(66)
+period 2 vehicle 3 cost 846 load 828 : 36(98) 15(98) 42(146) 5(102) 1(128) 16(120) 12(28) 11(108)
+period 2 vehicle 4 cost 1226 load 875.5 : 4(94) 26(32) 28(128) 23(122) 19(50) 17(34) 3(76.5) 45(69) 44(196) 13(74)
+period 3 vehicle 1 cost 0 load 0 :
+period 3 vehicle 2 cost 963 load 889 : 38(152) 25(60) 26(16) 21(183) 3(76.5) 45(138) 6(232.5) 7(31)
+period 3 vehicle 3 cost 0 load 0 :
+period 3 vehicle 4 cost 1274 load 889 : 30(237) 20(42) 15(196) 42(2.5) 22(54) 29(54) 37(105.5) 2(198)
+period 4 vehicle 1 cost 546 load 661 : 39(128) 41(120) 18(106) 27(45) 14(122) 32(24) 40(116)
+period 4 vehicle 2 cost 709 load 770 : 4(282) 7(93) 31(132) 35(156) 24(44) 11(63)
+period 4 vehicle 3 cost 1176 load 888 : 12(14) 1(128) 5(102) 22(162) 29(54) 9(154.5) 37(69) 2(42.5) 34(140) 8(22)
+period 4 vehicle 4 cost 1176 load 878 : 38(76) 10(62) 43(70) 28(128) 23(122) 19(50) 17(34) 44(196) 13(74) 33(66)
+period 5 vehicle 1 cost 1106 load 889 : 25(120) 26(16) 21(57) 3(102) 45(138) 44(98) 13(37) 6(197.5) 7(31) 31(59.5) 33(33)
+period 5 vehicle 2 cost 0 load 0 :
+period 5 vehicle 3 cost 0 load 0 :
+period 5 vehicle 4 cost 674 load 866.5 : 11(99) 12(28) 16(180) 42(216.5) 15(196) 36(147)
+period 6 vehicle 1 cost 546 load 646 : 40(116) 32(24) 14(122) 27(30) 18(106) 41(120) 39(128)
+period 6 vehicle 2 cost 739 load 889 : 33(33) 31(72.5) 35(156) 9(146) 37(228) 2(155.5) 24(44) 11(54)
+period 6 vehicle 3 cost 940 load 889 : 8(22) 34(140) 1(128) 5(102) 42(71) 15(98) 36(49) 20(42) 30(237)
+period 6 vehicle 4 cost 816 load 889 : 38(114) 25(60) 10(62) 43(70) 28(128) 23(122) 21(126) 26(19) 4(188)

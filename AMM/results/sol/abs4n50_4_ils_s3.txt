@@ -1,0 +1,29 @@
+instance abs4n50_4
+routing_cost 15438
+quantity 14720
+logistic_ratio 1.048777174
+total_cost 35789.95
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 1351 load 1007 : 27(64) 7(15) 19(64) 9(54) 34(132) 41(102) 12(24) 35(124) 3(34) 13(66) 11(105) 44(41) 18(114) 45(68)
+period 2 vehicle 2 cost 1311 load 1011 : 26(67) 2(68) 10(158) 8(64) 39(33) 4(82) 50(154) 30(22) 29(122) 20(58) 22(87) 1(72) 46(24)
+period 2 vehicle 3 cost 477 load 665 : 15(121) 21(120) 14(140) 40(128) 5(156)
+period 2 vehicle 4 cost 1029 load 1011 : 16(98) 25(98) 38(137) 48(164) 28(86) 23(70) 33(158) 24(98) 36(66) 49(36)
+period 3 vehicle 1 cost 1123 load 1011 : 20(116) 17(235) 26(134) 8(128) 39(66) 31(183) 43(66) 6(48) 23(35)
+period 3 vehicle 2 cost 987 load 985.5 : 32(65) 42(288) 47(21.5) 45(136) 19(128) 7(30) 37(189) 27(128)
+period 3 vehicle 3 cost 0 load 0 :
+period 3 vehicle 4 cost 0 load 0 :
+period 4 vehicle 1 cost 1252 load 1004 : 9(54) 34(132) 41(102) 12(24) 35(124) 3(23) 13(66) 11(159) 44(75) 18(57) 45(68) 21(120)
+period 4 vehicle 2 cost 1171 load 1011 : 10(158) 8(64) 39(33) 4(82) 50(113) 30(11) 29(61) 22(205) 40(128) 5(156)
+period 4 vehicle 3 cost 617 load 952.5 : 14(140) 32(195) 49(36) 36(66) 24(294) 47(30.5) 15(191)
+period 4 vehicle 4 cost 950 load 1011 : 16(98) 25(138) 38(155) 48(212) 28(226) 33(182)
+period 5 vehicle 1 cost 1454 load 1007 : 14(6) 42(192) 6(12) 23(70) 28(78) 48(94) 11(66) 13(33) 35(62) 3(28) 41(51) 34(66) 9(27) 19(128) 7(30) 27(64)
+period 5 vehicle 2 cost 1152 load 1011 : 46(24) 1(108) 22(73) 20(116) 29(122) 30(22) 50(127) 2(102) 26(134) 17(183)
+period 5 vehicle 3 cost 0 load 0 :
+period 5 vehicle 4 cost 0 load 0 :
+period 6 vehicle 1 cost 749 load 1011 : 15(156) 5(156) 40(128) 14(134) 21(120) 37(189) 27(128)
+period 6 vehicle 2 cost 1087 load 1011 : 23(35) 6(36) 43(66) 31(183) 39(66) 8(128) 10(158) 26(67) 17(176) 42(96)
+period 6 vehicle 3 cost 0 load 0 :
+period 6 vehicle 4 cost 728 load 1011 : 32(130) 49(36) 36(66) 24(196) 25(178) 16(98) 18(171) 45(136)
