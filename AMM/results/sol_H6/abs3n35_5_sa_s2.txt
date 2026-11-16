@@ -1,0 +1,35 @@
+instance abs3n35_5
+routing_cost 17586
+quantity 12464
+logistic_ratio 1.410943517
+total_cost 34160.79
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 232 load 136 : 14(136)
+period 2 vehicle 2 cost 0 load 0 :
+period 2 vehicle 3 cost 848 load 596 : 24(48) 23(66) 4(65) 33(14) 12(164) 34(108) 26(94) 25(37)
+period 2 vehicle 4 cost 826 load 642 : 13(58) 35(138) 3(176) 9(198) 17(72)
+period 2 vehicle 5 cost 1163 load 639 : 21(28) 27(122) 5(94) 32(63) 6(184) 16(49) 22(81) 15(18)
+period 3 vehicle 1 cost 617 load 647 : 19(36) 7(168) 29(255) 26(188)
+period 3 vehicle 2 cost 1073 load 624 : 30(42) 32(126) 22(162) 15(36) 13(116) 18(142)
+period 3 vehicle 3 cost 560 load 647 : 20(237) 10(122) 24(96) 31(192)
+period 3 vehicle 4 cost 1168 load 635 : 2(110) 16(98) 8(160) 11(267)
+period 3 vehicle 5 cost 1144 load 635 : 5(47) 1(122) 28(234) 33(28) 4(130) 25(74)
+period 4 vehicle 1 cost 812 load 576 : 14(136) 7(168) 12(164) 34(108)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 0 load 0 :
+period 4 vehicle 4 cost 0 load 0 :
+period 4 vehicle 5 cost 671 load 584 : 17(72) 9(198) 10(122) 31(192)
+period 5 vehicle 1 cost 721 load 636 : 19(36) 29(180) 26(188) 33(28) 4(130) 25(74)
+period 5 vehicle 2 cost 951 load 631 : 21(42) 27(183) 5(94) 1(183) 23(33) 24(96)
+period 5 vehicle 3 cost 935 load 647 : 13(116) 18(213) 35(138) 3(180)
+period 5 vehicle 4 cost 925 load 639 : 15(36) 2(165) 6(276) 22(162)
+period 5 vehicle 5 cost 1079 load 647 : 20(120) 30(63) 32(126) 8(240) 16(98)
+period 6 vehicle 1 cost 358 load 340 : 19(36) 7(168) 14(136)
+period 6 vehicle 2 cost 1076 load 644 : 22(81) 6(92) 8(80) 11(267) 32(63) 27(61)
+period 6 vehicle 3 cost 597 load 634 : 20(159) 10(122) 21(14) 23(99) 24(48) 31(192)
+period 6 vehicle 4 cost 826 load 638 : 13(58) 35(138) 3(172) 9(198) 17(72)
+period 6 vehicle 5 cost 1004 load 647 : 25(20) 4(27) 28(234) 12(164) 34(108) 26(94)

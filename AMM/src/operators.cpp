@@ -104,6 +104,8 @@ void removeVisit(Solution &s, int i, int t)
 
 void insertVisit(Solution &s, int i, int t, int k, int pos, double qty)
 {
+    if (qty <= QTY_EPS)
+        return; // a visit delivering nothing is never created
     s.R[t][k].insert(s.R[t][k].begin() + pos, i);
     s.setQ(i, t, qty);
     s.refreshRoute(t, k);
@@ -113,6 +115,11 @@ void insertVisit(Solution &s, int i, int t, int k, int pos, double qty)
 
 void changeQuantity(Solution &s, int i, int t, double qty)
 {
+    if (qty <= QTY_EPS)
+    {
+        removeVisit(s, i, t); // a (near-)zero delivery is a removal
+        return;
+    }
     s.setQ(i, t, qty);
     s.refreshRoute(t, s.veh[i][t]);
     s.refreshCustomer(i);

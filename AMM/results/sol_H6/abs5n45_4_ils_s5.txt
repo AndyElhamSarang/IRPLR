@@ -1,0 +1,29 @@
+instance abs5n45_4
+routing_cost 10780
+quantity 14395
+logistic_ratio 0.7488711358
+total_cost 28484.15
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 428 load 907 : 33(78) 9(178) 6(60) 40(105) 21(102) 27(84) 13(134) 25(146) 28(20)
+period 2 vehicle 2 cost 565 load 927 : 1(110) 18(84) 26(71) 31(160) 2(160) 19(148) 45(168) 32(26)
+period 2 vehicle 3 cost 825 load 927 : 22(88) 30(102) 14(192) 5(166) 36(74) 41(100) 38(24) 10(162) 43(19)
+period 2 vehicle 4 cost 1163 load 927 : 39(66) 4(140) 15(62) 16(74) 34(34) 24(25) 11(40) 37(32) 35(95) 8(11) 20(120) 29(106) 12(122)
+period 3 vehicle 1 cost 0 load 0 :
+period 3 vehicle 2 cost 679 load 916 : 18(42) 37(64) 35(190) 44(254) 24(50) 17(38) 7(108) 26(170)
+period 3 vehicle 3 cost 774 load 919 : 22(176) 42(132) 41(50) 23(222) 3(172) 38(48) 10(81) 43(38)
+period 3 vehicle 4 cost 0 load 0 :
+period 4 vehicle 1 cost 392 load 908 : 28(20) 6(155) 40(175) 27(168) 13(134) 25(146) 1(110)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 643 load 927 : 9(178) 14(192) 5(166) 30(102) 22(88) 42(7) 32(26) 45(168)
+period 4 vehicle 4 cost 1126 load 903 : 2(160) 39(66) 4(140) 15(62) 16(124) 34(17) 37(32) 35(95) 8(33) 20(60) 29(53) 12(61)
+period 5 vehicle 1 cost 389 load 618 : 12(122) 29(106) 20(120) 21(153) 33(117)
+period 5 vehicle 2 cost 590 load 898 : 26(184) 18(42) 11(60) 17(57) 44(231) 24(50) 34(34) 31(240)
+period 5 vehicle 3 cost 0 load 0 :
+period 5 vehicle 4 cost 790 load 920 : 32(13) 36(111) 41(100) 23(148) 3(133) 38(48) 10(114) 43(38) 19(215)
+period 6 vehicle 1 cost 697 load 917 : 1(110) 12(61) 29(53) 20(60) 8(22) 35(190) 37(64) 18(84) 26(85) 7(108) 31(80)
+period 6 vehicle 2 cost 762 load 927 : 19(81) 45(168) 10(129) 43(19) 15(62) 16(102) 4(140) 39(66) 2(160)
+period 6 vehicle 3 cost 383 load 927 : 33(39) 6(145) 40(140) 21(51) 27(252) 13(134) 25(146) 28(20)
+period 6 vehicle 4 cost 574 load 927 : 42(125) 22(164) 30(102) 5(166) 14(192) 9(178)

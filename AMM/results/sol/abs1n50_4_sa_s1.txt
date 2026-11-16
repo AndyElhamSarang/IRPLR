@@ -1,0 +1,29 @@
+instance abs1n50_4
+routing_cost 17039
+quantity 15419
+logistic_ratio 1.105065179
+total_cost 36367.92
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 1328 load 984 : 31(90) 14(94) 30(110) 2(166) 46(20) 6(158) 12(20) 16(174) 17(32) 44(74) 35(46)
+period 2 vehicle 2 cost 402 load 486 : 47(20) 33(102) 36(166) 42(198)
+period 2 vehicle 3 cost 961 load 940 : 19(136) 49(68) 37(90) 50(54) 27(182) 15(54) 23(166) 22(70) 25(48) 9(72)
+period 2 vehicle 4 cost 1309 load 972 : 7(78) 11(48) 34(48) 38(140) 32(46) 1(84) 48(152) 39(30) 10(72) 29(90) 40(136) 45(48)
+period 3 vehicle 1 cost 598 load 921 : 18(132) 7(156) 28(147) 31(180) 26(207) 42(99)
+period 3 vehicle 2 cost 0 load 0 :
+period 3 vehicle 3 cost 1250 load 968 : 3(112) 1(168) 10(144) 13(30) 5(113) 17(64) 24(297) 41(40)
+period 3 vehicle 4 cost 1016 load 964 : 8(138) 22(140) 43(117) 4(255) 20(44) 21(270)
+period 4 vehicle 1 cost 1371 load 964 : 35(46) 44(74) 6(158) 12(20) 16(174) 23(166) 22(70) 25(48) 9(72) 49(68) 19(68)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 0 load 0 :
+period 4 vehicle 4 cost 1273 load 966 : 36(166) 11(48) 34(24) 48(152) 39(30) 29(90) 40(136) 46(20) 2(166) 30(110) 45(24)
+period 5 vehicle 1 cost 1250 load 946 : 41(60) 24(198) 17(64) 5(132) 13(45) 10(144) 3(168) 45(48) 14(87)
+period 5 vehicle 2 cost 1009 load 969 : 47(30) 7(156) 34(48) 38(210) 32(69) 1(168) 31(90) 42(198)
+period 5 vehicle 3 cost 272 load 487 : 19(136) 33(153) 18(198)
+period 5 vehicle 4 cost 1032 load 979 : 37(135) 50(81) 27(273) 15(81) 43(173) 4(170) 20(66)
+period 6 vehicle 1 cost 513 load 926 : 47(10) 33(51) 42(99) 26(207) 31(180) 28(147) 36(166) 18(66)
+period 6 vehicle 2 cost 1306 load 985 : 19(68) 8(138) 41(20) 35(46) 24(99) 17(29) 16(174) 12(20) 6(158) 5(49) 44(74) 30(110)
+period 6 vehicle 3 cost 999 load 985 : 49(68) 37(45) 22(140) 27(91) 15(27) 43(58) 23(166) 21(270) 25(48) 9(72)
+period 6 vehicle 4 cost 1150 load 977 : 7(78) 11(48) 1(84) 48(152) 39(30) 10(72) 29(90) 40(136) 46(20) 2(166) 14(101)

@@ -1,0 +1,29 @@
+instance abs10n50_4
+routing_cost 14820
+quantity 15444
+logistic_ratio 0.9595959596
+total_cost 35715.28
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 1025 load 996 : 22(158) 37(194) 39(138) 16(64) 21(180) 19(112) 6(140) 8(10)
+period 2 vehicle 2 cost 1104 load 1000 : 32(118) 50(184) 10(186) 48(80) 42(184) 20(40) 46(15) 26(62) 18(39) 2(25) 45(67)
+period 2 vehicle 3 cost 1067 load 940 : 7(138) 25(138) 23(56) 14(50) 43(84) 35(102) 36(46) 28(90) 24(190) 41(46)
+period 2 vehicle 4 cost 272 load 562 : 27(20) 47(34) 34(122) 1(64) 9(194) 33(128)
+period 3 vehicle 1 cost 1405 load 1027 : 46(30) 44(28) 30(26) 17(108) 31(282) 4(132) 20(80) 5(92) 16(128) 39(69) 12(32) 8(20)
+period 3 vehicle 2 cost 930 load 1016 : 13(148) 3(87) 18(78) 26(124) 38(231) 49(228) 11(120)
+period 3 vehicle 3 cost 634 load 898 : 40(165) 15(273) 29(276) 2(50) 45(134)
+period 3 vehicle 4 cost 0 load 0 :
+period 4 vehicle 1 cost 1045 load 1027 : 32(79) 10(186) 19(112) 42(184) 21(180) 37(194) 50(92)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 1093 load 1016 : 47(34) 34(122) 7(138) 41(23) 24(190) 25(138) 23(56) 14(25) 43(42) 28(90) 22(158)
+period 4 vehicle 4 cost 123 load 406 : 27(20) 1(64) 9(194) 33(128)
+period 5 vehicle 1 cost 1228 load 1024 : 41(46) 14(50) 43(84) 35(153) 36(69) 39(138) 16(128) 12(48) 6(210) 32(98)
+period 5 vehicle 2 cost 884 load 1025 : 45(67) 2(50) 11(180) 49(152) 18(78) 26(124) 13(192) 15(182)
+period 5 vehicle 3 cost 1210 load 1027 : 46(30) 44(42) 30(39) 17(162) 31(188) 4(88) 5(138) 20(80) 42(92) 48(120) 8(20) 40(28)
+period 5 vehicle 4 cost 0 load 0 :
+period 6 vehicle 1 cost 123 load 406 : 33(128) 9(194) 1(64) 27(20)
+period 6 vehicle 2 cost 667 load 1021 : 40(143) 32(59) 50(276) 22(158) 24(190) 41(23) 7(138) 47(34)
+period 6 vehicle 3 cost 883 load 1027 : 15(91) 13(68) 3(87) 18(39) 38(231) 49(76) 29(276) 2(25) 45(134)
+period 6 vehicle 4 cost 1127 load 1026 : 10(186) 6(70) 19(112) 21(180) 37(194) 28(90) 23(56) 25(138)

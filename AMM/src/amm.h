@@ -17,6 +17,9 @@ using std::string;
 using std::vector;
 
 constexpr double EPS = 1e-7;
+// A visit whose quantity is at or below QTY_EPS is removed; equals the tolerance of
+// Solution::check, so the search and the final check agree on what "zero" means.
+constexpr double QTY_EPS = 1e-5;
 constexpr double INF = std::numeric_limits<double>::infinity();
 
 enum class Objective

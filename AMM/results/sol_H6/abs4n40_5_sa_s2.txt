@@ -1,0 +1,35 @@
+instance abs4n40_5
+routing_cost 13899
+quantity 9917
+logistic_ratio 1.401532722
+total_cost 26301.31
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 0 load 0 :
+period 2 vehicle 2 cost 895 load 517 : 3(49) 10(170) 5(22) 40(28) 9(106) 8(142)
+period 2 vehicle 3 cost 771 load 513 : 15(58) 2(27) 19(68) 29(73) 33(37) 38(106) 36(60) 18(84)
+period 2 vehicle 4 cost 685 load 510 : 23(42) 27(62) 39(50) 6(32) 13(92) 16(196) 17(36)
+period 2 vehicle 5 cost 680 load 508 : 37(34) 30(62) 20(30) 14(78) 35(196) 31(108)
+period 3 vehicle 1 cost 739 load 514 : 4(105) 24(20) 3(98) 28(22) 22(78) 21(128) 12(63)
+period 3 vehicle 2 cost 914 load 479 : 15(29) 2(54) 33(74) 29(146) 32(28) 6(64) 23(84)
+period 3 vehicle 3 cost 313 load 515 : 26(176) 11(195) 7(144)
+period 3 vehicle 4 cost 662 load 511 : 36(120) 1(108) 34(183) 25(100)
+period 3 vehicle 5 cost 0 load 0 :
+period 4 vehicle 1 cost 0 load 0 :
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 627 load 338 : 39(50) 13(92) 16(196)
+period 4 vehicle 4 cost 920 load 514 : 10(170) 5(22) 40(28) 8(142) 18(84) 19(68)
+period 4 vehicle 5 cost 679 load 466 : 17(36) 37(34) 30(62) 20(30) 35(196) 31(108)
+period 5 vehicle 1 cost 0 load 0 :
+period 5 vehicle 2 cost 799 load 518 : 28(33) 22(49) 21(192) 9(159) 25(85)
+period 5 vehicle 3 cost 840 load 518 : 26(254) 3(49) 24(30) 37(17) 30(31) 14(117) 35(20)
+period 5 vehicle 4 cost 586 load 496 : 15(58) 33(37) 38(159) 1(122) 36(120)
+period 5 vehicle 5 cost 845 load 508 : 23(84) 6(64) 39(25) 27(93) 32(42) 29(146) 2(54)
+period 6 vehicle 1 cost 619 load 518 : 31(108) 35(127) 20(30) 13(92) 16(161)
+period 6 vehicle 2 cost 284 load 480 : 7(144) 11(195) 4(105) 17(36)
+period 6 vehicle 3 cost 826 load 508 : 40(28) 5(22) 10(170) 21(64) 22(29) 28(11) 3(98) 26(86)
+period 6 vehicle 4 cost 615 load 518 : 18(84) 34(183) 8(142) 25(109)
+period 6 vehicle 5 cost 600 load 468 : 15(29) 2(27) 19(68) 33(74) 38(53) 1(94) 36(60) 12(63)

@@ -1,0 +1,35 @@
+instance abs5n50_5
+routing_cost 17160
+quantity 14658
+logistic_ratio 1.170691772
+total_cost 35581.205
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 1054 load 734.5 : 33(74) 8(10) 40(66) 1(21) 24(97) 34(160) 7(84) 27(55) 16(74) 21(93.5)
+period 2 vehicle 2 cost 695 load 779 : 41(122) 43(73) 11(98) 15(126.5) 29(170.5) 17(64) 30(87) 23(38)
+period 2 vehicle 3 cost 1065 load 775.5 : 4(27) 13(78) 20(140) 42(96) 48(92.5) 12(26) 36(32) 22(88) 37(196)
+period 2 vehicle 4 cost 1282 load 770 : 19(66) 25(168) 14(34) 39(78) 5(56) 6(85) 10(102) 46(24) 18(48) 38(43) 47(13) 9(53)
+period 2 vehicle 5 cost 574 load 732 : 45(92) 26(72) 44(114) 31(104) 50(192) 32(158)
+period 3 vehicle 1 cost 1047 load 763.5 : 28(50.5) 35(167) 9(106) 47(13) 15(158.5) 3(64) 38(43) 49(107.5) 4(54)
+period 3 vehicle 2 cost 942 load 777 : 33(37) 8(20) 24(194) 27(110) 7(168) 2(42.5) 29(117.5) 30(81) 23(7)
+period 3 vehicle 3 cost 0 load 0 :
+period 3 vehicle 4 cost 0 load 0 :
+period 3 vehicle 5 cost 0 load 0 :
+period 4 vehicle 1 cost 974 load 779 : 23(31) 30(33) 3(83) 46(24) 6(255) 10(102) 2(25.5) 16(55.5) 21(104) 19(66)
+period 4 vehicle 2 cost 636 load 747.5 : 17(64) 11(222) 43(71) 28(40.5) 50(192) 32(158)
+period 4 vehicle 3 cost 1116 load 772 : 26(36) 44(114) 31(52) 13(78) 20(70) 42(275) 48(131) 36(16)
+period 4 vehicle 4 cost 1403 load 779 : 33(37) 40(33) 1(63) 34(160) 25(168) 14(34) 39(78) 5(56) 38(86) 47(26) 9(38)
+period 4 vehicle 5 cost 118 load 240 : 45(240)
+period 5 vehicle 1 cost 1075 load 779 : 22(132) 36(32) 12(39) 48(126.5) 42(109) 20(140) 13(39) 49(107.5) 4(54)
+period 5 vehicle 2 cost 968 load 779 : 8(20) 40(66) 24(194) 34(80) 7(168) 27(110) 16(55.5) 21(52.5) 19(33)
+period 5 vehicle 3 cost 0 load 0 :
+period 5 vehicle 4 cost 781 load 772 : 23(7) 30(67) 29(186) 15(143) 3(173) 18(72) 38(43) 47(13) 9(68)
+period 5 vehicle 5 cost 529 load 779 : 37(258) 35(208) 43(211) 41(102)
+period 6 vehicle 1 cost 0 load 0 :
+period 6 vehicle 2 cost 744 load 779 : 23(31) 30(68) 17(64) 29(102) 15(142) 11(160) 47(13) 9(53) 35(75) 43(71)
+period 6 vehicle 3 cost 311 load 566 : 33(74) 41(142) 50(192) 32(158)
+period 6 vehicle 4 cost 1209 load 779 : 21(50) 16(28) 27(33) 7(84) 25(168) 10(102) 6(170) 5(56) 46(24) 3(64)
+period 6 vehicle 5 cost 637 load 776 : 45(166) 26(108) 44(114) 31(156) 4(27) 37(134) 28(71)

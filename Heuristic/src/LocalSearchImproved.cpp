@@ -105,6 +105,10 @@ void RecordTimedSolutions(input &IRPLR, solution &IRPSolution, solution &GlobalB
 int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolution, double &ScalarLagrangianRelaxation, preprocessing &memory, solution &GlobalBest, solution &FirstImprovementSolution, solution &IRPSolution30s, solution &IRPSolution60s, vector<solution> &TimeCheckpointSolutions, int &DisturbanceCounter, bool &RunHGSAtEnd)
 {
     int whether_improved_via_local_search = 0;
+    if (LocalSearchMemory != "NO")
+    {
+        local_search_memory::StartLocalSearch();
+    }
     IRPSolution.UpdateSupplierInventory(IRPLR);
     memory.PopulatePrefixAndSuffix(IRPLR, IRPSolution);
     IRPSolution.GetLogisticRatio(IRPLR);

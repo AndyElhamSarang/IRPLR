@@ -1,0 +1,35 @@
+instance abs3n35_5
+routing_cost 16230
+quantity 11753
+logistic_ratio 1.380924019
+total_cost 32808.33
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 0 load 0 :
+period 2 vehicle 2 cost 799 load 627 : 31(96) 24(48) 27(122) 5(94) 32(126) 30(42) 10(99)
+period 2 vehicle 3 cost 799 load 528 : 18(142) 13(116) 9(198) 17(72)
+period 2 vehicle 4 cost 784 load 504 : 25(37) 4(130) 33(14) 12(82) 34(108) 26(133)
+period 2 vehicle 5 cost 1062 load 633 : 22(94) 6(184) 8(160) 16(49) 2(110) 15(36)
+period 3 vehicle 1 cost 1007 load 633 : 25(74) 33(28) 28(182) 12(164) 34(54) 26(131)
+period 3 vehicle 2 cost 0 load 0 :
+period 3 vehicle 3 cost 1116 load 647 : 15(18) 3(206) 35(69) 16(98) 22(149) 20(107)
+period 3 vehicle 4 cost 1068 load 640 : 21(42) 5(47) 11(267) 1(122) 23(66) 24(96)
+period 3 vehicle 5 cost 530 load 605 : 19(40) 7(168) 29(261) 14(136)
+period 4 vehicle 1 cost 0 load 0 :
+period 4 vehicle 2 cost 495 load 647 : 31(288) 10(122) 20(237)
+period 4 vehicle 3 cost 936 load 627.5 : 17(72) 9(148.5) 35(207) 18(142) 13(58)
+period 4 vehicle 4 cost 1055 load 647 : 26(112) 4(130) 1(122) 5(47) 27(122) 23(66) 24(48)
+period 4 vehicle 5 cost 1001 load 647 : 22(81) 2(96) 6(184) 8(160) 32(126)
+period 5 vehicle 1 cost 1019 load 647 : 25(74) 4(65) 28(208) 12(164) 34(108) 33(28)
+period 5 vehicle 2 cost 1202 load 643 : 30(63) 32(63) 11(178) 8(80) 6(92) 16(98) 2(69)
+period 5 vehicle 3 cost 843 load 639.5 : 17(36) 9(148.5) 15(36) 3(234) 35(69) 13(116)
+period 5 vehicle 4 cost 0 load 0 :
+period 5 vehicle 5 cost 358 load 506 : 19(50) 7(252) 14(204)
+period 6 vehicle 1 cost 571 load 647 : 20(172) 10(145) 21(42) 24(96) 31(192)
+period 6 vehicle 2 cost 901 load 647 : 23(66) 27(122) 5(94) 32(63) 22(162) 15(5) 9(99) 17(36)
+period 6 vehicle 3 cost 0 load 0 :
+period 6 vehicle 4 cost 0 load 0 :
+period 6 vehicle 5 cost 684 load 638 : 25(37) 26(188) 29(261) 7(84) 14(68)

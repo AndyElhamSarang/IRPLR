@@ -1,0 +1,35 @@
+instance abs1n40_5
+routing_cost 14569
+quantity 11526
+logistic_ratio 1.264011799
+total_cost 31233.175
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 0 load 0 :
+period 2 vehicle 2 cost 200 load 247 : 36(135) 40(112)
+period 2 vehicle 3 cost 879 load 647 : 22(162) 2(63) 31(132) 6(76) 1(86) 29(50) 33(78)
+period 2 vehicle 4 cost 1178 load 639.5 : 23(23) 20(112) 27(15) 38(161.5) 21(46) 39(116) 19(76) 34(90)
+period 2 vehicle 5 cost 897 load 642 : 35(32) 14(84) 11(68) 17(57) 26(148) 5(82.5) 25(4.5) 8(92) 37(11) 32(63)
+period 3 vehicle 1 cost 0 load 0 :
+period 3 vehicle 2 cost 968 load 647 : 10(219) 30(143) 13(123) 15(162)
+period 3 vehicle 3 cost 436 load 644.5 : 32(49) 3(87) 25(75.5) 8(184) 4(249)
+period 3 vehicle 4 cost 1204 load 627 : 18(54) 28(24) 39(58) 7(261) 12(71) 27(30) 20(56) 16(73)
+period 3 vehicle 5 cost 808 load 601.5 : 35(32) 9(72) 24(165) 11(136) 17(114) 5(82.5)
+period 4 vehicle 1 cost 417 load 647 : 32(112) 3(234) 25(176) 8(92) 37(33)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 850 load 647 : 22(162) 2(81) 1(86) 23(49) 16(143) 29(50) 33(76)
+period 4 vehicle 4 cost 1079 load 647 : 34(64.5) 19(76) 38(190.5) 12(157) 7(87) 21(46) 28(16) 4(10)
+period 4 vehicle 5 cost 552 load 631.5 : 35(64) 14(197.5) 9(123) 40(112) 36(135)
+period 5 vehicle 1 cost 865 load 647 : 18(36) 10(146) 15(133) 26(222) 5(110)
+period 5 vehicle 2 cost 1003 load 643 : 22(81) 2(36) 31(198) 6(114) 1(43) 20(112) 23(18) 33(41)
+period 5 vehicle 3 cost 0 load 0 :
+period 5 vehicle 4 cost 1354 load 647 : 11(136) 17(114) 13(82) 30(146) 39(116) 21(23) 27(30)
+period 5 vehicle 5 cost 0 load 0 :
+period 6 vehicle 1 cost 417 load 647 : 32(112) 3(201) 8(184) 25(128) 37(22)
+period 6 vehicle 2 cost 200 load 382 : 40(112) 36(270)
+period 6 vehicle 3 cost 0 load 0 :
+period 6 vehicle 4 cost 528 load 646.5 : 35(64) 9(195) 24(165) 14(222.5)
+period 6 vehicle 5 cost 734 load 645.5 : 33(39) 29(50) 23(18) 16(108) 19(76) 34(115.5) 4(239)

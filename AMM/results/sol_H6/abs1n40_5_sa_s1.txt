@@ -1,0 +1,35 @@
+instance abs1n40_5
+routing_cost 16181
+quantity 11978
+logistic_ratio 1.350893304
+total_cost 32846.42
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 1 vehicle 5 cost 0 load 0 :
+period 2 vehicle 1 cost 947 load 630 : 33(39) 16(108) 23(36) 1(86) 6(76) 31(132) 2(72) 22(81)
+period 2 vehicle 2 cost 900 load 638 : 35(32) 14(168) 24(110) 11(68) 17(57) 26(148) 5(55)
+period 2 vehicle 3 cost 417 load 542 : 3(174) 25(128) 8(184) 32(56)
+period 2 vehicle 4 cost 1223 load 635 : 29(50) 20(56) 27(30) 38(176) 12(114) 39(58) 21(23) 19(38) 34(90)
+period 2 vehicle 5 cost 200 load 236 : 40(56) 36(180)
+period 3 vehicle 1 cost 807 load 647 : 35(64) 9(139) 11(136) 17(114) 5(110) 14(84)
+period 3 vehicle 2 cost 0 load 0 :
+period 3 vehicle 3 cost 969 load 647 : 18(36) 10(192) 30(145) 13(123) 15(118) 37(33)
+period 3 vehicle 4 cost 1228 load 646 : 19(76) 20(112) 27(15) 7(261) 21(46) 39(116) 28(20)
+period 3 vehicle 5 cost 684 load 630 : 40(112) 22(162) 33(78) 4(166) 32(112)
+period 4 vehicle 1 cost 1134 load 647 : 8(92) 25(24) 39(58) 21(23) 7(70) 12(114) 38(176) 34(90)
+period 4 vehicle 2 cost 0 load 0 :
+period 4 vehicle 3 cost 946 load 527 : 33(39) 29(50) 16(108) 23(36) 1(86) 6(76) 31(132)
+period 4 vehicle 4 cost 200 load 236 : 40(56) 36(180)
+period 4 vehicle 5 cost 0 load 0 :
+period 5 vehicle 1 cost 968 load 641 : 15(177) 13(82) 30(155) 10(173) 18(54)
+period 5 vehicle 2 cost 1161 load 627 : 28(30) 19(76) 27(30) 20(112) 1(43) 31(66) 2(108) 22(162)
+period 5 vehicle 3 cost 635 load 647 : 9(130) 24(165) 8(184) 25(168)
+period 5 vehicle 4 cost 875 load 646 : 5(110) 26(222) 17(114) 11(136) 35(64)
+period 5 vehicle 5 cost 335 load 566 : 4(249) 3(261) 32(56)
+period 6 vehicle 1 cost 0 load 0 :
+period 6 vehicle 2 cost 454 load 604 : 32(112) 3(87) 14(252) 9(121) 35(32)
+period 6 vehicle 3 cost 200 load 292 : 36(180) 40(112)
+period 6 vehicle 4 cost 1124 load 647 : 39(116) 21(46) 7(191) 12(114) 38(176) 19(4)
+period 6 vehicle 5 cost 774 load 647 : 4(83) 37(33) 25(64) 8(92) 18(18) 34(90) 16(108) 23(31) 29(50) 33(78)

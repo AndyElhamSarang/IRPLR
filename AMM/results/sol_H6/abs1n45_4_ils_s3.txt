@@ -1,0 +1,29 @@
+instance abs1n45_4
+routing_cost 13766
+quantity 12842
+logistic_ratio 1.071951409
+total_cost 30299.47
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 828 load 784 : 40(22) 35(54) 22(86) 1(182) 30(144) 4(76) 37(32) 33(30) 15(64) 34(94)
+period 2 vehicle 2 cost 486 load 528 : 24(26) 11(132) 2(48) 36(174) 6(148)
+period 2 vehicle 3 cost 1181 load 823 : 23(44) 26(158) 14(90) 25(22) 27(78) 16(97) 20(56) 18(88) 45(24) 39(68) 19(58) 3(40)
+period 2 vehicle 4 cost 971 load 841 : 12(112) 29(5) 28(92) 44(99) 17(22) 42(140) 10(60) 43(83) 38(127) 41(101)
+period 3 vehicle 1 cost 991 load 840 : 29(83) 21(220) 44(198) 28(46) 41(169) 13(74) 9(50)
+period 3 vehicle 2 cost 0 load 0 :
+period 3 vehicle 3 cost 996 load 825 : 39(136) 45(48) 16(161) 27(156) 7(30) 31(64) 32(30) 8(30) 5(126) 40(44)
+period 3 vehicle 4 cost 0 load 0 :
+period 4 vehicle 1 cost 751 load 738 : 34(94) 15(64) 33(30) 4(228) 1(182) 22(86) 35(54)
+period 4 vehicle 2 cost 928 load 834 : 9(50) 13(78) 42(140) 17(22) 20(168) 18(264) 12(112)
+period 4 vehicle 3 cost 1097 load 833 : 37(96) 30(144) 14(49) 31(32) 7(30) 25(66) 27(78) 16(102) 19(174) 3(40) 40(22)
+period 4 vehicle 4 cost 541 load 841 : 24(26) 6(74) 36(87) 38(135) 10(180) 43(249) 41(90)
+period 5 vehicle 1 cost 974 load 841 : 23(66) 22(43) 1(80) 30(72) 14(86) 26(237) 32(20) 45(48) 39(136) 12(53)
+period 5 vehicle 2 cost 1021 load 841 : 29(92) 28(92) 21(230) 44(198) 17(11) 10(60) 38(68) 41(90)
+period 5 vehicle 3 cost 0 load 0 :
+period 5 vehicle 4 cost 485 load 592 : 11(198) 2(72) 36(174) 6(148)
+period 6 vehicle 1 cost 713 load 841 : 40(44) 12(59) 3(40) 19(116) 39(68) 18(176) 20(112) 45(24) 5(126) 35(54) 23(22)
+period 6 vehicle 2 cost 1015 load 841 : 8(30) 16(180) 27(156) 7(30) 31(48) 26(79) 1(102) 4(152) 37(64)
+period 6 vehicle 3 cost 226 load 158 : 15(64) 34(94)
+period 6 vehicle 4 cost 562 load 841 : 24(26) 6(74) 36(87) 38(66) 43(166) 10(60) 42(140) 41(90) 13(82) 9(50)

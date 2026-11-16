@@ -176,6 +176,7 @@ void file::ReadGlobalParameter()
         {"ToTriggerAdjustment", true, [&](stringstream &ss) { return bool(ss >> ToTriggerAdjustment); }},
         {"ToAdjustLagrangianScalar", true, [&](stringstream &ss) { return bool(ss >> ToAdjustLagrangianScalar); }},
         {"LocalSearchOrder", false, [&](stringstream &ss) { return bool(ss >> LocalSearchOrder); }},
+        {"LocalSearchMemory", false, [&](stringstream &ss) { return bool(ss >> LocalSearchMemory); }},
         {"UseVehicleSlack", false, [&](stringstream &ss) { return bool(ss >> StringUseVehicleSlack); }},
         {"TypeOfRebalance", true, [&](stringstream &ss) { return bool(ss >> TypeOfRebalance); }},
         {"Activate_Disturbance", true, [&](stringstream &ss) { return bool(ss >> StringDisturbance); }},
@@ -318,6 +319,11 @@ void file::ReadGlobalParameter()
         valid_input = false;
     }
     UseVehicleSlack = (StringUseVehicleSlack == "YES");
+    if (LocalSearchMemory != "NO" && LocalSearchMemory != "ROUTE" && LocalSearchMemory != "MIDDLE" && LocalSearchMemory != "EXACT")
+    {
+        cout << "Error: Invalid value for LocalSearchMemory. Please set it to 'NO', 'ROUTE', 'MIDDLE' or 'EXACT'." << endl;
+        valid_input = false;
+    }
     if (valid_input == false)
     {
         exit(1);

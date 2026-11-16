@@ -1,0 +1,21 @@
+instance abs2n50_4
+routing_cost 10299
+quantity 8848
+logistic_ratio 1.163991863
+total_cost 21914.66
+period 1 vehicle 1 cost 0 load 0 :
+period 1 vehicle 2 cost 0 load 0 :
+period 1 vehicle 3 cost 0 load 0 :
+period 1 vehicle 4 cost 0 load 0 :
+period 2 vehicle 1 cost 592 load 821 : 47(22) 24(198) 33(184) 11(40) 44(128) 18(66) 9(126) 7(57)
+period 2 vehicle 2 cost 1336 load 844 : 3(35) 21(160) 40(37) 20(68) 29(160) 10(44) 4(16) 39(42) 48(52) 16(148) 22(82)
+period 2 vehicle 3 cost 893 load 790 : 19(74) 45(78) 8(164) 2(52) 14(170) 15(88) 27(164)
+period 2 vehicle 4 cost 1281 load 926 : 42(98) 26(76) 50(44) 12(22) 31(160) 28(152) 35(72) 41(60) 34(38) 37(162) 13(42)
+period 3 vehicle 1 cost 1128 load 914 : 5(105) 36(198) 38(123) 28(115) 6(174) 50(88) 22(41) 3(70)
+period 3 vehicle 2 cost 1409 load 934 : 49(177) 30(30) 46(33) 40(74) 29(80) 4(32) 10(88) 43(48) 23(201) 48(104) 16(67)
+period 3 vehicle 3 cost 0 load 0 :
+period 3 vehicle 4 cost 917 load 934 : 17(162) 1(204) 42(196) 32(111) 11(38) 25(109) 7(114)
+period 4 vehicle 1 cost 898 load 849 : 27(164) 15(88) 14(170) 2(52) 8(164) 49(59) 45(78) 19(74)
+period 4 vehicle 2 cost 607 load 902 : 7(57) 9(126) 18(66) 44(128) 11(74) 33(184) 25(47) 24(198) 47(22)
+period 4 vehicle 3 cost 1238 load 934 : 5(35) 42(98) 26(76) 50(44) 12(22) 31(160) 6(58) 28(63) 41(60) 34(114) 37(162) 13(42)
+period 4 vehicle 4 cost 0 load 0 :

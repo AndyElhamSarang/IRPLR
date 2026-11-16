@@ -75,7 +75,13 @@ wall-clock time limit meaningless.
    one changes the solution. Random shift/insertion use the cheapest position of the chosen
    route; random split moves half of a delivery to a random other period (added to an existing
    visit or inserted at the cheapest feasible position), which can create non-integer
-   quantities (the paper imposes no integrality).
+   quantities (the paper imposes no integrality). There is no minimum split size, so repeated
+   splits halve a delivery geometrically (e.g. 3 → 3·2⁻¹⁸ ≈ 1.1e-5) and can leave visits with
+   negligible quantities. Any move that leaves a quantity ≤ `QTY_EPS` = 1e-5 (the tolerance of
+   `Solution::check`) removes the visit instead (`changeQuantity`, `insertVisit` in
+   `src/operators.cpp`). Visits just above that threshold remain feasible but pay routing cost
+   for an essentially zero delivery; this is rare (1 of the 11,280 H3–H6 and large runs) and
+   left as is so that all results come from the same algorithm.
 8. **SA neighbours.** One random feasible move of a randomly chosen operator (up to 30
    draws to find a feasible one). For OF2 the increase/reduce neighbour picks increase or
    complete removal with equal probability.
@@ -87,7 +93,12 @@ wall-clock time limit meaningless.
 ## Validation status
 
 - All final solutions pass the independent feasibility check; the sanitizer build runs
-  clean on H3–H6 instances for ILS/SA × OF1/OF2.
+  clean on H3–H6 instances for ILS/SA × OF1/OF2. Two ILS runs (H3 `abs5n15_2` seed 3, H4
+  `abs2n45_5` seed 4) originally failed the check because a split left a visit with quantity
+  between 1e-7 (the old removal threshold `EPS`) and 1e-5 (the check tolerance); after adding
+  `QTY_EPS` (see item 7) both were rerun and pass. The original rows are kept in
+  `results/H{3,4}_30s.csv.bak_before_qtyfix`. No other final solution (H3–H6 or large) has a
+  quantity below 1e-3, so the other results are unaffected.
 - Against the 15 MIP optima in `../MIP/Optimal_results_*.csv` (H3, 5–10 customers, 1–2
   vehicles), best of 5 seeds: ILS average gap 0.14% (optimal on 14/15). AMM Table 11 reports
   1.09% for their ILS on H3. Note: these runs were made in parallel on a single core, so the
