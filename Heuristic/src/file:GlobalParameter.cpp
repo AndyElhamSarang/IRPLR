@@ -181,6 +181,18 @@ void file::ReadGlobalParameter()
         {"TypeOfRebalance", true, [&](stringstream &ss) { return bool(ss >> TypeOfRebalance); }},
         {"Activate_Disturbance", true, [&](stringstream &ss) { return bool(ss >> StringDisturbance); }},
         {"Disturb_strength", true, [&](stringstream &ss) { return bool(ss >> DisturbStrength); }},
+        {"MinShift1", false, [&](stringstream &ss) { return bool(ss >> MinShift1); }},
+        {"MaxShift1", false, [&](stringstream &ss) { return bool(ss >> MaxShift1); }},
+        {"MinShift2", false, [&](stringstream &ss) { return bool(ss >> MinShift2); }},
+        {"MaxShift2", false, [&](stringstream &ss) { return bool(ss >> MaxShift2); }},
+        {"MinSwap1", false, [&](stringstream &ss) { return bool(ss >> MinSwap1); }},
+        {"MaxSwap1", false, [&](stringstream &ss) { return bool(ss >> MaxSwap1); }},
+        {"MinSwap2", false, [&](stringstream &ss) { return bool(ss >> MinSwap2); }},
+        {"MaxSwap2", false, [&](stringstream &ss) { return bool(ss >> MaxSwap2); }},
+        {"MinRemoveLength", false, [&](stringstream &ss) { return bool(ss >> MinRemoveLength); }},
+        {"MaxRemoveLength", false, [&](stringstream &ss) { return bool(ss >> MaxRemoveLength); }},
+        {"MinInsertLength", false, [&](stringstream &ss) { return bool(ss >> MinInsertLength); }},
+        {"MaxInsertLength", false, [&](stringstream &ss) { return bool(ss >> MaxInsertLength); }},
     };
 
     bool read_ok = true;
@@ -323,6 +335,18 @@ void file::ReadGlobalParameter()
     {
         cout << "Error: Invalid value for LocalSearchMemory. Please set it to 'NO', 'ROUTE', 'MIDDLE' or 'EXACT'." << endl;
         valid_input = false;
+    }
+    const vector<tuple<string, int, int>> LengthRanges = {
+        {"Shift1", MinShift1, MaxShift1}, {"Shift2", MinShift2, MaxShift2},
+        {"Swap1", MinSwap1, MaxSwap1}, {"Swap2", MinSwap2, MaxSwap2},
+        {"RemoveLength", MinRemoveLength, MaxRemoveLength}, {"InsertLength", MinInsertLength, MaxInsertLength}};
+    for (const auto &range : LengthRanges)
+    {
+        if (get<1>(range) < 0 || get<1>(range) > get<2>(range))
+        {
+            cout << "Error: Min" << get<0>(range) << " and Max" << get<0>(range) << " must satisfy 0 <= Min <= Max." << endl;
+            valid_input = false;
+        }
     }
     if (valid_input == false)
     {

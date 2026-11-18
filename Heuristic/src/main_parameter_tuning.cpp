@@ -49,6 +49,18 @@ int phi=0;
 int min_grid_resolution = 0;
 int grid_resolution_increment = 0;
 int DisturbStrength = 0;
+int MinShift1 = 1;
+int MaxShift1 = 3;
+int MinShift2 = 0;
+int MaxShift2 = 0;
+int MinSwap1 = 1;
+int MaxSwap1 = 2;
+int MinSwap2 = 1;
+int MaxSwap2 = 2;
+int MinRemoveLength = 0;
+int MaxRemoveLength = 1;
+int MinInsertLength = 0;
+int MaxInsertLength = 1;
 int main(int argc, char* argv[])
 {
 	const set<string> required_options = {
@@ -144,6 +156,18 @@ int main(int argc, char* argv[])
 			else if (opt == "InitialSolutionMethod") { InitialSolutionMethod = val; }
 			else if (opt == "OutputResults") { OutputResults = atoi(val.c_str()); }
 			else if (opt == "OutputSolutionJSON") { OutputSolutionJSON = val; }
+			else if (opt == "MinShift1") { MinShift1 = atoi(val.c_str()); }
+			else if (opt == "MaxShift1") { MaxShift1 = atoi(val.c_str()); }
+			else if (opt == "MinShift2") { MinShift2 = atoi(val.c_str()); }
+			else if (opt == "MaxShift2") { MaxShift2 = atoi(val.c_str()); }
+			else if (opt == "MinSwap1") { MinSwap1 = atoi(val.c_str()); }
+			else if (opt == "MaxSwap1") { MaxSwap1 = atoi(val.c_str()); }
+			else if (opt == "MinSwap2") { MinSwap2 = atoi(val.c_str()); }
+			else if (opt == "MaxSwap2") { MaxSwap2 = atoi(val.c_str()); }
+			else if (opt == "MinRemoveLength") { MinRemoveLength = atoi(val.c_str()); }
+			else if (opt == "MaxRemoveLength") { MaxRemoveLength = atoi(val.c_str()); }
+			else if (opt == "MinInsertLength") { MinInsertLength = atoi(val.c_str()); }
+			else if (opt == "MaxInsertLength") { MaxInsertLength = atoi(val.c_str()); }
 			else if (opt == "seed") { generator.seed(static_cast<unsigned int>(strtoul(val.c_str(), NULL, 10))); } // irace-provided seed for reproducible runs
 			else
 			{

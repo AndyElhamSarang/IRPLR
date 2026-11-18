@@ -50,6 +50,18 @@ int phi = 0;
 int min_grid_resolution = 0;
 int grid_resolution_increment = 0;
 int DisturbStrength = 0;
+int MinShift1 = 1;
+int MaxShift1 = 3;
+int MinShift2 = 0;
+int MaxShift2 = 0;
+int MinSwap1 = 1;
+int MaxSwap1 = 2;
+int MinSwap2 = 1;
+int MaxSwap2 = 2;
+int MinRemoveLength = 0;
+int MaxRemoveLength = 1;
+int MinInsertLength = 0;
+int MaxInsertLength = 1;
 
 // CSV columns written once per start (by INITIAL_ZONE, main and IteratedLocalSearch).
 // Used for the header and to pad starts that are skipped when the time limit is reached.
@@ -98,7 +110,20 @@ int main()
 				  << ",UseVehicleSlack," << (UseVehicleSlack ? "YES" : "NO")
 				  << ",TypeOfRebalance," << TypeOfRebalance
 				  << ",Activate_Disturbance," << (Activate_Disturbance == "YES" ? DisturbOperator : string("NO_DISTURB"))
-				  << ",DisturbStrength," << DisturbStrength << "\n";
+				  << ",DisturbStrength," << DisturbStrength
+				  << ",MinShift1," << MinShift1
+				  << ",MaxShift1," << MaxShift1
+				  << ",MinShift2," << MinShift2
+				  << ",MaxShift2," << MaxShift2
+				  << ",MinSwap1," << MinSwap1
+				  << ",MaxSwap1," << MaxSwap1
+				  << ",MinSwap2," << MinSwap2
+				  << ",MaxSwap2," << MaxSwap2
+				  << ",MinRemoveLength," << MinRemoveLength
+				  << ",MaxRemoveLength," << MaxRemoveLength
+				  << ",MinInsertLength," << MinInsertLength
+				  << ",MaxInsertLength," << MaxInsertLength
+				  << "\n";
 			Table << ",#TimePeriods,#Nodes,#Vehicle";
 			for (int i = 0; i < NumberOfInitialSolutions; i++)
 			{

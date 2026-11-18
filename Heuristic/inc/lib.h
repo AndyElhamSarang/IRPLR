@@ -12,6 +12,7 @@
 #include <string>
 #include <set>
 #include <functional>
+#include <tuple>
 #include <limits>
 #include <assert.h>
 

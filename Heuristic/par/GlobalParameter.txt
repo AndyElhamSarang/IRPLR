@@ -1,7 +1,7 @@
 NumberOfExperiments | positive integer | runs per instance; must equal the number of seeds in Seed.txt
 5
 MainAlgorithmTimeLimit | seconds | Max_time (paper: 60)
-30
+60
 NumberOfInitialSolution | positive integer | Max_restart, number of starts (paper: 30)
 100
 InitialSolutionMethod | Initial_BlockZone_Schedule or ConstructAMMInitialSolution | constructive heuristic (Initial_BlockZone_Schedule = proposed, ConstructAMMInitialSolution = Alvarez et al. 2018)
@@ -35,6 +35,30 @@ YES
 TypeOfRebalance | GUARANTEE_FEASIBILITY or NOT_GUARANTEE_FEASIBILITY or NO_REBALANCE | rebalance procedure (paper: NOT_GUARANTEE_FEASIBILITY)
 GUARANTEE_FEASIBILITY
 Activate_Disturbance | NO_DISTURB or SEGMENT or SHAW | first-stage DISTURB of the perturbation: NO_DISTURB = off, SEGMENT = remove a random segment of one route (paper), SHAW = related removal of nearby visits on one day (Shaw 1998, Pisinger and Ropke 2007)
-SEGMENT
+NO_DISTURB
 Disturb_strength | integer >= 0 | theta in the paper, disturbance strength (paper: 2)
 2
+MinShift1 | integer >= 0 | min O1 Shift: segment length moved from vehicle 1 (default: 1)
+1
+MaxShift1 | integer >= 0 | max O1 Shift: segment length moved from vehicle 1 (default: 3)
+3
+MinShift2 | integer >= 0 | min O1 Shift: segment length moved from vehicle 2 (default: 0)
+0
+MaxShift2 | integer >= 0 | max O1 Shift: segment length moved from vehicle 2 (default: 0)
+0
+MinSwap1 | integer >= 0 | min O2 Swap: segment length from vehicle 1 (default: 1)
+1
+MaxSwap1 | integer >= 0 | max O2 Swap: segment length from vehicle 1 (default: 2)
+2
+MinSwap2 | integer >= 0 | min O2 Swap: segment length from vehicle 2 (default: 1)
+1
+MaxSwap2 | integer >= 0 | max O2 Swap: segment length from vehicle 2 (default: 2)
+2
+MinRemoveLength | integer >= 0 | min O4 SwapRemoveInsert: number of visits removed (default: 0)
+0
+MaxRemoveLength | integer >= 0 | max O4 SwapRemoveInsert: number of visits removed (default: 1)
+1
+MinInsertLength | integer >= 0 | min O4 SwapRemoveInsert: number of unallocated customers inserted (default: 0)
+0
+MaxInsertLength | integer >= 0 | max O4 SwapRemoveInsert: number of unallocated customers inserted (default: 1)
+1

@@ -164,10 +164,10 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
         bool improved = false;
         int whether_improved = 1;
         int counter = 0;
-        int min_shift1 = 1;
-        int max_shift1 = 3;
-        int min_shift2 = 0;
-        int max_shift2 = 0;
+        int min_shift1 = MinShift1;
+        int max_shift1 = MaxShift1;
+        int min_shift2 = MinShift2;
+        int max_shift2 = MaxShift2;
         QuantityBalancing = true;
         set<vector<int>> ShiftTwoRoutesOnSingleDayPair; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
         for (int day = 0; day < IRPSolution.Route.size(); day++)
@@ -226,10 +226,10 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
         bool improved = false;
         int whether_improved = 1;
         int counter = 0;
-        int min_swap1 = 1;
-        int max_swap1 = 2;
-        int min_swap2 = 1;
-        int max_swap2 = 2;
+        int min_swap1 = MinSwap1;
+        int max_swap1 = MaxSwap1;
+        int min_swap2 = MinSwap2;
+        int max_swap2 = MaxSwap2;
         QuantityBalancing = true;
         set<vector<int>> SwapTwoRoutesOnSingleDayPair; // Index 0: day, Index 1: vehicle_1, Index 2: vehicle_2
         for (int day = 0; day < IRPSolution.Route.size(); day++)
@@ -344,10 +344,10 @@ int solution_improvement::ImprovedLocalSearch(input &IRPLR, solution &IRPSolutio
     auto RunSwapRemoveInsert = [&]() -> bool
     {
         bool improved = false;
-        int min_remove_length = 0;
-        int max_remove_length = 1;
-        int min_insert_length = 0;
-        int max_insert_length = 1;
+        int min_remove_length = MinRemoveLength;
+        int max_remove_length = MaxRemoveLength;
+        int min_insert_length = MinInsertLength;
+        int max_insert_length = MaxInsertLength;
         int whether_improved = 1;
         int counter = 0;
         set<vector<int>> SwapRemoveInsertPair; // Index 0: day, Index 1: vehicle
