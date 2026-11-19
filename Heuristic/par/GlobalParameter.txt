@@ -11,7 +11,7 @@ MinGridResolution | positive integer | d_min of initial construction (paper: 3)
 GridResolutionIncrement | positive integer | Delta_d, number of candidate grid resolutions (paper: 2)
 2
 Activate HGS | YES or NO | improve routes with HGS on initial solutions and on the final best solution (paper main results: NO)
-NO
+YES
 theta | positive number | zeta in the paper, weight in Max_it = ceil(zeta*(|N'| + sigma*|T| + phi*|K|)) (paper: 0.62)
 0.62
 sigma | integer >= 0 | weight on |T| in Max_it (paper: 5)
@@ -35,7 +35,7 @@ YES
 TypeOfRebalance | GUARANTEE_FEASIBILITY or NOT_GUARANTEE_FEASIBILITY or NO_REBALANCE | rebalance procedure (paper: NOT_GUARANTEE_FEASIBILITY)
 GUARANTEE_FEASIBILITY
 Activate_Disturbance | NO_DISTURB or SEGMENT or SHAW | first-stage DISTURB of the perturbation: NO_DISTURB = off, SEGMENT = remove a random segment of one route (paper), SHAW = related removal of nearby visits on one day (Shaw 1998, Pisinger and Ropke 2007)
-NO_DISTURB
+SEGMENT
 Disturb_strength | integer >= 0 | theta in the paper, disturbance strength (paper: 2)
 2
 MinShift1 | integer >= 0 | min O1 Shift: segment length moved from vehicle 1 (default: 1)
